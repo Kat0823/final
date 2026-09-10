@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructor Dashboard - MPSU ETEEAP LMS</title>
+    <link rel="stylesheet" href="teacher.css">
+</head>
+<body>
+<div class="top-bar">
+    <div class="school-info">
+        <img src="../images/mpsu-logo.png">
+        <div>
+            <h2>MPSU ETEEAP LMS</h2>
+            <p>Mountain Province State University</p>
+        </div>
+    </div>
+    <div class="user-info">
+        <img src="../images/profile.jpg">
+        <div>
+            <b>Instructor Name</b>
+            <small>Instructor</small>
+        </div>
+    </div>
+</div>
+
+<div class="main-container">
+
+<!-- sidebar -->
+    <div class="sidebar">
+        <div class="view-title"><p>View</p><i class="fa-solid fa-table-columns"></i></div>
+        <a href="dashboard.html" class="menu"><i class="fa-solid fa-house"></i><p>Dashboard</p></a>
+        <a href="modules.html" class="menu active"><i class="fa-solid fa-folder-open"></i><p>My Modules</p></a>
+        <a href="assessments.html" class="menu"><i class="fa-solid fa-clipboard-list"></i><p>Assessments</p></a>
+        <a href="grades.html" class="menu"><i class="fa-solid fa-chart-line"></i><p>Grades</p></a>
+        <a href="announcements.html" class="menu"><i class="fa-solid fa-bullhorn"></i><p>Announcements</p></a>
+        <a href="profile.html" class="menu"><i class="fa-solid fa-user"></i><p>Profile</p></a>
+        <a href="logout.html" class="menu logout"><i class="fa-solid fa-right-from-bracket"></i><p>Logout</p></a>
+    </div>
+
+    <main class="content">
+
+        <div class="topbar">
+            <div>
+                <h1>Module Management</h1>
+                <p>Create, edit and publish learning modules for your students.</p>
+            </div>
+        </div>
+
+        <div class="box">
+            <input
+                type="text"
+                id="search"
+                class="search-box"
+                placeholder="Search module..."
+                onkeyup="searchItems('search', 'module-card')">
+        </div>
+
+
+        <div class="modules-container">
+            <div class="box module-card">
+                <h2><i class="fa-solid fa-book"></i> Introduction to ETEEAP</h2>
+                <p>Learn the overview, objectives, policies,and learning outcomes of the ETEEAP Program.</p>
+                <p><b>Course:</b> Bachelor of Science in Information Technology</p>
+                <p><b>Date Posted:</b>July 20, 2026</p>
+                <p><b>Status:</b><span class="published">Published</span></p>
+                <div class="module-buttons">
+                    <button onclick="openPage('view_module.html')"><i class="fa-solid fa-eye"></i>View</button>
+                    <button onclick="openPage('edit_module.html')"><i class="fa-solid fa-pen"></i>Edit</button>
+                </div>
+            </div>
+
+            <div class="box module-card">
+                <h2><i class="fa-solid fa-book"></i>Portfolio Development</h2>
+                <p>Guide students in preparing their professional portfolio.</p>
+                <p><b>Course:</b>BS Information Technology</p>
+                <p><b>Date Posted:</b>July 25, 2026</p>
+                <p><b>Status:</b><span class="draft">Draft</span></p>
+
+                <div class="module-buttons">
+                    <button onclick="publishModule()"><i class="fa-solid fa-upload"></i>Publish</button>
+                    <button onclick="openPage('edit_module.html')"><i class="fa-solid fa-pen"></i>Edit</button>
+                </div>
+            </div>
+
+
+            <div class="box module-card">
+                <h2><i class="fa-solid fa-book"></i>Work-Based Learning</h2>
+                <p>This module discusses workplace competencies,professional ethics, and experiential learning.</p>
+                <p><b>Course:</b>Bachelor of Science in Information Technology</p>
+                <p><b>Date Posted:</b>August 1, 2026</p>
+                <p><b>Status:</b><span class="published">Published</span></p>
+
+                <div class="module-buttons">
+                    <button onclick="openPage('view_module.html')"><i class="fa-solid fa-eye"></i>View</button>
+                    <button onclick="openPage('edit_module.html')"><i class="fa-solid fa-pen"></i>Edit</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2026 Mountain Province State University<br>Expanded Tertiary Education Equivalency and Accreditation Program (ETEEAP)</p>
+        </footer>
+    </main>
+</div>
+<script src="teacher.js"></script>
+</body>
+</html>

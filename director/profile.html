@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>profile</title>
+    <link rel="stylesheet" href="director.css">
+</head>
+<body>
+<div class="dashboard-container">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo-section">
+            <img src="../images/mpsu-logo.png" alt="MPSU Logo">
+            <div>
+                <h2>MPSU</h2>
+                <p>ETEEAP LMS</p>
+            </div>
+        </div>
+
+        <div class="menu">
+            <a href="dashboard.html"><i class="fa-solid fa-table-columns"></i>Dashboard</a>
+            <a href="students.html"><i class="fa-solid fa-user-graduate"></i>Students</a>
+            <a href="instructors.html"><i class="fa-solid fa-chalkboard-user"></i>Instructors</a>
+            <a href="modules.html"><i class="fa-solid fa-book"></i>Modules</a>
+            <a href="assessments.html"><i class="fa-solid fa-file-circle-check"></i>Assessments</a>
+            <a href="reports.html"><i class="fa-solid fa-chart-line"></i>Reports</a>
+            <a href="announcements.html"><i class="fa-solid fa-bullhorn"></i>Announcements</a>
+            <a href="calendar.html"><i class="fa-solid fa-calendar-days"></i>Calendar</a>
+            <a href="notifications.html"><i class="fa-solid fa-bell"></i>Notifications</a>
+            <a href="profile.html" class="active"><i class="fa-solid fa-user"></i>Profile</a>
+            <a href="logout.html" class="logout"><i class="fa-solid fa-right-from-bracket"></i>Logout</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="topbar">
+            <div>
+                <h1>My Profile</h1>
+                <p>View and manage your account information.</p>
+            </div>
+        </div>
+
+        <div class="profile-container">
+            <div class="section-box profile-card">
+                <div class="large-profile-circle">D</div>
+                <h2 id="profileName">Director</h2>
+                <p id="profileRole">Program Director</p>
+                <button class="add-student-btn"onclick="enableEditProfile()"><i class="fa-solid fa-pen"></i>Edit Profile</button>
+            </div>
+
+            <div class="section-box profile-information">
+                <h2>Personal Information</h2>
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text"id="directorName"value="Director"disabled>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email"id="directorEmail"value="director@mpsu.edu.ph"disabled>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Position</label>
+                        <input type="text"id="directorPosition"value="Program Director"disabled>
+                    </div>
+
+                    <button type="submit"class="add-student-btn"id="saveProfileBtn"style="display: none;">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="director.js"></script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructor Dashboard - MPSU ETEEAP LMS</title>
+    <link rel="stylesheet" href="teacher.css">
+</head>
+<body>
+<div class="top-bar">
+    <div class="school-info">
+        <img src="../images/mpsu-logo.png">
+        <div>
+            <h2>MPSU ETEEAP LMS</h2>
+            <p>Mountain Province State University</p>
+        </div>
+    </div>
+    <div class="user-info">
+        <img src="../images/profile.jpg">
+        <div>
+            <b>Instructor Name</b>
+            <small>Instructor</small>
+        </div>
+    </div>
+</div>
+
+<div class="main-container">
+
+<!-- sidebar -->
+    <div class="sidebar">
+        <div class="view-title"><p>View</p><i class="fa-solid fa-table-columns"></i></div>
+        <a href="dashboard.html" class="menu active"><i class="fa-solid fa-house"></i><p>Dashboard</p></a>
+        <a href="modules.html" class="menu"><i class="fa-solid fa-folder-open"></i><p>My Modules</p></a>
+        <a href="assessments.html" class="menu"><i class="fa-solid fa-clipboard-list"></i><p>Assessments</p></a>
+        <a href="grades.html" class="menu"><i class="fa-solid fa-chart-line"></i><p>Grades</p></a>
+        <a href="announcements.html" class="menu"><i class="fa-solid fa-bullhorn"></i><p>Announcements</p></a>
+        <a href="profile.html" class="menu"><i class="fa-solid fa-user"></i><p>Profile</p></a>
+        <a href="logout.html" class="menu logout"><i class="fa-solid fa-right-from-bracket"></i><p>Logout</p></a>
+    </div>
+
+    <div class="content">
+        <h1>Instructor Dashboard</h1>
+        <p class="welcome">Welcome back, Instructor!</p>
+        <div class="dashboard-cards">
+            <div class="dashboard-card"><i class="fa-solid fa-users"></i>
+                <div>
+                    <h3>Students</h3>
+                    <b>32</b>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <i class="fa-solid fa-book"></i>
+                <div>
+                    <h3>My Modules</h3>
+                    <b>8</b>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <i class="fa-solid fa-clipboard-list"></i>
+                <div>
+                    <h3>Assessments</h3>
+                    <b>5</b>
+                </div>
+
+            </div>
+            <div class="dashboard-card">
+                <i class="fa-solid fa-clock"></i>
+                <div>
+                    <h3>Pending</h3>
+                    <b>12</b>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <h2>My Modules</h2>
+                <a href="modules.html">View All</a>
+            </div>
+
+
+            <div class="module-list">
+                <div class="module-item">
+                    <div>
+                        <h3>Intro to Criminal Law</h3>
+                        <p>32 Students</p>
+                    </div>
+                    <button onclick="openModule('Intro to Criminal Law')">View</button>
+                </div>
+
+
+                <div class="module-item">
+                    <div>
+                        <h3>Forensic Science Basics</h3>
+                        <p>28 Students</p>
+                    </div>
+                    <button onclick="openModule('Forensic Science Basics')">View</button>
+
+                </div>
+
+                <div class="module-item">
+                    <div>
+                        <h3>Criminal Law Fundamental</h3>
+                        <p>30 Students</p>
+                    </div>
+                    <button onclick="openModule('Criminal Law Fundamental')">View</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Recent Activity</h2>
+            <div class="activity">
+                <div>
+                    <i class="fa-solid fa-user"></i>
+                    <p><b>Kim Reyes</b>submitted an assessment.</p>
+                </div>
+
+                <div>
+                    <i class="fa-solid fa-user"></i>
+                    <p><b>Patricia Flores</b>completed Module 5.</p>
+                </div>
+
+                <div>
+                    <i class="fa-solid fa-bell"></i>
+                    <p>New student joined your module.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="teacher.js"></script>
+</body>
+</html>

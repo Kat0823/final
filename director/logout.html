@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>logout</title>
+    <link rel="stylesheet" href="director.css">
+</head>
+<body>
+<div class="dashboard-container">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo-section">
+            <img src="../images/mpsu-logo.png" alt="MPSU Logo">
+            <div>
+                <h2>MPSU</h2>
+                <p>ETEEAP LMS</p>
+            </div>
+        </div>
+
+        <div class="menu">
+            <a href="dashboard.html"><i class="fa-solid fa-table-columns"></i>Dashboard</a>
+            <a href="students.html"><i class="fa-solid fa-user-graduate"></i>Students</a>
+            <a href="instructors.html"><i class="fa-solid fa-chalkboard-user"></i>Instructors</a>
+            <a href="modules.html"><i class="fa-solid fa-book"></i>Modules</a>
+            <a href="assessments.html"><i class="fa-solid fa-file-circle-check"></i>Assessments</a>
+            <a href="reports.html"><i class="fa-solid fa-chart-line"></i>Reports</a>
+            <a href="announcements.html"><i class="fa-solid fa-bullhorn"></i>Announcements</a>
+            <a href="calendar.html"><i class="fa-solid fa-calendar-days"></i>Calendar</a>
+            <a href="notifications.html"><i class="fa-solid fa-bell"></i>Notifications</a>
+            <a href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+            <a href="logout.html" class="active"><i class="fa-solid fa-right-from-bracket"></i>Logout</a>
+        </div>
+    </div>
+
+    <main class="admin-content">
+            <div class="logout-page">
+                <div class="logout-box">
+                    <div class="logout-icon">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </div>
+                    <h1>Logout</h1>
+                    <p>Are you sure you want to logout from your account?</p>
+                    <div class="logout-buttons">
+                        <button type="button"class="confirm-logout-btn"onclick="confirmLogout()">Yes, Logout</button>
+                        <button type="button"class="cancel-btn"onclick="cancelLogout()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="director.js"></script>
+</body>
+</html>

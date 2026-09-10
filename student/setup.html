@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"content="width=device-width, initial-scale=1.0">
+    <title>Welcome and Setup</title>
+    <link rel="stylesheet" href="student.css">
+</head>
+<body class="setup-page">
+    <div class="setup-card">
+        <img src="../images/mpsu-logo.png">
+        <h1>Welcome to MPSU ETEEAP LMS</h1>
+        <p>Welcome, Macross Arsel!</p>
+        <p>Before using the Learning Management System, please complete the following setup.</p>
+
+        <div class="privacy-box">
+            <h3>Data Privacy Notice</h3>
+            <p>
+                By logging in to MPSU ETEEAP Learning
+                Management System, you acknowledge and
+                agree that Mountain Province State
+                University (MPSU) will collect, process,
+                and store your personal information solely
+                for educational and administrative purposes.
+            </p>
+
+            <p>
+                Your personal information will be handled
+                with strict confidentiality and will only
+                be accessed by authorized university
+                personnel.
+            </p>
+        </div>
+
+        <label class="privacy-check">
+            <input type="checkbox" id="privacy">I have read and acknowledge the Data Privacy Notice.
+        </label>
+
+        <form id="setupForm">
+            <label>New Password</label>
+            <div class="password-input">
+                <input type="password" id="newPassword" placeholder="Enter new password"required>
+            </div>
+
+            <label>Confirm Password</label>
+            <input type="password" id="confirmPassword" placeholder="Confirm new password" required>
+            <div class="password-strength">
+                <span id="strengthText">Password strength: None</span>
+            </div>
+
+            <p class="password-note">Password must be at least 8 characters,contain a number and an uppercase letter.</p>
+            <button type="submit">Save New Password</button>
+        </form>
+    </div>
+    <script src="student.js"></script>
+</body>
+</html>

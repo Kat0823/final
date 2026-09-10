@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructor Dashboard - MPSU ETEEAP LMS</title>
+    <link rel="stylesheet" href="teacher.css">
+</head>
+<body>
+<div class="top-bar">
+    <div class="school-info">
+        <img src="../images/mpsu-logo.png">
+        <div>
+            <h2>MPSU ETEEAP LMS</h2>
+            <p>Mountain Province State University</p>
+        </div>
+    </div>
+    <div class="user-info">
+        <img src="../images/profile.jpg">
+        <div>
+            <b>Instructor Name</b>
+            <small>Instructor</small>
+        </div>
+    </div>
+</div>
+
+<div class="main-container">
+
+<!-- sidebar -->
+    <div class="sidebar">
+        <div class="view-title"><p>View</p><i class="fa-solid fa-table-columns"></i></div>
+        <a href="dashboard.html" class="menu"><i class="fa-solid fa-house"></i><p>Dashboard</p></a>
+        <a href="modules.html" class="menu"><i class="fa-solid fa-folder-open"></i><p>My Modules</p></a>
+        <a href="assessments.html" class="menu"><i class="fa-solid fa-clipboard-list"></i><p>Assessments</p></a>
+        <a href="grades.html" class="menu active"><i class="fa-solid fa-chart-line"></i><p>Grades</p></a>
+        <a href="announcements.html" class="menu"><i class="fa-solid fa-bullhorn"></i><p>Announcements</p></a>
+        <a href="profile.html" class="menu"><i class="fa-solid fa-user"></i><p>Profile</p></a>
+        <a href="logout.html" class="menu logout"><i class="fa-solid fa-right-from-bracket"></i><p>Logout</p></a>
+    </div>
+
+<div class="main">
+<h1>Grade Management</h1>
+<div class="box">
+<table>
+<tr><th>Student</th><th>Assessment</th><th>Score</th><th>Remarks</th><th>Action</th></tr>
+<tr><td>Juan Dela Cruz</td><td>Quiz 1</td><td><input type="number" value="90"></td><td>Passed</td><td><button onclick="saveGrades()">Save</button></td></tr>
+<tr><td>Maria Reyes</td><td>Portfolio</td><td><input type="number" value="95"></td><td>Passed</td><td><button onclick="saveGrades()">Save</button></td></tr>
+</table>
+</div>
+<script src="teacher.js"></script>
+</body></html>

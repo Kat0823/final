@@ -1,0 +1,732 @@
+/* =========================================
+MPSU ETEEAP LMS
+FINAL COMBINED STYLESHEET
+========================================= */
+
+/* =========================================
+GENERAL RESET
+========================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* =========================================
+BODY
+========================================= */
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+/* =========================================
+LOGIN PAGE
+========================================= */
+
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* =========================================
+LEFT SIDE
+========================================= */
+
+.left {
+  width: 55%;
+  background: #075f36;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay {
+  width: 100%;
+  padding: 60px;
+  text-align: center;
+}
+
+.logo {
+  width: 120px;
+  max-width: 100%;
+}
+
+.overlay h1 {
+  margin-top: 15px;
+  font-size: 35px;
+}
+
+.overlay h1 span {
+  color: #ffd447;
+}
+
+.program-description {
+  margin-top: 15px;
+  line-height: 1.6;
+}
+
+.overlay hr {
+  width: 70%;
+  margin: 25px auto;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.overlay h3 {
+  margin-bottom: 30px;
+}
+
+/* =========================================
+FEATURES
+========================================= */
+
+.features {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  flex-wrap: wrap;
+}
+
+.feature {
+  width: 120px;
+}
+
+.feature i {
+  font-size: 30px;
+  color: #ffd447;
+}
+
+.feature p {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* =========================================
+RIGHT SIDE
+========================================= */
+
+.right {
+  width: 45%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+}
+
+/* =========================================
+LOGIN CARD
+========================================= */
+
+.login-card {
+  width: 100%;
+  max-width: 430px;
+  background: white;
+  padding: 35px;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* =========================================
+LOGIN LOGOS
+========================================= */
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.logo-area img {
+  width: 75px;
+  height: 75px;
+  object-fit: contain;
+}
+
+.divider {
+  width: 2px;
+  height: 55px;
+  background: #ddd;
+}
+
+/* =========================================
+LOGIN HEADINGS
+========================================= */
+
+.login-card h2 {
+  text-align: center;
+  margin-top: 20px;
+  color: #1e293b;
+}
+
+.subtitle {
+  text-align: center;
+  color: #777;
+  margin: 8px 0 25px;
+}
+
+/* =========================================
+FORM LABELS
+========================================= */
+
+.login-card label {
+  display: block;
+  font-size: 14px;
+  margin-top: 15px;
+  color: #333;
+  font-weight: 500;
+}
+
+/* =========================================
+INPUT BOX
+========================================= */
+
+.input-box {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0 12px;
+  margin-top: 5px;
+  transition: 0.3s;
+}
+
+.input-box:focus-within {
+  border-color: #075f36;
+  box-shadow: 0 0 0 3px rgba(7, 95, 54, 0.12);
+}
+
+.input-box i {
+  color: #075f36;
+}
+
+.input-box input {
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 12px;
+  font-size: 14px;
+  background: transparent;
+}
+
+#togglePassword {
+  cursor: pointer;
+  padding: 5px;
+}
+
+/* =========================================
+REMEMBER ME / FORGOT PASSWORD
+========================================= */
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-top: 15px;
+  font-size: 13px;
+}
+
+.options label {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.options a {
+  color: #075f36;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.options a:hover {
+  text-decoration: underline;
+}
+
+/* =========================================
+TERMS AND CONDITIONS
+========================================= */
+
+.terms {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 15px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.terms input {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.terms label {
+  margin: 0;
+  display: inline;
+}
+
+.terms a {
+  color: #075f36;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.terms a:hover {
+  text-decoration: underline;
+}
+
+/* =========================================
+LOGIN BUTTON
+========================================= */
+
+.login-card button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 13px;
+  border: none;
+  border-radius: 6px;
+  background: #075f36;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-card button:hover {
+  background: #054b2b;
+  transform: translateY(-1px);
+}
+
+.login-card button:active {
+  transform: translateY(0);
+}
+
+/* =========================================
+DEMO ACCOUNTS
+========================================= */
+
+.demo-accounts {
+  margin-top: 25px;
+  padding: 15px;
+  background: #f4f6f5;
+  border-left: 4px solid #075f36;
+  border-radius: 5px;
+  color: #555;
+}
+
+.demo-accounts p {
+  margin-bottom: 5px;
+}
+
+.demo-accounts small {
+  line-height: 1.6;
+}
+
+/* =========================================
+FORGOT PASSWORD PAGE
+========================================= */
+
+.forgot-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: #075f36;
+}
+
+/* =========================================
+FORGOT PASSWORD CARD
+========================================= */
+
+.forgot-card {
+  width: 100%;
+  max-width: 480px;
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+}
+
+/* =========================================
+BACK BUTTON
+========================================= */
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #2563eb;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  transition: 0.3s;
+}
+
+.back-button:hover {
+  color: #1e40af;
+  transform: translateX(-4px);
+}
+
+/* =========================================
+FORGOT PASSWORD CONTENT
+========================================= */
+
+.forgot-card h1 {
+  font-size: 30px;
+  color: #1e293b;
+  margin-bottom: 12px;
+}
+
+.forgot-card > p {
+  color: #64748b;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+/* =========================================
+FORGOT PASSWORD LABEL
+========================================= */
+
+.forgot-card label {
+  display: block;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* =========================================
+EMAIL INPUT
+========================================= */
+
+.email-box {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 0 15px;
+  transition: 0.3s;
+  margin-bottom: 20px;
+  background: #f8fafc;
+}
+
+.email-box:focus-within {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.email-box i {
+  color: #64748b;
+  font-size: 17px;
+  margin-right: 12px;
+}
+
+.email-box input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 15px 0;
+  font-size: 15px;
+  color: #1e293b;
+}
+
+.email-box input::placeholder {
+  color: #94a3b8;
+}
+
+/* =========================================
+FORGOT PASSWORD NOTE
+========================================= */
+
+.forgot-note {
+  background: #eff6ff;
+  border-left: 4px solid #2563eb;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+}
+
+.forgot-note p {
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.forgot-note p:last-child {
+  margin-bottom: 0;
+}
+
+.forgot-note strong {
+  color: #1d4ed8;
+}
+
+/* =========================================
+FORGOT PASSWORD BUTTONS
+========================================= */
+
+.forgot-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* CANCEL BUTTON */
+
+.cancel-button {
+  flex: 1;
+  text-align: center;
+  padding: 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #475569;
+  font-size: 15px;
+  font-weight: 600;
+  transition: 0.3s;
+  background: #ffffff;
+}
+
+.cancel-button:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+/* RESET PASSWORD BUTTON */
+
+.forgot-buttons button {
+  flex: 1;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  background: #2563eb;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 5px 15px rgba(37, 99, 235, 0.25);
+}
+
+.forgot-buttons button:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+}
+
+.forgot-buttons button:active {
+  transform: translateY(0);
+}
+
+/* =========================================
+TERMS PAGE
+========================================= */
+
+.terms-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  background: #075f36;
+}
+
+/* =========================================
+TERMS CARD
+========================================= */
+
+.terms-card {
+  width: 100%;
+  max-width: 750px;
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+}
+
+.terms-card h1 {
+  color: #1e293b;
+  font-size: 30px;
+  margin-bottom: 20px;
+}
+
+.terms-card hr {
+  border: none;
+  height: 1px;
+  background: #cbd5e1;
+  margin-bottom: 25px;
+}
+
+/* =========================================
+TERMS HEADINGS
+========================================= */
+
+.terms-card h2 {
+  color: #2563eb;
+  font-size: 20px;
+  margin-top: 25px;
+  margin-bottom: 10px;
+}
+
+/* =========================================
+TERMS PARAGRAPHS
+========================================= */
+
+.terms-card p {
+  color: #475569;
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 15px;
+}
+
+/* =========================================
+TERMS BOTTOM
+========================================= */
+
+.terms-bottom {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+  text-align: center;
+}
+
+.back-login {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 12px 25px;
+  background: #2563eb;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.back-login:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+/* =========================================
+TABLET RESPONSIVE DESIGN
+========================================= */
+
+@media (max-width: 800px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .left,
+  .right {
+    width: 100%;
+  }
+
+  .left {
+    min-height: auto;
+  }
+
+  .overlay {
+    padding: 50px 30px;
+  }
+
+  .right {
+    padding: 30px 20px;
+  }
+
+  .login-card {
+    max-width: 500px;
+  }
+}
+
+/* =========================================
+MOBILE RESPONSIVE DESIGN
+========================================= */
+
+@media (max-width: 500px) {
+  /* LOGIN */
+  .overlay {
+    padding: 40px 20px;
+  }
+
+  .overlay h1 {
+    font-size: 28px;
+  }
+
+  .features {
+    gap: 20px;
+  }
+
+  .feature {
+    width: 100px;
+  }
+
+  .login-card {
+    padding: 25px 20px;
+  }
+
+  .logo-area img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .divider {
+    height: 45px;
+  }
+
+  .options {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  /* FORGOT PASSWORD */
+  .forgot-card {
+    padding: 30px 22px;
+    border-radius: 16px;
+  }
+
+  .forgot-card h1 {
+    font-size: 25px;
+  }
+
+  .forgot-buttons {
+    flex-direction: column;
+  }
+
+  .cancel-button,
+  .forgot-buttons button {
+    width: 100%;
+  }
+
+  /* TERMS */
+  .terms-page {
+    padding: 15px;
+  }
+
+  .terms-card {
+    padding: 25px 20px;
+  }
+
+  .terms-card h1 {
+    font-size: 25px;
+  }
+
+  .terms-card h2 {
+    font-size: 18px;
+  }
+}

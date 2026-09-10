@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dashboard</title>
+    <link rel="stylesheet" href="director.css">
+</head>
+<body>
+<div class="dashboard-container">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo-section">
+            <img src="../images/mpsu-logo.png" alt="MPSU Logo">
+            <div>
+                <h2>MPSU</h2>
+                <p>ETEEAP LMS</p>
+            </div>
+        </div>
+
+        <div class="menu">
+            <a href="dashboard.html" class="active"><i class="fa-solid fa-table-columns"></i>Dashboard</a>
+            <a href="students.html"><i class="fa-solid fa-user-graduate"></i>Students</a>
+            <a href="instructors.html"><i class="fa-solid fa-chalkboard-user"></i>Instructors</a>
+            <a href="modules.html"><i class="fa-solid fa-book"></i>Modules</a>
+            <a href="assessments.html"><i class="fa-solid fa-file-circle-check"></i>Assessments</a>
+            <a href="reports.html"><i class="fa-solid fa-chart-line"></i>Reports</a>
+            <a href="announcements.html"><i class="fa-solid fa-bullhorn"></i>Announcements</a>
+            <a href="calendar.html"><i class="fa-solid fa-calendar-days"></i>Calendar</a>
+            <a href="notifications.html"><i class="fa-solid fa-bell"></i>Notifications</a>
+            <a href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+            <a href="logout.html" class="logout"><i class="fa-solid fa-right-from-bracket"></i>Logout</a>
+        </div>
+    </div>
+
+
+    <div class="main-content">
+        <div class="topbar">
+            <div>
+                <h1>Director Dashboard</h1>
+                <p>Welcome back! Here's what's happening today.</p>
+            </div>
+
+            <div class="topbar-right">
+                <a href="notifications.html" class="notification-icon">
+                    <i class="fa-solid fa-bell"></i>
+                    <span>3</span>
+                </a>
+
+                <a href="profile.html" class="profile-top">
+                    <div class="profile-circle">D</div>
+                    <div>
+                        <h4>Director</h4>
+                        <p>Program Director</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="cards">
+            <div class="card">
+                <div class="card-icon students-icon">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+
+                <div>
+                    <p>Total Students</p>
+                    <h2>120</h2>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon instructor-icon">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                </div>
+
+                <div>
+                    <p>Total Instructors</p>
+                    <h2>15</h2>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon module-icon">
+                    <i class="fa-solid fa-book"></i>
+                </div>
+
+                <div>
+                    <p>Active Modules</p>
+                    <h2>32</h2>
+                </div>
+
+            </div>
+
+            <div class="card">
+                <div class="card-icon assessment-icon">
+                    <i class="fa-solid fa-file-circle-check"></i>
+                </div>
+
+                <div>
+                    <p>Assessments</p>
+                    <h2>18</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-row">
+            <div class="section-box">
+                <div class="section-header">
+                    <h2>Recent Activities</h2>
+                    <a href="reports.html">View All</a>
+                </div>
+
+                <div class="activity">
+                    <div class="activity-icon">
+                        <i class="fa-solid fa-user-plus"></i>
+                    </div>
+
+                    <div>
+                        <h4>New Student Registered</h4>
+                        <p>A new student has joined the ETEEAP program.</p>
+                    </div>
+                    <span>Today</span>
+                </div>
+
+                <div class="activity">
+                    <div class="activity-icon">
+                        <i class="fa-solid fa-book"></i>
+                    </div>
+
+                    <div>
+                        <h4>New Module Added</h4>
+                        <p>An instructor added a new learning module.</p>
+                    </div>
+                    <span>Today</span>
+                </div>
+
+                <div class="activity">
+                    <div class="activity-icon">
+                        <i class="fa-solid fa-file-circle-check"></i>
+                    </div>
+
+                    <div>
+                        <h4>Assessment Submitted</h4>
+                        <p>A student submitted an assessment.</p>
+                    </div>
+                    <span>Yesterday</span>
+                </div>
+            </div>
+
+                <div class="section-box quick-actions">
+                <h2>Quick Actions</h2>
+
+                <a href="students.html" class="quick-button"><i class="fa-solid fa-user-graduate"></i>Manage Students</a>
+                <a href="instructors.html" class="quick-button"><i class="fa-solid fa-chalkboard-user"></i>Manage Instructors</a>
+                <a href="announcements.html" class="quick-button"><i class="fa-solid fa-bullhorn"></i>Create Announcement</a>
+                <a href="reports.html" class="quick-button"><i class="fa-solid fa-chart-line"></i>View Reports</a>
+            </div>
+        </div>
+
+        <div class="section-box program-overview">
+            <div class="section-header">
+                <h2>Program Overview</h2>
+                <a href="reports.html">View Reports</a>
+            </div>
+
+            <div class="progress-item">
+                <div class="progress-text">
+                    <span>Student Completion Rate</span>
+                    <b>78%</b>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress completed"></div>
+                </div>
+
+            </div>
+            <div class="progress-item">
+                <div class="progress-text">
+                    <span>Assessment Completion</span>
+                    <b>85%</b>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress assessment"></div>
+                </div>
+            </div>
+
+            <div class="progress-item">
+                <div class="progress-text">
+                    <span>Module Completion</span>
+                    <b>72%</b>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress module"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="director.js"></script>
+</body>
+</html>

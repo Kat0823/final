@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learner Profile - MPSU ETEEAP LMS</title>
+    <link rel="stylesheet" href="student.css">
+</head>
+<body>
+
+<header class="header">
+    <div class="header-left">
+        <img src="../images/mpsu-logo.png">
+        <div>
+            <div>MPSU ETEEAP LMS</div>
+            <span>Mountain Province State University</span>
+        </div>
+    </div>
+
+    <a href="profile.html" class="user">
+        <div class="user-picture">
+            <i class="fa-solid fa-user"></i>
+        </div>
+        <div>
+            <b>Macross Arsel</b>
+        </div>
+    </a>
+</header>
+
+<div class="main">
+<!-- sidebar -->
+
+    <aside class="sidebar">
+        <div class="view">View<i class="fa-solid fa-table-columns"></i></div>
+        <a href="dashboard.html" class="menu"><i class="fa-regular fa-folder"></i>My Modules</a>
+        <a href="grades.html" class="menu"><i class="fa-solid fa-chart-column"></i><span>Grades</span></a>
+        <a href="notification.html" class="menu"><i class="fa-regular fa-bell"></i>Notifications</a>
+        <a href="profile.html" class="menu active"><i class="fa-regular fa-user"></i>Profile</a>
+        <a href="logout.html" class="menu"><i class="fa-solid fa-arrow-right-from-bracket"></i>Logout</a>
+    </aside>
+
+    <main class="content profile-content">
+        <h1 class="profile-title">Learner Profile</h1>
+
+        <div class="profile-card">
+            <div class="profile-top">
+                <div class="profile-picture">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+
+                <div>
+                    <h3>Macross Arsel</h3>
+                    <p>Learner</p>
+                </div>
+            </div>
+
+            <div class="profile-body">
+                <div class="profile-info">
+                    <p><b>Full Name:</b><br>Macross Arsel</p>
+                    <p><b>Learner ID:</b><br>26-00123</p>
+                </div>
+
+                <div class="profile-fields">
+                    <label for="profileEmail">Email Address</label>
+                    <input type="email" id="profileEmail" value="arsel@gmail.com" readonly>
+                    <label for="profilePassword">Password</label>
+                    <input type="password" id="profilePassword" value="********"readonly>
+
+                    <a href="edit-account.html" class="edit-button"><i class="fa-solid fa-pen-to-square"></i>Edit Account Settings</a>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

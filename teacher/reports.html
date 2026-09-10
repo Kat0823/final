@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructor Dashboard - MPSU ETEEAP LMS</title>
+    <link rel="stylesheet" href="teacher.css">
+</head>
+<body>
+<div class="top-bar">
+    <div class="school-info">
+        <img src="../images/mpsu-logo.png">
+        <div>
+            <h2>MPSU ETEEAP LMS</h2>
+            <p>Mountain Province State University</p>
+        </div>
+    </div>
+    <div class="user-info">
+        <img src="../images/profile.jpg">
+        <div>
+            <b>Instructor Name</b>
+            <small>Instructor</small>
+        </div>
+    </div>
+</div>
+
+<div class="main-container">
+
+<!-- sidebar -->
+    <div class="sidebar">
+        <div class="view-title"><p>View</p><i class="fa-solid fa-table-columns"></i></div>
+        <a href="dashboard.html" class="menu"><i class="fa-solid fa-house"></i><p>Dashboard</p></a>
+        <a href="modules.html" class="menu"><i class="fa-solid fa-folder-open"></i><p>My Modules</p></a>
+        <a href="assessments.html" class="menu"><i class="fa-solid fa-clipboard-list"></i><p>Assessments</p></a>
+        <a href="grades.html" class="menu"><i class="fa-solid fa-chart-line"></i><p>Grades</p></a>
+        <a href="announcements.html" class="menu"><i class="fa-solid fa-bullhorn"></i><p>Announcements</p></a>
+        <a href="profile.html" class="menu active"><i class="fa-solid fa-user"></i><p>Profile</p></a>
+        <a href="logout.html" class="menu logout"><i class="fa-solid fa-right-from-bracket"></i><p>Logout</p></a>
+    </div>
+
+<div class="main">
+<h1>Reports</h1>
+<div class="cards">
+<div class="card">
+<i class="fa-solid fa-users"></i>
+<h2>45</h2>
+<p>Total Students</p>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-book"></i>
+<h2>12</h2>
+<p>Total Modules</p>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-file-circle-check"></i>
+<h2>18</h2>
+<p>Assessments</p>
+</div>
+
+<div class="card">
+<i class="fa-solid fa-chart-line"></i>
+<h2>92%</h2>
+<p>Average Completion</p>
+</div>
+
+</div>
+
+<div class="box">
+
+<h2>Overall Performance</h2>
+
+<table>
+
+<tr>
+<th>Program</th>
+<th>Students</th>
+<th>Completion</th>
+</tr>
+
+<tr>
+<td>BSIT</td>
+<td>25</td>
+<td>95%</td>
+</tr>
+
+<tr>
+<td>BSED</td>
+<td>10</td>
+<td>90%</td>
+</tr>
+
+<tr>
+<td>BSBA</td>
+<td>10</td>
+<td>88%</td>
+</tr>
+
+</table>
+
+</div>
+<script src="teacher.js"></script>
+</body>
+</html>

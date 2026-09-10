@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MPSU ETEEAP LMS</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- LEFT SIDE -->
+        <div class="left">
+
+            <div class="overlay">
+
+                <img src="images/mpsu-logo.png"
+                    class="logo"
+                    alt="MPSU Logo">
+
+                <h1>MPSU <span>ETEEAP</span> LMS</h1>
+
+                <p class="program-description">
+                    Expanded Tertiary Education<br>
+                    Equivalency and Accreditation Program
+                </p>
+
+                <hr>
+
+                <h3>Empowering Learners. Transforming Futures.</h3>
+
+                <div class="features">
+
+                    <div class="feature">
+                        <i class="fa-solid fa-book-open"></i>
+                        <p>Accessible Learning</p>
+                    </div>
+
+                    <div class="feature">
+                        <i class="fa-solid fa-users"></i>
+                        <p>Quality Education</p>
+                    </div>
+
+                    <div class="feature">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <p>Track Progress</p>
+                    </div>
+
+                    <div class="feature">
+                        <i class="fa-solid fa-award"></i>
+                        <p>Earn Certificates</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT SIDE -->
+        <div class="right">
+
+            <div class="login-card">
+
+                <!-- LOGOS -->
+                <div class="logo-area">
+
+                    <img src="images/mpsu-logo.png"
+                        alt="MPSU Logo">
+
+                </div>
+
+
+                <h2>Welcome Back!</h2>
+
+                <p class="subtitle">
+                    Login to your account
+                </p>
+
+
+                <!-- LOGIN FORM -->
+                <form id="loginForm">
+
+                    <!-- ID -->
+                    <label for="studentId">ID</label>
+
+                    <div class="input-box">
+
+                        <i class="fa-solid fa-id-card"></i>
+
+                        <input
+                            type="text"
+                            id="studentId"
+                            placeholder="Enter your ID"
+                            required>
+
+                    </div>
+
+
+                    <!-- PASSWORD -->
+                    <label for="password">Password</label>
+
+                    <div class="input-box password-box">
+
+                        <i class="fa-solid fa-lock"></i>
+
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Enter your password"
+                            required>
+
+                        <i
+                            class="fa-solid fa-eye"
+                            id="togglePassword"
+                            title="Show Password">
+                        </i>
+
+                    </div>
+
+
+                    <!-- OPTIONS -->
+                    <div class="options">
+
+                        <label class="remember-me">
+
+                            <input
+                                type="checkbox"
+                                id="rememberMe">
+
+                            Remember Me
+
+                        </label>
+
+
+                        <a href="forgot-password.html">
+                            Forgot Password?
+                        </a>
+
+                    </div>
+
+
+                    <!-- TERMS -->
+                    <div class="terms">
+
+                        <input
+                            type="checkbox"
+                            id="terms"
+                            required>
+
+                        <label for="terms">
+
+                            I have read and accept the
+
+                            <a href="terms.html" target="_blank">
+                                User Terms of Service
+                            </a>
+
+                            and Privacy Policy.
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- LOGIN BUTTON -->
+                    <button type="submit">
+
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        Login
+
+                    </button>
+
+                </form>
+
+
+                <!-- DEMO ACCOUNTS -->
+                <div class="demo-accounts">
+
+                    <p><strong>Demo Accounts:</strong></p>
+
+                    <small>
+                        Student: 26-00123 / student123<br>
+                        Teacher: teacher001 / teacher123<br>
+                        Admin: admin001 / admin123<br>
+                        Director: director001 / director123
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- LOGIN JAVASCRIPT -->
+    <script src="login.js"></script>
+
+
+    <!-- SHOW / HIDE PASSWORD -->
+    <script>
+
+        const passwordInput = document.getElementById("password");
+        const togglePassword = document.getElementById("togglePassword");
+
+        togglePassword.addEventListener("click", function () {
+
+            if (passwordInput.type === "password") {
+
+                passwordInput.type = "text";
+
+                togglePassword.classList.remove("fa-eye");
+                togglePassword.classList.add("fa-eye-slash");
+
+            } else {
+
+                passwordInput.type = "password";
+
+                togglePassword.classList.remove("fa-eye-slash");
+                togglePassword.classList.add("fa-eye");
+
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>

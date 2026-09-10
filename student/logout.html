@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout - MPSU ETEEAP LMS</title>
+    <link rel="stylesheet" href="student.css">
+</head>
+<body>
+
+<header class="header">
+    <div class="header-left">
+        <img src="../images/mpsu-logo.png">
+        <div>
+            <div>MPSU ETEEAP LMS</div>
+            <span>Mountain Province State University</span>
+        </div>
+    </div>
+    <a href="profile.html" class="user">
+        <div class="user-picture">
+            <i class="fa-solid fa-user"></i>
+        </div>
+        <div>
+            <b>Macross Arsel</b>
+        </div>
+    </a>
+</header>
+
+<div class="main">
+<!-- sidebar -->
+
+    <aside class="sidebar">
+        <div class="view">View<i class="fa-solid fa-table-columns"></i></div>
+        <a href="dashboard.html" class="menu"><i class="fa-regular fa-folder"></i>My Modules</a>
+        <a href="grades.html" class="menu"><i class="fa-solid fa-chart-column"></i><span>Grades</span></a>
+        <a href="notification.html" class="menu"><i class="fa-regular fa-bell"></i>Notifications</a>
+        <a href="profile.html" class="menu"><i class="fa-regular fa-user"></i>Profile</a>
+        <a href="logout.html" class="menu active"><i class="fa-solid fa-arrow-right-from-bracket"></i>Logout</a>
+    </aside>
+
+    <main class="content logout-content">
+        <div class="logout-page">
+            <div class="logout-box">
+                <div class="logout-icon">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </div>
+                <h1>Are you sure?</h1>
+                <p>Do you really want to logout from your student account?</p>
+
+                <div class="logout-buttons">
+                    <button type="button" class="cancel-btn" onclick="goBack()">Cancel</button>
+                    <button type="button" class="confirm-logout-btn" onclick="logoutUser()">Yes, Logout</button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script src="student.js"></script>
+</body>
+</html>

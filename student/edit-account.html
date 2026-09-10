@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Account</title>
+    <link rel="stylesheet" href="student.css">
+</head>
+<body>
+<header class="header">
+    <div class="header-left">
+        <img src="../images/mpsu-logo.png">
+        <div>
+            <div>MPSU ETEEAP LMS</div>
+            <span>Mountain Province State University</span>
+        </div>
+    </div>
+</header>
+
+<div class="main">
+<!-- sidebar -->
+
+    <aside class="sidebar">
+        <div class="view">View<i class="fa-solid fa-table-columns"></i></div>
+        <a href="dashboard.html" class="menu"><i class="fa-regular fa-folder"></i>My Modules</a>
+        <a href="grades.html" class="menu"><i class="fa-solid fa-chart-column"></i><span>Grades</span></a>
+        <a href="notification.html" class="menu"><i class="fa-regular fa-bell"></i>Notifications</a>
+        <a href="profile.html" class="menu active"><i class="fa-regular fa-user"></i>Profile</a>
+        <a href="logout.html" class="menu"><i class="fa-solid fa-arrow-right-from-bracket"></i>Logout</a>
+    </aside>
+
+    <main class="content">
+        <h1>Learner Profile</h1>
+        <div class="edit-card">
+            <div class="edit-user">
+                <div class="profile-picture">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div>
+                    <h3>Macross Arsel</h3>
+                    <p>Learner</p>
+                </div>
+            </div>
+
+            <form id="editForm">
+                <div class="edit-grid">
+                    <div>
+                        <label>Old Password</label>
+                        <input type="password" id="oldPassword" placeholder="Enter old password">
+                    </div>
+
+                    <div>
+                        <label>Old Email Address</label>
+                        <input type="email" value="arsel@gmail.com" readonly>
+                    </div>
+
+                    <div>
+                        <label>New Password</label>
+                        <input type="password" id="editNewPassword" placeholder="Enter new password">
+                    </div>
+
+                    <div>
+                        <label>New Email Address</label>
+                        <input type="email" id="newEmail" placeholder="Enter new email">
+                    </div>
+
+                    <div>
+                        <label>Confirm Password</label>
+                        <input type="password" id="editConfirmPassword" placeholder="Confirm password">
+                    </div>
+
+                    <div>
+                        <label>Confirm Email Address</label>
+                        <input type="email" id="confirmEmail" placeholder="Confirm email">
+                    </div>
+                </div>
+
+                <div class="edit-buttons">
+                    <button type="submit">Save Changes</button>
+                    <a href="profile.html">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+<script src="student.js"></script>
+</body>
+</html>

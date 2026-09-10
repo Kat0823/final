@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar</title>
+    <link rel="stylesheet" href="director.css">
+</head>
+<body>
+<div class="dashboard-container">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo-section">
+            <img src="../images/mpsu-logo.png" alt="MPSU Logo">
+            <div>
+                <h2>MPSU</h2>
+                <p>ETEEAP LMS</p>
+            </div>
+        </div>
+
+        <div class="menu">
+            <a href="dashboard.html"><i class="fa-solid fa-table-columns"></i>Dashboard</a>
+            <a href="students.html"><i class="fa-solid fa-user-graduate"></i>Students</a>
+            <a href="instructors.html"><i class="fa-solid fa-chalkboard-user"></i>Instructors</a>
+            <a href="modules.html"><i class="fa-solid fa-book"></i>Modules</a>
+            <a href="assessments.html"><i class="fa-solid fa-file-circle-check"></i>Assessments</a>
+            <a href="reports.html"><i class="fa-solid fa-chart-line"></i>Reports</a>
+            <a href="announcements.html"><i class="fa-solid fa-bullhorn"></i>Announcements</a>
+            <a href="calendar.html" class="active"><i class="fa-solid fa-calendar-days"></i>Calendar</a>
+            <a href="notifications.html"><i class="fa-solid fa-bell"></i>Notifications</a>
+            <a href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+            <a href="logout.html" class="logout"><i class="fa-solid fa-right-from-bracket"></i>Logout</a>
+        </div>
+    </div>
+
+
+    <div class="main-content">
+        <div class="topbar">
+            <div>
+                <h1>Calendar</h1>
+                <p>View and manage important ETEEAP events.</p>
+            </div>
+
+            <div class="topbar-right">
+                <a href="notifications.html" class="notification-icon"><i class="fa-solid fa-bell"></i><span>3</span></a>
+                <a href="profile.html" class="profile-top"><div class="profile-circle">D</div>
+                    <div>
+                        <h4>Director</h4>
+                        <p>Program Director</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="calendar-layout">
+            <div class="section-box calendar-box">
+                <div class="section-header">
+                    <div>
+                        <h2>September 2026</h2>
+                        <p style="color: #64748b; margin-top: 5px;">MPSU ETEEAP Calendar</p>
+                    </div>
+                </div>
+
+                <div class="calendar-days">
+                    <div>Sun</div>
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div>Sat</div>
+                </div>
+
+
+                <div class="calendar-dates">
+                    <div class="empty-day"></div>
+                    <div class="empty-day"></div>
+                    <div>1</div>
+                    <div>2</div>
+                    <div>3</div>
+                    <div>4</div>
+                    <div>5</div>
+                    <div>6</div>
+                    <div>7</div>
+                    <div class="event-day">8<span>Meeting</span></div>
+                    <div>9</div>
+                    <div>10</div>
+                    <div>11</div>
+                    <div>12</div>
+                    <div>13</div>
+                    <div>14</div>
+                    <div class="event-day">15<span>Assessment</span></div>
+                    <div>16</div>                    
+                    <div>17</div>
+                    <div>18</div>
+                    <div>19</div>
+                    <div>20</div>
+                    <div>21</div>
+                    <div class="event-day">22<span>Deadline</span></div>
+                    <div>23</div>
+                    <div>24</div>
+                    <div>25</div>
+                    <div>26</div>
+                    <div>27</div>
+                    <div>28</div>
+                    <div>29</div>
+                    <div>30</div>
+                </div>
+            </div>
+
+            <div class="calendar-side">
+                <div class="section-box">
+                    <h2>Add Event</h2>
+                    <form id="eventForm">
+                        <div class="form-group">
+                            <label>Event Title</label>
+                            <input type="text"id="eventTitle"placeholder="Enter event title"required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date"id="eventDate" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Event Type</label>
+                            <select id="eventType">
+                                <option value="Meeting">Meeting</option>
+                                <option value="Assessment">Assessment</option>
+                                <option value="Deadline">Deadline</option>
+                                <option value="Announcement">Announcement</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="add-student-btn"><i class="fa-solid fa-plus"></i>Add Event</button>
+                    </form>
+                </div>
+
+                <div class="section-box upcoming-events">
+                    <h2>Upcoming Events</h2>
+                    <div id="eventContainer">
+                        <div class="event-item">
+                            <div class="event-date">
+                                <b>08</b>
+                                <span>SEP</span>
+                            </div>
+
+                            <div>
+                                <h4>Instructor Meeting</h4>
+                                <p><i class="fa-solid fa-clock"></i>10:00 AM</p>
+                            </div>
+                        </div>
+
+                        <div class="event-item">
+                            <div class="event-date">
+                                <b>15</b>
+                                <span>SEP</span>
+                            </div>
+
+                            <div>
+                                <h4>Assessment Deadline</h4>
+                                <p><i class="fa-solid fa-clock"></i>11:59 PM</p>
+                            </div>
+                        </div>
+
+                        <div class="event-item">
+                            <div class="event-date">
+                                <b>22</b>
+                                <span>SEP</span>
+                            </div>
+
+                            <div>
+                                <h4>Module Submission</h4>
+                                <p><i class="fa-solid fa-clock"></i>05:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="director.js"></script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>instructor</title>
+    <link rel="stylesheet" href="director.css">
+</head>
+<body>
+<div class="dashboard-container">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo-section">
+            <img src="../images/mpsu-logo.png" alt="MPSU Logo">
+            <div>
+                <h2>MPSU</h2>
+                <p>ETEEAP LMS</p>
+            </div>
+        </div>
+
+        <div class="menu">
+            <a href="dashboard.html"><i class="fa-solid fa-table-columns"></i>Dashboard</a>
+            <a href="students.html"><i class="fa-solid fa-user-graduate"></i>Students</a>
+            <a href="instructors.html"><i class="fa-solid fa-chalkboard-user"></i>Instructors</a>
+            <a href="modules.html"><i class="fa-solid fa-book"></i>Modules</a>
+            <a href="assessments.html"><i class="fa-solid fa-file-circle-check"></i>Assessments</a>
+            <a href="reports.html" class="active"><i class="fa-solid fa-chart-line"></i>Reports</a>
+            <a href="announcements.html"><i class="fa-solid fa-bullhorn"></i>Announcements</a>
+            <a href="calendar.html"><i class="fa-solid fa-calendar-days"></i>Calendar</a>
+            <a href="notifications.html"><i class="fa-solid fa-bell"></i>Notifications</a>
+            <a href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+            <a href="logout.html" class="logout"><i class="fa-solid fa-right-from-bracket"></i>Logout</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="topbar">
+            <div>
+                <h1>Reports</h1>
+                <p>View the overall performance of the ETEEAP program.</p>
+            </div>
+
+            <div class="topbar-right">
+                <a href="notifications.html" class="notification-icon">
+                    <i class="fa-solid fa-bell"></i>
+                    <span>3</span>
+                </a>
+
+                <a href="profile.html" class="profile-top">
+                    <div class="profile-circle">D</div>
+                    <div>
+                        <h4>Director</h4>
+                        <p>Program Director</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="cards">
+            <div class="card">
+                <div class="card-icon students-icon">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+
+                <div>
+                    <p>Total Students</p>
+                    <h2>120</h2>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon instructor-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+
+                <div>
+                    <p>Completed</p>
+                    <h2>85</h2>
+                </div>
+
+            </div>
+
+            <div class="card">
+                <div class="card-icon module-icon">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+
+                <div>
+                    <p>In Progress</p>
+                    <h2>25</h2>
+                </div>
+
+            </div>
+
+            <div class="card">
+                <div class="card-icon assessment-icon">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+
+                <div>
+                    <p>Completion Rate</p>
+                    <h2>78%</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="report-grid">
+            <div class="section-box">
+                <div class="section-header">
+                    <h2>Student Progress</h2>
+                    <button class="download-btn"onclick="downloadReport()"><i class="fa-solid fa-download"></i>Download Report</button>
+                </div>
+
+                <div class="progress-item">
+                    <div class="progress-text">
+                        <span>Completed Students</span>
+                        <strong>85 Students</strong>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress completed-report"></div>
+                    </div>
+                </div>
+
+                <div class="progress-item">
+                    <div class="progress-text">
+                        <span>Students In Progress</span>
+                        <strong>25 Students</strong>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress progress-report"></div>
+                    </div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-text">
+                        <span>Pending Students</span>
+                        <strong>10 Students</strong>
+                    </div>
+
+                    <div class="progress-bar">
+                        <div class="progress pending-report"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-box">
+                <h2>Program Performance</h2>
+                <div class="performance-item">
+                    <i class="fa-solid fa-book"></i>
+                    <div>
+                        <h4>Module Completion</h4>
+                        <p>72% Average Completion</p>
+                    </div>
+                </div>
+
+                <div class="performance-item">
+                    <i class="fa-solid fa-file-circle-check"></i>
+                    <div>
+                        <h4>Assessment Completion</h4>
+                        <p>85% Average Completion</p>
+                    </div>
+                </div>
+
+                <div class="performance-item">
+                    <i class="fa-solid fa-users"></i>
+                    <div>
+                        <h4>Student Participation</h4>
+                        <p>90% Active Participation</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-box report-table">
+            <div class="section-header">
+                <div>
+                    <h2>Program Report</h2>
+                    <p style="color: #64748b; margin-top: 5px;">
+                        Overview of student performance by program.
+                    </p>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Program</th>
+                            <th>Total Students</th>
+                            <th>Completed</th>
+                            <th>In Progress</th>
+                            <th>Completion Rate</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>BSIT</td>
+                            <td>50</td>
+                            <td>38</td>
+                            <td>12</td>
+                            <td>76%</td>
+                        </tr>
+
+                        <tr>
+                            <td>BSBA</td>
+                            <td>30</td>
+                            <td>22</td>
+                            <td>8</td>
+                            <td>73%</td>
+                        </tr>
+
+                        <tr>
+                            <td>BEED</td>
+                            <td>25</td>
+                            <td>20</td>
+                            <td>5</td>
+                            <td>80%</td>
+                        </tr>
+
+                        <tr>
+                            <td>BSED</td>
+                            <td>15</td>
+                            <td>5</td>
+                            <td>10</td>
+                            <td>33%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="director.js"></script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Instructors</title>
+
+    <link rel="stylesheet" href="admin.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<header class="top-bar">
+
+    <div class="school-info">
+
+        <img src="../images/mpsu-logo.png">
+
+        <div>
+            <h2>MPSU ETEEAP LMS</h2>
+            <p>Mountain Province State University</p>
+        </div>
+
+    </div>
+
+    <a href="profile.html" class="user-info">
+
+        <div class="profile-icon">
+            <i class="fa-solid fa-user"></i>
+        </div>
+
+        <div>
+            <strong>Admin User</strong>
+            <small>Administrator</small>
+        </div>
+
+    </a>
+
+</header>
+
+
+<div class="main-container">
+
+    <aside class="sidebar">
+
+        <div class="view-title">
+            <span>Admin Menu</span>
+        </div>
+
+        <a href="dashboard.html" class="menu">
+            <i class="fa-solid fa-house"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="users.html" class="menu">
+            <i class="fa-solid fa-users"></i>
+            <span>Users</span>
+        </a>
+
+        <a href="students.html" class="menu">
+            <i class="fa-solid fa-user-graduate"></i>
+            <span>Students</span>
+        </a>
+
+        <a href="instructors.html" class="menu active">
+            <i class="fa-solid fa-chalkboard-user"></i>
+            <span>Instructors</span>
+        </a>
+
+        <a href="modules.html" class="menu">
+            <i class="fa-solid fa-book"></i>
+            <span>Modules</span>
+        </a>
+
+        <a href="assessments.html" class="menu">
+            <i class="fa-solid fa-clipboard-list"></i>
+            <span>Assessments</span>
+        </a>
+
+        <a href="announcements.html" class="menu">
+            <i class="fa-solid fa-bullhorn"></i>
+            <span>Announcements</span>
+        </a>
+
+        <a href="reports.html" class="menu">
+            <i class="fa-solid fa-chart-column"></i>
+            <span>Reports</span>
+        </a>
+
+        <a href="profile.html" class="menu">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+
+
+        <a href="logout.html" class="menu logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Logout</span>
+        </a>
+
+    </aside>
+
+
+    <main class="content">
+
+        <div class="page-title">
+
+            <div>
+                <h1>Instructors</h1>
+                <p>Manage ETEEAP instructors.</p>
+            </div>
+
+            <button onclick="addInstructor()">
+                <i class="fa-solid fa-user-plus"></i>
+                Add Instructor
+            </button>
+
+        </div>
+
+
+        <div class="table-box">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Instructor ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Modules</th>
+                        <th>Status</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr>
+
+                        <td>INS-001</td>
+
+                        <td>Kim Reyes</td>
+
+                        <td>kim@gmail.com</td>
+
+                        <td>5</td>
+
+                        <td>
+                            <span class="status active-status">
+                                Active
+                            </span>
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>INS-002</td>
+
+                        <td>Jennifer Lopez</td>
+
+                        <td>jennifer@gmail.com</td>
+
+                        <td>4</td>
+
+                        <td>
+                            <span class="status active-status">
+                                Active
+                            </span>
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <td>INS-003</td>
+
+                        <td>Carlo Mendoza</td>
+
+                        <td>carlo@gmail.com</td>
+
+                        <td>3</td>
+
+                        <td>
+                            <span class="status active-status">
+                                Active
+                            </span>
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script src="admin.js"></script>
+
+</body>
+
+</html>

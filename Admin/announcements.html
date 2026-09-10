@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcements</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="top-bar">
+    <div class="school-info">
+        <img src="../images/mpsu-logo.png" alt="MPSU Logo">
+        <div>
+            <h2>MPSU ETEEAP LMS</h2>
+            <p>Mountain Province State University</p>
+        </div>
+    </div>
+    <a href="profile.html" class="user-info">
+        <img src="../images/profile.jpg" alt="Administrator Profile">
+        <div>
+            <strong>Administrator</strong>
+            <small>Administrator</small>
+        </div>
+        <i class="fa-solid fa-chevron-down"></i>
+    </a>
+</div>
+
+<div class="main-container">
+    <aside class="sidebar">
+        <div class="view-title">
+            <span>Admin Menu</span>
+        </div>
+        <a href="dashboard.html" class="menu">
+            <i class="fa-solid fa-house"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="users.html" class="menu">
+            <i class="fa-solid fa-users"></i>
+            <span>Users</span>
+        </a>
+        <a href="students.html" class="menu">
+            <i class="fa-solid fa-user-graduate"></i>
+            <span>Students</span>
+        </a>
+
+        <a href="instructors.html" class="menu">
+            <i class="fa-solid fa-chalkboard-user"></i>
+            <span>Instructors</span>
+        </a>
+
+        <a href="modules.html" class="menu">
+            <i class="fa-solid fa-book"></i>
+            <span>Modules</span>
+        </a>
+
+        <a href="assessments.html" class="menu ">
+            <i class="fa-solid fa-clipboard-list"></i>
+            <span>Assessments</span>
+        </a>
+
+        <a href="announcements.html" class="menu active">
+            <i class="fa-solid fa-bullhorn"></i>
+            <span>Announcements</span>
+        </a>
+
+        <a href="reports.html" class="menu">
+            <i class="fa-solid fa-chart-column"></i>
+            <span>Reports</span>
+        </a>
+
+        <a href="profile.html" class="menu">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+
+        <a href="logout.html" class="menu logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Logout</span>
+        </a>
+
+    </aside>
+
+    <main class="content">
+        <div class="announcement-header">
+            <div>
+                <h1>Announcement Management</h1>
+                <p>Create and manage announcements for students, instructors, and other users.</p>
+            </div>
+
+            <button class="create-announcement-btn"onclick="showAnnouncementForm()"><i class="fa-solid fa-plus"></i>Create Announcement</button>
+        </div>
+
+        <div class="announcement-form" id="announcementForm">
+            <h2>Create Announcement</h2>
+            <label>Announcement Title</label>
+            <input type="text"id="announcementTitle"placeholder="Enter announcement title">
+            <label>Announcement Message</label>
+            <textarea id="announcementMessage"placeholder="Enter announcement message"></textarea>
+            <label>Audience</label>
+            <select id="announcementAudience">
+                <option value="All Users">All Users</option>
+                <option value="Students">Students</option>
+                <option value="Instructors">Instructors</option>
+            </select>
+
+            <div class="form-buttons">
+                <button  class="cancel-form-btn"onclick="hideAnnouncementForm()">
+
+                    Cancel
+
+                </button>
+
+
+                <button
+                    class="publish-btn"
+                    onclick="publishAnnouncement()">
+
+                    <i class="fa-solid fa-paper-plane"></i>
+
+                    Publish
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             SEARCH
+        ========================= -->
+
+        <div class="search-bar">
+
+            <input
+                type="text"
+                id="announcementSearch"
+                placeholder="Search announcements..."
+                onkeyup="searchAnnouncements()">
+
+        </div>
+
+
+        <!-- =========================
+             ANNOUNCEMENT LIST
+        ========================= -->
+
+        <div
+            class="announcement-list"
+            id="announcementList">
+
+
+            <!-- ANNOUNCEMENT 1 -->
+
+            <div class="announcement-card">
+
+                <div class="announcement-top">
+
+                    <div class="announcement-title">
+
+                        <i class="fa-solid fa-bullhorn"></i>
+
+                        <div>
+
+                            <h2>Welcome to MPSU ETEEAP LMS</h2>
+
+                            <small>
+                                Audience: All Users
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <span class="announcement-date">
+
+                        July 20, 2026
+
+                    </span>
+
+                </div>
+
+
+                <p>
+                    Welcome to the MPSU ETEEAP Learning
+                    Management System. Please check your
+                    modules and announcements regularly.
+                </p>
+
+
+                <div class="announcement-actions">
+
+                    <button
+                        onclick="editAnnouncement(this)">
+
+                        <i class="fa-solid fa-pen"></i>
+
+                        Edit
+
+                    </button>
+
+
+                    <button
+                        class="delete-btn"
+                        onclick="deleteAnnouncement(this)">
+
+                        <i class="fa-solid fa-trash"></i>
+
+                        Delete
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- ANNOUNCEMENT 2 -->
+
+            <div class="announcement-card">
+
+                <div class="announcement-top">
+
+                    <div class="announcement-title">
+
+                        <i class="fa-solid fa-calendar"></i>
+
+                        <div>
+
+                            <h2>Portfolio Submission Reminder</h2>
+
+                            <small>
+                                Audience: Students
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <span class="announcement-date">
+
+                        July 25, 2026
+
+                    </span>
+
+                </div>
+
+
+                <p>
+                    Please complete and submit your
+                    portfolio requirements before the
+                    deadline.
+                </p>
+
+
+                <div class="announcement-actions">
+
+                    <button
+                        onclick="editAnnouncement(this)">
+
+                        <i class="fa-solid fa-pen"></i>
+
+                        Edit
+
+                    </button>
+
+
+                    <button
+                        class="delete-btn"
+                        onclick="deleteAnnouncement(this)">
+
+                        <i class="fa-solid fa-trash"></i>
+
+                        Delete
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </main>
+
+</div>
+
+
+<!-- ADMIN JAVASCRIPT -->
+
+<script src="admin.js"></script>
+
+
+</body>
+
+</html>
