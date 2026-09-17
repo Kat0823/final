@@ -11,29 +11,66 @@ body {
     min-height: 100vh;
 }
 
-
 .header {
     width: 100%;
-    min-height: 50px;
-    background: #075f36;
-    color: white;
+    height: 70px;
+    background-color: #085e33; /* Dark green shade matching the photo */
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 35px;
+    padding: 0 30px;
+    box-sizing: border-box;
 }
 
 .header-left {
     display: flex;
     align-items: center;
-    gap: 12px;
-    background: #075f36;
+    gap: 15px;
 }
 
 .header-logo {
-    width: 50px;          /* Adjust logo width */
-    height: 50px;         /* Adjust logo height */
-    object-fit: contain;  /* Prevents image distortion */
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: contain;
+}
+
+.header-titles {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.brand-title {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.brand-subtitle {
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 400;
+    margin: 2px 0 0 0;
+    opacity: 0.9;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.user-link {
+    color: #5b3fa3; /* Purple link color shown in the reference */
+    text-decoration: underline;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.user-link:hover {
+    color: #7b57d1;
 }
 
 .school-name h2 {
