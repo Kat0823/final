@@ -31,7 +31,6 @@ body {
 .header-logo {
     width: 58px;
     height: 58px;
-    object-fit: contain;
     margin-right: 15px;
 }
 
