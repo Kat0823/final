@@ -26,6 +26,8 @@ body {
 .header-left {
     display: flex;
     align-items: center;
+     width: 58px;
+    height: 58px;
 }
 
 .header-logo {
