@@ -2,54 +2,210 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"content="width=device-width, initial-scale=1.0">
-    <title>My Modules</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Course Module</title>
+
     <link rel="stylesheet" href="student.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
+
 <body>
 
 <header class="header">
+
     <div class="header-left">
         <img src="../images/logo.png" class="header-logo" alt="MPSU Logo">
+
         <div class="header-titles">
             <h1 class="brand-title">MPSU ETEEAP LMS</h1>
             <p class="brand-subtitle">Mountain Province State University</p>
         </div>
     </div>
-    
+
     <div class="header-right">
-        <a href="profile.html" class="user-link">Macross Arsel</a>
+        <a href="profile.html" class="user-link">
+            Macross Arsel
+        </a>
+        <small>Learner</small>
     </div>
+
 </header>
 
-<div class="main">
-<!-- sidebar -->
 
+<div class="main">
+
+    <!-- SIDEBAR -->
     <aside class="sidebar">
-        <div class="view">View<i class="fa-solid fa-table-columns"></i></div>
-        <a href="dashboard.html" class="menu active"><i class="fa-regular fa-folder"></i>My Courses</a>
-        <a href="grades.html" class="menu"><i class="fa-solid fa-chart-column"></i><span>Grades</span></a>
-        <a href="notification.html" class="menu"><i class="fa-regular fa-bell"></i>Notifications</a>
-        <a href="profile.html" class="menu"><i class="fa-regular fa-user"></i>Profile</a>
-        <a href="logout.html" class="menu"><i class="fa-solid fa-arrow-right-from-bracket"></i>Logout</a>
+
+        <div class="view">
+            View
+            <i class="fa-solid fa-table-columns"></i>
+        </div>
+
+        <a href="dashboard.html" class="menu active">
+            <i class="fa-solid fa-layer-group"></i>
+            My Classes
+        </a>
+
+        <a href="grades.html" class="menu">
+            <i class="fa-solid fa-award"></i>
+            Grades
+        </a>
+
+        <a href="notification.html" class="menu">
+            <i class="fa-regular fa-bell"></i>
+            Notifications
+        </a>
+
+        <a href="profile.html" class="menu">
+            <i class="fa-regular fa-user"></i>
+            Profile
+        </a>
+
+        <a href="logout.html" class="menu logout">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            Logout
+        </a>
+
     </aside>
 
-    <main class="content">
-        <h1>My Modules</h1>
-        <hr>
-        <div class="module-detail">
-            <h2>Intro to Criminal Law</h2>
-            <p>Instructor: Kim Reyes</p>
-            <p>This module introduces the basic concepts of Criminal Law and its application.</p>
-            <div class="resource-box">
-                <i class="fa-solid fa-file-pdf"></i>
-                <span>DNA Analysis.pdf</span>
-                <a href="../files/DNA Analysis.pdf" target="_blank">View / Download</a>
+
+    <!-- MAIN CONTENT -->
+    <main class="content module-page">
+
+        <!-- TITLE -->
+        <div class="module-header">
+
+            <div>
+                <h1>My Course Modules/Forensic Science Basics</h1>
+
+                <p class="course-name">
+                    Forensic Science Basics
+                </p>
+
+                <small>Criminology</small>
             </div>
 
-            <a href="submission.html" class="main-button">Submit Work</a>
+            <span class="submission-status">
+                Opened not Submitted
+            </span>
+
         </div>
+
+
+        <!-- MODULE MATERIAL -->
+        <section class="module-section">
+
+            <h2>Module Material</h2>
+
+            <div class="file-material">
+
+                <div class="file-left">
+
+                    <i class="fa-regular fa-file-lines file-icon"></i>
+
+                    <span>DNA Analysis.pdf</span>
+
+                </div>
+
+                <div class="file-actions">
+
+                    <button type="button"
+                            title="View File"
+                            onclick="viewFile()">
+                        <i class="fa-regular fa-eye"></i>
+                    </button>
+
+                    <a href="../files/DNA Analysis.pdf"
+                       download
+                       title="Download File">
+                        <i class="fa-solid fa-download"></i>
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SUBMISSION -->
+        <section class="module-section">
+
+            <h2>Your Submission</h2>
+
+            <div class="submission-box"
+                 id="dropArea">
+
+                <!-- Upload Icon -->
+                <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+
+                <p class="upload-text">
+                    Drag a File or click to Browse
+                </p>
+
+                <small>
+                    PDF, Docs up to 25 MB
+                </small>
+
+
+                <!-- Hidden File Input -->
+                <input type="file"
+                       id="fileInput"
+                       accept=".pdf,.doc,.docx"
+                       hidden>
+
+
+                <!-- Browse Button -->
+                <button type="button"
+                        class="browse-btn"
+                        onclick="document.getElementById('fileInput').click()">
+                    Browse
+                </button>
+
+
+                <!-- Selected File -->
+                <div class="selected-file"
+                     id="selectedFile">
+
+                    <i class="fa-regular fa-file"></i>
+
+                    <span id="fileName">
+                        No file selected
+                    </span>
+
+                    <button type="button"
+                            class="remove-file"
+                            onclick="removeFile()">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+
+                </div>
+
+
+                <!-- Submit -->
+                <button type="button"
+                        class="submit-btn"
+                        id="submitBtn"
+                        onclick="submitFile()"
+                        disabled>
+                    Submit
+                </button>
+
+            </div>
+
+        </section>
+
     </main>
+
 </div>
+
+
+<script src="student.js"></script>
+
 </body>
 </html>

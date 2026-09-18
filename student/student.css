@@ -1,3 +1,615 @@
+/* =========================================
+   GENERAL
+========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    color: #1e293b;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.header {
+    height: 63px;
+    background: #0d5c34;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 20px;
+
+    color: white;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.header-logo {
+    width: 43px;
+    height: 43px;
+    object-fit: contain;
+    margin-right: 12px;
+}
+
+.header-titles {
+    display: flex;
+    flex-direction: column;
+}
+
+.brand-title {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+.brand-subtitle {
+    font-size: 10px;
+    font-weight: 300;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-link {
+    color: white;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.header-right small {
+    font-size: 8px;
+    color: white;
+}
+
+
+/* =========================================
+   MAIN LAYOUT
+========================================= */
+
+.main {
+    display: flex;
+    min-height: calc(100vh - 63px);
+}
+
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.sidebar {
+    width: 147px;
+    min-height: calc(100vh - 63px);
+
+    background: #0d5c34;
+
+    display: flex;
+    flex-direction: column;
+
+    border-radius: 0 7px 7px 0;
+}
+
+.view {
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 18px;
+
+    color: white;
+    font-size: 10px;
+}
+
+.view i {
+    font-size: 15px;
+}
+
+
+/* Sidebar menu */
+
+.menu {
+    height: 39px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 0 20px;
+
+    color: white;
+    text-decoration: none;
+
+    font-size: 10px;
+}
+
+.menu i {
+    width: 17px;
+    text-align: center;
+    font-size: 16px;
+}
+
+.menu:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+
+/* Active menu */
+
+.menu.active {
+    background: #f5c842;
+    color: #222;
+
+    border-radius: 0 5px 5px 0;
+}
+
+.menu.active i {
+    color: #222;
+}
+
+
+/* Logout */
+
+.menu.logout {
+    margin-top: auto;
+    margin-bottom: 20px;
+}
+
+
+/* =========================================
+   CONTENT
+========================================= */
+
+.content {
+    flex: 1;
+
+    background: white;
+
+    padding: 25px 28px;
+
+    min-height: calc(100vh - 63px);
+}
+
+
+/* =========================================
+   MODULE HEADER
+========================================= */
+
+.module-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    margin-bottom: 22px;
+}
+
+.module-header h1 {
+    font-family: Arial, sans-serif;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    color: #111827;
+
+    margin-bottom: 6px;
+}
+
+.course-name {
+    font-family: Georgia, serif;
+
+    font-size: 16px;
+
+    color: #444;
+
+    margin-bottom: 1px;
+}
+
+.module-header small {
+    font-family: Georgia, serif;
+
+    font-size: 10px;
+
+    color: #555;
+}
+
+
+/* =========================================
+   SUBMISSION STATUS
+========================================= */
+
+.submission-status {
+    background: #f8d66d;
+
+    color: #695500;
+
+    font-size: 9px;
+
+    padding: 6px 12px;
+
+    border-radius: 15px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================
+   MODULE SECTION
+========================================= */
+
+.module-section {
+    margin-bottom: 20px;
+}
+
+.module-section h2 {
+    font-family: Georgia, serif;
+
+    font-size: 17px;
+    font-weight: normal;
+
+    color: #222;
+
+    margin-bottom: 9px;
+}
+
+
+/* =========================================
+   MODULE MATERIAL
+========================================= */
+
+.file-material {
+    width: 100%;
+
+    min-height: 44px;
+
+    background: #f5f5f5;
+
+    border: 1px solid #91b4a4;
+
+    border-radius: 5px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 13px;
+}
+
+.file-left {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    font-size: 13px;
+
+    color: #222;
+}
+
+.file-icon {
+    font-size: 27px;
+
+    color: #9b1c1c;
+}
+
+
+/* File action buttons */
+
+.file-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+}
+
+.file-actions button,
+.file-actions a {
+    border: none;
+
+    background: transparent;
+
+    color: #333;
+
+    font-size: 17px;
+
+    cursor: pointer;
+
+    text-decoration: none;
+}
+
+.file-actions button:hover,
+.file-actions a:hover {
+    color: #0d5c34;
+}
+
+
+/* =========================================
+   YOUR SUBMISSION
+========================================= */
+
+.submission-box {
+    width: 100%;
+
+    min-height: 137px;
+
+    background: #f7f7f7;
+
+    border: 1px solid #91b4a4;
+
+    border-radius: 5px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 15px;
+
+    transition: 0.2s;
+}
+
+
+/* When dragging a file */
+
+.submission-box.dragover {
+    border: 2px dashed #0d5c34;
+
+    background: #eef8f2;
+}
+
+
+/* =========================================
+   UPLOAD ICON
+========================================= */
+
+.upload-icon {
+    font-size: 29px;
+
+    color: #333;
+
+    margin-bottom: 7px;
+}
+
+
+/* =========================================
+   UPLOAD TEXT
+========================================= */
+
+.upload-text {
+    font-size: 9px;
+
+    color: #444;
+
+    margin-bottom: 2px;
+}
+
+.submission-box small {
+    font-size: 8px;
+
+    color: #555;
+}
+
+
+/* =========================================
+   BROWSE BUTTON
+========================================= */
+
+.browse-btn {
+    margin-top: 9px;
+
+    padding: 6px 15px;
+
+    border: none;
+
+    border-radius: 4px;
+
+    background: #ff9138;
+
+    color: white;
+
+    font-size: 9px;
+
+    cursor: pointer;
+}
+
+.browse-btn:hover {
+    background: #e87c25;
+}
+
+
+/* =========================================
+   SELECTED FILE
+========================================= */
+
+.selected-file {
+    display: none;
+
+    align-items: center;
+
+    gap: 8px;
+
+    width: 90%;
+
+    margin-top: 10px;
+
+    padding: 7px 10px;
+
+    background: white;
+
+    border: 1px solid #cfcfcf;
+
+    border-radius: 4px;
+
+    font-size: 10px;
+}
+
+.selected-file i {
+    color: #9b1c1c;
+
+    font-size: 15px;
+}
+
+.selected-file span {
+    flex: 1;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+/* Remove file button */
+
+.remove-file {
+    border: none;
+
+    background: transparent;
+
+    color: #777;
+
+    cursor: pointer;
+
+    font-size: 12px;
+}
+
+.remove-file:hover {
+    color: #9b1c1c;
+}
+
+
+/* =========================================
+   SUBMIT BUTTON
+========================================= */
+
+.submit-btn {
+    margin-top: 10px;
+
+    padding: 6px 20px;
+
+    border: none;
+
+    border-radius: 4px;
+
+    background: #0d5c34;
+
+    color: white;
+
+    font-size: 9px;
+
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background: #094727;
+}
+
+
+/* Disabled Submit */
+
+.submit-btn:disabled {
+    background: #aaa;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+
+    .sidebar {
+        width: 120px;
+    }
+
+    .menu {
+        padding: 0 12px;
+        gap: 8px;
+    }
+
+    .content {
+        padding: 20px;
+    }
+
+    .module-header h1 {
+        font-size: 18px;
+    }
+
+    .module-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .file-material {
+        padding: 0 10px;
+    }
+
+}
+
+@media (max-width: 500px) {
+
+    .sidebar {
+        width: 60px;
+    }
+
+    .menu {
+        justify-content: center;
+        padding: 0;
+    }
+
+    .menu span,
+    .menu {
+        font-size: 0;
+    }
+
+    .menu i {
+        font-size: 16px;
+    }
+
+    .view {
+        font-size: 0;
+        justify-content: center;
+    }
+
+    .content {
+        padding: 15px;
+    }
+
+    .module-header h1 {
+        font-size: 16px;
+    }
+
+    .course-name {
+        font-size: 14px;
+    }
+
+}
 * {
     box-sizing: border-box;
     margin: 0;
