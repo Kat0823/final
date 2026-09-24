@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="student.css">
+ </head>
+<body>
+    
+<header class="header">
+    <div class="header-left">
+        <img src="../images/logo.png" class="header-logo" alt="MPSU Logo">
+        <div class="header-titles">
+            <h1 class="brand-title">MPSU ETEEAP LMS</h1>
+            <p class="brand-subtitle">Mountain Province State University</p>
+        </div>
+    </div>
+    
+    <div class="header-right">
+        <a href="profile.html" class="user-link">Macross Arsel</a>
+    </div>
+</header>
+
+<div class="main">
+<!-- sidebar -->
+
+    <aside class="sidebar">
+        <div class="view">View<i class="fa-solid fa-table-columns"></i></div>
+        <a href="dashboard.html" class="menu active"><i class="fa-regular fa-folder"></i>Classes</a>
+        <a href="grades.html" class="menu"><i class="fa-solid fa-chart-column"></i><span>Grades</span></a>
+        <a href="notification.html" class="menu"><i class="fa-regular fa-bell"></i>Notifications</a>
+        <a href="profile.html" class="menu"><i class="fa-regular fa-user"></i>Profile</a>
+        <a href="logout.html" class="menu"><i class="fa-solid fa-arrow-right-from-bracket"></i>Logout</a>
+    </aside>
+
+    <main class="content">
+        <div class="title-row">
+            <h1>Classes</h1>
+        </div>
+        <div class="feedback">New Feedback on Intro to Computing
+            <button onclick="dismissFeedback()">Dismiss</button>
+        </div>
+
+        <hr>
+
+        <div class="courses">
+            <a href="courses.html" class="course-card">
+                <h3>Intro to Criminal Law</h3>
+                <p>Kim Reyes</p>
+            </a>
+
+            <a href="courses.html" class="course-card">
+                <h3>Forensic Science Basics</h3>
+                <p>Jennifer Lopez</p>
+            </a>
+
+            <a href="courses.html" class="course-card">
+                <h3>Criminal Law Fundamental</h3>
+                <p>Patricia Flores</p>
+            </a>
+
+        </div>
+
+
+    </main>
+</div>
+<script src="student.js"></script>
+</body>
+</html>

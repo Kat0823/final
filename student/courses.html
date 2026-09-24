@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="student.css">
+ </head>
+<body>
+    
+<header class="header">
+    <div class="header-left">
+        <img src="../images/logo.png" class="header-logo" alt="MPSU Logo">
+        <div class="header-titles">
+            <h1 class="brand-title">MPSU ETEEAP LMS</h1>
+            <p class="brand-subtitle">Mountain Province State University</p>
+        </div>
+    </div>
+    
+    <div class="header-right">
+        <a href="profile.html" class="user-link">Macross Arsel</a>
+    </div>
+</header>
+
+<div class="main">
+<!-- sidebar -->
+
+    <aside class="sidebar">
+        <div class="view">View<i class="fa-solid fa-table-columns"></i></div>
+        <a href="dashboard.html" class="menu active"><i class="fa-regular fa-folder"></i>My Courses</a>
+        <a href="grades.html" class="menu"><i class="fa-solid fa-chart-column"></i><span>Grades</span></a>
+        <a href="notification.html" class="menu"><i class="fa-regular fa-bell"></i>Notifications</a>
+        <a href="profile.html" class="menu"><i class="fa-regular fa-user"></i>Profile</a>
+        <a href="logout.html" class="menu"><i class="fa-solid fa-arrow-right-from-bracket"></i>Logout</a>
+    </aside>
+
+    <main class="content">
+        <div class="title-row">
+            <h1>My Course Modules</h1>
+            <div class="module-count">8/9</div>
+        </div>
+        <div class="feedback">New Feedback on Intro to Computing
+            <button onclick="dismissFeedback()">Dismiss</button>
+        </div>
+
+        <hr>
+
+        <div class="courses">
+            <a href="modules.html" class="course-card">
+                <h3>Intro to Criminal Law</h3>
+                <p>Kim Reyes</p>
+            </a>
+
+            <a href="modules.html" class="course-card">
+                <h3>Forensic Science Basics</h3>
+                <p>Jennifer Lopez</p>
+            </a>
+
+            <a href="modules.html" class="course-card">
+                <h3>Criminal Law Fundamental</h3>
+                <p>Patricia Flores</p>
+            </a>
+
+            <a href="modules.html" class="course-card">
+                <h3>Understanding the Self</h3>
+                <p>Carlo Mendoza</p>
+            </a>
+
+            <a href="modules.html" class="course-card">
+                <h3>Mathematics in the Modern World</h3>
+                <p>Mark Ramos</p>
+            </a>
+
+            <a href="modules.html" class="course-card">
+                <h3>Physical Education</h3>
+                <p>Kenneth Aquino</p>
+            </a>
+        </div>
+
+        <h2 class="section-title">
+            Submitted - Awaiting Grade
+        </h2>
+        <hr>
+
+        <div class="submitted">
+            <a href="grades.html" class="course-card">
+                <h3>Understanding the Self</h3>
+                <p>Carlo Mendoza</p>
+            </a>
+
+            <a href="grades.html" class="course-card">
+                <h3>Physical Education</h3>
+                <p>Kenneth Aquino</p>
+            </a>
+        </div>
+
+        <div class="completed-section">
+            <div class="completed" onclick="showCompleted()">
+                <span>
+                    <i id="completedIcon"class="fa-solid fa-caret-down"></i>Completed</span>
+                <strong>1 Module</strong>
+            </div>
+
+            <a href="../files/DNA Analysis.pdf" class="completed-file" id="completedFile">DNA Analysis.pdf</a>
+        </div>
+    </main>
+</div>
+<script src="student.js"></script>
+</body>
+</html>
