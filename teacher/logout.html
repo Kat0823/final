@@ -1,61 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instructor Dashboard - MPSU ETEEAP LMS</title>
-    <link rel="stylesheet" href="teacher.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MPSU ETEEAP LMS - Instructor Logout</title>
+  <!-- Google Fonts: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Link external CSS -->
+  <link rel="stylesheet" href="logout.css" />
 </head>
 <body>
-<div class="top-bar">
-    <div class="school-info">
-        <img src="../images/logo.png">
-        <div>
-            <h2>MPSU ETEEAP LMS</h2>
-            <p>Mountain Province State University</p>
-        </div>
-    </div>
-      <a href="profile.html" class="user">
-        <div class="user-picture">
-            <i class="fa-solid fa-user"></i>
-        </div>
-        <div>
-            <b>Instructor Bev</b>
-        </div>
-    </a>   
-</div>
 
-<div class="main-container">
-
-<!-- sidebar -->
-    <div class="sidebar">
-        <div class="view-title"><p>View</p><i class="fa-solid fa-table-columns"></i></div>
-        <a href="dashboard.html" class="menu"><i class="fa-solid fa-house"></i><p>Dashboard</p></a>
-        <a href="modules.html" class="menu"><i class="fa-solid fa-folder-open"></i><p>My Modules</p></a>
-        <a href="assessments.html" class="menu"><i class="fa-solid fa-clipboard-list"></i><p>Assessments</p></a>
-        <a href="grades.html" class="menu"><i class="fa-solid fa-chart-line"></i><p>Grades</p></a>
-        <a href="announcements.html" class="menu"><i class="fa-solid fa-bullhorn"></i><p>Announcements</p></a>
-        <a href="profile.html" class="menu"><i class="fa-solid fa-user"></i><p>Profile</p></a>
-        <a href="logout.html" class="menu logout active"><i class="fa-solid fa-right-from-bracket"></i><p>Logout</p></a>
+  <!-- Top Header Navigation -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo-box">
+        <i class="fa-solid fa-graduation-cap"></i>
+      </div>
+      <div class="header-titles">
+        <div class="main-title">MPSU ETEEAP LMS</div>
+        <div class="sub-title">Mountain Province State University</div>
+      </div>
     </div>
 
+    <div class="header-right">
+      <button class="icon-btn" title="Notifications">
+        <i class="fa-regular fa-bell"></i>
+      </button>
 
-    <main class="content logout-content">
-        <div class="logout-box">
-            <div class="logout-icon">
-                <i class="fa-solid fa-right-from-bracket"></i>
-            </div>
-            <h1>Are you sure?</h1>
-            <p>Do you really want to logout from your Instructor account?</p>
-            <div class="logout-buttons">
-                <button class="cancel-btn" onclick="window.location.href='dashboard.html'">Cancel</button>
-
-                <button class="confirm-logout-btn" onclick="confirmLogout()">Yes, Logout</button>
-            </div>
+      <div class="user-profile">
+        <div class="avatar-ring">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Macross Arsel Avatar" />
         </div>
+        <div class="user-info">
+          <span class="user-name">Macross Arsel <i class="fa-solid fa-caret-down"></i></span>
+          <span class="user-role">Administrator</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Body Layout -->
+  <div class="app-body">
+
+    <!-- Deep Maroon Sidebar -->
+    <aside class="sidebar">
+      <div class="view-header">
+        <span class="view-label">View</span>
+        <button class="view-toggle-btn" title="Toggle Layout">
+          <i class="fa-regular fa-rectangle-list"></i>
+        </button>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="#" class="nav-item user-item">
+          <div class="avatar-small">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Macros Avatar" />
+          </div>
+          <span>Macros</span>
+        </a>
+
+        <a href="dashboard.html" class="nav-item">
+          <i class="fa-solid fa-users"></i>
+          <span>Learners Progress</span>
+        </a>
+
+        <a href="class.html" class="nav-item">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>Classes</span>
+        </a>
+
+        <a href="submissions.html" class="nav-item">
+          <i class="fa-regular fa-folder"></i>
+          <span>Submission</span>
+        </a>
+
+        <a href="notification.html" class="nav-item">
+          <i class="fa-regular fa-bell"></i>
+          <span>Notifications</span>
+        </a>
+
+        <!-- Highlighted Logout Item Pushed To Bottom -->
+        <a href="logout.html" class="nav-item active-logout logout-bottom" id="logoutNavItem">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Content Workspace -->
+    <main class="main-content">
+      <!-- Confirmation Modal Box -->
+      <div class="confirmation-box" id="confirmModal">
+        <div class="box-header">Confirmation Box</div>
+        <div class="box-body">
+          Are you sure you want to logout?
+        </div>
+        <div class="box-actions">
+          <button class="btn btn-no" id="btnNo">No</button>
+          <button class="btn btn-yes" id="btnYes">Yes</button>
+        </div>
+      </div>
     </main>
-</div>
-<script src="teacher.js"></script>
 
+  </div>
+
+  <script>
+    document.getElementById('btnNo').addEventListener('click', () => {
+      alert('Logout cancelled.');
+    });
+
+    document.getElementById('btnYes').addEventListener('click', () => {
+      alert('Logging out...');
+      window.location.reload();
+    });
+  </script>
 </body>
 </html>
