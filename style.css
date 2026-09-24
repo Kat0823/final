@@ -730,3 +730,169 @@ MOBILE RESPONSIVE DESIGN
     font-size: 18px;
   }
 }
+
+
+/* =========================
+   GENERAL
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+}
+
+
+/* =========================
+   PAGE TITLE
+========================= */
+
+.page-title {
+    color: #1683d8;
+    font-size: 16px;
+
+    padding: 15px 28px 8px;
+
+    font-weight: 500;
+}
+
+
+/* =========================
+   GREEN BACKGROUND
+========================= */
+
+.terms-background {
+    min-height: calc(100vh - 48px);
+
+    background: #24734f;
+
+    border: 2px solid #1683d8;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 40px 20px;
+}
+
+
+/* =========================
+   TERMS CARD
+========================= */
+
+.terms-card {
+    width: 570px;
+    max-width: 95%;
+
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 38px 54px;
+
+    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.18);
+}
+
+
+/* =========================
+   HEADING
+========================= */
+
+.terms-heading {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 25px;
+}
+
+.terms-heading h1 {
+    margin: 0;
+
+    color: #176d45;
+
+    font-size: 28px;
+
+    text-decoration: underline;
+
+    font-weight: bold;
+}
+
+
+/* =========================
+   BACK BUTTON
+========================= */
+
+.back-button {
+    text-decoration: none;
+
+    color: #222;
+
+    font-size: 36px;
+
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+
+    cursor: pointer;
+}
+
+.back-button:hover {
+    color: #176d45;
+}
+
+.back-button i {
+    font-style: normal;
+}
+
+
+/* =========================
+   CONTENT
+========================= */
+
+.terms-content {
+    color: #222;
+
+    font-size: 16px;
+
+    line-height: 1.5;
+}
+
+.terms-content p {
+    margin: 0 0 25px;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 600px) {
+
+    .terms-background {
+        padding: 25px 15px;
+    }
+
+    .terms-card {
+        padding: 28px 25px;
+    }
+
+    .terms-heading h1 {
+        font-size: 23px;
+    }
+
+    .back-button {
+        font-size: 30px;
+    }
+
+    .terms-content {
+        font-size: 15px;
+    }
+
+}
