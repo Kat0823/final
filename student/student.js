@@ -391,3 +391,130 @@ function logoutUser() {
     window.location.href = "../index.html";
 
 }
+const fileInput = document.getElementById("fileInput");
+const browseBtn = document.getElementById("browseBtn");
+const selectedFile = document.getElementById("selectedFile");
+const fileName = document.getElementById("fileName");
+const removeFile = document.getElementById("removeFile");
+const submitBtn = document.getElementById("submitBtn");
+
+let attachedFile = null;
+
+
+// ============================
+// BROWSE
+// ============================
+
+browseBtn.addEventListener("click", function () {
+    fileInput.click();
+});
+
+
+// ============================
+// FILE SELECTED
+// ============================
+
+fileInput.addEventListener("change", function () {
+
+    if (fileInput.files.length === 0) {
+        return;
+    }
+
+    const file = fileInput.files[0];
+
+    // Allowed extensions
+    const allowedExtensions = ["pdf", "doc", "docx"];
+
+    const extension = file.name
+        .split(".")
+        .pop()
+        .toLowerCase();
+
+    // Check file type
+    if (!allowedExtensions.includes(extension)) {
+
+        alert("Please attach only PDF, DOC, or DOCX files.");
+
+        fileInput.value = "";
+        return;
+    }
+
+
+    // Check file size (25 MB)
+    if (file.size > 25 * 1024 * 1024) {
+
+        alert("The file must not exceed 25 MB.");
+
+        fileInput.value = "";
+        return;
+    }
+
+
+    // Save selected file
+    attachedFile = file;
+
+
+    // Show file name
+    fileName.textContent = file.name;
+
+    selectedFile.style.display = "flex";
+
+
+    // Enable submit
+    submitBtn.disabled = false;
+
+    console.log("File attached:", file.name);
+});
+
+
+// ============================
+// REMOVE FILE
+// ============================
+
+removeFile.addEventListener("click", function () {
+
+    attachedFile = null;
+
+    fileInput.value = "";
+
+    fileName.textContent = "No file selected";
+
+    selectedFile.style.display = "none";
+
+    submitBtn.disabled = true;
+});
+
+
+// ============================
+// SUBMIT FILE
+// ============================
+
+submitBtn.addEventListener("click", function () {
+
+    if (!attachedFile) {
+
+        alert("Please attach a file first.");
+
+        return;
+    }
+
+
+    alert(
+        "File attached successfully!\n\n" +
+        "File: " + attachedFile.name
+    );
+
+
+    // Change status
+    const status = document.querySelector(".submission-status");
+
+    if (status) {
+        status.textContent = "Submitted";
+    }
+
+
+    // Disable submit after submission
+    submitBtn.textContent = "Submitted";
+    submitBtn.disabled = true;
+
+});
