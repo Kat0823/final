@@ -1303,5 +1303,654 @@ grid-template-columns:1fr;
     .content {
         padding: 15px;
     }
+/* =========================
+   GENERAL
+========================= */
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4fbf8;
+    color: #1e293b;
+}
+
+.app {
+    min-height: 100vh;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.top-header {
+    height: 70px;
+    background: #0d6337;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px 0 35px;
+    color: white;
+}
+
+
+/* Logo */
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.brand img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.brand-text span {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.brand-text small {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+
+/* Header Right */
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+
+/* Notification */
+
+.notification-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+
+/* Profile */
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.profile img {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.profile-info span {
+    font-size: 14px;
+}
+
+.profile-info small {
+    font-size: 10px;
+}
+
+.profile > i {
+    font-size: 12px;
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 70px;
+    width: 188px;
+    height: calc(100vh - 70px);
+
+    background: #680d0d;
+    color: white;
+
+    padding: 20px 15px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* Sidebar Title */
+
+.sidebar-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 10px 10px 12px;
+
+    font-size: 13px;
+}
+
+.sidebar-toggle {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 21px;
+    cursor: pointer;
+}
+
+
+/* Sidebar User */
+
+.sidebar-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 8px 10px 25px;
+}
+
+.sidebar-user img {
+    width: 38px;
+    height: 38px;
+
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.sidebar-user span {
+    font-size: 17px;
+}
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nav-item {
+    height: 45px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 0 10px;
+
+    color: white;
+    text-decoration: none;
+
+    border-radius: 6px;
+
+    transition: 0.2s;
+}
+
+.nav-item i {
+    width: 20px;
+    text-align: center;
+    font-size: 21px;
+}
+
+.nav-item span {
+    font-size: 14px;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.nav-item.active {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+
+/* Logout */
+
+.logout {
+    margin-top: auto;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 15px 10px;
+
+    color: white;
+    text-decoration: none;
+
+    font-size: 14px;
+}
+
+.logout i {
+    font-size: 21px;
+}
+
+.logout:hover {
+    opacity: 0.8;
+}
+
+
+/* =========================
+   MAIN CONTENT
+========================= */
+
+.main-content {
+    margin-left: 188px;
+
+    min-height: calc(100vh - 70px);
+
+    background: #f3fcf8;
+
+    padding: 37px 28px;
+}
+
+.content-container {
+    max-width: 100%;
+}
+
+
+/* Page Title */
+
+h1 {
+    margin-left: 2px;
+    margin-bottom: 18px;
+
+    font-size: 21px;
+    font-weight: 700;
+
+    color: #111827;
+}
+
+
+/* =========================
+   FILTER / SEARCH
+========================= */
+
+.filter-area {
+    display: flex;
+    align-items: flex-end;
+
+    margin-bottom: 18px;
+
+    height: 43px;
+}
+
+
+/* Search button */
+
+.search-icon {
+    width: 30px;
+    height: 28px;
+
+    background: white;
+
+    border: 1px solid #d3d8d6;
+    border-radius: 4px 0 0 4px;
+
+    color: #111;
+
+    cursor: pointer;
+
+    font-size: 15px;
+}
+
+
+/* Dropdown */
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-label {
+    position: absolute;
+
+    top: -10px;
+    left: 4px;
+
+    font-size: 6px;
+
+    color: #777;
+}
+
+.dropdown select {
+    width: 137px;
+    height: 28px;
+
+    border: 1px solid #d3d8d6;
+    border-left: none;
+
+    border-radius: 0 3px 3px 0;
+
+    background: white;
+
+    padding: 0 8px;
+
+    font-size: 8px;
+
+    color: #777;
+
+    outline: none;
+}
+
+
+/* =========================
+   TABLE
+========================= */
+
+.table-wrapper {
+    width: 100%;
+
+    background: white;
+
+    border: 1px solid #858585;
+
+    border-radius: 7px;
+
+    overflow: hidden;
+}
+
+table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    table-layout: fixed;
+}
+
+
+/* Header */
+
+thead th {
+    height: 33px;
+
+    background: white;
+
+    border-bottom: 1px solid #777;
+
+    color: #111;
+
+    text-align: left;
+
+    padding: 0 7px;
+
+    font-size: 10px;
+
+    font-weight: 500;
+}
+
+
+/* Body */
+
+tbody td {
+    height: 34px;
+
+    padding: 0 7px;
+
+    border-bottom: 1px solid #bdbdbd;
+
+    color: #111;
+
+    font-size: 8px;
+
+    vertical-align: middle;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* Column widths */
+
+th:nth-child(1),
+td:nth-child(1) {
+    width: 12%;
+}
+
+th:nth-child(2),
+td:nth-child(2) {
+    width: 14%;
+}
+
+th:nth-child(3),
+td:nth-child(3) {
+    width: 14%;
+}
+
+th:nth-child(4),
+td:nth-child(4) {
+    width: 17%;
+}
+
+th:nth-child(5),
+td:nth-child(5) {
+    width: 18%;
+}
+
+th:nth-child(6),
+td:nth-child(6) {
+    width: 12%;
+}
+
+th:nth-child(7),
+td:nth-child(7) {
+    width: 13%;
+}
+
+
+/* =========================
+   PROGRESS BAR
+========================= */
+
+.progress-cell {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    width: 100%;
+}
+
+.progress-bar {
+    width: 58px;
+    height: 5px;
+
+    background: #b7b7b7;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+}
+
+.progress-bar span {
+    display: block;
+
+    height: 100%;
+
+    background: #08713e;
+
+    border-radius: 10px;
+}
+
+.progress-bar.completed span {
+    background: #08713e;
+}
+
+.progress-empty {
+    width: 58px;
+    height: 1px;
+
+    background: #888;
+}
+
+.percentage {
+    font-size: 7px;
+
+    min-width: 25px;
+}
+
+
+/* =========================
+   STATUS BADGES
+========================= */
+
+.status {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 3px 7px;
+
+    border-radius: 10px;
+
+    font-size: 7px;
+
+    white-space: nowrap;
+}
+
+
+/* Active */
+
+.active-status {
+    background: #b9f5d5;
+    color: #08713e;
+}
+
+
+/* Pending */
+
+.pending-status {
+    background: #fff58c;
+    color: #9b8c00;
+}
+
+
+/* Completed */
+
+.completed-status {
+    background: #8bd8ff;
+    color: #0075a8;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+
+    .sidebar {
+        width: 160px;
+    }
+
+    .main-content {
+        margin-left: 160px;
+        padding: 25px 15px;
+    }
+
+    .brand-text small {
+        display: none;
+    }
+
+    table {
+        min-width: 750px;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .top-header {
+        padding: 0 15px;
+    }
+
+    .brand img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .brand-text span {
+        font-size: 12px;
+    }
+
+    .header-right {
+        gap: 10px;
+    }
+
+    .profile-info {
+        display: none;
+    }
+
+    .sidebar {
+        width: 65px;
+        padding: 15px 8px;
+    }
+
+    .sidebar-title span,
+    .sidebar-user span,
+    .nav-item span,
+    .logout span {
+        display: none;
+    }
+
+    .sidebar-title {
+        justify-content: center;
+    }
+
+    .sidebar-user {
+        justify-content: center;
+    }
+
+    .nav-item {
+        justify-content: center;
+    }
+
+    .logout {
+        justify-content: center;
+    }
+
+    .main-content {
+        margin-left: 65px;
+    }
+
+}
 }
