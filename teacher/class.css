@@ -1,650 +1,363 @@
-/* =========================================
-   RESET
-========================================= */
-
+/* Reset and Base Styles */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f3fcf8;
-    color: #1e293b;
+  background-color: #f0fdf4; /* Light green tint background */
+  color: #333333;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.app {
-    min-height: 100vh;
+/* 1. Header Styling */
+.header {
+  height: 64px;
+  background-color: #0a522d; /* Forest Green */
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10;
 }
 
-
-/* =========================================
-   HEADER
-========================================= */
-
-.top-header {
-    height: 70px;
-    background: #0d6337;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 0 28px 0 35px;
-
-    color: white;
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 14px;
+.logo-box {
+  width: 42px;
+  height: 42px;
+  background-color: #ca8a04;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #ffffff;
+  border: 2px solid #ffffff;
 }
 
-.brand img {
-    width: 48px;
-    height: 48px;
-    object-fit: contain;
+.header-titles .main-title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
 }
 
-.brand-text {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.2;
+.header-titles .sub-title {
+  font-size: 12px;
+  opacity: 0.85;
+  font-weight: 300;
 }
-
-.brand-text span {
-    font-size: 15px;
-    font-weight: 500;
-}
-
-.brand-text small {
-    font-size: 14px;
-    font-weight: 400;
-}
-
-
-/* =========================================
-   HEADER RIGHT
-========================================= */
 
 .header-right {
-    display: flex;
-    align-items: center;
-    gap: 22px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
-.notification-btn {
-    border: none;
-    background: transparent;
-    color: white;
-
-    font-size: 25px;
-
-    cursor: pointer;
+.icon-btn {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 20px;
+  cursor: pointer;
+  transition: opacity 0.2s;
 }
 
-.profile {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-
-    cursor: pointer;
+.icon-btn:hover {
+  opacity: 0.8;
 }
 
-.profile img {
-    width: 40px;
-    height: 40px;
-
-    object-fit: cover;
-    border-radius: 50%;
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
 }
 
-.profile-info {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.2;
+.avatar-ring {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #ffffff;
 }
 
-.profile-info span {
-    font-size: 14px;
+.avatar-ring img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.profile-info small {
-    font-size: 9px;
+.user-info {
+  display: flex;
+  flex-direction: column;
 }
 
-.profile > i {
-    font-size: 11px;
+.user-name {
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
+.user-role {
+  font-size: 10px;
+  opacity: 0.75;
+}
 
-/* =========================================
-   SIDEBAR
-========================================= */
+/* 2. Main Body Layout */
+.app-body {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 64px);
+}
 
+/* 3. Deep Maroon Sidebar */
 .sidebar {
-    position: fixed;
-
-    top: 70px;
-    left: 0;
-
-    width: 177px;
-    height: calc(100vh - 70px);
-
-    background: #680d0d;
-
-    color: white;
-
-    padding: 18px 12px;
-
-    display: flex;
-    flex-direction: column;
+  width: 250px;
+  background-color: #500b13; /* Deep Maroon */
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  gap: 24px;
+  flex-shrink: 0;
 }
 
-.sidebar-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 0 10px 10px 12px;
-
-    font-size: 13px;
+.view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 8px;
 }
 
-.sidebar-toggle {
-    border: none;
-    background: transparent;
-
-    color: white;
-
-    font-size: 20px;
-
-    cursor: pointer;
+.view-label {
+  font-size: 14px;
+  font-weight: 400;
+  opacity: 0.9;
 }
 
-.sidebar-user {
-    display: flex;
-    align-items: center;
-
-    gap: 9px;
-
-    padding: 7px 10px 24px;
+.view-toggle-btn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 18px;
+  cursor: pointer;
 }
 
-.sidebar-user img {
-    width: 38px;
-    height: 38px;
-
-    object-fit: cover;
-
-    border-radius: 50%;
-}
-
-.sidebar-user span {
-    font-size: 17px;
-}
-
-
-/* =========================================
-   NAVIGATION
-========================================= */
-
-.sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
+.nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
 }
 
 .nav-item {
-    height: 43px;
-
-    display: flex;
-    align-items: center;
-
-    gap: 11px;
-
-    padding: 0 10px;
-
-    color: white;
-
-    text-decoration: none;
-
-    border-radius: 5px;
-
-    transition: 0.2s;
-}
-
-.nav-item i {
-    width: 20px;
-
-    text-align: center;
-
-    font-size: 20px;
-}
-
-.nav-item span {
-    font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 400;
+  transition: background 0.2s;
 }
 
 .nav-item:hover {
-    background: rgba(255, 255, 255, 0.08);
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 .nav-item.active {
-    background: rgba(255, 255, 255, 0.06);
+   background-color: #ca8a04 !important;
+  color: #1a0306 !important;
+  font-weight: 600;
+  border: 1px solid #eab308;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-
-/* =========================================
-   LOGOUT
-========================================= */
-
-.logout {
-    margin-top: auto;
-
-    display: flex;
-    align-items: center;
-
-    gap: 11px;
-
-    padding: 14px 10px;
-
-    color: white;
-
-    text-decoration: none;
-
-    font-size: 14px;
+.nav-item i {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
 }
 
-.logout i {
-    font-size: 20px;
+.avatar-small {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
 }
 
-.logout:hover {
-    opacity: 0.8;
+.avatar-small img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
+.user-item {
+  margin-bottom: 8px;
+}
 
-/* =========================================
-   MAIN CONTENT
-========================================= */
+.logout-bottom {
+  margin-top: auto;
+}
 
+/* 4. Content Area */
 .main-content {
-    margin-left: 177px;
-
-    min-height: calc(100vh - 70px);
-
-    background: #f3fcf8;
-
-    padding: 35px 25px;
+  flex: 1;
+  padding: 32px 40px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.content-container {
-    width: 100%;
+.page-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #000000;
 }
 
-
-/* =========================================
-   CLASSES TITLE
-========================================= */
-
-h1 {
-    font-size: 26px;
-
-    color: #111827;
-
-    margin: 0 0 18px 0;
-
-    font-weight: 700;
+/* 5. Controls Row */
+.controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-
-/* =========================================
-   TOOLBAR
-========================================= */
-
-.toolbar {
-    height: 45px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    margin-bottom: 0;
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background-color: #ffffff;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-
-/* =========================================
-   SEARCH BAR
-========================================= */
-
-.search-container {
-    display: flex;
-    align-items: center;
-
-    height: 38px;
+.search-icon-box {
+  padding: 10px 14px;
+  color: #6b7280;
+  font-size: 16px;
+  border-right: 1px solid #e5e7eb;
 }
 
-
-/* Search Icon Button */
-
-.search-button {
-    width: 42px;
-    height: 38px;
-
-    border: 1px solid #c5cfca;
-
-    border-radius: 5px 0 0 5px;
-
-    background: white;
-
-    color: #111;
-
-    cursor: pointer;
-
-    font-size: 17px;
+.dropdown-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 12px;
+  width: 180px;
 }
 
-
-/* Search Dropdown */
-
-.search-select {
-    width: 180px;
-    height: 38px;
-
-    border: 1px solid #c5cfca;
-
-    border-left: none;
-
-    border-radius: 0 5px 5px 0;
-
-    background: white;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 0 12px;
-
-    color: #777;
-
-    font-size: 12px;
+.dropdown-label {
+  font-size: 9px;
+  color: #9ca3af;
+  text-transform: lowercase;
+  line-height: 1;
 }
 
-.search-select i {
-    font-size: 10px;
+.input-with-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
+.input-with-arrow input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 13px;
+  color: #374151;
+  background: transparent;
+}
 
-/* =========================================
-   ADD CLASS BUTTON
-========================================= */
+.arrow-icon {
+  font-size: 10px;
+  color: #9ca3af;
+  margin-left: 6px;
+}
 
+/* Green Square Plus Button */
 .add-class-btn {
-    width: 38px;
-    height: 38px;
-
-    margin-right: 2px;
-
-    border: 3px solid #08713e;
-
-    border-radius: 9px;
-
-    background: white;
-
-    color: #08713e;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 21px;
-
-    cursor: pointer;
-
-    transition: 0.2s;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  border: 2px solid #0a522d;
+  background-color: #ffffff;
+  color: #0a522d;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 .add-class-btn:hover {
-    background: #08713e;
-    color: white;
+  background-color: #0a522d;
+  color: #ffffff;
 }
 
-
-/* =========================================
-   CLASSES CONTAINER
-========================================= */
-
-.classes-container {
-
-    border-top: 1px solid #8c8c8c;
-
-    margin-left: -25px;
-    margin-right: -25px;
-
-    min-height: 400px;
-
-    padding: 22px 30px;
-
-    display: grid;
-
-    /* THREE CARDS PER ROW */
-    grid-template-columns: repeat(3, 1fr);
-
-    gap: 20px;
-
-    align-content: start;
-
-    background: white;
+/* 6. Classes Grid & Main Container Card */
+.classes-card-container {
+  background-color: #ffffff;
+  border: 1px solid #9ca3af;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  min-height: 480px;
 }
 
+.classes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
 
-/* =========================================
-   CLASS CARD
-========================================= */
-
+/* Individual Class Card Styling */
 .class-card {
-
-    width: 100%;
-
-    height: 125px;
-
-    background: white;
-
-    border: 1.5px solid #08713e;
-
-    border-radius: 8px;
-
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
-
-    position: relative;
-
-    padding: 17px 18px;
-
-    cursor: pointer;
-
-    transition: 0.2s;
+  border: 2px solid #0a522d; /* Forest Green Border */
+  border-radius: 12px;
+  padding: 20px 24px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 110px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .class-card:hover {
-
-    transform: translateY(-2px);
-
-    box-shadow: 0 5px 9px rgba(0, 0, 0, 0.18);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.15);
 }
 
-
-/* =========================================
-   CLASS NAME
-========================================= */
-
-.class-name {
-
-    font-size: 16px;
-
-    line-height: 1.3;
-
-    font-weight: 500;
-
-    color: #111;
-
-    padding-right: 8px;
+.class-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1.3;
 }
 
-
-/* =========================================
-   STUDENT COUNT
-========================================= */
-
-.student-count {
-
-    position: absolute;
-
-    right: 15px;
-    bottom: 12px;
-
-    font-size: 10px;
-
-    color: #666;
-}
-
-
-/* =========================================
-   TABLET
-========================================= */
-
-@media (max-width: 900px) {
-
-    .sidebar {
-        width: 160px;
-    }
-
-    .main-content {
-        margin-left: 160px;
-    }
-
-    .classes-container {
-
-        grid-template-columns: repeat(3, 1fr);
-
-        gap: 14px;
-
-        padding: 20px;
-    }
-
-    .class-card {
-        height: 115px;
-    }
-
-    .class-name {
-        font-size: 14px;
-    }
-}
-
-
-/* =========================================
-   SMALL SCREEN
-========================================= */
-
-@media (max-width: 700px) {
-
-    .classes-container {
-
-        grid-template-columns: repeat(2, 1fr);
-
-        gap: 14px;
-    }
-
-    .class-card {
-        height: 110px;
-    }
-
-    .class-name {
-        font-size: 13px;
-    }
-}
-
-
-/* =========================================
-   MOBILE
-========================================= */
-
-@media (max-width: 600px) {
-
-    .sidebar {
-        width: 65px;
-        padding: 15px 7px;
-    }
-
-    .sidebar-title span,
-    .sidebar-user span,
-    .nav-item span,
-    .logout span {
-        display: none;
-    }
-
-    .sidebar-title {
-        justify-content: center;
-    }
-
-    .sidebar-user {
-        justify-content: center;
-    }
-
-    .nav-item {
-        justify-content: center;
-    }
-
-    .logout {
-        justify-content: center;
-    }
-
-    .main-content {
-        margin-left: 65px;
-        padding: 25px 15px;
-    }
-
-    h1 {
-        font-size: 23px;
-    }
-
-    .search-container {
-        height: 35px;
-    }
-
-    .search-button {
-        width: 38px;
-        height: 35px;
-    }
-
-    .search-select {
-        width: 150px;
-        height: 35px;
-    }
-
-    .classes-container {
-
-        margin-left: -15px;
-        margin-right: -15px;
-
-        padding: 18px;
-
-        grid-template-columns: repeat(2, 1fr);
-
-        gap: 12px;
-    }
-
-    .class-card {
-        height: 105px;
-    }
-
-    .class-name {
-        font-size: 12px;
-    }
-
-    .profile-info {
-        display: none;
-    }
+.class-students {
+  font-size: 12px;
+  color: #6b7280;
+  text-align: right;
+  margin-top: 12px;
 }
