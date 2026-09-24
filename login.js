@@ -9,7 +9,7 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
 
     // STUDENT
     if (userId === "26-00123" && password === "student123") {
-        window.location.href = "student/dashboard.html";
+        window.location.href = "student/classes.html";
 
     }
 
