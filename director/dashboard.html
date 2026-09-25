@@ -1,204 +1,1780 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dashboard</title>
-    <link rel="stylesheet" href="director.css">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Director Dashboard - MPSU ETEEAP LMS</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+
+    <style>
+
+        /* =====================================
+           GENERAL
+        ===================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+
+        body {
+            background: #f1f1f1;
+            color: #222;
+            min-height: 100vh;
+        }
+
+
+        /* =====================================
+           HEADER
+        ===================================== */
+
+        .header {
+            height: 108px;
+
+            background: maroon;
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 42px 0 48px;
+
+            position: fixed;
+
+            top: 12px;
+            left: 5px;
+            right: 5px;
+
+            border-radius: 8px 8px 0 0;
+
+            z-index: 1000;
+        }
+
+
+        /* =====================================
+           HEADER LOGO
+        ===================================== */
+
+        .header-left {
+            display: flex;
+
+            align-items: center;
+
+            gap: 18px;
+        }
+
+
+        .header-logo {
+            width: 68px;
+
+            height: 68px;
+
+            object-fit: contain;
+        }
+
+
+        .header-title h1 {
+            font-size: 28px;
+
+            font-weight: bold;
+
+            margin-bottom: 5px;
+        }
+
+
+        .header-title p {
+            font-size: 16px;
+
+            font-weight: normal;
+        }
+
+
+        /* =====================================
+           HEADER PROFILE
+        ===================================== */
+
+        .header-profile {
+            color: white;
+
+            font-size: 17px;
+
+            text-decoration: underline;
+
+            cursor: pointer;
+        }
+
+
+        .header-profile:hover {
+            color: #ffd54f;
+        }
+
+
+        /* =====================================
+           SIDEBAR
+        ===================================== */
+
+        .sidebar {
+            position: fixed;
+
+            left: 5px;
+
+            top: 120px;
+
+            bottom: 5px;
+
+            width: 313px;
+
+            background: maroon;
+
+            color: white;
+
+            border-radius: 0 0 8px 8px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            z-index: 900;
+        }
+
+
+        /* =====================================
+           SIDEBAR VIEW TITLE
+        ===================================== */
+
+        .sidebar-title {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 36px 42px 25px 42px;
+        }
+
+
+        .sidebar-title span {
+            font-size: 23px;
+
+            font-weight: bold;
+        }
+
+
+        .sidebar-title i {
+            font-size: 23px;
+        }
+
+
+        /* =====================================
+           SIDEBAR MENU
+        ===================================== */
+
+        .sidebar-menu {
+            padding: 0 14px;
+        }
+
+
+        .sidebar-menu a {
+            display: flex;
+
+            align-items: center;
+
+            gap: 24px;
+
+            width: 100%;
+
+            padding: 16px 30px;
+
+            margin-bottom: 7px;
+
+            color: white;
+
+            text-decoration: none;
+
+            font-size: 20px;
+
+            border-radius: 10px;
+
+            transition: 0.2s;
+        }
+
+
+        .sidebar-menu a i {
+            width: 28px;
+
+            text-align: center;
+
+            font-size: 22px;
+        }
+
+
+        .sidebar-menu a:hover {
+            background: rgba(255,255,255,0.12);
+        }
+
+
+        /* ACTIVE MENU */
+
+        .sidebar-menu a.active {
+            background: #ffd34e;
+
+            color: #222;
+        }
+
+
+        .sidebar-menu a.active:hover {
+            background: #ffd34e;
+        }
+
+
+        /* =====================================
+           SIDEBAR BOTTOM
+        ===================================== */
+
+        .sidebar-bottom {
+            margin-top: auto;
+
+            padding: 15px 14px 25px 14px;
+        }
+
+
+        .sidebar-bottom a {
+            display: flex;
+
+            align-items: center;
+
+            gap: 24px;
+
+            padding: 16px 30px;
+
+            color: white;
+
+            text-decoration: none;
+
+            font-size: 20px;
+
+            border-radius: 10px;
+        }
+
+
+        .sidebar-bottom a i {
+            width: 28px;
+
+            text-align: center;
+
+            font-size: 22px;
+        }
+
+
+        .sidebar-bottom a:hover {
+            background: rgba(255,255,255,0.12);
+        }
+
+
+        /* =====================================
+           MAIN CONTENT
+        ===================================== */
+
+        .main-content {
+            position: absolute;
+
+            top: 108px;
+
+            left: 318px;
+
+            right: 5px;
+
+            min-height: calc(100vh - 108px);
+
+            background: white;
+
+            padding: 38px 46px 50px 46px;
+
+            border-radius: 0 0 4px 0;
+        }
+
+
+        /* =====================================
+           PAGE TITLE
+        ===================================== */
+
+        .page-title {
+            margin-bottom: 25px;
+        }
+
+
+        .page-title h2 {
+            font-size: 36px;
+
+            color: #111;
+
+            margin-bottom: 5px;
+        }
+
+
+        .page-title p {
+            color: #666;
+
+            font-size: 15px;
+        }
+
+
+        /* =====================================
+           STAT CARDS
+        ===================================== */
+
+        .stats-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 22px;
+
+            margin-bottom: 30px;
+        }
+
+
+        .stat-card {
+            background: white;
+
+            border: 1px solid #18a765;
+
+            border-radius: 10px;
+
+            padding: 22px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 17px;
+
+            box-shadow:
+                0 2px 5px rgba(0,0,0,0.08);
+        }
+
+
+        .stat-icon {
+            width: 55px;
+
+            height: 55px;
+
+            background: #e6f4ec;
+
+            color: #086b3c;
+
+            border-radius: 9px;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            font-size: 23px;
+        }
+
+
+        .stat-card h3 {
+            font-size: 26px;
+
+            margin-bottom: 5px;
+        }
+
+
+        .stat-card p {
+            color: #666;
+
+            font-size: 13px;
+        }
+
+
+        /* =====================================
+           DASHBOARD GRID
+        ===================================== */
+
+        .dashboard-grid {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 25px;
+
+            margin-bottom: 25px;
+        }
+
+
+        /* =====================================
+           CARDS
+        ===================================== */
+
+        .dashboard-card {
+            background: white;
+
+            border: 1px solid #ddd;
+
+            border-radius: 10px;
+
+            padding: 24px;
+
+            box-shadow:
+                0 2px 5px rgba(0,0,0,0.05);
+        }
+
+
+        .card-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 22px;
+        }
+
+
+        .card-header h2 {
+            font-size: 20px;
+        }
+
+
+        .card-header i {
+            color: #086b3c;
+
+            font-size: 20px;
+        }
+
+
+        .card-header a {
+            color: #086b3c;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            font-weight: bold;
+        }
+
+
+        .card-header a:hover {
+            text-decoration: underline;
+        }
+
+
+        /* =====================================
+           PROGRESS
+        ===================================== */
+
+        .progress-item {
+            margin-bottom: 20px;
+        }
+
+
+        .progress-item:last-child {
+            margin-bottom: 0;
+        }
+
+
+        .progress-label {
+            display: flex;
+
+            justify-content: space-between;
+
+            font-size: 14px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .progress-label strong {
+            color: #086b3c;
+        }
+
+
+        .progress-bar {
+            width: 100%;
+
+            height: 10px;
+
+            background: #e5e5e5;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+        }
+
+
+        .progress {
+            height: 100%;
+
+            background: #086b3c;
+
+            border-radius: 10px;
+        }
+
+
+        /* =====================================
+           RECENT ACTIVITIES
+        ===================================== */
+
+        .activity {
+            display: flex;
+
+            gap: 13px;
+
+            padding: 12px 0;
+
+            border-bottom: 1px solid #eee;
+        }
+
+
+        .activity:last-child {
+            border-bottom: none;
+        }
+
+
+        .activity-icon {
+            width: 40px;
+
+            height: 40px;
+
+            background: #e6f4ec;
+
+            color: #086b3c;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            flex-shrink: 0;
+        }
+
+
+        .activity strong {
+            display: block;
+
+            font-size: 14px;
+
+            margin-bottom: 4px;
+        }
+
+
+        .activity p {
+            font-size: 13px;
+
+            color: #666;
+
+            margin-bottom: 3px;
+        }
+
+
+        .activity small {
+            font-size: 11px;
+
+            color: #999;
+        }
+
+
+        /* =====================================
+           TABLE
+        ===================================== */
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+        }
+
+
+        th {
+            background: #f4f4f4;
+
+            text-align: left;
+
+            padding: 13px;
+
+            font-size: 13px;
+        }
+
+
+        td {
+            padding: 14px 13px;
+
+            border-top: 1px solid #eee;
+
+            font-size: 13px;
+        }
+
+
+        .status {
+            padding: 6px 10px;
+
+            border-radius: 20px;
+
+            font-size: 10px;
+
+            font-weight: bold;
+        }
+
+
+        .completed {
+            background: #dff3e7;
+
+            color: #08733c;
+        }
+
+
+        .progress-status {
+            background: #fff1cf;
+
+            color: #997000;
+        }
+
+
+        .pending {
+            background: #f8dddd;
+
+            color: #a33a3a;
+        }
+
+
+        /* =====================================
+           ANNOUNCEMENTS
+        ===================================== */
+
+        .announcement {
+            display: flex;
+
+            gap: 13px;
+
+            padding: 13px 0;
+
+            border-bottom: 1px solid #eee;
+        }
+
+
+        .announcement:last-child {
+            border-bottom: none;
+        }
+
+
+        .announcement > i {
+            color: #086b3c;
+
+            margin-top: 3px;
+        }
+
+
+        .announcement strong {
+            display: block;
+
+            font-size: 14px;
+
+            margin-bottom: 5px;
+        }
+
+
+        .announcement p {
+            font-size: 12px;
+
+            color: #666;
+
+            line-height: 1.5;
+
+            margin-bottom: 5px;
+        }
+
+
+        .announcement small {
+            color: #999;
+
+            font-size: 10px;
+        }
+
+
+        /* =====================================
+           QUICK REPORTS
+        ===================================== */
+
+        .quick-reports {
+            margin-bottom: 20px;
+        }
+
+
+        .report-buttons {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 15px;
+        }
+
+
+        .report-button {
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 18px;
+
+            background: #fafafa;
+
+            border: 1px solid #ddd;
+
+            border-radius: 8px;
+
+            color: #333;
+
+            text-decoration: none;
+
+            transition: 0.2s;
+        }
+
+
+        .report-button:hover {
+            background: #e6f4ec;
+
+            border-color: #086b3c;
+        }
+
+
+        .report-button i {
+            color: #086b3c;
+
+            font-size: 21px;
+        }
+
+
+        .report-button span {
+            font-size: 13px;
+
+            font-weight: bold;
+        }
+
+
+        /* =====================================
+           RESPONSIVE
+        ===================================== */
+
+        @media (max-width: 1100px) {
+
+            .stats-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+
+            .report-buttons {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media (max-width: 800px) {
+
+            .header {
+                padding: 0 25px;
+            }
+
+
+            .header-title h1 {
+                font-size: 22px;
+            }
+
+
+            .header-title p {
+                font-size: 13px;
+            }
+
+
+            .sidebar {
+                width: 220px;
+            }
+
+
+            .main-content {
+                left: 225px;
+
+                padding: 30px;
+            }
+
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .header {
+                height: 90px;
+
+                left: 0;
+
+                right: 0;
+
+                top: 0;
+
+                border-radius: 0;
+
+                padding: 0 15px;
+            }
+
+
+            .header-logo {
+                width: 50px;
+
+                height: 50px;
+            }
+
+
+            .header-title h1 {
+                font-size: 17px;
+            }
+
+
+            .header-title p {
+                font-size: 10px;
+            }
+
+
+            .header-profile {
+                font-size: 13px;
+            }
+
+
+            .sidebar {
+                position: relative;
+
+                left: 0;
+
+                top: 90px;
+
+                width: 100%;
+
+                height: auto;
+
+                min-height: auto;
+
+                border-radius: 0;
+            }
+
+
+            .main-content {
+                position: relative;
+
+                top: 90px;
+
+                left: 0;
+
+                right: 0;
+
+                padding: 25px;
+            }
+
+
+            body {
+                display: block;
+            }
+
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .report-buttons {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
 </head>
+
+
 <body>
-<div class="dashboard-container">
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-        <div class="logo-section">
-            <img src="../images/logo.png" alt="MPSU Logo">
-            <div>
-                <h2>MPSU</h2>
-                <p>ETEEAP LMS</p>
-            </div>
-        </div>
-
-        <div class="menu">
-            <a href="dashboard.html" class="active"><i class="fa-solid fa-table-columns"></i>Dashboard</a>
-            <a href="students.html"><i class="fa-solid fa-user-graduate"></i>Students</a>
-            <a href="instructors.html"><i class="fa-solid fa-chalkboard-user"></i>Instructors</a>
-            <a href="modules.html"><i class="fa-solid fa-book"></i>Modules</a>
-            <a href="assessments.html"><i class="fa-solid fa-file-circle-check"></i>Assessments</a>
-            <a href="reports.html"><i class="fa-solid fa-chart-line"></i>Reports</a>
-            <a href="announcements.html"><i class="fa-solid fa-bullhorn"></i>Announcements</a>
-            <a href="calendar.html"><i class="fa-solid fa-calendar-days"></i>Calendar</a>
-            <a href="notifications.html"><i class="fa-solid fa-bell"></i>Notifications</a>
-            <a href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
-            <a href="logout.html" class="logout"><i class="fa-solid fa-right-from-bracket"></i>Logout</a>
-        </div>
-    </div>
 
 
-    <div class="main-content">
-        <div class="topbar">
-            <div>
-                <h1>Director Dashboard</h1>
-                <p>Welcome back! Here's what's happening today.</p>
+    <!-- =====================================
+         HEADER
+    ====================================== -->
+
+    <header class="header">
+
+
+        <!-- LEFT SIDE -->
+
+        <div class="header-left">
+
+
+            <img src="../images/logo.png"
+                alt="MPSU Logo"
+                class="header-logo">
+
+
+            <div class="header-title">
+
+                <h1>
+                    MPSU ETEEAP LMS
+                </h1>
+
+                <p>
+                    Mountain Province State University
+                </p>
+
             </div>
 
-            <div class="topbar-right">
-                <a href="notifications.html" class="notification-icon">
-                    <i class="fa-solid fa-bell"></i>
-                    <span>3</span>
-                </a>
-
-                <a href="profile.html" class="profile-top">
-                    <div class="profile-circle">D</div>
-                    <div>
-                        <h4>Director</h4>
-                        <p>Program Director</p>
-                    </div>
-                </a>
-            </div>
         </div>
 
-        <div class="cards">
-            <div class="card">
-                <div class="card-icon students-icon">
+
+        <!-- RIGHT SIDE -->
+
+        <a href="profile.html"
+            class="header-profile">
+
+            Director
+
+        </a>
+
+    </header>
+
+
+
+    <!-- =====================================
+         SIDEBAR
+    ====================================== -->
+
+    <aside class="sidebar">
+
+
+        <!-- VIEW -->
+
+        <div class="sidebar-title">
+
+            <span>
+                View
+            </span>
+
+            <i class="fa-solid fa-table-columns"></i>
+
+        </div>
+
+
+        <!-- MAIN MENU -->
+
+        <nav class="sidebar-menu">
+
+
+            <a href="dashboard.html"
+                class="active">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a href="students.html">
+
+                <i class="fa-solid fa-user-graduate"></i>
+
+                <span>
+                    Students
+                </span>
+
+            </a>
+
+
+            <a href="instructors.html">
+
+                <i class="fa-solid fa-chalkboard-user"></i>
+
+                <span>
+                    Instructors
+                </span>
+
+            </a>
+
+
+            <a href="classes.html">
+
+                <i class="fa-solid fa-book"></i>
+
+                <span>
+                    Classes
+                </span>
+
+            </a>
+
+
+            <a href="assessments.html">
+
+                <i class="fa-solid fa-clipboard-check"></i>
+
+                <span>
+                    Assessments
+                </span>
+
+            </a>
+
+
+            <a href="reports.html">
+
+                <i class="fa-solid fa-chart-column"></i>
+
+                <span>
+                    Reports
+                </span>
+
+            </a>
+
+
+            <a href="announcements.html">
+
+                <i class="fa-solid fa-bullhorn"></i>
+
+                <span>
+                    Announcements
+                </span>
+
+            </a>
+
+
+            <a href="calendar.html">
+
+                <i class="fa-solid fa-calendar"></i>
+
+                <span>
+                    Calendar
+                </span>
+
+            </a>
+
+        </nav>
+
+
+
+        <!-- BOTTOM -->
+
+        <div class="sidebar-bottom">
+
+
+            <a href="notifications.html">
+
+                <i class="fa-solid fa-bell"></i>
+
+                <span>
+                    Notifications
+                </span>
+
+            </a>
+
+
+            <a href="profile.html">
+
+                <i class="fa-solid fa-user"></i>
+
+                <span>
+                    Profile
+                </span>
+
+            </a>
+
+
+            <a href="settings.html">
+
+                <i class="fa-solid fa-gear"></i>
+
+                <span>
+                    Settings
+                </span>
+
+            </a>
+
+
+            <a href="logout.html">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>
+                    Logout
+                </span>
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================
+         MAIN CONTENT
+    ====================================== -->
+
+    <main class="main-content">
+
+
+        <!-- PAGE TITLE -->
+
+        <div class="page-title">
+
+            <h2>
+                Director Dashboard
+            </h2>
+
+            <p>
+                Overview of the ETEEAP program
+            </p>
+
+        </div>
+
+
+
+        <!-- =====================================
+             STATISTICS
+        ====================================== -->
+
+        <div class="stats-grid">
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
                     <i class="fa-solid fa-user-graduate"></i>
+
                 </div>
 
                 <div>
-                    <p>Total Students</p>
-                    <h2>120</h2>
+
+                    <h3>
+                        120
+                    </h3>
+
+                    <p>
+                        Total Students
+                    </p>
+
                 </div>
+
             </div>
 
-            <div class="card">
-                <div class="card-icon instructor-icon">
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
                     <i class="fa-solid fa-chalkboard-user"></i>
+
                 </div>
 
                 <div>
-                    <p>Total Instructors</p>
-                    <h2>15</h2>
+
+                    <h3>
+                        15
+                    </h3>
+
+                    <p>
+                        Total Instructors
+                    </p>
+
                 </div>
+
             </div>
 
-            <div class="card">
-                <div class="card-icon module-icon">
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
                     <i class="fa-solid fa-book"></i>
+
                 </div>
 
                 <div>
-                    <p>Active Modules</p>
-                    <h2>32</h2>
+
+                    <h3>
+                        32
+                    </h3>
+
+                    <p>
+                        Active Classes
+                    </p>
+
                 </div>
 
             </div>
 
-            <div class="card">
-                <div class="card-icon assessment-icon">
-                    <i class="fa-solid fa-file-circle-check"></i>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+
+                    <i class="fa-solid fa-clipboard-check"></i>
+
                 </div>
 
                 <div>
-                    <p>Assessments</p>
-                    <h2>18</h2>
+
+                    <h3>
+                        18
+                    </h3>
+
+                    <p>
+                        Assessments
+                    </p>
+
                 </div>
+
             </div>
+
         </div>
 
-        <div class="content-row">
-            <div class="section-box">
-                <div class="section-header">
-                    <h2>Recent Activities</h2>
-                    <a href="reports.html">View All</a>
+
+
+        <!-- =====================================
+             PROGRAM OVERVIEW + ACTIVITIES
+        ====================================== -->
+
+        <div class="dashboard-grid">
+
+
+            <!-- PROGRAM OVERVIEW -->
+
+            <div class="dashboard-card">
+
+
+                <div class="card-header">
+
+                    <h2>
+                        Program Overview
+                    </h2>
+
+                    <i class="fa-solid fa-chart-pie"></i>
+
                 </div>
 
+
+                <div class="progress-item">
+
+                    <div class="progress-label">
+
+                        <span>
+                            Student Completion Rate
+                        </span>
+
+                        <strong>
+                            78%
+                        </strong>
+
+                    </div>
+
+
+                    <div class="progress-bar">
+
+                        <div class="progress"
+                            style="width: 78%;">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="progress-item">
+
+                    <div class="progress-label">
+
+                        <span>
+                            Assessment Completion
+                        </span>
+
+                        <strong>
+                            85%
+                        </strong>
+
+                    </div>
+
+
+                    <div class="progress-bar">
+
+                        <div class="progress"
+                            style="width: 85%;">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="progress-item">
+
+                    <div class="progress-label">
+
+                        <span>
+                            Student Participation
+                        </span>
+
+                        <strong>
+                            72%
+                        </strong>
+
+                    </div>
+
+
+                    <div class="progress-bar">
+
+                        <div class="progress"
+                            style="width: 72%;">
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- RECENT ACTIVITIES -->
+
+            <div class="dashboard-card">
+
+
+                <div class="card-header">
+
+                    <h2>
+                        Recent Activities
+                    </h2>
+
+                    <i class="fa-solid fa-clock"></i>
+
+                </div>
+
+
                 <div class="activity">
+
                     <div class="activity-icon">
+
                         <i class="fa-solid fa-user-plus"></i>
+
                     </div>
+
 
                     <div>
-                        <h4>New Student Registered</h4>
-                        <p>A new student has joined the ETEEAP program.</p>
+
+                        <strong>
+                            New student registered
+                        </strong>
+
+                        <p>
+                            John D. Santos
+                        </p>
+
+                        <small>
+                            10 minutes ago
+                        </small>
+
                     </div>
-                    <span>Today</span>
+
                 </div>
 
-                <div class="activity">
-                    <div class="activity-icon">
-                        <i class="fa-solid fa-book"></i>
-                    </div>
-
-                    <div>
-                        <h4>New Module Added</h4>
-                        <p>An instructor added a new learning module.</p>
-                    </div>
-                    <span>Today</span>
-                </div>
 
                 <div class="activity">
+
                     <div class="activity-icon">
+
                         <i class="fa-solid fa-file-circle-check"></i>
+
                     </div>
+
 
                     <div>
-                        <h4>Assessment Submitted</h4>
-                        <p>A student submitted an assessment.</p>
+
+                        <strong>
+                            Assessment completed
+                        </strong>
+
+                        <p>
+                            Information Technology
+                        </p>
+
+                        <small>
+                            1 hour ago
+                        </small>
+
                     </div>
-                    <span>Yesterday</span>
+
                 </div>
+
+
+                <div class="activity">
+
+                    <div class="activity-icon">
+
+                        <i class="fa-solid fa-book"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            New class added
+                        </strong>
+
+                        <p>
+                            Professional Education
+                        </p>
+
+                        <small>
+                            2 hours ago
+                        </small>
+
+                    </div>
+
+                </div>
+
             </div>
 
-                <div class="section-box quick-actions">
-                <h2>Quick Actions</h2>
-
-                <a href="students.html" class="quick-button"><i class="fa-solid fa-user-graduate"></i>Manage Students</a>
-                <a href="instructors.html" class="quick-button"><i class="fa-solid fa-chalkboard-user"></i>Manage Instructors</a>
-                <a href="announcements.html" class="quick-button"><i class="fa-solid fa-bullhorn"></i>Create Announcement</a>
-                <a href="reports.html" class="quick-button"><i class="fa-solid fa-chart-line"></i>View Reports</a>
-            </div>
         </div>
 
-        <div class="section-box program-overview">
-            <div class="section-header">
-                <h2>Program Overview</h2>
-                <a href="reports.html">View Reports</a>
+
+
+        <!-- =====================================
+             STUDENT PROGRESS + ANNOUNCEMENTS
+        ====================================== -->
+
+        <div class="dashboard-grid">
+
+
+            <!-- STUDENT PROGRESS -->
+
+            <div class="dashboard-card">
+
+
+                <div class="card-header">
+
+                    <h2>
+                        Student Progress
+                    </h2>
+
+                    <a href="students.html">
+                        View All
+                    </a>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Student
+                                </th>
+
+                                <th>
+                                    Program
+                                </th>
+
+                                <th>
+                                    Progress
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+
+                            <tr>
+
+                                <td>
+                                    Maria Santos
+                                </td>
+
+                                <td>
+                                    BSIT
+                                </td>
+
+                                <td>
+                                    85%
+                                </td>
+
+                                <td>
+
+                                    <span class="status completed">
+                                        On Track
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    Juan Dela Cruz
+                                </td>
+
+                                <td>
+                                    BSBA
+                                </td>
+
+                                <td>
+                                    72%
+                                </td>
+
+                                <td>
+
+                                    <span class="status progress-status">
+                                        In Progress
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    Anna Garcia
+                                </td>
+
+                                <td>
+                                    BSIT
+                                </td>
+
+                                <td>
+                                    54%
+                                </td>
+
+                                <td>
+
+                                    <span class="status pending">
+                                        Needs Attention
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
             </div>
 
-            <div class="progress-item">
-                <div class="progress-text">
-                    <span>Student Completion Rate</span>
-                    <b>78%</b>
+
+
+            <!-- ANNOUNCEMENTS -->
+
+            <div class="dashboard-card">
+
+
+                <div class="card-header">
+
+                    <h2>
+                        Recent Announcements
+                    </h2>
+
+                    <a href="announcements.html">
+                        View All
+                    </a>
+
                 </div>
 
-                <div class="progress-bar">
-                    <div class="progress completed"></div>
+
+                <div class="announcement">
+
+                    <i class="fa-solid fa-bullhorn"></i>
+
+
+                    <div>
+
+                        <strong>
+                            Midterm Assessment Schedule
+                        </strong>
+
+                        <p>
+                            The midterm assessment schedule
+                            has been posted.
+                        </p>
+
+                        <small>
+                            September 25, 2026
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="announcement">
+
+                    <i class="fa-solid fa-bullhorn"></i>
+
+
+                    <div>
+
+                        <strong>
+                            ETEEAP Program Meeting
+                        </strong>
+
+                        <p>
+                            Faculty meeting will be held
+                            this Friday.
+                        </p>
+
+                        <small>
+                            September 24, 2026
+                        </small>
+
+                    </div>
+
                 </div>
 
             </div>
-            <div class="progress-item">
-                <div class="progress-text">
-                    <span>Assessment Completion</span>
-                    <b>85%</b>
-                </div>
 
-                <div class="progress-bar">
-                    <div class="progress assessment"></div>
-                </div>
-            </div>
-
-            <div class="progress-item">
-                <div class="progress-text">
-                    <span>Module Completion</span>
-                    <b>72%</b>
-                </div>
-
-                <div class="progress-bar">
-                    <div class="progress module"></div>
-                </div>
-            </div>
         </div>
-    </div>
-</div>
-<script src="director.js"></script>
+
+
+
+        <!-- =====================================
+             QUICK REPORTS
+        ====================================== -->
+
+        <div class="dashboard-card quick-reports">
+
+
+            <div class="card-header">
+
+                <h2>
+                    Quick Reports
+                </h2>
+
+                <i class="fa-solid fa-file-lines"></i>
+
+            </div>
+
+
+            <div class="report-buttons">
+
+
+                <a href="reports.html"
+                    class="report-button">
+
+                    <i class="fa-solid fa-user-graduate"></i>
+
+                    <span>
+                        Student Report
+                    </span>
+
+                </a>
+
+
+                <a href="reports.html"
+                    class="report-button">
+
+                    <i class="fa-solid fa-chart-line"></i>
+
+                    <span>
+                        Progress Report
+                    </span>
+
+                </a>
+
+
+                <a href="reports.html"
+                    class="report-button">
+
+                    <i class="fa-solid fa-clipboard-check"></i>
+
+                    <span>
+                        Assessment Report
+                    </span>
+
+                </a>
+
+
+                <a href="reports.html"
+                    class="report-button">
+
+                    <i class="fa-solid fa-chalkboard-user"></i>
+
+                    <span>
+                        Instructor Report
+                    </span>
+
+                </a>
+
+
+            </div>
+
+        </div>
+
+
+    </main>
+
+
 </body>
+
 </html>
