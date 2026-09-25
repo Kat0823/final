@@ -672,210 +672,53 @@
                 <span class="submission-status">Opened not Submitted</span>
             </div>
 
-
             <section class="module-section">
-
-
-                <h2>
-                    Module Material
-                </h2>
-
-
-
+                <h2>Module Material</h2>
                 <div class="file-material">
-
-
                     <div class="file-left">
-
-
-                        <i
-                            class="fa-regular fa-file-lines file-icon">
-                        </i>
-
-
-                        <span>
-                            DNA Analysis.pdf
-                        </span>
-
-
+                        <i class="fa-regular fa-file-lines file-icon"></i>
+                        <span>DNA Analysis.pdf</span>
                     </div>
-
-
 
                     <div class="file-actions">
-
-
-                        <button
-                            type="button"
-                            title="View File"
-                            onclick="viewFile()">
-
-                            <i
-                                class="fa-regular fa-eye">
-                            </i>
-
+                        <button type="button" title="View File" onclick="viewFile()">
+                            <i class="fa-regular fa-eye"></i>
                         </button>
 
-
-
-                        <a
-                            href="../files/DNA Analysis.pdf"
-                            download
-                            title="Download File">
-
-                            <i
-                                class="fa-solid fa-download">
-                            </i>
-
+                        <a href="../files/DNA Analysis.pdf" download title="Download File">
+                            <i class="fa-solid fa-download"></i>
                         </a>
-
-
                     </div>
-
-
                 </div>
-
-
             </section>
 
-
-
-            <!-- =========================================
-                 YOUR SUBMISSION
-            ========================================== -->
 
             <section class="module-section">
+                <h2>Your Submission</h2>
+                <div class="submission-box" id="dropArea">
+                    <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                    <p class="upload-text">Drag a File or click to Browse</p>
+                    <small>PDF, Docs up to 25 MB</small>
 
+                    <input type="file" id="fileInput" accept=".pdf,.doc,.docx" hidden>
 
-                <h2>
-                    Your Submission
-                </h2>
+                    <button type="button" class="browse-btn" onclick="document.getElementById('fileInput').click()">Browse</button>
+                    <div class="selected-file" id="selectedFile">
+                        <i  class="fa-regular fa-file"></i>
+                        <span id="fileName">No file selected</span>
 
-
-
-                <div
-                    class="submission-box"
-                    id="dropArea">
-
-
-                    <!-- Upload Icon -->
-
-                    <i
-                        class="fa-solid fa-cloud-arrow-up upload-icon">
-                    </i>
-
-
-
-                    <!-- Upload Text -->
-
-                    <p class="upload-text">
-
-                        Drag a File or click to Browse
-
-                    </p>
-
-
-
-                    <small>
-
-                        PDF, Docs up to 25 MB
-
-                    </small>
-
-
-
-                    <!-- Hidden File Input -->
-
-                    <input
-                        type="file"
-                        id="fileInput"
-                        accept=".pdf,.doc,.docx"
-                        hidden>
-
-
-
-                    <!-- Browse -->
-
-                    <button
-                        type="button"
-                        class="browse-btn"
-                        onclick="document.getElementById('fileInput').click()">
-
-                        Browse
-
-                    </button>
-
-
-
-                    <!-- Selected File -->
-
-                    <div
-                        class="selected-file"
-                        id="selectedFile">
-
-
-                        <i
-                            class="fa-regular fa-file">
-                        </i>
-
-
-                        <span id="fileName">
-
-                            No file selected
-
-                        </span>
-
-
-                        <button
-                            type="button"
-                            class="remove-file"
-                            onclick="removeFile()">
-
-                            <i
-                                class="fa-solid fa-xmark">
-                            </i>
-
+                        <button type="button" class="remove-file" onclick="removeFile()">
+                            <i class="fa-solid fa-xmark"></i>
                         </button>
-
-
                     </div>
 
-
-
-                    <!-- Submit -->
-
-                    <button
-                        type="button"
-                        class="submit-btn"
-                        id="submitBtn"
-                        onclick="submitFile()"
-                        disabled>
-
-                        Submit
-
-                    </button>
-
-
+                    <button type="button" class="submit-btn" id="submitBtn" onclick="submitFile()" disabled>Submit</button>
                 </div>
-
-
             </section>
-
-
         </main>
-
-
     </div>
 
-
-
-    <!-- =========================================
-         JAVASCRIPT
-    ========================================== -->
-
+<!-- js -->
     <script src="student.js"></script>
-
-
 </body>
-
 </html>
