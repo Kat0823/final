@@ -1,94 +1,1146 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Account</title>
-    <link rel="stylesheet" href="student.css"> 
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Account - MPSU ETEEAP LMS</title>
+
+
+    <!-- Font Awesome -->
+
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+
+    <!-- =========================================
+         CSS
+    ========================================== -->
+
+    <style>
+
+        /* =========================================
+           RESET
+        ========================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+        }
+
+
+        body {
+            font-family: Arial, sans-serif;
+
+            background: white;
+
+            color: #222;
+        }
+
+
+        a {
+            text-decoration: none;
+        }
+
+
+        /* =========================================
+           HEADER
+        ========================================== */
+
+        .header {
+            width: 100%;
+
+            height: 84px;
+
+            background: #086b3c;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 38px;
+
+            color: white;
+
+            border-radius: 0 0 4px 4px;
+        }
+
+
+        /* =========================================
+           HEADER LEFT
+        ========================================== */
+
+        .header-left {
+            display: flex;
+
+            align-items: center;
+
+            gap: 20px;
+        }
+
+
+        .header-logo {
+            width: 58px;
+
+            height: 58px;
+
+            object-fit: contain;
+        }
+
+
+        .header-titles {
+            display: flex;
+
+            flex-direction: column;
+        }
+
+
+        .brand-title {
+            color: white;
+
+            font-size: 23px;
+
+            font-weight: bold;
+
+            margin-bottom: 4px;
+        }
+
+
+        .brand-subtitle {
+            color: white;
+
+            font-size: 14px;
+        }
+
+
+        /* =========================================
+           HEADER RIGHT
+        ========================================== */
+
+        .header-right {
+            display: flex;
+
+            align-items: center;
+        }
+
+
+        .user-link {
+            color: white;
+
+            font-size: 16px;
+
+            text-decoration: underline;
+
+            cursor: pointer;
+        }
+
+
+        .user-link:hover {
+            color: #ffd32a;
+        }
+
+
+        /* =========================================
+           MAIN
+        ========================================== */
+
+        .main {
+            width: 100%;
+
+            display: flex;
+
+            min-height: calc(100vh - 84px);
+        }
+
+
+        /* =========================================
+           SIDEBAR
+        ========================================== */
+
+        .sidebar {
+            width: 270px;
+
+            min-height: calc(100vh - 84px);
+
+            background: #086b3c;
+
+            padding: 25px 12px;
+
+            flex-shrink: 0;
+
+            border-radius: 0 0 7px 0;
+        }
+
+
+        /* =========================================
+           VIEW
+        ========================================== */
+
+        .view {
+            height: 60px;
+
+            padding: 0 24px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            color: white;
+
+            font-size: 20px;
+
+            margin-bottom: 10px;
+        }
+
+
+        .view i {
+            font-size: 22px;
+
+            color: white;
+        }
+
+
+        /* =========================================
+           MENU
+        ========================================== */
+
+        .menu {
+            width: 100%;
+
+            height: 47px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 20px;
+
+            padding: 0 25px;
+
+            margin-bottom: 5px;
+
+            border-radius: 9px;
+
+            color: white;
+
+            font-size: 18px;
+
+            transition: 0.2s;
+        }
+
+
+        .menu i {
+            width: 22px;
+
+            text-align: center;
+
+            font-size: 19px;
+        }
+
+
+        .menu:hover {
+            background: rgba(255, 255, 255, 0.10);
+        }
+
+
+        /* =========================================
+           ACTIVE MENU
+        ========================================== */
+
+        .menu.active {
+            background: #ffd34e;
+
+            color: #222;
+        }
+
+
+        .menu.active i {
+            color: #222;
+        }
+
+
+        /* =========================================
+           CONTENT
+        ========================================== */
+
+        .content {
+            flex: 1;
+
+            width: calc(100% - 270px);
+
+            background: white;
+
+            padding: 35px 40px;
+
+            min-width: 0;
+        }
+
+
+        /* =========================================
+           PAGE TITLE
+        ========================================== */
+
+        .content > h1 {
+            font-size: 32px;
+
+            color: #222;
+
+            margin-bottom: 25px;
+        }
+
+
+        /* =========================================
+           EDIT CARD
+        ========================================== */
+
+        .edit-card {
+            width: 100%;
+
+            max-width: 1000px;
+
+            background: white;
+
+            border: 1px solid #d7d7d7;
+
+            border-radius: 10px;
+
+            padding: 30px;
+
+            box-shadow:
+                0 3px 8px rgba(0, 0, 0, 0.10);
+        }
+
+
+        /* =========================================
+           USER INFORMATION
+        ========================================== */
+
+        .edit-user {
+            display: flex;
+
+            align-items: center;
+
+            gap: 18px;
+
+            padding-bottom: 25px;
+
+            margin-bottom: 25px;
+
+            border-bottom: 1px solid #ddd;
+        }
+
+
+        /* =========================================
+           PROFILE ICON
+        ========================================== */
+
+        .profile-picture {
+            width: 70px;
+
+            height: 70px;
+
+            border-radius: 50%;
+
+            background: #086b3c;
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 30px;
+        }
+
+
+        .edit-user h3 {
+            font-size: 21px;
+
+            color: #222;
+
+            margin-bottom: 5px;
+        }
+
+
+        .edit-user p {
+            font-size: 14px;
+
+            color: #777;
+        }
+
+
+        /* =========================================
+           FORM
+        ========================================== */
+
+        #editForm {
+            width: 100%;
+        }
+
+
+        /* =========================================
+           FORM GRID
+        ========================================== */
+
+        .edit-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 22px 30px;
+        }
+
+
+        /* =========================================
+           FORM GROUP
+        ========================================== */
+
+        .edit-grid > div {
+            width: 100%;
+        }
+
+
+        .edit-grid label {
+            display: block;
+
+            color: #333;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            margin-bottom: 8px;
+        }
+
+
+        /* =========================================
+           INPUTS
+        ========================================== */
+
+        .edit-grid input {
+            width: 100%;
+
+            height: 42px;
+
+            padding: 0 13px;
+
+            border: 1px solid #cfcfcf;
+
+            border-radius: 6px;
+
+            background: white;
+
+            color: #333;
+
+            font-size: 14px;
+
+            outline: none;
+        }
+
+
+        .edit-grid input:focus {
+            border-color: #086b3c;
+
+            box-shadow:
+                0 0 0 2px rgba(8, 107, 60, 0.08);
+        }
+
+
+        /* =========================================
+           OLD EMAIL
+        ========================================== */
+
+        .edit-grid input[readonly] {
+            background: #f1f1f1;
+
+            color: #777;
+
+            cursor: not-allowed;
+        }
+
+
+        /* =========================================
+           BUTTON AREA
+        ========================================== */
+
+        .edit-buttons {
+            display: flex;
+
+            justify-content: flex-end;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-top: 30px;
+
+            padding-top: 25px;
+
+            border-top: 1px solid #ddd;
+        }
+
+
+        /* =========================================
+           SAVE BUTTON
+        ========================================== */
+
+        .edit-buttons button {
+            border: none;
+
+            background: #086b3c;
+
+            color: white;
+
+            height: 42px;
+
+            padding: 0 25px;
+
+            border-radius: 6px;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+
+        .edit-buttons button:hover {
+            background: #075c34;
+        }
+
+
+        /* =========================================
+           CANCEL BUTTON
+        ========================================== */
+
+        .edit-buttons a {
+            height: 42px;
+
+            padding: 0 25px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border: 1px solid #aaa;
+
+            border-radius: 6px;
+
+            color: #555;
+
+            background: white;
+
+            font-size: 14px;
+
+            transition: 0.2s;
+        }
+
+
+        .edit-buttons a:hover {
+            background: #f1f1f1;
+
+            color: #222;
+        }
+
+
+        /* =========================================
+           TABLET
+        ========================================== */
+
+        @media (max-width: 1000px) {
+
+            .sidebar {
+                width: 230px;
+            }
+
+
+            .content {
+                width: calc(100% - 230px);
+
+                padding: 30px;
+            }
+
+
+            .edit-card {
+                max-width: 100%;
+            }
+
+        }
+
+
+        /* =========================================
+           MOBILE
+        ========================================== */
+
+        @media (max-width: 650px) {
+
+            .header {
+                height: auto;
+
+                min-height: 75px;
+
+                padding: 10px 15px;
+            }
+
+
+            .header-logo {
+                width: 45px;
+
+                height: 45px;
+            }
+
+
+            .brand-title {
+                font-size: 16px;
+            }
+
+
+            .brand-subtitle {
+                font-size: 10px;
+            }
+
+
+            .header-right {
+                display: none;
+            }
+
+
+            /* Main */
+
+            .main {
+                flex-direction: column;
+            }
+
+
+            /* Sidebar */
+
+            .sidebar {
+                width: 100%;
+
+                min-height: auto;
+
+                display: flex;
+
+                flex-direction: row;
+
+                overflow-x: auto;
+
+                padding: 8px;
+
+                gap: 5px;
+
+                border-radius: 0;
+            }
+
+
+            .view {
+                display: none;
+            }
+
+
+            .menu {
+                min-width: 105px;
+
+                justify-content: center;
+
+                padding: 10px;
+
+                margin: 0;
+
+                font-size: 13px;
+            }
+
+
+            /* Content */
+
+            .content {
+                width: 100%;
+
+                padding: 25px 15px;
+            }
+
+
+            .content > h1 {
+                font-size: 27px;
+
+                margin-bottom: 20px;
+            }
+
+
+            /* Edit card */
+
+            .edit-card {
+                padding: 22px 18px;
+            }
+
+
+            /* Form */
+
+            .edit-grid {
+                grid-template-columns: 1fr;
+
+                gap: 18px;
+            }
+
+
+            .edit-buttons {
+                flex-direction: column-reverse;
+
+                width: 100%;
+            }
+
+
+            .edit-buttons button,
+            .edit-buttons a {
+                width: 100%;
+            }
+
+        }
+
+
+        /* =========================================
+           SMALL MOBILE
+        ========================================== */
+
+        @media (max-width: 400px) {
+
+            .brand-title {
+                font-size: 14px;
+            }
+
+
+            .brand-subtitle {
+                display: none;
+            }
+
+
+            .menu {
+                min-width: 90px;
+
+                font-size: 11px;
+            }
+
+
+            .menu i {
+                font-size: 14px;
+            }
+
+
+            .content > h1 {
+                font-size: 23px;
+            }
+
+
+            .edit-user h3 {
+                font-size: 18px;
+            }
+
+
+            .profile-picture {
+                width: 60px;
+
+                height: 60px;
+
+                font-size: 25px;
+            }
+
+        }
+
+    </style>
+
 </head>
+
+
 <body>
-<header class="header">
-    <div class="header-left">
-        <img src="../images/logo.png" class="header-logo" alt="MPSU Logo">
-        <div class="header-titles">
-            <h1 class="brand-title">MPSU ETEEAP LMS</h1>
-            <p class="brand-subtitle">Mountain Province State University</p>
-        </div>
-    </div>
-    
-    <div class="header-right">
-        <a href="profile.html" class="user-link">Macross Arsel</a>
-    </div>
-</header>
 
-<div class="main">
-<!-- sidebar -->
 
-    <aside class="sidebar">
-        <div class="view">View<i class="fa-solid fa-table-columns"></i></div>
-        <a href="classes.html" class="menu"><i class="fa-regular fa-folder"></i>Classes</a>
-        <a href="grades.html" class="menu"><i class="fa-solid fa-chart-column"></i><span>Grades</span></a>
-        <a href="notification.html" class="menu"><i class="fa-regular fa-bell"></i>Notifications</a>
-        <a href="profile.html" class="menu active"><i class="fa-regular fa-user"></i>Profile</a>
-        <a href="logout.html" class="menu"><i class="fa-solid fa-arrow-right-from-bracket"></i>Logout</a>
-    </aside>
+    <!-- =========================================
+         HEADER
+    ========================================== -->
 
-    <main class="content">
-        <h1>Learner Profile</h1>
-        <div class="edit-card">
-            <div class="edit-user">
-                <div class="profile-picture">
-                    <i class="fa-solid fa-user"></i>
-                </div>
-                <div>
-                    <h3>Macross Arsel</h3>
-                    <p>Learner</p>
-                </div>
+    <header class="header">
+
+
+        <div class="header-left">
+
+
+            <img
+                src="../images/logo.png"
+                class="header-logo"
+                alt="MPSU Logo">
+
+
+            <div class="header-titles">
+
+
+                <h1 class="brand-title">
+                    MPSU ETEEAP LMS
+                </h1>
+
+
+                <p class="brand-subtitle">
+                    Mountain Province State University
+                </p>
+
+
             </div>
 
-            <form id="editForm">
-                <div class="edit-grid">
-                    <div>
-                        <label>Old Password</label>
-                        <input type="password" id="oldPassword" placeholder="Enter old password">
-                    </div>
 
-                    <div>
-                        <label>Old Email Address</label>
-                        <input type="email" value="arsel@gmail.com" readonly>
-                    </div>
-
-                    <div>
-                        <label>New Password</label>
-                        <input type="password" id="editNewPassword" placeholder="Enter new password">
-                    </div>
-
-                    <div>
-                        <label>New Email Address</label>
-                        <input type="email" id="newEmail" placeholder="Enter new email">
-                    </div>
-
-                    <div>
-                        <label>Confirm Password</label>
-                        <input type="password" id="editConfirmPassword" placeholder="Confirm password">
-                    </div>
-
-                    <div>
-                        <label>Confirm Email Address</label>
-                        <input type="email" id="confirmEmail" placeholder="Confirm email">
-                    </div>
-                </div>
-
-                <div class="edit-buttons">
-                    <button type="submit">Save Changes</button>
-                    <a href="profile.html">Cancel</a>
-                </div>
-            </form>
         </div>
-    </main>
-</div>
-<script src="student.js"></script>
+
+
+        <div class="header-right">
+
+
+            <a
+                href="profile.html"
+                class="user-link">
+
+                Macross Arsel
+
+            </a>
+
+
+        </div>
+
+
+    </header>
+
+
+
+    <!-- =========================================
+         MAIN
+    ========================================== -->
+
+    <div class="main">
+
+
+        <!-- =========================================
+             SIDEBAR
+        ========================================== -->
+
+        <aside class="sidebar">
+
+
+            <div class="view">
+
+                <span>
+                    View
+                </span>
+
+
+                <i class="fa-solid fa-table-columns"></i>
+
+            </div>
+
+
+
+            <a
+                href="classes.html"
+                class="menu">
+
+                <i class="fa-regular fa-folder"></i>
+
+                <span>
+                    Classes
+                </span>
+
+            </a>
+
+
+
+            <a
+                href="grades.html"
+                class="menu">
+
+                <i class="fa-solid fa-chart-column"></i>
+
+                <span>
+                    Grades
+                </span>
+
+            </a>
+
+
+
+            <a
+                href="notification.html"
+                class="menu">
+
+                <i class="fa-regular fa-bell"></i>
+
+                <span>
+                    Notifications
+                </span>
+
+            </a>
+
+
+
+            <a
+                href="profile.html"
+                class="menu active">
+
+                <i class="fa-regular fa-user"></i>
+
+                <span>
+                    Profile
+                </span>
+
+            </a>
+
+
+
+            <a
+                href="logout.html"
+                class="menu">
+
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+
+                <span>
+                    Logout
+                </span>
+
+            </a>
+
+
+        </aside>
+
+
+
+        <!-- =========================================
+             CONTENT
+        ========================================== -->
+
+        <main class="content">
+
+
+            <h1>
+                Learner Profile
+            </h1>
+
+
+
+            <!-- =====================================
+                 EDIT CARD
+            ====================================== -->
+
+            <div class="edit-card">
+
+
+                <!-- USER -->
+
+                <div class="edit-user">
+
+
+                    <div class="profile-picture">
+
+                        <i class="fa-solid fa-user"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+                            Macross Arsel
+                        </h3>
+
+                        <p>
+                            Learner
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================
+                     FORM
+                ================================== -->
+
+                <form id="editForm">
+
+
+                    <div class="edit-grid">
+
+
+                        <!-- OLD PASSWORD -->
+
+                        <div>
+
+                            <label for="oldPassword">
+                                Old Password
+                            </label>
+
+
+                            <input
+                                type="password"
+                                id="oldPassword"
+                                placeholder="Enter old password">
+
+                        </div>
+
+
+
+                        <!-- OLD EMAIL -->
+
+                        <div>
+
+                            <label for="oldEmail">
+                                Old Email Address
+                            </label>
+
+
+                            <input
+                                type="email"
+                                id="oldEmail"
+                                value="arsel@gmail.com"
+                                readonly>
+
+                        </div>
+
+
+
+                        <!-- NEW PASSWORD -->
+
+                        <div>
+
+                            <label for="editNewPassword">
+                                New Password
+                            </label>
+
+
+                            <input
+                                type="password"
+                                id="editNewPassword"
+                                placeholder="Enter new password">
+
+                        </div>
+
+
+
+                        <!-- NEW EMAIL -->
+
+                        <div>
+
+                            <label for="newEmail">
+                                New Email Address
+                            </label>
+
+
+                            <input
+                                type="email"
+                                id="newEmail"
+                                placeholder="Enter new email">
+
+                        </div>
+
+
+
+                        <!-- CONFIRM PASSWORD -->
+
+                        <div>
+
+                            <label for="editConfirmPassword">
+                                Confirm Password
+                            </label>
+
+
+                            <input
+                                type="password"
+                                id="editConfirmPassword"
+                                placeholder="Confirm password">
+
+                        </div>
+
+
+
+                        <!-- CONFIRM EMAIL -->
+
+                        <div>
+
+                            <label for="confirmEmail">
+                                Confirm Email Address
+                            </label>
+
+
+                            <input
+                                type="email"
+                                id="confirmEmail"
+                                placeholder="Confirm email">
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <!-- =================================
+                         BUTTONS
+                    ================================== -->
+
+                    <div class="edit-buttons">
+
+
+                        <a href="profile.html">
+                            Cancel
+                        </a>
+
+
+                        <button type="submit">
+                            Save Changes
+                        </button>
+
+
+                    </div>
+
+
+                </form>
+
+
+            </div>
+
+
+        </main>
+
+
+    </div>
+
+
+
+    <!-- JAVASCRIPT -->
+
+    <script src="student.js"></script>
+
+
 </body>
+
 </html>
