@@ -10,16 +10,9 @@
 
     <title>Classes - MPSU ETEEAP LMS</title>
 
-
     <!-- Font Awesome -->
-
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
-
-    <!-- =========================================
-         CSS
-    ========================================== -->
 
     <style>
 
@@ -33,22 +26,17 @@
             box-sizing: border-box;
         }
 
-
         html,
         body {
             width: 100%;
             min-height: 100%;
         }
 
-
         body {
             font-family: Arial, sans-serif;
-
             background: white;
-
             color: #222;
         }
-
 
         a {
             text-decoration: none;
@@ -60,16 +48,17 @@
         ========================================== */
 
         .header {
-            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
 
+            width: 100%;
             height: 84px;
 
             background: #086b3c;
 
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
 
             padding: 0 38px;
@@ -77,6 +66,8 @@
             color: white;
 
             border-radius: 0 0 4px 4px;
+
+            z-index: 1000;
         }
 
 
@@ -86,43 +77,30 @@
 
         .header-left {
             display: flex;
-
             align-items: center;
-
             gap: 20px;
         }
 
-
         .header-logo {
             width: 58px;
-
             height: 58px;
-
             object-fit: contain;
         }
 
-
         .header-titles {
             display: flex;
-
             flex-direction: column;
         }
 
-
         .brand-title {
             color: white;
-
             font-size: 23px;
-
             font-weight: bold;
-
             margin-bottom: 4px;
         }
 
-
         .brand-subtitle {
             color: white;
-
             font-size: 14px;
         }
 
@@ -131,12 +109,10 @@
            HEADER RIGHT
         ========================================== */
 
-        .header-right {
+         .header-right {
             display: flex;
 
-            flex-direction: column;
-
-            align-items: flex-end;
+            align-items: center;
         }
 
 
@@ -166,6 +142,8 @@
             display: flex;
 
             min-height: calc(100vh - 84px);
+
+            padding-top: 84px;
         }
 
 
@@ -174,17 +152,46 @@
         ========================================== */
 
         .sidebar {
-            width: 270px;
+            position: fixed;
 
-            min-height: calc(100vh - 84px);
+            top: 84px;
+            left: 0;
+
+            width: 270px;
+            height: calc(100vh - 84px);
 
             background: #086b3c;
 
             padding: 25px 12px;
 
-            flex-shrink: 0;
-
             border-radius: 0 0 7px 0;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            overflow-y: auto;
+
+            z-index: 900;
+        }
+
+
+        /* =========================================
+           SIDEBAR TOP
+        ========================================== */
+
+        .sidebar-top {
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        /* =========================================
+           SIDEBAR BOTTOM
+        ========================================== */
+
+        .sidebar-bottom {
+            margin-top: auto;
         }
 
 
@@ -198,9 +205,7 @@
             padding: 0 24px;
 
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
 
             color: white;
@@ -210,10 +215,8 @@
             margin-bottom: 10px;
         }
 
-
         .view i {
             font-size: 22px;
-
             color: white;
         }
 
@@ -224,11 +227,9 @@
 
         .menu {
             width: 100%;
-
             height: 47px;
 
             display: flex;
-
             align-items: center;
 
             gap: 20px;
@@ -244,8 +245,20 @@
             font-size: 18px;
 
             transition: 0.2s;
+
+            text-decoration: none;
         }
 
+
+        /* REMOVE UNDERLINES */
+
+        .menu,
+        .menu:hover,
+        .menu:focus,
+        .menu:active,
+        .menu:visited {
+            text-decoration: none;
+        }
 
         .menu i {
             width: 22px;
@@ -254,7 +267,6 @@
 
             font-size: 19px;
         }
-
 
         .menu:hover {
             background: rgba(255, 255, 255, 0.10);
@@ -273,9 +285,17 @@
             font-weight: normal;
         }
 
-
         .menu.active i {
             color: #222;
+        }
+
+
+        /* =========================================
+           LOGOUT
+        ========================================== */
+
+        .logout-menu {
+            margin-bottom: 0;
         }
 
 
@@ -284,7 +304,7 @@
         ========================================== */
 
         .content {
-            flex: 1;
+            margin-left: 270px;
 
             width: calc(100% - 270px);
 
@@ -293,6 +313,8 @@
             padding: 35px 40px;
 
             min-width: 0;
+
+            min-height: calc(100vh - 84px);
         }
 
 
@@ -302,10 +324,8 @@
 
         .title-row {
             width: 100%;
-
             margin-bottom: 18px;
         }
-
 
         .title-row h1 {
             color: #222;
@@ -332,9 +352,7 @@
             padding: 0 18px;
 
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
 
             color: #555;
@@ -343,7 +361,6 @@
 
             margin-bottom: 33px;
         }
-
 
         .feedback button {
             border: none;
@@ -358,7 +375,6 @@
 
             padding: 5px 8px;
         }
-
 
         .feedback button:hover {
             color: #086b3c;
@@ -426,7 +442,6 @@
                 background 0.2s;
         }
 
-
         .course-card:hover {
             background: #fbfdfc;
 
@@ -475,19 +490,18 @@
                 width: 230px;
             }
 
-
             .content {
+                margin-left: 230px;
+
                 width: calc(100% - 230px);
 
                 padding: 30px;
             }
 
-
             .courses {
                 grid-template-columns:
                     repeat(2, minmax(0, 1fr));
             }
-
         }
 
 
@@ -498,6 +512,8 @@
         @media (max-width: 650px) {
 
             .header {
+                position: relative;
+
                 height: auto;
 
                 min-height: 75px;
@@ -505,23 +521,18 @@
                 padding: 10px 15px;
             }
 
-
             .header-logo {
                 width: 45px;
-
                 height: 45px;
             }
-
 
             .brand-title {
                 font-size: 16px;
             }
 
-
             .brand-subtitle {
                 font-size: 10px;
             }
-
 
             .header-right {
                 display: none;
@@ -532,13 +543,22 @@
 
             .main {
                 flex-direction: column;
+
+                padding-top: 0;
             }
 
 
             /* Sidebar becomes horizontal */
 
             .sidebar {
+                position: relative;
+
+                top: auto;
+                left: auto;
+
                 width: 100%;
+
+                height: auto;
 
                 min-height: auto;
 
@@ -553,6 +573,22 @@
                 gap: 5px;
 
                 border-radius: 0;
+
+                justify-content: flex-start;
+            }
+
+
+            .sidebar-top {
+                display: flex;
+
+                flex-direction: row;
+
+                gap: 5px;
+            }
+
+
+            .sidebar-bottom {
+                margin-top: 0;
             }
 
 
@@ -577,16 +613,16 @@
             /* Content */
 
             .content {
+                margin-left: 0;
+
                 width: 100%;
 
                 padding: 20px 15px;
             }
 
-
             .title-row h1 {
                 font-size: 27px;
             }
-
 
             .feedback {
                 font-size: 13px;
@@ -596,18 +632,15 @@
                 padding: 0 13px;
             }
 
-
             .courses {
                 grid-template-columns: 1fr;
 
                 gap: 15px;
             }
 
-
             .course-card {
                 min-height: 120px;
             }
-
         }
 
 
@@ -621,11 +654,9 @@
                 font-size: 14px;
             }
 
-
             .brand-subtitle {
                 display: none;
             }
-
 
             .menu {
                 min-width: 90px;
@@ -633,26 +664,21 @@
                 font-size: 11px;
             }
 
-
             .menu i {
                 font-size: 14px;
             }
-
 
             .title-row h1 {
                 font-size: 24px;
             }
 
-
             .course-card h3 {
                 font-size: 18px;
             }
 
-
             .course-card p {
                 font-size: 13px;
             }
-
         }
 
     </style>
@@ -669,37 +695,29 @@
 
     <header class="header">
 
-
         <div class="header-left">
-
 
             <img
                 src="../images/logo.png"
                 class="header-logo"
                 alt="MPSU Logo">
 
-
             <div class="header-titles">
-
 
                 <h1 class="brand-title">
                     MPSU ETEEAP LMS
                 </h1>
 
-
                 <p class="brand-subtitle">
                     Mountain Province State University
                 </p>
 
-
             </div>
-
 
         </div>
 
 
         <div class="header-right">
-
 
             <a
                 href="profile.html"
@@ -709,12 +727,9 @@
 
             </a>
 
-
         </div>
 
-
     </header>
-
 
 
     <!-- =========================================
@@ -731,90 +746,94 @@
         <aside class="sidebar">
 
 
-            <div class="view">
+            <!-- TOP MENU -->
 
-                <span>
-                    View
-                </span>
+            <div class="sidebar-top">
+
+                <div class="view">
+
+                    <span>
+                        View
+                    </span>
+
+                    <i class="fa-solid fa-table-columns"></i>
+
+                </div>
 
 
-                <i class="fa-solid fa-table-columns"></i>
+                <a
+                    href="classes.html"
+                    class="menu active">
+
+                    <i class="fa-regular fa-folder"></i>
+
+                    <span>
+                        Classes
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="grades.html"
+                    class="menu">
+
+                    <i class="fa-solid fa-chart-column"></i>
+
+                    <span>
+                        Grades
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="notification.html"
+                    class="menu">
+
+                    <i class="fa-regular fa-bell"></i>
+
+                    <span>
+                        Notifications
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="profile.html"
+                    class="menu">
+
+                    <i class="fa-regular fa-user"></i>
+
+                    <span>
+                        Profile
+                    </span>
+
+                </a>
 
             </div>
 
 
+            <!-- BOTTOM MENU -->
 
-            <a
-                href="classes.html"
-                class="menu active">
+            <div class="sidebar-bottom">
 
-                <i class="fa-regular fa-folder"></i>
+                <a
+                    href="logout.html"
+                    class="menu logout-menu">
 
-                <span>
-                    Classes
-                </span>
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
 
-            </a>
+                    <span>
+                        Logout
+                    </span>
 
+                </a>
 
-
-            <a
-                href="grades.html"
-                class="menu">
-
-                <i class="fa-solid fa-chart-column"></i>
-
-                <span>
-                    Grades
-                </span>
-
-            </a>
-
-
-
-            <a
-                href="notification.html"
-                class="menu">
-
-                <i class="fa-regular fa-bell"></i>
-
-                <span>
-                    Notifications
-                </span>
-
-            </a>
-
-
-
-            <a
-                href="profile.html"
-                class="menu">
-
-                <i class="fa-regular fa-user"></i>
-
-                <span>
-                    Profile
-                </span>
-
-            </a>
-
-
-
-            <a
-                href="logout.html"
-                class="menu">
-
-                <i class="fa-solid fa-arrow-right-from-bracket"></i>
-
-                <span>
-                    Logout
-                </span>
-
-            </a>
-
+            </div>
 
         </aside>
-
 
 
         <!-- =========================================
@@ -835,18 +854,15 @@
             </div>
 
 
-
             <!-- FEEDBACK -->
 
             <div
                 class="feedback"
                 id="feedback">
 
-
                 <span>
                     New Feedback on Intro to Computing
                 </span>
-
 
                 <button
                     type="button"
@@ -856,15 +872,12 @@
 
                 </button>
 
-
             </div>
-
 
 
             <!-- LINE -->
 
             <hr>
-
 
 
             <!-- =========================================
@@ -880,19 +893,15 @@
                     href="courses.html"
                     class="course-card">
 
-
                     <h3>
                         CRIM -A
                     </h3>
-
 
                     <p>
                         Kim Reyes
                     </p>
 
-
                 </a>
-
 
 
                 <!-- COURSE 2 -->
@@ -901,19 +910,15 @@
                     href="courses.html"
                     class="course-card">
 
-
                     <h3>
                         CRIM1
                     </h3>
-
 
                     <p>
                         Jennifer Lopez
                     </p>
 
-
                 </a>
-
 
 
                 <!-- COURSE 3 -->
@@ -922,16 +927,13 @@
                     href="courses.html"
                     class="course-card">
 
-
                     <h3>
                         CRIM 2
                     </h3>
 
-
                     <p>
                         Patricia Flores
                     </p>
-
 
                 </a>
 
@@ -941,16 +943,29 @@
 
         </main>
 
-
     </div>
-
 
 
     <!-- =========================================
          JAVASCRIPT
     ========================================== -->
 
-    <script src="student.js"></script>
+    <script>
+
+        function dismissFeedback() {
+
+            const feedback =
+                document.getElementById("feedback");
+
+            if (feedback) {
+
+                feedback.style.display = "none";
+
+            }
+
+        }
+
+    </script>
 
 
 </body>

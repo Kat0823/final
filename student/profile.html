@@ -10,17 +10,29 @@
 
     <title>Learner Profile - MPSU ETEEAP LMS</title>
 
-    <!-- Font Awesome -->
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
+
     <style>
+
+        /* =========================================
+           GENERAL
+        ========================================== */
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
+
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+        }
+
 
         body {
             font-family: Arial, sans-serif;
@@ -29,31 +41,52 @@
         }
 
 
-        /* =========================
+        a {
+            text-decoration: none;
+        }
+
+
+          /* =========================================
            HEADER
-        ========================= */
+        ========================================== */
 
         .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+
+            width: 100%;
             height: 84px;
+
             background: #086b3c;
-            color: white;
 
             display: flex;
             align-items: center;
             justify-content: space-between;
 
-            padding: 0 30px;
+            padding: 0 38px;
+
+            color: white;
+
+            border-radius: 0 0 4px 4px;
+
+            z-index: 1000;
         }
+
+
+        /* =========================================
+           HEADER LEFT
+        ========================================== */
 
         .header-left {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
         }
 
         .header-logo {
-            width: 55px;
-            height: 55px;
+            width: 58px;
+            height: 58px;
             object-fit: contain;
         }
 
@@ -63,16 +96,17 @@
         }
 
         .brand-title {
+            color: white;
             font-size: 23px;
             font-weight: bold;
+            margin-bottom: 4px;
         }
 
         .brand-subtitle {
-            font-size: 13px;
-            margin-top: 3px;
+            color: white;
+            font-size: 14px;
         }
 
-   
         .header-right {
             display: flex;
 
@@ -98,69 +132,121 @@
         }
 
 
-        /* =========================
+        /* =========================================
            MAIN LAYOUT
-        ========================= */
+        ========================================== */
 
         .main {
             display: flex;
-            min-height: calc(100vh - 84px);
+
+            width: 100%;
+
+            min-height: 100vh;
+
+            padding-top: 84px;
         }
 
 
-        /* =========================
+        /* =========================================
            SIDEBAR
-        ========================= */
+        ========================================== */
 
         .sidebar {
+            position: fixed;
+
+            top: 84px;
+            left: 0;
+
             width: 270px;
+            height: calc(100vh - 84px);
+
             background: #086b3c;
+
             padding: 25px 12px;
+
+            border-radius: 0 0 7px 0;
 
             display: flex;
             flex-direction: column;
 
+            justify-content: space-between;
+
+            overflow-y: auto;
+
             flex-shrink: 0;
+
+            z-index: 900;
         }
 
+
+        .sidebar-top {
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+
+        /* =========================================
+           VIEW
+        ========================================== */
+
         .view {
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
+            height: 60px;
+
+            padding: 0 24px;
 
             display: flex;
             align-items: center;
             justify-content: space-between;
 
-            padding: 0 25px;
-            margin-bottom: 25px;
+            color: white;
+
+            font-size: 20px;
+
+            margin-bottom: 10px;
         }
+
 
         .view i {
-            font-size: 19px;
+            font-size: 22px;
+            color: white;
         }
 
+
+        /* =========================================
+           SIDEBAR MENU
+        ========================================== */
+
         .menu {
+            width: 100%;
+
             height: 47px;
 
             display: flex;
             align-items: center;
-            gap: 15px;
+
+            gap: 20px;
 
             padding: 0 25px;
 
-            color: white;
-            font-size: 18px;
-            font-weight: 500;
+            margin-bottom: 5px;
 
             border-radius: 9px;
 
-            margin-bottom: 20px;
+            color: white;
+
+            font-size: 18px;
+
+            transition: 0.2s;
 
             text-decoration: none;
         }
 
-        /* Remove underline from sidebar links */
+
         .menu,
         .menu:hover,
         .menu:focus,
@@ -169,69 +255,104 @@
             text-decoration: none;
         }
 
+
         .menu i {
             width: 22px;
+
             text-align: center;
+
+            font-size: 19px;
         }
 
+
         .menu:hover {
-            background: #075c34;
+            background: rgba(255, 255, 255, 0.10);
         }
+
 
         .menu.active {
             background: #ffd34e;
-            color: #333;
+
+            color: #222;
+
+            font-weight: normal;
         }
 
-        .menu.active:hover {
-            background: #ffd34e;
-            color: #333;
+
+        .menu.active i {
+            color: #222;
         }
 
 
-        /* =========================
+        .logout-menu {
+            margin-bottom: 0;
+        }
+
+
+        /* =========================================
            CONTENT
-        ========================= */
+        ========================================== */
 
         .content {
-            flex: 1;
+            margin-left: 270px;
+
+            width: calc(100% - 270px);
+
+            min-height: calc(100vh - 84px);
+
             padding: 35px 40px;
+
             background: white;
         }
+
+
+        /* =========================================
+           TITLE
+        ========================================== */
 
         .title-row {
             margin-bottom: 20px;
         }
 
+
         .title-row h1 {
             font-size: 30px;
+
             color: #222;
+
             margin-bottom: 8px;
         }
 
+
         .title-row p {
             color: #666;
+
             font-size: 15px;
         }
 
+
         .content hr {
             border: none;
+
             border-top: 1px solid #ddd;
+
             margin: 20px 0 30px;
         }
 
 
-        /* =========================
+        /* =========================================
            PROFILE CARD
-        ========================= */
+        ========================================== */
 
         .profile-card {
             width: 100%;
+
             max-width: 1000px;
 
             background: white;
 
             border: 1px solid #d7d7d7;
+
             border-left: 5px solid #35a36b;
 
             border-radius: 8px;
@@ -242,12 +363,13 @@
         }
 
 
-        /* =========================
+        /* =========================================
            PROFILE TOP
-        ========================= */
+        ========================================== */
 
         .profile-top {
             display: flex;
+
             align-items: center;
 
             gap: 20px;
@@ -257,6 +379,7 @@
             border-bottom: 1px solid #ddd;
         }
 
+
         .profile-picture {
             width: 75px;
             height: 75px;
@@ -264,30 +387,39 @@
             border-radius: 50%;
 
             background: #086b3c;
+
             color: white;
 
             display: flex;
+
             align-items: center;
             justify-content: center;
 
             font-size: 30px;
+
+            flex-shrink: 0;
         }
+
 
         .profile-top h3 {
             font-size: 22px;
+
             margin-bottom: 5px;
+
             color: #222;
         }
 
+
         .profile-top p {
             color: #666;
+
             font-size: 15px;
         }
 
 
-        /* =========================
+        /* =========================================
            PROFILE BODY
-        ========================= */
+        ========================================== */
 
         .profile-body {
             display: grid;
@@ -300,9 +432,9 @@
         }
 
 
-        /* =========================
+        /* =========================================
            PROFILE INFORMATION
-        ========================= */
+        ========================================== */
 
         .profile-info {
             background: #f7faf8;
@@ -316,8 +448,10 @@
             min-height: 180px;
         }
 
+
         .profile-info p {
             font-size: 16px;
+
             line-height: 1.7;
 
             margin-bottom: 25px;
@@ -325,32 +459,38 @@
             color: #444;
         }
 
+
         .profile-info p:last-child {
             margin-bottom: 0;
         }
+
 
         .profile-info b {
             color: #086b3c;
         }
 
 
-        /* =========================
+        /* =========================================
            PROFILE FIELDS
-        ========================= */
+        ========================================== */
 
         .profile-fields {
             display: flex;
+
             flex-direction: column;
         }
 
+
         .profile-fields label {
             font-size: 15px;
+
             font-weight: bold;
 
             margin-bottom: 7px;
 
             color: #333;
         }
+
 
         .profile-fields input {
             width: 100%;
@@ -360,6 +500,7 @@
             padding: 0 13px;
 
             border: 1px solid #ccc;
+
             border-radius: 6px;
 
             font-size: 15px;
@@ -369,25 +510,29 @@
             margin-bottom: 20px;
         }
 
+
         .profile-fields input:focus {
             outline: none;
+
             border-color: #35a36b;
         }
 
 
-        /* =========================
+        /* =========================================
            EDIT BUTTON
-        ========================= */
+        ========================================== */
 
         .edit-button {
             width: fit-content;
 
             display: inline-flex;
+
             align-items: center;
 
             gap: 8px;
 
             background: #086b3c;
+
             color: white;
 
             padding: 12px 18px;
@@ -397,95 +542,187 @@
             text-decoration: none;
 
             font-size: 15px;
+
             font-weight: bold;
 
             margin-top: 5px;
         }
 
+
         .edit-button:hover {
             background: #075c34;
+
             text-decoration: none;
         }
 
 
-        /* =========================
+        /* =========================================
+           TABLET
+        ========================================== */
+
+        @media (max-width: 900px) {
+
+            .sidebar {
+                width: 230px;
+            }
+
+
+            .content {
+                margin-left: 230px;
+
+                width: calc(100% - 230px);
+
+                padding: 30px 25px;
+            }
+
+
+            .header {
+                padding: 0 25px;
+            }
+
+
+            .profile-body {
+                gap: 25px;
+            }
+
+        }
+
+
+        /* =========================================
            MOBILE
-        ========================= */
+        ========================================== */
 
         @media (max-width: 800px) {
 
             .header {
+                position: relative;
+
                 height: auto;
+
                 min-height: 84px;
+
                 padding: 15px 20px;
             }
+
 
             .brand-title {
                 font-size: 19px;
             }
 
+
             .brand-subtitle {
                 font-size: 11px;
             }
+
 
             .header-right {
                 display: none;
             }
 
+
             .main {
                 flex-direction: column;
+
+                padding-top: 0;
             }
 
+
+            /* MOBILE SIDEBAR */
+
             .sidebar {
+                position: relative;
+
+                top: auto;
+                left: auto;
+
                 width: 100%;
                 height: auto;
 
+                min-height: auto;
+
+                display: flex;
                 flex-direction: row;
 
                 overflow-x: auto;
 
-                padding: 12px;
+                padding: 8px;
 
-                gap: 8px;
+                gap: 5px;
+
+                border-radius: 0;
+
+                z-index: 1;
             }
+
+
+            .sidebar-top {
+                display: flex;
+
+                flex-direction: row;
+            }
+
+
+            .sidebar-bottom {
+                margin-top: 0;
+            }
+
 
             .view {
                 display: none;
             }
 
+
             .menu {
-                min-width: 145px;
-                margin-bottom: 0;
+                min-width: 105px;
+
+                margin: 0;
 
                 justify-content: center;
 
-                padding: 0 15px;
+                padding: 10px;
 
+                font-size: 13px;
+            }
+
+
+            .menu i {
                 font-size: 15px;
             }
 
+
+            /* CONTENT */
+
             .content {
+                margin-left: 0;
+
+                width: 100%;
+
                 padding: 25px 15px;
             }
+
 
             .title-row h1 {
                 font-size: 25px;
             }
 
+
             .profile-card {
                 padding: 20px;
             }
 
+
             .profile-body {
                 grid-template-columns: 1fr;
+
                 gap: 25px;
             }
+
         }
 
 
-        /* =========================
+        /* =========================================
            SMALL MOBILE
-        ========================= */
+        ========================================== */
 
         @media (max-width: 500px) {
 
@@ -493,175 +730,86 @@
                 gap: 10px;
             }
 
+
             .header-logo {
                 width: 45px;
+
                 height: 45px;
             }
+
 
             .brand-title {
                 font-size: 17px;
             }
 
+
             .brand-subtitle {
                 font-size: 10px;
             }
+
 
             .profile-top {
                 align-items: flex-start;
             }
 
+
             .profile-picture {
                 width: 60px;
                 height: 60px;
+
                 font-size: 24px;
             }
+
 
             .profile-top h3 {
                 font-size: 19px;
             }
 
+
             .profile-info {
                 padding: 20px;
             }
 
+
             .edit-button {
                 width: 100%;
+
                 justify-content: center;
             }
+
         }
 
     </style>
 
 </head>
 
+
 <body>
 
 
-<!-- =========================
-     HEADER
-========================= -->
+    <!-- =========================================
+         HEADER
+    ========================================== -->
 
-<header class="header">
+    <header class="header">
 
-    <div class="header-left">
+        <div class="header-left">
 
-        <img src="../images/logo.png"
-             class="header-logo"
-             alt="MPSU Logo">
-
-        <div class="header-titles">
-
-            <h1 class="brand-title">
-                MPSU ETEEAP LMS
-            </h1>
-
-            <p class="brand-subtitle">
-                Mountain Province State University
-            </p>
-
-        </div>
-
-    </div>
+            <img
+                src="../images/logo.png"
+                class="header-logo"
+                alt="MPSU Logo">
 
 
-    <div class="header-right">
+            <div class="header-titles">
 
-        <a href="profile.html"
-           class="user-link">
-            Macross Arsel
-        </a>
-
-    </div>
-
-</header>
+                <h1 class="brand-title">
+                    MPSU ETEEAP LMS
+                </h1>
 
 
-<!-- =========================
-     MAIN
-========================= -->
-
-<div class="main">
-
-
-    <!-- =========================
-         SIDEBAR
-    ========================= -->
-
-    <aside class="sidebar">
-
-        <div class="view">
-            View
-            <i class="fa-solid fa-table-columns"></i>
-        </div>
-
-
-        <a href="classes.html"
-           class="menu">
-
-            <i class="fa-regular fa-folder"></i>
-
-            Classes
-
-        </a>
-
-
-        <a href="grades.html"
-           class="menu">
-
-            <i class="fa-solid fa-chart-column"></i>
-
-            <span>Grades</span>
-
-        </a>
-
-
-        <a href="notification.html"
-           class="menu">
-
-            <i class="fa-regular fa-bell"></i>
-
-            Notifications
-
-        </a>
-
-
-        <a href="profile.html"
-           class="menu active">
-
-            <i class="fa-regular fa-user"></i>
-
-            Profile
-
-        </a>
-
-
-        <a href="logout.html"
-           class="menu">
-
-            <i class="fa-solid fa-arrow-right-from-bracket"></i>
-
-            Logout
-
-        </a>
-
-    </aside>
-
-
-    <!-- =========================
-         CONTENT
-    ========================= -->
-
-    <main class="content profile-content">
-
-
-        <div class="title-row">
-
-            <div>
-
-                <h1>Learner Profile</h1>
-
-                <p>
-                    View your personal information and account details.
+                <p class="brand-subtitle">
+                    Mountain Province State University
                 </p>
 
             </div>
@@ -669,122 +817,250 @@
         </div>
 
 
-        <hr>
+        <div class="header-right">
 
+            <a
+                href="profile.html"
+                class="user-link">
 
-        <!-- PROFILE CARD -->
+                Macross Arsel
 
-        <div class="profile-card">
-
-
-            <!-- PROFILE HEADER -->
-
-            <div class="profile-top">
-
-                <div class="profile-picture">
-
-                    <i class="fa-solid fa-user"></i>
-
-                </div>
-
-
-                <div>
-
-                    <h3>
-                        Macross Arsel
-                    </h3>
-
-                    <p>
-                        Learner
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <!-- PROFILE INFORMATION -->
-
-            <div class="profile-body">
-
-
-                <!-- BASIC INFORMATION -->
-
-                <div class="profile-info">
-
-                    <p>
-
-                        <b>Full Name:</b>
-
-                        <br>
-
-                        Macross Arsel
-
-                    </p>
-
-
-                    <p>
-
-                        <b>Learner ID:</b>
-
-                        <br>
-
-                        26-00123
-
-                    </p>
-
-                </div>
-
-
-                <!-- ACCOUNT INFORMATION -->
-
-                <div class="profile-fields">
-
-
-                    <label for="profileEmail">
-                        Email Address
-                    </label>
-
-                    <input
-                        type="email"
-                        id="profileEmail"
-                        value="arsel@gmail.com"
-                        readonly
-                    >
-
-
-                    <label for="profilePassword">
-                        Password
-                    </label>
-
-                    <input
-                        type="password"
-                        id="profilePassword"
-                        value="********"
-                        readonly
-                    >
-
-
-                    <a href="edit-account.html"
-                       class="edit-button">
-
-                        <i class="fa-solid fa-pen-to-square"></i>
-
-                        Edit Account Settings
-
-                    </a>
-
-                </div>
-
-
-            </div>
+            </a>
 
         </div>
 
+    </header>
 
-    </main>
 
-</div>
+
+    <!-- =========================================
+         MAIN
+    ========================================== -->
+
+    <div class="main">
+
+
+        <!-- =========================================
+             SIDEBAR
+        ========================================== -->
+
+        <aside class="sidebar">
+
+
+            <div class="sidebar-top">
+
+                <div class="view">
+
+                    <span>View</span>
+
+                    <i class="fa-solid fa-table-columns"></i>
+
+                </div>
+
+
+                <a
+                    href="classes.html"
+                    class="menu">
+
+                    <i class="fa-regular fa-folder"></i>
+
+                    <span>Classes</span>
+
+                </a>
+
+
+                <a
+                    href="grades.html"
+                    class="menu">
+
+                    <i class="fa-solid fa-chart-column"></i>
+
+                    <span>Grades</span>
+
+                </a>
+
+
+                <a
+                    href="notification.html"
+                    class="menu">
+
+                    <i class="fa-regular fa-bell"></i>
+
+                    <span>Notifications</span>
+
+                </a>
+
+
+                <a
+                    href="profile.html"
+                    class="menu active">
+
+                    <i class="fa-regular fa-user"></i>
+
+                    <span>Profile</span>
+
+                </a>
+
+            </div>
+
+
+            <div class="sidebar-bottom">
+
+                <a
+                    href="logout.html"
+                    class="menu logout-menu">
+
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+
+                    <span>Logout</span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+
+
+        <!-- =========================================
+             CONTENT
+        ========================================== -->
+
+        <main class="content profile-content">
+
+
+            <div class="title-row">
+
+                <h1>
+                    Learner Profile
+                </h1>
+
+
+                <p>
+                    View your personal information and account details.
+                </p>
+
+            </div>
+
+
+            <hr>
+
+
+            <!-- PROFILE CARD -->
+
+            <div class="profile-card">
+
+
+                <!-- PROFILE TOP -->
+
+                <div class="profile-top">
+
+                    <div class="profile-picture">
+
+                        <i class="fa-solid fa-user"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <h3>
+                            Macross Arsel
+                        </h3>
+
+
+                        <p>
+                            Learner
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PROFILE BODY -->
+
+                <div class="profile-body">
+
+
+                    <!-- BASIC INFORMATION -->
+
+                    <div class="profile-info">
+
+                        <p>
+
+                            <b>Full Name:</b>
+
+                            <br>
+
+                            Macross Arsel
+
+                        </p>
+
+
+                        <p>
+
+                            <b>Learner ID:</b>
+
+                            <br>
+
+                            26-00123
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- ACCOUNT INFORMATION -->
+
+                    <div class="profile-fields">
+
+
+                        <label for="profileEmail">
+                            Email Address
+                        </label>
+
+
+                        <input
+                            type="email"
+                            id="profileEmail"
+                            value="arsel@gmail.com"
+                            readonly>
+
+
+                        <label for="profilePassword">
+                            Password
+                        </label>
+
+
+                        <input
+                            type="password"
+                            id="profilePassword"
+                            value="********"
+                            readonly>
+
+
+                        <a
+                            href="edit-account.html"
+                            class="edit-button">
+
+                            <i class="fa-solid fa-pen-to-square"></i>
+
+                            Edit Account Settings
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
 
 </body>
+
 </html>

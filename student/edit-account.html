@@ -17,10 +17,6 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
 
-    <!-- =========================================
-         CSS
-    ========================================== -->
-
     <style>
 
         /* =========================================
@@ -43,9 +39,7 @@
 
         body {
             font-family: Arial, sans-serif;
-
             background: white;
-
             color: #222;
         }
 
@@ -60,16 +54,18 @@
         ========================================== */
 
         .header {
-            width: 100%;
+            position: fixed;
 
+            top: 0;
+            left: 0;
+
+            width: 100%;
             height: 84px;
 
             background: #086b3c;
 
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
 
             padding: 0 38px;
@@ -77,6 +73,35 @@
             color: white;
 
             border-radius: 0 0 4px 4px;
+
+            z-index: 1000;
+        }
+
+  /* =========================================
+           HEADER
+        ========================================== */
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 84px;
+
+            background: #086b3c;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 38px;
+
+            color: white;
+
+            border-radius: 0 0 4px 4px;
+
+            z-index: 1000;
         }
 
 
@@ -86,46 +111,32 @@
 
         .header-left {
             display: flex;
-
             align-items: center;
-
             gap: 20px;
         }
 
-
         .header-logo {
             width: 58px;
-
             height: 58px;
-
             object-fit: contain;
         }
 
-
         .header-titles {
             display: flex;
-
             flex-direction: column;
         }
 
-
         .brand-title {
             color: white;
-
             font-size: 23px;
-
             font-weight: bold;
-
             margin-bottom: 4px;
         }
 
-
         .brand-subtitle {
             color: white;
-
             font-size: 14px;
         }
-
 
         /* =========================================
            HEADER RIGHT
@@ -133,7 +144,6 @@
 
         .header-right {
             display: flex;
-
             align-items: center;
         }
 
@@ -163,7 +173,9 @@
 
             display: flex;
 
-            min-height: calc(100vh - 84px);
+            min-height: 100vh;
+
+            padding-top: 84px;
         }
 
 
@@ -172,17 +184,46 @@
         ========================================== */
 
         .sidebar {
-            width: 270px;
+            position: fixed;
 
-            min-height: calc(100vh - 84px);
+            top: 84px;
+            left: 0;
+
+            width: 270px;
+            height: calc(100vh - 84px);
 
             background: #086b3c;
 
             padding: 25px 12px;
 
-            flex-shrink: 0;
-
             border-radius: 0 0 7px 0;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            overflow-y: auto;
+
+            z-index: 900;
+        }
+
+
+        /* =========================================
+           SIDEBAR TOP
+        ========================================== */
+
+        .sidebar-top {
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        /* =========================================
+           SIDEBAR BOTTOM
+        ========================================== */
+
+        .sidebar-bottom {
+            margin-top: auto;
         }
 
 
@@ -196,9 +237,7 @@
             padding: 0 24px;
 
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
 
             color: white;
@@ -211,7 +250,6 @@
 
         .view i {
             font-size: 22px;
-
             color: white;
         }
 
@@ -222,11 +260,9 @@
 
         .menu {
             width: 100%;
-
             height: 47px;
 
             display: flex;
-
             align-items: center;
 
             gap: 20px;
@@ -241,7 +277,17 @@
 
             font-size: 18px;
 
-            transition: 0.2s;
+            transition: background 0.2s;
+
+            text-decoration: none;
+        }
+
+
+        .menu:hover,
+        .menu:focus,
+        .menu:active,
+        .menu:visited {
+            text-decoration: none;
         }
 
 
@@ -267,6 +313,8 @@
             background: #ffd34e;
 
             color: #222;
+
+            text-decoration: none;
         }
 
 
@@ -276,11 +324,20 @@
 
 
         /* =========================================
+           LOGOUT
+        ========================================== */
+
+        .logout-menu {
+            margin-bottom: 0;
+        }
+
+
+        /* =========================================
            CONTENT
         ========================================== */
 
         .content {
-            flex: 1;
+            margin-left: 270px;
 
             width: calc(100% - 270px);
 
@@ -289,6 +346,8 @@
             padding: 35px 40px;
 
             min-width: 0;
+
+            min-height: calc(100vh - 84px);
         }
 
 
@@ -352,7 +411,6 @@
 
         .profile-picture {
             width: 70px;
-
             height: 70px;
 
             border-radius: 50%;
@@ -364,10 +422,11 @@
             display: flex;
 
             align-items: center;
-
             justify-content: center;
 
             font-size: 30px;
+
+            flex-shrink: 0;
         }
 
 
@@ -579,6 +638,8 @@
 
 
             .content {
+                margin-left: 230px;
+
                 width: calc(100% - 230px);
 
                 padding: 30px;
@@ -598,7 +659,11 @@
 
         @media (max-width: 650px) {
 
+            /* Header */
+
             .header {
+                position: relative;
+
                 height: auto;
 
                 min-height: 75px;
@@ -609,7 +674,6 @@
 
             .header-logo {
                 width: 45px;
-
                 height: 45px;
             }
 
@@ -633,13 +697,22 @@
 
             .main {
                 flex-direction: column;
+
+                padding-top: 0;
             }
 
 
             /* Sidebar */
 
             .sidebar {
+                position: relative;
+
+                top: auto;
+                left: auto;
+
                 width: 100%;
+
+                height: auto;
 
                 min-height: auto;
 
@@ -654,6 +727,20 @@
                 gap: 5px;
 
                 border-radius: 0;
+            }
+
+
+            .sidebar-top {
+                display: flex;
+
+                flex-direction: row;
+
+                gap: 5px;
+            }
+
+
+            .sidebar-bottom {
+                margin-top: 0;
             }
 
 
@@ -678,9 +765,13 @@
             /* Content */
 
             .content {
+                margin-left: 0;
+
                 width: 100%;
 
                 padding: 25px 15px;
+
+                min-height: auto;
             }
 
 
@@ -691,7 +782,7 @@
             }
 
 
-            /* Edit card */
+            /* Edit Card */
 
             .edit-card {
                 padding: 22px 18px;
@@ -762,7 +853,6 @@
 
             .profile-picture {
                 width: 60px;
-
                 height: 60px;
 
                 font-size: 25px;
@@ -846,86 +936,101 @@
         <aside class="sidebar">
 
 
-            <div class="view">
+            <!-- SIDEBAR TOP -->
 
-                <span>
-                    View
-                </span>
+            <div class="sidebar-top">
 
 
-                <i class="fa-solid fa-table-columns"></i>
+                <div class="view">
+
+                    <span>
+                        View
+                    </span>
+
+
+                    <i class="fa-solid fa-table-columns"></i>
+
+                </div>
+
+
+
+                <a
+                    href="classes.html"
+                    class="menu">
+
+                    <i class="fa-regular fa-folder"></i>
+
+                    <span>
+                        Classes
+                    </span>
+
+                </a>
+
+
+
+                <a
+                    href="grades.html"
+                    class="menu">
+
+                    <i class="fa-solid fa-chart-column"></i>
+
+                    <span>
+                        Grades
+                    </span>
+
+                </a>
+
+
+
+                <a
+                    href="notification.html"
+                    class="menu">
+
+                    <i class="fa-regular fa-bell"></i>
+
+                    <span>
+                        Notifications
+                    </span>
+
+                </a>
+
+
+
+                <a
+                    href="profile.html"
+                    class="menu active">
+
+                    <i class="fa-regular fa-user"></i>
+
+                    <span>
+                        Profile
+                    </span>
+
+                </a>
 
             </div>
 
 
 
-            <a
-                href="classes.html"
-                class="menu">
+            <!-- SIDEBAR BOTTOM -->
 
-                <i class="fa-regular fa-folder"></i>
-
-                <span>
-                    Classes
-                </span>
-
-            </a>
+            <div class="sidebar-bottom">
 
 
+                <a
+                    href="logout.html"
+                    class="menu logout-menu">
 
-            <a
-                href="grades.html"
-                class="menu">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
 
-                <i class="fa-solid fa-chart-column"></i>
+                    <span>
+                        Logout
+                    </span>
 
-                <span>
-                    Grades
-                </span>
-
-            </a>
-
+                </a>
 
 
-            <a
-                href="notification.html"
-                class="menu">
-
-                <i class="fa-regular fa-bell"></i>
-
-                <span>
-                    Notifications
-                </span>
-
-            </a>
-
-
-
-            <a
-                href="profile.html"
-                class="menu active">
-
-                <i class="fa-regular fa-user"></i>
-
-                <span>
-                    Profile
-                </span>
-
-            </a>
-
-
-
-            <a
-                href="logout.html"
-                class="menu">
-
-                <i class="fa-solid fa-arrow-right-from-bracket"></i>
-
-                <span>
-                    Logout
-                </span>
-
-            </a>
+            </div>
 
 
         </aside>
@@ -981,9 +1086,7 @@
 
 
 
-                <!-- =================================
-                     FORM
-                ================================== -->
+                <!-- FORM -->
 
                 <form id="editForm">
 
@@ -1103,9 +1206,7 @@
 
 
 
-                    <!-- =================================
-                         BUTTONS
-                    ================================== -->
+                    <!-- BUTTONS -->
 
                     <div class="edit-buttons">
 

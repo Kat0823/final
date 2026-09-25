@@ -56,8 +56,12 @@
         ========================================== */
 
         .header {
-            width: 100%;
+            position: fixed;
 
+            top: 0;
+            left: 0;
+
+            width: 100%;
             height: 84px;
 
             background: #086b3c;
@@ -73,6 +77,8 @@
             color: white;
 
             border-radius: 0 0 4px 4px;
+
+            z-index: 1000;
         }
 
 
@@ -151,7 +157,7 @@
 
 
         /* =========================================
-           MAIN LAYOUT
+           MAIN
         ========================================== */
 
         .main {
@@ -159,7 +165,9 @@
 
             display: flex;
 
-            min-height: calc(100vh - 84px);
+            min-height: 100vh;
+
+            padding-top: 84px;
         }
 
 
@@ -168,17 +176,49 @@
         ========================================== */
 
         .sidebar {
-            width: 270px;
+            position: fixed;
 
-            min-height: calc(100vh - 84px);
+            top: 84px;
+            left: 0;
+
+            width: 270px;
+            height: calc(100vh - 84px);
 
             background: #086b3c;
 
             padding: 25px 12px;
 
-            flex-shrink: 0;
-
             border-radius: 0 0 7px 0;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: space-between;
+
+            overflow-y: auto;
+
+            z-index: 900;
+        }
+
+
+        /* =========================================
+           SIDEBAR TOP
+        ========================================== */
+
+        .sidebar-top {
+            display: flex;
+
+            flex-direction: column;
+        }
+
+
+        /* =========================================
+           SIDEBAR BOTTOM
+        ========================================== */
+
+        .sidebar-bottom {
+            margin-top: auto;
         }
 
 
@@ -237,7 +277,18 @@
 
             font-size: 18px;
 
-            transition: 0.2s;
+            transition: background 0.2s;
+
+            text-decoration: none;
+        }
+
+
+        .menu,
+        .menu:hover,
+        .menu:focus,
+        .menu:active,
+        .menu:visited {
+            text-decoration: none;
         }
 
 
@@ -265,6 +316,8 @@
             color: #222;
 
             font-weight: normal;
+
+            text-decoration: none;
         }
 
 
@@ -274,11 +327,20 @@
 
 
         /* =========================================
+           LOGOUT
+        ========================================== */
+
+        .logout-menu {
+            margin-bottom: 0;
+        }
+
+
+        /* =========================================
            CONTENT
         ========================================== */
 
         .content {
-            flex: 1;
+            margin-left: 270px;
 
             width: calc(100% - 270px);
 
@@ -287,6 +349,8 @@
             padding: 35px 40px;
 
             min-width: 0;
+
+            min-height: calc(100vh - 84px);
         }
 
 
@@ -517,6 +581,8 @@
 
 
             .content {
+                margin-left: 230px;
+
                 width: calc(100% - 230px);
 
                 padding: 30px;
@@ -536,7 +602,11 @@
 
         @media (max-width: 650px) {
 
+            /* Header */
+
             .header {
+                position: relative;
+
                 height: auto;
 
                 min-height: 75px;
@@ -571,13 +641,22 @@
 
             .main {
                 flex-direction: column;
+
+                padding-top: 0;
             }
 
 
             /* Sidebar */
 
             .sidebar {
+                position: relative;
+
+                top: auto;
+                left: auto;
+
                 width: 100%;
+
+                height: auto;
 
                 min-height: auto;
 
@@ -592,6 +671,20 @@
                 gap: 5px;
 
                 border-radius: 0;
+            }
+
+
+            .sidebar-top {
+                display: flex;
+
+                flex-direction: row;
+
+                gap: 5px;
+            }
+
+
+            .sidebar-bottom {
+                margin-top: 0;
             }
 
 
@@ -616,9 +709,13 @@
             /* Content */
 
             .content {
+                margin-left: 0;
+
                 width: 100%;
 
                 padding: 25px 15px;
+
+                min-height: auto;
             }
 
 
@@ -788,86 +885,102 @@
         <aside class="sidebar">
 
 
-            <div class="view">
+            <!-- SIDEBAR TOP -->
 
-                <span>
-                    View
-                </span>
+            <div class="sidebar-top">
 
 
-                <i class="fa-solid fa-table-columns"></i>
+                <div class="view">
+
+                    <span>
+                        View
+                    </span>
+
+
+                    <i class="fa-solid fa-table-columns"></i>
+
+                </div>
+
+
+
+                <a
+                    href="classes.html"
+                    class="menu">
+
+                    <i class="fa-regular fa-folder"></i>
+
+                    <span>
+                        Classes
+                    </span>
+
+                </a>
+
+
+
+                <a
+                    href="grades.html"
+                    class="menu active">
+
+                    <i class="fa-solid fa-chart-column"></i>
+
+                    <span>
+                        Grades
+                    </span>
+
+                </a>
+
+
+
+                <a
+                    href="notification.html"
+                    class="menu">
+
+                    <i class="fa-regular fa-bell"></i>
+
+                    <span>
+                        Notifications
+                    </span>
+
+                </a>
+
+
+
+                <a
+                    href="profile.html"
+                    class="menu">
+
+                    <i class="fa-regular fa-user"></i>
+
+                    <span>
+                        Profile
+                    </span>
+
+                </a>
+
 
             </div>
 
 
 
-            <a
-                href="classes.html"
-                class="menu">
+            <!-- SIDEBAR BOTTOM -->
 
-                <i class="fa-regular fa-folder"></i>
-
-                <span>
-                    Classes
-                </span>
-
-            </a>
+            <div class="sidebar-bottom">
 
 
+                <a
+                    href="logout.html"
+                    class="menu logout-menu">
 
-            <a
-                href="grades.html"
-                class="menu active">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
 
-                <i class="fa-solid fa-chart-column"></i>
+                    <span>
+                        Logout
+                    </span>
 
-                <span>
-                    Grades
-                </span>
-
-            </a>
-
+                </a>
 
 
-            <a
-                href="notification.html"
-                class="menu">
-
-                <i class="fa-regular fa-bell"></i>
-
-                <span>
-                    Notifications
-                </span>
-
-            </a>
-
-
-
-            <a
-                href="profile.html"
-                class="menu">
-
-                <i class="fa-regular fa-user"></i>
-
-                <span>
-                    Profile
-                </span>
-
-            </a>
-
-
-
-            <a
-                href="logout.html"
-                class="menu">
-
-                <i class="fa-solid fa-arrow-right-from-bracket"></i>
-
-                <span>
-                    Logout
-                </span>
-
-            </a>
+            </div>
 
 
         </aside>
@@ -921,8 +1034,11 @@
 
 
                 <p class="instructor">
+
                     <b>Instructor:</b>
+
                     Kim Reyes
+
                 </p>
 
 
