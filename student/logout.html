@@ -10,12 +10,9 @@
 
     <title>Logout - MPSU ETEEAP LMS</title>
 
-
     <!-- Font Awesome -->
-
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
 
     <style>
 
@@ -29,28 +26,24 @@
             padding: 0;
         }
 
-
         html,
         body {
             width: 100%;
             min-height: 100%;
         }
 
-
         body {
             font-family: Arial, sans-serif;
-
             background-color: #ffffff;
-
             color: #333;
         }
-
 
         a {
             text-decoration: none;
         }
 
-  /* =========================================
+
+        /* =========================================
            HEADER
         ========================================== */
 
@@ -76,11 +69,6 @@
 
             z-index: 1000;
         }
-
-
-        /* =========================================
-           HEADER LEFT
-        ========================================== */
 
         .header-left {
             display: flex;
@@ -118,23 +106,16 @@
 
         .header-right {
             display: flex;
-
             flex-direction: column;
-
             align-items: flex-end;
         }
 
-
         .user-link {
             color: white;
-
             font-size: 16px;
-
             text-decoration: underline;
-
             cursor: pointer;
         }
-
 
         .user-link:hover {
             color: #ffd32a;
@@ -147,9 +128,7 @@
 
         .main {
             display: flex;
-
             min-height: 100vh;
-
             padding-top: 84px;
         }
 
@@ -165,7 +144,6 @@
             left: 0;
 
             width: 270px;
-
             height: calc(100vh - 84px);
 
             background: #086b3c;
@@ -175,9 +153,7 @@
             border-radius: 0 0 7px 0;
 
             display: flex;
-
             flex-direction: column;
-
             justify-content: space-between;
 
             overflow-y: auto;
@@ -185,21 +161,10 @@
             z-index: 900;
         }
 
-
-        /* =========================================
-           SIDEBAR TOP
-        ========================================== */
-
         .sidebar-top {
             display: flex;
-
             flex-direction: column;
         }
-
-
-        /* =========================================
-           SIDEBAR BOTTOM
-        ========================================== */
 
         .sidebar-bottom {
             margin-top: auto;
@@ -216,9 +181,7 @@
             padding: 0 24px;
 
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
 
             color: white;
@@ -228,25 +191,21 @@
             margin-bottom: 10px;
         }
 
-
         .view i {
             font-size: 22px;
-
             color: white;
         }
 
 
         /* =========================================
-           SIDEBAR MENU
+           MENU
         ========================================== */
 
         .menu {
             width: 100%;
-
             height: 47px;
 
             display: flex;
-
             align-items: center;
 
             gap: 20px;
@@ -266,7 +225,6 @@
             text-decoration: none;
         }
 
-
         .menu,
         .menu:hover,
         .menu:focus,
@@ -275,44 +233,25 @@
             text-decoration: none;
         }
 
-
         .menu i {
             width: 22px;
-
             text-align: center;
-
             font-size: 19px;
         }
-
 
         .menu:hover {
             background: rgba(255, 255, 255, 0.10);
         }
 
-
-        /* =========================================
-           ACTIVE MENU
-        ========================================== */
-
         .menu.active {
             background: #ffd34e;
-
             color: #222;
-
             font-weight: normal;
-
-            text-decoration: none;
         }
-
 
         .menu.active i {
             color: #222;
         }
-
-
-        /* =========================================
-           LOGOUT
-        ========================================== */
 
         .logout-menu {
             margin-bottom: 0;
@@ -346,26 +285,16 @@
             margin-bottom: 15px;
         }
 
-
         .title-row h1 {
             font-size: 28px;
-
             color: #222;
         }
 
-
         .title-row p {
             margin-top: 6px;
-
             color: #666;
-
             font-size: 14px;
         }
-
-
-        /* =========================================
-           HORIZONTAL LINE
-        ========================================== */
 
         .content hr {
             width: 100%;
@@ -388,7 +317,6 @@
             display: flex;
 
             justify-content: center;
-
             align-items: center;
         }
 
@@ -423,7 +351,6 @@
 
         .logout-icon {
             width: 70px;
-
             height: 70px;
 
             margin: 0 auto 20px;
@@ -437,7 +364,6 @@
             display: flex;
 
             align-items: center;
-
             justify-content: center;
 
             font-size: 28px;
@@ -455,7 +381,6 @@
 
             margin-bottom: 10px;
         }
-
 
         .logout-box p {
             color: #666;
@@ -480,7 +405,6 @@
             gap: 12px;
         }
 
-
         .logout-buttons button {
             min-width: 130px;
 
@@ -494,7 +418,7 @@
 
             cursor: pointer;
 
-            transition: 0.2s;
+            transition: background 0.2s;
         }
 
 
@@ -509,7 +433,6 @@
 
             border: 1px solid #bdbdbd;
         }
-
 
         .cancel-btn:hover {
             background-color: #f3f3f3;
@@ -528,7 +451,6 @@
             border: 1px solid #086b3c;
         }
 
-
         .confirm-logout-btn:hover {
             background-color: #075c34;
         }
@@ -543,7 +465,6 @@
             .sidebar {
                 width: 230px;
             }
-
 
             .content {
                 margin-left: 230px;
@@ -562,8 +483,6 @@
 
         @media (max-width: 768px) {
 
-            /* Header */
-
             .header {
                 position: relative;
 
@@ -574,30 +493,22 @@
                 padding: 15px 20px;
             }
 
-
             .header-logo {
                 width: 48px;
-
                 height: 48px;
             }
-
 
             .brand-title {
                 font-size: 18px;
             }
 
-
             .brand-subtitle {
                 font-size: 11px;
             }
 
-
             .header-right {
                 display: none;
             }
-
-
-            /* Main */
 
             .main {
                 flex-direction: column;
@@ -606,25 +517,21 @@
             }
 
 
-            /* Sidebar */
+            /* MOBILE SIDEBAR */
 
             .sidebar {
                 position: relative;
 
                 top: auto;
-
                 left: auto;
 
                 width: 100%;
-
                 height: auto;
 
                 min-width: 100%;
-
                 min-height: auto;
 
                 display: flex;
-
                 flex-direction: row;
 
                 overflow-x: auto;
@@ -636,25 +543,19 @@
                 border-radius: 0;
             }
 
-
             .sidebar-top {
                 display: flex;
-
                 flex-direction: row;
-
                 gap: 5px;
             }
-
 
             .sidebar-bottom {
                 margin-top: 0;
             }
 
-
             .view {
                 display: none;
             }
-
 
             .menu {
                 min-width: 105px;
@@ -670,9 +571,6 @@
                 font-size: 13px;
             }
 
-
-            /* Content */
-
             .content {
                 margin-left: 0;
 
@@ -683,21 +581,17 @@
                 min-height: auto;
             }
 
-
             .title-row h1 {
                 font-size: 24px;
             }
-
 
             .logout-box {
                 padding: 30px 20px;
             }
 
-
             .logout-buttons {
                 flex-direction: column;
             }
-
 
             .logout-buttons button {
                 width: 100%;
@@ -714,46 +608,36 @@
 
             .header-logo {
                 width: 42px;
-
                 height: 42px;
             }
-
 
             .brand-title {
                 font-size: 16px;
             }
 
-
             .brand-subtitle {
                 font-size: 10px;
             }
-
 
             .logout-box {
                 padding: 25px 18px;
             }
 
-
             .logout-box h2 {
                 font-size: 21px;
             }
 
-
             .logout-icon {
                 width: 60px;
-
                 height: 60px;
 
                 font-size: 24px;
             }
 
-
             .menu {
                 min-width: 90px;
-
                 font-size: 11px;
             }
-
 
             .menu i {
                 font-size: 14px;
@@ -769,43 +653,33 @@
 <body>
 
 
-    <!-- =========================================
-         HEADER
-    ========================================== -->
+    <!-- HEADER -->
 
     <header class="header">
 
-
         <div class="header-left">
-
 
             <img
                 src="../images/logo.png"
                 class="header-logo"
                 alt="MPSU Logo">
 
-
             <div class="header-titles">
-
 
                 <h1 class="brand-title">
                     MPSU ETEEAP LMS
                 </h1>
 
-
                 <p class="brand-subtitle">
                     Mountain Province State University
                 </p>
 
-
             </div>
-
 
         </div>
 
 
         <div class="header-right">
-
 
             <a
                 href="profile.html"
@@ -815,44 +689,30 @@
 
             </a>
 
-
         </div>
-
 
     </header>
 
 
 
-    <!-- =========================================
-         MAIN
-    ========================================== -->
+    <!-- MAIN -->
 
     <div class="main">
 
 
-        <!-- =========================================
-             SIDEBAR
-        ========================================== -->
+        <!-- SIDEBAR -->
 
         <aside class="sidebar">
 
-
-            <!-- SIDEBAR TOP -->
-
             <div class="sidebar-top">
-
 
                 <div class="view">
 
-                    <span>
-                        View
-                    </span>
-
+                    <span>View</span>
 
                     <i class="fa-solid fa-table-columns"></i>
 
                 </div>
-
 
 
                 <a
@@ -861,12 +721,9 @@
 
                     <i class="fa-regular fa-folder"></i>
 
-                    <span>
-                        Classes
-                    </span>
+                    <span>Classes</span>
 
                 </a>
-
 
 
                 <a
@@ -875,12 +732,9 @@
 
                     <i class="fa-solid fa-chart-column"></i>
 
-                    <span>
-                        Grades
-                    </span>
+                    <span>Grades</span>
 
                 </a>
-
 
 
                 <a
@@ -889,12 +743,9 @@
 
                     <i class="fa-regular fa-bell"></i>
 
-                    <span>
-                        Notifications
-                    </span>
+                    <span>Notifications</span>
 
                 </a>
-
 
 
                 <a
@@ -903,21 +754,14 @@
 
                     <i class="fa-regular fa-user"></i>
 
-                    <span>
-                        Profile
-                    </span>
+                    <span>Profile</span>
 
                 </a>
-
 
             </div>
 
 
-
-            <!-- SIDEBAR BOTTOM -->
-
             <div class="sidebar-bottom">
-
 
                 <a
                     href="logout.html"
@@ -925,28 +769,20 @@
 
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
 
-                    <span>
-                        Logout
-                    </span>
+                    <span>Logout</span>
 
                 </a>
 
-
             </div>
-
 
         </aside>
 
 
 
-        <!-- =========================================
-             CONTENT
-        ========================================== -->
+        <!-- CONTENT -->
 
         <main class="content">
 
-
-            <!-- PAGE TITLE -->
 
             <div class="title-row">
 
@@ -960,16 +796,11 @@
             <hr>
 
 
-
-            <!-- =====================================
-                 LOGOUT CARD
-            ====================================== -->
+            <!-- LOGOUT CARD -->
 
             <div class="logout-container">
 
-
                 <div class="logout-box">
-
 
                     <div class="logout-icon">
 
@@ -991,7 +822,6 @@
 
                     <div class="logout-buttons">
 
-
                         <button
                             type="button"
                             class="cancel-btn"
@@ -1011,26 +841,19 @@
 
                         </button>
 
-
                     </div>
-
 
                 </div>
 
-
             </div>
 
-
         </main>
-
 
     </div>
 
 
 
-    <!-- =========================================
-         JAVASCRIPT
-    ========================================== -->
+    <!-- JAVASCRIPT -->
 
     <script>
 
@@ -1045,12 +868,13 @@
 
             sessionStorage.clear();
 
+            localStorage.removeItem("isLoggedIn");
+
             window.location.href = "../index.html";
 
         }
 
     </script>
-
 
 </body>
 

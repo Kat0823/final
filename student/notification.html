@@ -10,6 +10,8 @@
 
     <title>Notifications - MPSU ETEEAP LMS</title>
 
+
+    <!-- Font Awesome -->
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
@@ -45,12 +47,14 @@
             text-decoration: none;
         }
 
-  /* =========================================
+
+        /* =========================================
            HEADER
         ========================================== */
 
         .header {
             position: fixed;
+
             top: 0;
             left: 0;
 
@@ -67,15 +71,9 @@
 
             color: white;
 
-            border-radius: 0 0 4px 4px;
-
             z-index: 1000;
         }
 
-
-        /* =========================================
-           HEADER LEFT
-        ========================================== */
 
         .header-left {
             display: flex;
@@ -83,36 +81,41 @@
             gap: 20px;
         }
 
+
         .header-logo {
             width: 58px;
             height: 58px;
+
             object-fit: contain;
         }
+
 
         .header-titles {
             display: flex;
             flex-direction: column;
         }
 
+
         .brand-title {
             color: white;
+
             font-size: 23px;
             font-weight: bold;
+
             margin-bottom: 4px;
         }
 
+
         .brand-subtitle {
             color: white;
+
             font-size: 14px;
         }
 
 
         .header-right {
             display: flex;
-
-            flex-direction: column;
-
-            align-items: flex-end;
+            align-items: center;
         }
 
 
@@ -121,7 +124,7 @@
 
             font-size: 16px;
 
-            text-decoration: underline;
+            text-decoration: none;
 
             cursor: pointer;
         }
@@ -164,8 +167,6 @@
 
             padding: 25px 12px;
 
-            border-radius: 0 0 7px 0;
-
             display: flex;
             flex-direction: column;
 
@@ -173,29 +174,24 @@
 
             overflow-y: auto;
 
-            flex-shrink: 0;
-
             z-index: 900;
         }
 
 
-        /* SIDEBAR TOP */
-
         .sidebar-top {
             display: flex;
-
             flex-direction: column;
         }
 
-
-        /* SIDEBAR BOTTOM */
 
         .sidebar-bottom {
             margin-top: auto;
         }
 
 
-        /* VIEW */
+        /* =========================================
+           VIEW
+        ========================================== */
 
         .view {
             height: 60px;
@@ -223,7 +219,9 @@
         }
 
 
-        /* MENU */
+        /* =========================================
+           MENU
+        ========================================== */
 
         .menu {
             width: 100%;
@@ -252,7 +250,6 @@
         }
 
 
-        .menu,
         .menu:hover,
         .menu:focus,
         .menu:active,
@@ -279,8 +276,6 @@
             background: #ffd34e;
 
             color: #222;
-
-            font-weight: normal;
         }
 
 
@@ -316,6 +311,12 @@
         ========================================== */
 
         .title-row {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
             margin-bottom: 15px;
         }
 
@@ -336,12 +337,62 @@
         }
 
 
+        .notification-count {
+            background: #086b3c;
+
+            color: white;
+
+            padding: 6px 12px;
+
+            border-radius: 20px;
+
+            font-size: 13px;
+
+            font-weight: bold;
+        }
+
+
         .content hr {
             border: none;
 
             border-top: 1px solid #dddddd;
 
-            margin-bottom: 25px;
+            margin-bottom: 20px;
+        }
+
+
+        /* =========================================
+           NOTIFICATION ACTIONS
+        ========================================== */
+
+        .notification-actions {
+            max-width: 950px;
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            margin-bottom: 15px;
+        }
+
+
+        .mark-read-button {
+            border: none;
+
+            background: transparent;
+
+            color: #086b3c;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+
+        .mark-read-button:hover {
+            text-decoration: underline;
         }
 
 
@@ -374,16 +425,36 @@
 
             gap: 18px;
 
-            box-shadow: 0 2px 7px rgba(0, 0, 0, 0.05);
+            box-shadow:
+                0 2px 7px rgba(0, 0, 0, 0.05);
 
             transition: 0.2s;
+
+            cursor: pointer;
         }
 
 
         .notification-card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            box-shadow:
+                0 4px 12px rgba(0, 0, 0, 0.08);
 
             border-left-color: #086b3c;
+        }
+
+
+        /* UNREAD */
+
+        .notification-card.unread {
+            background-color: #f4faf6;
+
+            border-left-color: #086b3c;
+        }
+
+
+        /* READ */
+
+        .notification-card.read {
+            opacity: 0.75;
         }
 
 
@@ -453,6 +524,55 @@
 
 
         /* =========================================
+           UNREAD DOT
+        ========================================== */
+
+        .unread-dot {
+            width: 9px;
+            height: 9px;
+
+            background: #086b3c;
+
+            border-radius: 50%;
+
+            flex-shrink: 0;
+        }
+
+
+        /* =========================================
+           NO NOTIFICATIONS
+        ========================================== */
+
+        .no-notifications {
+            display: none;
+
+            max-width: 950px;
+
+            padding: 50px 20px;
+
+            text-align: center;
+
+            color: #777;
+        }
+
+
+        .no-notifications i {
+            display: block;
+
+            font-size: 40px;
+
+            color: #35a36b;
+
+            margin-bottom: 15px;
+        }
+
+
+        .no-notifications p {
+            font-size: 15px;
+        }
+
+
+        /* =========================================
            TABLET
         ========================================== */
 
@@ -498,7 +618,6 @@
 
             .header-logo {
                 width: 48px;
-
                 height: 48px;
             }
 
@@ -525,8 +644,6 @@
             }
 
 
-            /* MOBILE SIDEBAR */
-
             .sidebar {
                 position: relative;
 
@@ -540,6 +657,7 @@
                 min-height: auto;
 
                 display: flex;
+
                 flex-direction: row;
 
                 overflow-x: auto;
@@ -549,8 +667,6 @@
                 gap: 5px;
 
                 border-radius: 0;
-
-                z-index: 1;
             }
 
 
@@ -591,14 +707,19 @@
             }
 
 
-            /* CONTENT */
-
             .content {
                 margin-left: 0;
 
                 width: 100%;
 
                 padding: 25px 15px;
+            }
+
+
+            .title-row {
+                align-items: flex-start;
+
+                gap: 10px;
             }
 
 
@@ -687,6 +808,13 @@
                 font-size: 12px;
             }
 
+
+            .notification-count {
+                font-size: 11px;
+
+                padding: 5px 8px;
+            }
+
         }
 
     </style>
@@ -697,148 +825,161 @@
 <body>
 
 
-    <!-- =========================================
-         HEADER
-    ========================================== -->
+<!-- =========================================
+     HEADER
+========================================== -->
 
-    <header class="header">
+<header class="header">
 
-        <div class="header-left">
+    <div class="header-left">
 
-            <img
-                src="../images/logo.png"
-                class="header-logo"
-                alt="MPSU Logo">
+        <img
+            src="../images/logo.png"
+            class="header-logo"
+            alt="MPSU Logo">
 
 
-            <div class="header-titles">
+        <div class="header-titles">
 
-                <h1 class="brand-title">
-                    MPSU ETEEAP LMS
-                </h1>
+            <h1 class="brand-title">
+                MPSU ETEEAP LMS
+            </h1>
 
-                <p class="brand-subtitle">
-                    Mountain Province State University
-                </p>
 
-            </div>
+            <p class="brand-subtitle">
+                Mountain Province State University
+            </p>
 
         </div>
 
+    </div>
 
-        <div class="header-right">
+
+    <div class="header-right">
+
+        <a
+            href="profile.html"
+            class="user-link">
+
+            Macross Arsel
+
+        </a>
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================================
+     MAIN
+========================================== -->
+
+<div class="main">
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+
+        <div class="sidebar-top">
+
+            <div class="view">
+
+                <span>
+                    View
+                </span>
+
+                <i class="fa-solid fa-table-columns"></i>
+
+            </div>
+
+
+            <a
+                href="classes.html"
+                class="menu">
+
+                <i class="fa-regular fa-folder"></i>
+
+                <span>
+                    Classes
+                </span>
+
+            </a>
+
+
+            <a
+                href="grades.html"
+                class="menu">
+
+                <i class="fa-solid fa-chart-column"></i>
+
+                <span>
+                    Grades
+                </span>
+
+            </a>
+
+
+            <a
+                href="notification.html"
+                class="menu active">
+
+                <i class="fa-regular fa-bell"></i>
+
+                <span>
+                    Notifications
+                </span>
+
+            </a>
+
 
             <a
                 href="profile.html"
-                class="user-link">
+                class="menu">
 
-                Macross Arsel
+                <i class="fa-regular fa-user"></i>
+
+                <span>
+                    Profile
+                </span>
 
             </a>
 
         </div>
 
-    </header>
+
+        <div class="sidebar-bottom">
+
+            <a
+                href="logout.html"
+                class="menu logout-menu">
+
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+
+                <span>
+                    Logout
+                </span>
+
+            </a>
+
+        </div>
+
+    </aside>
 
 
 
     <!-- =========================================
-         MAIN
+         CONTENT
     ========================================== -->
 
-    <div class="main">
+    <main class="content">
 
 
-        <!-- =========================================
-             SIDEBAR
-        ========================================== -->
+        <div class="title-row">
 
-        <aside class="sidebar">
-
-
-            <div class="sidebar-top">
-
-                <div class="view">
-
-                    <span>View</span>
-
-                    <i class="fa-solid fa-table-columns"></i>
-
-                </div>
-
-
-                <a
-                    href="classes.html"
-                    class="menu">
-
-                    <i class="fa-regular fa-folder"></i>
-
-                    <span>Classes</span>
-
-                </a>
-
-
-                <a
-                    href="grades.html"
-                    class="menu">
-
-                    <i class="fa-solid fa-chart-column"></i>
-
-                    <span>Grades</span>
-
-                </a>
-
-
-                <a
-                    href="notification.html"
-                    class="menu active">
-
-                    <i class="fa-regular fa-bell"></i>
-
-                    <span>Notifications</span>
-
-                </a>
-
-
-                <a
-                    href="profile.html"
-                    class="menu">
-
-                    <i class="fa-regular fa-user"></i>
-
-                    <span>Profile</span>
-
-                </a>
-
-            </div>
-
-
-            <div class="sidebar-bottom">
-
-                <a
-                    href="logout.html"
-                    class="menu logout-menu">
-
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
-
-                    <span>Logout</span>
-
-                </a>
-
-            </div>
-
-        </aside>
-
-
-
-        <!-- =========================================
-             CONTENT
-        ========================================== -->
-
-        <main class="content">
-
-
-            <div class="title-row">
+            <div>
 
                 <h1>
                     Notifications
@@ -852,139 +993,366 @@
             </div>
 
 
-            <hr>
+            <span
+                class="notification-count"
+                id="notificationCount">
+
+                4 Unread
+
+            </span>
+
+        </div>
 
 
-            <!-- NOTIFICATION 1 -->
-
-            <div class="notification-card">
-
-                <div class="notification-icon">
-
-                    <i class="fa-solid fa-book"></i>
-
-                </div>
+        <hr>
 
 
-                <div class="notification-text">
+        <!-- ACTION -->
 
-                    <b>
-                        New Module Available
-                    </b>
+        <div class="notification-actions">
 
-                    <span>
-                        A new module for Intro to Criminal Law
-                        has been posted.
-                    </span>
+            <button
+                type="button"
+                class="mark-read-button"
+                onclick="markAllAsRead()">
 
-                    <small>
-                        Today
-                    </small>
+                Mark all as read
 
-                </div>
+            </button>
 
-            </div>
+        </div>
 
 
 
-            <!-- NOTIFICATION 2 -->
+        <!-- NOTIFICATION 1 -->
 
-            <div class="notification-card">
+        <div
+            class="notification-card unread"
+            onclick="markAsRead(this)">
 
-                <div class="notification-icon">
+            <div class="notification-icon">
 
-                    <i class="fa-solid fa-clipboard-check"></i>
-
-                </div>
-
-
-                <div class="notification-text">
-
-                    <b>
-                        Assessment Reminder
-                    </b>
-
-                    <span>
-                        Your assessment for Intro to Criminal Law
-                        is due soon.
-                    </span>
-
-                    <small>
-                        Yesterday
-                    </small>
-
-                </div>
+                <i class="fa-solid fa-book"></i>
 
             </div>
 
 
+            <div class="notification-text">
 
-            <!-- NOTIFICATION 3 -->
-
-            <div class="notification-card">
-
-                <div class="notification-icon">
-
-                    <i class="fa-solid fa-chart-column"></i>
-
-                </div>
+                <b>
+                    New Module Available
+                </b>
 
 
-                <div class="notification-text">
+                <span>
+                    A new module for Intro to Criminal Law
+                    has been posted.
+                </span>
 
-                    <b>
-                        Grade Posted
-                    </b>
 
-                    <span>
-                        Your grade for Intro to Criminal Law
-                        is now available.
-                    </span>
-
-                    <small>
-                        2 days ago
-                    </small>
-
-                </div>
+                <small>
+                    Today
+                </small>
 
             </div>
 
 
+            <span class="unread-dot"></span>
 
-            <!-- NOTIFICATION 4 -->
-
-            <div class="notification-card">
-
-                <div class="notification-icon">
-
-                    <i class="fa-solid fa-bullhorn"></i>
-
-                </div>
+        </div>
 
 
-                <div class="notification-text">
 
-                    <b>
-                        New Announcement
-                    </b>
+        <!-- NOTIFICATION 2 -->
 
-                    <span>
-                        Please check the latest announcement
-                        from your instructor.
-                    </span>
+        <div
+            class="notification-card unread"
+            onclick="markAsRead(this)">
 
-                    <small>
-                        3 days ago
-                    </small>
+            <div class="notification-icon">
 
-                </div>
+                <i class="fa-solid fa-clipboard-check"></i>
 
             </div>
 
 
-        </main>
+            <div class="notification-text">
 
-    </div>
+                <b>
+                    Assessment Reminder
+                </b>
+
+
+                <span>
+                    Your assessment for Intro to Criminal Law
+                    is due soon.
+                </span>
+
+
+                <small>
+                    Yesterday
+                </small>
+
+            </div>
+
+
+            <span class="unread-dot"></span>
+
+        </div>
+
+
+
+        <!-- NOTIFICATION 3 -->
+
+        <div
+            class="notification-card unread"
+            onclick="markAsRead(this)">
+
+            <div class="notification-icon">
+
+                <i class="fa-solid fa-chart-column"></i>
+
+            </div>
+
+
+            <div class="notification-text">
+
+                <b>
+                    Grade Posted
+                </b>
+
+
+                <span>
+                    Your grade for Intro to Criminal Law
+                    is now available.
+                </span>
+
+
+                <small>
+                    2 days ago
+                </small>
+
+            </div>
+
+
+            <span class="unread-dot"></span>
+
+        </div>
+
+
+
+        <!-- NOTIFICATION 4 -->
+
+        <div
+            class="notification-card unread"
+            onclick="markAsRead(this)">
+
+            <div class="notification-icon">
+
+                <i class="fa-solid fa-bullhorn"></i>
+
+            </div>
+
+
+            <div class="notification-text">
+
+                <b>
+                    New Announcement
+                </b>
+
+
+                <span>
+                    Please check the latest announcement
+                    from your instructor.
+                </span>
+
+
+                <small>
+                    3 days ago
+                </small>
+
+            </div>
+
+
+            <span class="unread-dot"></span>
+
+        </div>
+
+
+
+        <!-- NO NOTIFICATIONS -->
+
+        <div
+            class="no-notifications"
+            id="noNotifications">
+
+            <i class="fa-regular fa-bell"></i>
+
+            <p>
+                You have no unread notifications.
+            </p>
+
+        </div>
+
+
+    </main>
+
+</div>
+
+
+
+<!-- =========================================
+     JAVASCRIPT
+========================================== -->
+
+<script>
+
+    function updateNotificationCount() {
+
+        const unreadNotifications =
+            document.querySelectorAll(
+                ".notification-card.unread"
+            );
+
+
+        const count =
+            unreadNotifications.length;
+
+
+        const countElement =
+            document.getElementById(
+                "notificationCount"
+            );
+
+
+        const noNotifications =
+            document.getElementById(
+                "noNotifications"
+            );
+
+
+        if (countElement) {
+
+            if (count === 0) {
+
+                countElement.textContent =
+                    "All Read";
+
+            }
+
+            else {
+
+                countElement.textContent =
+                    count + " Unread";
+
+            }
+
+        }
+
+
+        if (noNotifications) {
+
+            if (count === 0) {
+
+                noNotifications.style.display =
+                    "block";
+
+            }
+
+            else {
+
+                noNotifications.style.display =
+                    "none";
+
+            }
+
+        }
+
+    }
+
+
+    function markAsRead(notification) {
+
+        if (!notification) {
+            return;
+        }
+
+
+        notification.classList.remove(
+            "unread"
+        );
+
+
+        notification.classList.add(
+            "read"
+        );
+
+
+        const dot =
+            notification.querySelector(
+                ".unread-dot"
+            );
+
+
+        if (dot) {
+
+            dot.remove();
+
+        }
+
+
+        updateNotificationCount();
+
+    }
+
+
+    function markAllAsRead() {
+
+        const notifications =
+            document.querySelectorAll(
+                ".notification-card.unread"
+            );
+
+
+        notifications.forEach(
+            function (notification) {
+
+                notification.classList.remove(
+                    "unread"
+                );
+
+
+                notification.classList.add(
+                    "read"
+                );
+
+
+                const dot =
+                    notification.querySelector(
+                        ".unread-dot"
+                    );
+
+
+                if (dot) {
+
+                    dot.remove();
+
+                }
+
+            }
+        );
+
+
+        updateNotificationCount();
+
+    }
+
+
+    /* INITIAL COUNT */
+
+    updateNotificationCount();
+
+</script>
 
 
 </body>

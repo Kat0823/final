@@ -12,7 +12,6 @@
 
 
     <!-- Font Awesome -->
-
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
@@ -39,9 +38,7 @@
 
         body {
             font-family: Arial, sans-serif;
-
             background: white;
-
             color: #222;
         }
 
@@ -67,37 +64,26 @@
             background: #086b3c;
 
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
 
             padding: 0 38px;
 
             color: white;
 
-            border-radius: 0 0 4px 4px;
-
             z-index: 1000;
         }
 
 
-        /* =========================================
-           HEADER LEFT
-        ========================================== */
-
         .header-left {
             display: flex;
-
             align-items: center;
-
             gap: 20px;
         }
 
 
         .header-logo {
             width: 58px;
-
             height: 58px;
 
             object-fit: contain;
@@ -106,7 +92,6 @@
 
         .header-titles {
             display: flex;
-
             flex-direction: column;
         }
 
@@ -115,7 +100,6 @@
             color: white;
 
             font-size: 23px;
-
             font-weight: bold;
 
             margin-bottom: 4px;
@@ -129,13 +113,8 @@
         }
 
 
-        /* =========================================
-           HEADER RIGHT
-        ========================================== */
-
         .header-right {
             display: flex;
-
             align-items: center;
         }
 
@@ -145,7 +124,7 @@
 
             font-size: 16px;
 
-            text-decoration: underline;
+            text-decoration: none;
 
             cursor: pointer;
         }
@@ -188,12 +167,8 @@
 
             padding: 25px 12px;
 
-            border-radius: 0 0 7px 0;
-
             display: flex;
-
             flex-direction: column;
-
             justify-content: space-between;
 
             overflow-y: auto;
@@ -202,20 +177,11 @@
         }
 
 
-        /* =========================================
-           SIDEBAR TOP
-        ========================================== */
-
         .sidebar-top {
             display: flex;
-
             flex-direction: column;
         }
 
-
-        /* =========================================
-           SIDEBAR BOTTOM
-        ========================================== */
 
         .sidebar-bottom {
             margin-top: auto;
@@ -232,9 +198,7 @@
             padding: 0 24px;
 
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
 
             color: white;
@@ -247,7 +211,6 @@
 
         .view i {
             font-size: 22px;
-
             color: white;
         }
 
@@ -258,11 +221,9 @@
 
         .menu {
             width: 100%;
-
             height: 47px;
 
             display: flex;
-
             align-items: center;
 
             gap: 20px;
@@ -283,7 +244,6 @@
         }
 
 
-        .menu,
         .menu:hover,
         .menu:focus,
         .menu:active,
@@ -326,10 +286,6 @@
         }
 
 
-        /* =========================================
-           LOGOUT
-        ========================================== */
-
         .logout-menu {
             margin-bottom: 0;
         }
@@ -362,9 +318,7 @@
             width: 100%;
 
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
 
             margin-bottom: 8px;
@@ -428,10 +382,6 @@
         }
 
 
-        /* =========================================
-           COURSE TITLE
-        ========================================== */
-
         .grade-card h2 {
             color: #222;
 
@@ -440,10 +390,6 @@
             margin-bottom: 10px;
         }
 
-
-        /* =========================================
-           INSTRUCTOR
-        ========================================== */
 
         .instructor {
             color: #666;
@@ -470,9 +416,7 @@
             padding: 0 18px;
 
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
 
             margin-bottom: 20px;
@@ -492,6 +436,29 @@
             color: #086b3c;
 
             font-size: 23px;
+        }
+
+
+        /* =========================================
+           SUBMISSION STATUS
+        ========================================== */
+
+        .submission-status {
+            display: inline-block;
+
+            margin-bottom: 20px;
+
+            padding: 6px 12px;
+
+            border-radius: 20px;
+
+            background: #e8f5ed;
+
+            color: #086b3c;
+
+            font-size: 13px;
+
+            font-weight: bold;
         }
 
 
@@ -602,8 +569,6 @@
 
         @media (max-width: 650px) {
 
-            /* Header */
-
             .header {
                 position: relative;
 
@@ -617,7 +582,6 @@
 
             .header-logo {
                 width: 45px;
-
                 height: 45px;
             }
 
@@ -637,16 +601,12 @@
             }
 
 
-            /* Main */
-
             .main {
                 flex-direction: column;
 
                 padding-top: 0;
             }
 
-
-            /* Sidebar */
 
             .sidebar {
                 position: relative;
@@ -705,8 +665,6 @@
                 font-size: 13px;
             }
 
-
-            /* Content */
 
             .content {
                 margin-left: 0;
@@ -817,297 +775,272 @@
 <body>
 
 
+<!-- =========================================
+     HEADER
+========================================== -->
+
+<header class="header">
+
+    <div class="header-left">
+
+        <img
+            src="../images/logo.png"
+            class="header-logo"
+            alt="MPSU Logo">
+
+
+        <div class="header-titles">
+
+            <h1 class="brand-title">
+                MPSU ETEEAP LMS
+            </h1>
+
+
+            <p class="brand-subtitle">
+                Mountain Province State University
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="header-right">
+
+        <a
+            href="profile.html"
+            class="user-link">
+
+            Macross Arsel
+
+        </a>
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================================
+     MAIN
+========================================== -->
+
+<div class="main">
+
+
     <!-- =========================================
-         HEADER
+         SIDEBAR
     ========================================== -->
 
-    <header class="header">
+    <aside class="sidebar">
 
 
-        <div class="header-left">
+        <div class="sidebar-top">
 
 
-            <img
-                src="../images/logo.png"
-                class="header-logo"
-                alt="MPSU Logo">
+            <div class="view">
 
+                <span>
+                    View
+                </span>
 
-            <div class="header-titles">
-
-
-                <h1 class="brand-title">
-                    MPSU ETEEAP LMS
-                </h1>
-
-
-                <p class="brand-subtitle">
-                    Mountain Province State University
-                </p>
-
+                <i class="fa-solid fa-table-columns"></i>
 
             </div>
 
 
-        </div>
+            <a
+                href="classes.html"
+                class="menu">
+
+                <i class="fa-regular fa-folder"></i>
+
+                <span>
+                    Classes
+                </span>
+
+            </a>
 
 
-        <div class="header-right">
+            <a
+                href="grades.html"
+                class="menu active">
+
+                <i class="fa-solid fa-chart-column"></i>
+
+                <span>
+                    Grades
+                </span>
+
+            </a>
+
+
+            <a
+                href="notification.html"
+                class="menu">
+
+                <i class="fa-regular fa-bell"></i>
+
+                <span>
+                    Notifications
+                </span>
+
+            </a>
 
 
             <a
                 href="profile.html"
-                class="user-link">
+                class="menu">
 
-                Macross Arsel
+                <i class="fa-regular fa-user"></i>
+
+                <span>
+                    Profile
+                </span>
 
             </a>
-
 
         </div>
 
 
-    </header>
+        <div class="sidebar-bottom">
+
+            <a
+                href="logout.html"
+                class="menu logout-menu">
+
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+
+                <span>
+                    Logout
+                </span>
+
+            </a>
+
+        </div>
+
+    </aside>
 
 
 
     <!-- =========================================
-         MAIN
+         CONTENT
     ========================================== -->
 
-    <div class="main">
+    <main class="content">
 
 
-        <!-- =========================================
-             SIDEBAR
-        ========================================== -->
+        <div class="title-row">
 
-        <aside class="sidebar">
+            <div>
 
+                <h1>
+                    Grades and Feedback
+                </h1>
 
-            <!-- SIDEBAR TOP -->
+                <p>
+                    View your grades and instructor feedback.
+                </p>
 
-            <div class="sidebar-top">
+            </div>
 
-
-                <div class="view">
-
-                    <span>
-                        View
-                    </span>
+        </div>
 
 
-                    <i class="fa-solid fa-table-columns"></i>
-
-                </div>
+        <hr>
 
 
 
-                <a
-                    href="classes.html"
-                    class="menu">
+        <!-- =====================================
+             GRADE CARD
+        ====================================== -->
 
-                    <i class="fa-regular fa-folder"></i>
-
-                    <span>
-                        Classes
-                    </span>
-
-                </a>
+        <div class="grade-card">
 
 
-
-                <a
-                    href="grades.html"
-                    class="menu active">
-
-                    <i class="fa-solid fa-chart-column"></i>
-
-                    <span>
-                        Grades
-                    </span>
-
-                </a>
+            <h2>
+                Intro to Criminal Law
+            </h2>
 
 
+            <p class="instructor">
 
-                <a
-                    href="notification.html"
-                    class="menu">
+                <b>Instructor:</b>
+                Kim Reyes
 
-                    <i class="fa-regular fa-bell"></i>
-
-                    <span>
-                        Notifications
-                    </span>
-
-                </a>
+            </p>
 
 
+            <!-- SUBMISSION STATUS -->
 
-                <a
-                    href="profile.html"
-                    class="menu">
+            <span
+                class="submission-status"
+                id="submissionStatus">
 
-                    <i class="fa-regular fa-user"></i>
+                Graded
 
-                    <span>
-                        Profile
-                    </span>
+            </span>
 
-                </a>
 
+            <!-- GRADE -->
+
+            <div class="grade">
+
+                <span>
+                    Grade
+                </span>
+
+                <b>
+                    90%
+                </b>
 
             </div>
 
 
+            <!-- FEEDBACK -->
 
-            <!-- SIDEBAR BOTTOM -->
+            <div class="feedback-box">
 
-            <div class="sidebar-bottom">
+                <b>
 
+                    <i class="fa-solid fa-comment"></i>
 
-                <a
-                    href="logout.html"
-                    class="menu logout-menu">
+                    Instructor Feedback
 
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
-
-                    <span>
-                        Logout
-                    </span>
-
-                </a>
+                </b>
 
 
-            </div>
+                <p>
 
-
-        </aside>
-
-
-
-        <!-- =========================================
-             CONTENT
-        ========================================== -->
-
-        <main class="content">
-
-
-            <!-- TITLE -->
-
-            <div class="title-row">
-
-
-                <div>
-
-                    <h1>
-                        Grades and Feedback
-                    </h1>
-
-
-                    <p>
-                        View your grades and instructor feedback.
-                    </p>
-
-                </div>
-
-
-            </div>
-
-
-
-            <hr>
-
-
-
-            <!-- =====================================
-                 GRADE CARD
-            ====================================== -->
-
-            <div class="grade-card">
-
-
-                <h2>
-                    Intro to Criminal Law
-                </h2>
-
-
-                <p class="instructor">
-
-                    <b>Instructor:</b>
-
-                    Kim Reyes
+                    Good work. Your submission shows a
+                    clear understanding of the topic.
 
                 </p>
 
-
-
-                <!-- GRADE -->
-
-                <div class="grade">
-
-
-                    <span>
-                        Grade
-                    </span>
-
-
-                    <b>
-                        90%
-                    </b>
-
-
-                </div>
-
-
-
-                <!-- FEEDBACK -->
-
-                <div class="feedback-box">
-
-
-                    <b>
-
-                        <i class="fa-solid fa-comment"></i>
-
-                        Instructor Feedback
-
-                    </b>
-
-
-                    <p>
-                        Good work. Your submission shows a
-                        clear understanding of the topic.
-                    </p>
-
-
-                </div>
-
-
             </div>
 
+        </div>
 
 
-            <!-- =====================================
-                 BACK BUTTON
-            ====================================== -->
 
-            <a
-                href="classes.html"
-                class="main-button">
+        <!-- =====================================
+             BACK BUTTON
+        ====================================== -->
 
-                <i class="fa-solid fa-arrow-left"></i>
+        <a
+            href="classes.html"
+            class="main-button">
 
-                Back to Classes
+            <i class="fa-solid fa-arrow-left"></i>
 
-            </a>
+            Back to Classes
 
-
-        </main>
+        </a>
 
 
-    </div>
+    </main>
+
+</div>
 
 
 </body>

@@ -1,55 +1,572 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learner Profile - MPSU ETEEAP LMS</title>
-    <link rel="stylesheet" href="student.css">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Submit Work - MPSU ETEEAP LMS</title>
+
+    <!-- Font Awesome -->
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+
+    <style>
+
+        /* =========================
+           GENERAL
+        ========================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7f6;
+            color: #333;
+        }
+
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .header {
+            height: 84px;
+            background: #086b3c;
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 30px;
+
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+
+            z-index: 1000;
+        }
+
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+
+        .header-logo {
+            width: 55px;
+            height: 55px;
+            object-fit: contain;
+            margin-right: 15px;
+        }
+
+
+        .header-titles {
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        .brand-title {
+            margin: 0;
+            font-size: 22px;
+        }
+
+
+        .brand-subtitle {
+            margin: 3px 0 0;
+            font-size: 13px;
+        }
+
+
+        .user-link {
+            color: white;
+            text-decoration: none;
+            font-size: 15px;
+        }
+
+
+        .user-link:hover {
+            text-decoration: underline;
+        }
+
+
+        /* =========================
+           MAIN LAYOUT
+        ========================= */
+
+        .main {
+            display: flex;
+            padding-top: 84px;
+        }
+
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+            width: 270px;
+            min-height: calc(100vh - 84px);
+
+            background: #086b3c;
+
+            position: fixed;
+            left: 0;
+            top: 84px;
+            bottom: 0;
+
+            display: flex;
+            flex-direction: column;
+
+            padding-top: 25px;
+        }
+
+
+        .view {
+            color: white;
+            font-size: 14px;
+
+            padding: 12px 25px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+
+        .view i {
+            font-size: 16px;
+        }
+
+
+        .menu {
+            color: white;
+            text-decoration: none;
+
+            padding: 15px 25px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 14px;
+
+            font-size: 15px;
+        }
+
+
+        .menu i {
+            width: 20px;
+            text-align: center;
+        }
+
+
+        .menu:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+
+        .menu.active {
+            background: #ffd34e;
+            color: #222;
+        }
+
+
+        /* =========================
+           CONTENT
+        ========================= */
+
+        .content {
+            margin-left: 270px;
+
+            width: calc(100% - 270px);
+
+            padding: 40px;
+        }
+
+
+        .content h1 {
+            margin-top: 0;
+            color: #222;
+            font-size: 30px;
+        }
+
+
+        .content hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin-bottom: 30px;
+        }
+
+
+        /* =========================
+           SUBMISSION BOX
+        ========================= */
+
+        .submission-box {
+            background: white;
+
+            border: 1px solid #35a36b;
+
+            border-radius: 10px;
+
+            padding: 30px;
+
+            max-width: 800px;
+
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+
+        .submission-box h2 {
+            margin-top: 0;
+            color: #086b3c;
+        }
+
+
+        .submission-box p {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+
+        .submission-box label {
+            display: block;
+
+            font-weight: bold;
+
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+
+
+        /* =========================
+           FILE INPUT
+        ========================= */
+
+        .submission-box input[type="file"] {
+            width: 100%;
+
+            padding: 12px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 6px;
+
+            background: #fafafa;
+        }
+
+
+        /* =========================
+           COMMENTS
+        ========================= */
+
+        .submission-box textarea {
+            width: 100%;
+
+            min-height: 120px;
+
+            resize: vertical;
+
+            padding: 12px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 6px;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 14px;
+        }
+
+
+        .submission-box textarea:focus,
+        .submission-box input[type="file"]:focus {
+            outline: none;
+
+            border-color: #086b3c;
+        }
+
+
+        /* =========================
+           BUTTON
+        ========================= */
+
+        .main-button {
+            margin-top: 25px;
+
+            padding: 12px 25px;
+
+            background: #086b3c;
+
+            color: white;
+
+            border: none;
+
+            border-radius: 6px;
+
+            cursor: pointer;
+
+            font-size: 15px;
+        }
+
+
+        .main-button:hover {
+            background: #075b32;
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 768px) {
+
+            .header {
+                padding: 0 15px;
+            }
+
+
+            .brand-title {
+                font-size: 17px;
+            }
+
+
+            .brand-subtitle {
+                font-size: 11px;
+            }
+
+
+            .user-link {
+                display: none;
+            }
+
+
+            .sidebar {
+                width: 210px;
+            }
+
+
+            .content {
+                margin-left: 210px;
+
+                width: calc(100% - 210px);
+
+                padding: 25px;
+            }
+
+        }
+
+    </style>
+
 </head>
+
+
 <body>
 
+
+<!-- =========================
+     HEADER
+========================= -->
+
 <header class="header">
+
     <div class="header-left">
-        <img src="../images/logo.png" class="header-logo" alt="MPSU Logo">
+
+        <img
+            src="../images/logo.png"
+            class="header-logo"
+            alt="MPSU Logo"
+        >
+
         <div class="header-titles">
-            <h1 class="brand-title">MPSU ETEEAP LMS</h1>
-            <p class="brand-subtitle">Mountain Province State University</p>
+
+            <h1 class="brand-title">
+                MPSU ETEEAP LMS
+            </h1>
+
+            <p class="brand-subtitle">
+                Mountain Province State University
+            </p>
+
         </div>
+
     </div>
-    
+
+
     <div class="header-right">
-        <a href="profile.html" class="user-link">Macross Arsel</a>
+
+        <a
+            href="profile.html"
+            class="user-link"
+        >
+            Macross Arsel
+        </a>
+
     </div>
+
 </header>
 
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
 <div class="main">
-<!-- sidebar -->
+
+
+    <!-- SIDEBAR -->
 
     <aside class="sidebar">
-        <div class="view">View<i class="fa-solid fa-table-columns"></i></div>
-        <a href="classes.html" class="menu active"><i class="fa-regular fa-folder"></i>Classes</a>
-        <a href="grades.html" class="menu"><i class="fa-solid fa-chart-column"></i><span>Grades</span></a>
-        <a href="notification.html" class="menu"><i class="fa-regular fa-bell"></i>Notifications</a>
-        <a href="profile.html" class="menu"><i class="fa-regular fa-user"></i>Profile</a>
-        <a href="logout.html" class="menu"><i class="fa-solid fa-arrow-right-from-bracket"></i>Logout</a>
+
+        <div class="view">
+
+            <span>View</span>
+
+            <i class="fa-solid fa-table-columns"></i>
+
+        </div>
+
+
+        <a
+            href="classes.html"
+            class="menu active"
+        >
+
+            <i class="fa-regular fa-folder"></i>
+
+            <span>Classes</span>
+
+        </a>
+
+
+        <a
+            href="grades.html"
+            class="menu"
+        >
+
+            <i class="fa-solid fa-chart-column"></i>
+
+            <span>Grades</span>
+
+        </a>
+
+
+        <a
+            href="notification.html"
+            class="menu"
+        >
+
+            <i class="fa-regular fa-bell"></i>
+
+            <span>Notifications</span>
+
+        </a>
+
+
+        <a
+            href="profile.html"
+            class="menu"
+        >
+
+            <i class="fa-regular fa-user"></i>
+
+            <span>Profile</span>
+
+        </a>
+
+
+        <a
+            href="logout.html"
+            class="menu"
+        >
+
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+
+            <span>Logout</span>
+
+        </a>
+
     </aside>
 
+
+
+    <!-- CONTENT -->
+
     <main class="content">
-        <h1>Submit Work</h1>
+
+        <h1>
+            Submit Work
+        </h1>
+
         <hr>
+
+
         <div class="submission-box">
-            <h2>Intro to Criminal Law</h2>
-            <p>Instructor: Kim Reyes</p>
-            <label>Select your file</label>
-            <input type="file" id="submissionFile">
-            <label>Comments</label>
-            <textarea id="submissionComment" placeholder="Enter comments"></textarea>
-            <button onclick="saveSubmission()" class="main-button">Save Submission</button>
+
+            <h2>
+                Introduction to Criminal Law
+            </h2>
+
+
+            <p>
+                Instructor: Kim Reyes
+            </p>
+
+
+            <label for="submissionFile">
+                Select your file
+            </label>
+
+
+            <input
+                type="file"
+                id="submissionFile"
+                accept=".pdf,.doc,.docx"
+            >
+
+
+            <label for="submissionComment">
+                Comments
+            </label>
+
+
+            <textarea
+                id="submissionComment"
+                placeholder="Enter comments"
+            ></textarea>
+
+
+            <button
+                type="button"
+                onclick="saveSubmission()"
+                class="main-button"
+            >
+                Save Submission
+            </button>
+
         </div>
+
     </main>
+
 </div>
+
+
+<!-- STUDENT JAVASCRIPT -->
+
 <script src="student.js"></script>
+
+
 </body>
 </html>

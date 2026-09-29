@@ -1,24 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <title>Courses - MPSU ETEEAP LMS</title>
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
     <style>
-
-        /* =========================================
-           RESET
-        ========================================== */
 
         * {
             margin: 0;
@@ -42,38 +30,21 @@
             text-decoration: none;
         }
 
-
-        /* =========================================
-           HEADER
-        ========================================== */
-
         .header {
             position: fixed;
             top: 0;
             left: 0;
-
             width: 100%;
             height: 84px;
-
             background: #086b3c;
-
             display: flex;
             align-items: center;
             justify-content: space-between;
-
             padding: 0 38px;
-
             color: white;
-
             border-radius: 0 0 4px 4px;
-
             z-index: 1000;
         }
-
-
-        /* =========================================
-           HEADER LEFT
-        ========================================== */
 
         .header-left {
             display: flex;
@@ -104,25 +75,16 @@
             font-size: 14px;
         }
 
-
-        /* =========================================
-           HEADER RIGHT
-        ========================================== */
-
         .header-right {
             display: flex;
-
             align-items: center;
         }
 
 
         .user-link {
             color: white;
-
             font-size: 16px;
-
             text-decoration: underline;
-
             cursor: pointer;
         }
 
@@ -131,87 +93,46 @@
             color: #ffd32a;
         }
 
-
-        /* =========================================
-           MAIN LAYOUT
-        ========================================== */
-
         .main {
             width: 100%;
-
             display: flex;
-
             min-height: calc(100vh - 84px);
-
             padding-top: 84px;
         }
 
-
-        /* =========================================
-           SIDEBAR
-        ========================================== */
-
         .sidebar {
             position: fixed;
-
             top: 84px;
             left: 0;
-
             width: 270px;
             height: calc(100vh - 84px);
-
             background: #086b3c;
-
             padding: 25px 12px;
-
             border-radius: 0 0 7px 0;
-
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-
             overflow-y: auto;
-
             z-index: 900;
         }
-
-
-        /* =========================================
-           SIDEBAR TOP
-        ========================================== */
 
         .sidebar-top {
             display: flex;
             flex-direction: column;
         }
 
-
-        /* =========================================
-           SIDEBAR BOTTOM
-        ========================================== */
-
         .sidebar-bottom {
             margin-top: auto;
         }
 
-
-        /* =========================================
-           VIEW
-        ========================================== */
-
         .view {
             height: 60px;
-
             padding: 0 24px;
-
             display: flex;
             align-items: center;
             justify-content: space-between;
-
             color: white;
-
             font-size: 20px;
-
             margin-bottom: 10px;
         }
 
@@ -220,37 +141,20 @@
             color: white;
         }
 
-
-        /* =========================================
-           SIDEBAR MENU
-        ========================================== */
-
         .menu {
             width: 100%;
             height: 47px;
-
             display: flex;
             align-items: center;
-
             gap: 20px;
-
             padding: 0 25px;
-
             margin-bottom: 5px;
-
             border-radius: 9px;
-
             color: white;
-
             font-size: 18px;
-
             transition: 0.2s;
-
             text-decoration: none;
         }
-
-
-        /* REMOVE UNDERLINES */
 
         .menu,
         .menu:hover,
@@ -262,9 +166,7 @@
 
         .menu i {
             width: 22px;
-
             text-align: center;
-
             font-size: 19px;
         }
 
@@ -272,16 +174,9 @@
             background: rgba(255, 255, 255, 0.10);
         }
 
-
-        /* =========================================
-           ACTIVE MENU
-        ========================================== */
-
         .menu.active {
             background: #ffd34e;
-
             color: #222;
-
             font-weight: normal;
         }
 
@@ -289,177 +184,95 @@
             color: #222;
         }
 
-
-        /* =========================================
-           LOGOUT
-        ========================================== */
-
         .logout-menu {
             margin-bottom: 0;
         }
 
-
-        /* =========================================
-           MAIN CONTENT
-        ========================================== */
-
         .content {
             margin-left: 270px;
-
             width: calc(100% - 270px);
-
             background: white;
-
             padding: 35px 40px;
-
             min-width: 0;
-
             min-height: calc(100vh - 84px);
         }
 
-
-        /* =========================================
-           TITLE ROW
-        ========================================== */
-
         .title-row {
             width: 100%;
-
             display: flex;
             align-items: center;
             justify-content: space-between;
-
             margin-bottom: 18px;
         }
 
         .title-row h1 {
             color: #222;
-
             font-size: 32px;
-
             font-weight: bold;
         }
-
-
-        /* =========================================
-           MODULE COUNT
-        ========================================== */
 
         .module-count {
             color: #555;
-
             font-size: 18px;
-
             font-weight: bold;
-
             padding-right: 5px;
         }
 
-
-        /* =========================================
-           FEEDBACK
-        ========================================== */
-
         .feedback {
             width: 100%;
-
             min-height: 42px;
-
             background: #e0e1e5;
-
             border-radius: 9px;
-
             padding: 0 18px;
-
             display: flex;
             align-items: center;
             justify-content: space-between;
-
             color: #555;
-
             font-size: 16px;
-
             margin-bottom: 33px;
         }
 
         .feedback button {
             border: none;
-
             background: transparent;
-
             color: #777;
-
             font-size: 15px;
-
             cursor: pointer;
-
             padding: 5px 8px;
         }
 
         .feedback button:hover {
             color: #086b3c;
-
             font-weight: bold;
         }
 
-
-        /* =========================================
-           HORIZONTAL LINE
-        ========================================== */
-
         .content hr {
             width: 100%;
-
             border: none;
-
             border-top: 1px solid #999;
-
             margin-bottom: 20px;
         }
 
-
-        /* =========================================
-           COURSE GRID
-        ========================================== */
-
         .courses {
             width: 100%;
-
             display: grid;
-
             grid-template-columns:
                 repeat(3, minmax(0, 1fr));
-
             gap: 23px;
-
             margin-bottom: 40px;
         }
 
-
-        /* =========================================
-           COURSE CARD
-        ========================================== */
-
         .course-card {
             min-height: 115px;
-
             background: white;
-
             border: 2px solid #35a36b;
-
             border-radius: 9px;
-
             padding: 20px;
-
             display: flex;
-
             align-items: flex-start;
-
             color: #222;
-
             box-shadow:
                 0 2px 5px rgba(0, 0, 0, 0.12);
-
             transition:
                 transform 0.2s,
                 box-shadow 0.2s,
@@ -468,58 +281,31 @@
 
         .course-card:hover {
             background: #fbfdfc;
-
             transform: translateY(-2px);
-
             box-shadow:
                 0 5px 10px rgba(0, 0, 0, 0.14);
         }
 
-
-        /* =========================================
-           COURSE TITLE
-        ========================================== */
-
         .course-card h3 {
             color: #222;
-
             font-size: 18px;
-
             font-weight: bold;
-
             line-height: 1.4;
         }
 
-
-        /* =========================================
-           SECTION TITLE
-        ========================================== */
-
         .section-title {
             color: #222;
-
             font-size: 23px;
-
             font-weight: bold;
-
             margin-bottom: 18px;
         }
 
-
-        /* =========================================
-           SUBMITTED SECTION
-        ========================================== */
-
         .submitted {
             width: 100%;
-
             display: grid;
-
             grid-template-columns:
                 repeat(3, minmax(0, 1fr));
-
             gap: 23px;
-
             margin-bottom: 35px;
         }
 
@@ -527,45 +313,23 @@
             min-height: 95px;
         }
 
-
-        /* =========================================
-           COMPLETED SECTION
-        ========================================== */
-
         .completed-section {
             width: 100%;
-
             margin-top: 10px;
         }
 
-
-        /* =========================================
-           COMPLETED HEADER
-        ========================================== */
-
         .completed {
             width: 100%;
-
             min-height: 55px;
-
             border: 1px solid #d5d5d5;
-
             background: #f6f6f6;
-
             border-radius: 7px;
-
             padding: 0 18px;
-
             display: flex;
-
             align-items: center;
-
             justify-content: space-between;
-
             color: #333;
-
             cursor: pointer;
-
             transition: 0.2s;
         }
 
@@ -575,75 +339,48 @@
 
         .completed span {
             display: flex;
-
             align-items: center;
-
             gap: 10px;
-
             font-size: 16px;
         }
 
         .completed i {
             color: #086b3c;
-
             font-size: 16px;
-
             transition: transform 0.2s;
         }
 
         .completed strong {
             color: #777;
-
             font-size: 14px;
         }
 
-
-        /* =========================================
-           COMPLETED FILE
-        ========================================== */
-
         .completed-file {
             display: none;
-
             width: 100%;
-
             margin-top: 8px;
-
             padding: 15px 18px;
-
             border: 1px solid #35a36b;
-
             border-radius: 7px;
-
             color: #086b3c;
-
             background: white;
-
             font-size: 14px;
         }
 
         .completed-file:hover {
             background: #f4faf7;
-
             text-decoration: underline;
         }
-
-
-        /* =========================================
-           TABLET
-        ========================================== */
+/* tablet */
 
         @media (max-width: 1000px) {
-
             .sidebar {
                 width: 230px;
             }
 
             .content {
                 margin-left: 230px;
-
                 width: calc(100% - 230px);
-
                 padding: 30px;
             }
 
@@ -658,20 +395,13 @@
             }
         }
 
-
-        /* =========================================
-           MOBILE
-        ========================================== */
-
+/* mobileSSSSS */
         @media (max-width: 650px) {
 
             .header {
                 position: relative;
-
                 height: auto;
-
                 min-height: 75px;
-
                 padding: 10px 15px;
             }
 
@@ -697,45 +427,30 @@
 
             .main {
                 flex-direction: column;
-
                 padding-top: 0;
             }
 
 
             /* Sidebar */
-
             .sidebar {
                 position: relative;
-
                 top: auto;
                 left: auto;
-
                 width: 100%;
-
                 height: auto;
-
                 min-height: auto;
-
                 display: flex;
-
                 flex-direction: row;
-
                 overflow-x: auto;
-
                 padding: 8px;
-
                 gap: 5px;
-
                 border-radius: 0;
-
                 justify-content: flex-start;
             }
 
             .sidebar-top {
                 display: flex;
-
                 flex-direction: row;
-
                 gap: 5px;
             }
 
@@ -749,24 +464,16 @@
 
             .menu {
                 min-width: 105px;
-
                 justify-content: center;
-
                 padding: 10px;
-
                 margin: 0;
-
                 font-size: 13px;
             }
 
-
             /* Content */
-
             .content {
                 margin-left: 0;
-
                 width: 100%;
-
                 padding: 20px 15px;
             }
 
@@ -780,21 +487,17 @@
 
             .feedback {
                 font-size: 13px;
-
                 min-height: 45px;
-
                 padding: 0 13px;
             }
 
             .courses {
                 grid-template-columns: 1fr;
-
                 gap: 15px;
             }
 
             .submitted {
                 grid-template-columns: 1fr;
-
                 gap: 15px;
             }
 
@@ -807,24 +510,16 @@
             }
         }
 
-
-        /* =========================================
-           SMALL MOBILE
-        ========================================== */
-
+/* small mobile */
         @media (max-width: 400px) {
-
             .brand-title {
                 font-size: 14px;
             }
-
             .brand-subtitle {
                 display: none;
             }
-
             .menu {
                 min-width: 90px;
-
                 font-size: 11px;
             }
 
@@ -844,392 +539,138 @@
                 font-size: 16px;
             }
         }
-
     </style>
-
 </head>
-
-
 <body>
-
-
-    <!-- =========================================
-         HEADER
-    ========================================== -->
-
     <header class="header">
-
         <div class="header-left">
-
             <img
                 src="../images/logo.png"
                 class="header-logo"
                 alt="MPSU Logo">
 
             <div class="header-titles">
-
-                <h1 class="brand-title">
-                    MPSU ETEEAP LMS
-                </h1>
-
-                <p class="brand-subtitle">
-                    Mountain Province State University
-                </p>
-
+                <h1 class="brand-title">MPSU ETEEAP LMS</h1>
+                <p class="brand-subtitle">Mountain Province State University</p>
             </div>
-
         </div>
-
 
         <div class="header-right">
-
-            <a
-                href="profile.html"
-                class="user-link">
-
-                Macross Arsel
-
-            </a>
-
+            <a href="profile.html" class="user-link">Macross Arsel</a>
         </div>
-
     </header>
 
-
-    <!-- =========================================
-         MAIN
-    ========================================== -->
-
     <div class="main">
-
-
-        <!-- =========================================
-             SIDEBAR
-        ========================================== -->
-
         <aside class="sidebar">
-
-
-            <!-- TOP MENU -->
-
             <div class="sidebar-top">
-
-                <div class="view">
-
-                    <span>
-                        View
-                    </span>
-
+                <div class="view"><span>View</span>
                     <i class="fa-solid fa-table-columns"></i>
-
                 </div>
 
-
-                <a
-                    href="classes.html"
-                    class="menu active">
-
+                <a href="classes.html" class="menu active">
                     <i class="fa-regular fa-folder"></i>
-
-                    <span>
-                        Classes
-                    </span>
-
+                    <span>Classes</span>
                 </a>
 
-
-                <a
-                    href="grades.html"
-                    class="menu">
-
+                <a href="grades.html" class="menu">
                     <i class="fa-solid fa-chart-column"></i>
-
-                    <span>
-                        Grades
-                    </span>
-
+                    <span>Grades</span>
                 </a>
 
-
-                <a
-                    href="notification.html"
-                    class="menu">
-
+                <a href="notification.html"class="menu">
                     <i class="fa-regular fa-bell"></i>
-
-                    <span>
-                        Notifications
-                    </span>
-
+                    <span>Notifications</span>
                 </a>
 
-
-                <a
-                    href="profile.html"
-                    class="menu">
-
+                <a href="profile.html" class="menu">
                     <i class="fa-regular fa-user"></i>
-
-                    <span>
-                        Profile
-                    </span>
-
+                    <span>Profile</span>
                 </a>
-
             </div>
-
-
-            <!-- BOTTOM MENU -->
 
             <div class="sidebar-bottom">
-
-                <a
-                    href="logout.html"
-                    class="menu logout-menu">
-
+                <a href="logout.html" class="menu logout-menu">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
-
-                    <span>
-                        Logout
-                    </span>
-
+                    <span>Logout</span>
                 </a>
-
             </div>
-
         </aside>
-
-
-        <!-- =========================================
-             MAIN CONTENT
-        ========================================== -->
-
         <main class="content">
-
-
-            <!-- TITLE -->
-
             <div class="title-row">
-
-                <h1>
-                    My Course Modules
-                </h1>
-
-                <div class="module-count">
-                    2/6
-                </div>
-
+                <h1>My Course Modules</h1>
+                <div class="module-count">2/6</div>
             </div>
 
-
-            <!-- FEEDBACK -->
-
-            <div
-                class="feedback"
-                id="feedback">
-
-                <span>
-                    New Feedback on Intro to Computing
-                </span>
-
-                <button
-                    type="button"
-                    onclick="dismissFeedback()">
-
-                    Dismiss
-
-                </button>
-
-            </div>
-
-
-            <!-- LINE -->
-
+           <div class="feedback" id="feedback">
+    <span>New feedback is available for one of your courses.</span>
+    <button type="button" onclick="dismissFeedback()">Dismiss</button>
+</div>
             <hr>
-
-
-            <!-- =========================================
-                 COURSE MODULES
-            ========================================== -->
-
             <div class="courses">
 
+    <a href="modules.html?course=intro-criminal-law" class="course-card">
+        <h3>Intro to Criminal Law</h3>
+    </a>
 
-                <!-- MODULE 1 -->
+    <a href="modules.html?course=forensic-science" class="course-card">
+        <h3>Forensic Science Basics</h3>
+    </a>
 
-                <a
-                    href="modules.html"
-                    class="course-card">
+    <a href="modules.html?course=criminal-law" class="course-card">
+        <h3>Criminal Law Fundamental</h3>
+    </a>
 
-                    <h3>
-                        Intro to Criminal Law
-                    </h3>
+    <a href="modules.html?course=understanding-self" class="course-card">
+        <h3>Understanding the Self</h3>
+    </a>
 
-                </a>
+    <a href="modules.html?course=mathematics" class="course-card">
+        <h3>Mathematics in the Modern World</h3>
+    </a>
 
-
-                <!-- MODULE 2 -->
-
-                <a
-                    href="modules.html"
-                    class="course-card">
-
-                    <h3>
-                        Forensic Science Basics
-                    </h3>
-
-                </a>
-
-
-                <!-- MODULE 3 -->
-
-                <a
-                    href="modules.html"
-                    class="course-card">
-
-                    <h3>
-                        Criminal Law Fundamental
-                    </h3>
-
-                </a>
-
-
-                <!-- MODULE 4 -->
-
-                <a
-                    href="modules.html"
-                    class="course-card">
-
-                    <h3>
-                        Understanding the Self
-                    </h3>
-
-                </a>
-
-
-                <!-- MODULE 5 -->
-
-                <a
-                    href="modules.html"
-                    class="course-card">
-
-                    <h3>
-                        Mathematics in the Modern World
-                    </h3>
-
-                </a>
-
-
-                <!-- MODULE 6 -->
-
-                <a
-                    href="modules.html"
-                    class="course-card">
-
-                    <h3>
-                        Physical Education
-                    </h3>
-
-                </a>
-
-
-            </div>
-
-
-            <!-- =========================================
-                 SUBMITTED - AWAITING GRADE
-            ========================================== -->
-
-            <h2 class="section-title">
-                Submitted - Awaiting Grade
-            </h2>
-
+</div>
+            <h2 class="section-title">Submitted - Awaiting Grade</h2>
             <hr>
-
 
             <div class="submitted">
 
-
-                <a
-                    href="grades.html"
-                    class="course-card">
-
-                    <h3>
-                        Understanding the Self
-                    </h3>
-
+                <a href="grades.html" class="course-card">
+                    <h3>Understanding the Self</h3>
                 </a>
 
-
-                <a
-                    href="grades.html"
-                    class="course-card">
-
-                    <h3>
-                        Physical Education
-                    </h3>
-
+                <a href="grades.html" class="course-card">
+                    <h3>Physical Education</h3>
                 </a>
-
 
             </div>
 
-
-            <!-- =========================================
-                 COMPLETED
-            ========================================== -->
-
             <div class="completed-section">
-
-
                 <div
                     class="completed"
                     onclick="showCompleted()">
-
                     <span>
-
                         <i
                             id="completedIcon"
                             class="fa-solid fa-caret-down">
                         </i>
-
                         Completed
-
                     </span>
 
-
-                    <strong>
-                        1 Module
-                    </strong>
-
+                    <strong>1 Module</strong>
                 </div>
 
-
-                <a
-                    href="../files/DNA Analysis.pdf"
-                    class="completed-file"
-                    id="completedFile">
+               <a
+    href="#"
+    class="completed-file"
+    id="completedFile">
 
                     <i class="fa-regular fa-file-pdf"></i>
-
                     &nbsp;
-
                     DNA Analysis.pdf
-
                 </a>
-
-
             </div>
-
-
         </main>
-
     </div>
-
-
-    <!-- =========================================
-         JAVASCRIPT
-    ========================================== -->
 
     <script>
 

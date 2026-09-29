@@ -1,494 +1,439 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport"content="width=device-width, initial-scale=1.0">
-    <title>Set New Password - MPSU ETEEAP LMS</title>
-    <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Set Password - MPSU ETEEAP LMS</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    >
 
     <style>
 
-        /* =========================================
-           RESET
-        ========================================= */
-
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-
-        html,
-        body {
-            width: 100%;
-            min-height: 100%;
-        }
-
-
-        body {
             font-family: Arial, sans-serif;
-            background: white;
         }
 
 
-        /* =========================================
-           MAIN PAGE
-        ========================================= */
+        body {
 
-        .setup-page {
-            width: 100%;
             min-height: 100vh;
 
             display: flex;
 
-            background: white;
+            background: #f5f5f5;
+
         }
 
 
-        /* =========================================
-           LEFT SIDE - DATA PRIVACY
-        ========================================= */
+        /* =========================
+           LEFT SECTION
+        ========================= */
 
-        .left-section {
+        .privacy-section {
+
             width: 50%;
+
             min-height: 100vh;
 
-            background: white;
+            background: #ffffff;
 
             display: flex;
-            align-items: center;
+
             justify-content: center;
 
-            padding: 30px;
+            align-items: center;
+
+            padding: 40px;
+
         }
 
-
-        /* =========================================
-           PRIVACY CARD
-        ========================================= */
 
         .privacy-card {
+
             width: 100%;
-            max-width: 570px;
 
-            background: maroon;
+            max-width: 500px;
 
-            border-radius: 14px;
+            background: #7d1721;
 
-            padding: 35px 45px;
+            color: white;
+
+            padding: 35px;
+
+            border-radius: 12px;
 
             box-shadow:
-                0 15px 30px rgba(0, 0, 0, 0.12);
+                0 5px 20px
+                rgba(0, 0, 0, 0.15);
+
         }
 
 
-        /* =========================================
-           PRIVACY HEADING
-        ========================================= */
+        .privacy-card h2 {
 
-        .privacy-heading {
-            display: flex;
+            color: #ffd34e;
 
-            justify-content: center;
-            align-items: center;
+            margin-bottom: 20px;
 
-            margin-bottom: 25px;
+            font-size: 25px;
+
         }
 
 
-        .privacy-heading h1 {
-            color: gold;
+        .privacy-card p {
 
-            font-size: 28px;
+            font-size: 15px;
 
-            font-weight: bold;
+            line-height: 1.7;
 
-            text-decoration: none;
+            margin-bottom: 15px;
 
-            text-align: center;
-
-            margin: 0;
         }
 
 
-        /* =========================================
-           PRIVACY CONTENT
-        ========================================= */
+        /* =========================
+           RIGHT SECTION
+        ========================= */
 
-        .privacy-content {
-            color: white;
-            font-size: 16px;
-            line-height: 1.5;
-            text-align: justify;
-        }
+        .password-section {
 
-
-        .privacy-content p {
-            margin-bottom: 28px;
-        }
-
-
-        .privacy-content p:last-child {
-            margin-bottom: 0;
-        }
-
-
-        .privacy-content strong {
-            font-weight: bold;
-        }
-
-
-        /* =========================================
-           RIGHT SIDE
-        ========================================= */
-
-        .right-section {
             width: 50%;
+
             min-height: 100vh;
 
             background: #086b3c;
 
             display: flex;
 
-            align-items: center;
             justify-content: center;
 
-            padding: 30px;
+            align-items: center;
+
+            padding: 40px;
+
         }
 
 
-        /* =========================================
-           PASSWORD CARD
-        ========================================= */
-
         .password-card {
-            width: 355px;
+
+            width: 100%;
+
+            max-width: 500px;
 
             background: white;
 
-            padding: 30px;
+            border-radius: 12px;
 
-            border-radius: 10px;
+            padding: 35px;
 
             box-shadow:
-                0 20px 35px rgba(0, 0, 0, 0.18);
+                0 5px 20px
+                rgba(0, 0, 0, 0.15);
+
         }
 
 
-        /* =========================================
-           WELCOME TITLE
-        ========================================= */
+        .welcome {
 
-        .password-card h2 {
             text-align: center;
 
             color: #086b3c;
 
-            font-size: 29px;
-
-            margin-bottom: 25px;
-        }
-
-
-        /* =========================================
-           WELCOME MESSAGE
-        ========================================= */
-
-        .welcome-message {
-            text-align: center;
-
-            color: #777;
-
-            font-size: 13px;
-
-            line-height: 1.5;
-
-            margin-bottom: 25px;
-        }
-
-
-        /* =========================================
-           FORM
-        ========================================= */
-
-        .form-group {
-            margin-bottom: 17px;
-        }
-
-
-        .form-group label {
-            display: block;
-
-            color: #333;
-
-            font-size: 13px;
+            font-size: 30px;
 
             font-weight: bold;
 
-            margin-bottom: 7px;
+            margin-bottom: 10px;
+
         }
 
 
-        /* =========================================
-           PASSWORD INPUT
-        ========================================= */
+        .description {
+
+            text-align: center;
+
+            color: #666;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .form-group {
+
+            margin-bottom: 20px;
+
+        }
+
+
+        label {
+
+            display: block;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            color: #333;
+
+            margin-bottom: 8px;
+
+        }
+
 
         .password-input {
+
             position: relative;
 
-            width: 100%;
         }
 
 
         .password-input input {
+
             width: 100%;
 
-            height: 38px;
+            padding: 13px 45px 13px 13px;
 
-            padding: 0 42px 0 10px;
+            border: 1px solid #ccc;
 
-            border: 1px solid #d5dce0;
+            border-radius: 7px;
 
-            border-radius: 6px;
+            font-size: 14px;
 
             outline: none;
 
-            font-size: 12px;
-
-            color: #333;
-
-            background: white;
         }
 
 
         .password-input input:focus {
+
             border-color: #086b3c;
 
-            box-shadow:
-                0 0 0 2px rgba(8, 107, 60, 0.08);
         }
 
 
-        /* =========================================
-           SHOW / HIDE PASSWORD
-        ========================================= */
+        .toggle-password {
 
-        .password-toggle {
             position: absolute;
 
-            right: 0;
-            top: 0;
+            right: 12px;
 
-            width: 40px;
-            height: 38px;
+            top: 50%;
+
+            transform: translateY(-50%);
 
             border: none;
 
             background: transparent;
 
-            color: #777;
+            color: #666;
 
             cursor: pointer;
+
+            font-size: 16px;
+
         }
 
 
-        .password-toggle:hover {
+        .requirements {
+
+            margin: 10px 0 20px 0;
+
+            padding: 15px;
+
+            background: #f4f7f5;
+
+            border-radius: 7px;
+
+        }
+
+
+        .requirements p {
+
+            font-size: 13px;
+
+            margin-bottom: 7px;
+
+            color: #555;
+
+        }
+
+
+        .requirement {
+
+            font-size: 13px;
+
+            margin: 5px 0;
+
+            color: #777;
+
+        }
+
+
+        .requirement.valid {
+
             color: #086b3c;
+
+            font-weight: bold;
+
         }
 
 
-        /* =========================================
-           PASSWORD REQUIREMENTS
-        ========================================= */
+        .requirement.valid i {
 
-        .password-rules {
-            margin: 15px 0 15px 18px;
+            color: #086b3c;
+
+        }
+
+
+        .strength {
+
+            margin-top: 8px;
+
+            font-size: 13px;
 
             color: #666;
 
-            font-size: 12px;
-
-            line-height: 1.7;
-        }
-
-
-        /* =========================================
-           PASSWORD STRENGTH
-        ========================================= */
-
-        .password-strength {
-            margin-bottom: 18px;
-
-            color: #777;
-
-            font-size: 11px;
         }
 
 
         .strength-bar {
+
+            height: 7px;
+
             width: 100%;
 
-            height: 4px;
-
-            background: #e5e5e5;
+            background: #ddd;
 
             border-radius: 5px;
 
-            margin-top: 5px;
+            margin-top: 7px;
 
             overflow: hidden;
+
         }
 
 
-        #strengthBar {
+        .strength-progress {
+
             width: 0%;
 
             height: 100%;
 
             background: #086b3c;
 
-            transition: 0.3s;
+            transition: width 0.3s;
+
         }
 
 
-        /* =========================================
-           SET PASSWORD BUTTON
-        ========================================= */
+        .set-password-btn {
 
-        .set-password-button {
             width: 100%;
 
-            height: 42px;
+            padding: 13px;
 
             border: none;
 
             border-radius: 7px;
 
-            background: #08733f;
+            background: #086b3c;
 
             color: white;
 
-            font-size: 13px;
+            font-size: 15px;
 
             font-weight: bold;
 
             cursor: pointer;
 
-            margin-top: 5px;
+            margin-top: 10px;
 
-            transition: 0.2s;
         }
 
 
-        .set-password-button:hover {
-            background: #075c34;
+        .set-password-btn:hover {
+
+            background: #07582f;
+
         }
 
 
-        /* =========================================
-           MOBILE / TABLET
-        ========================================= */
+        .back-login {
 
-        @media (max-width: 900px) {
+            display: block;
 
-            .setup-page {
+            text-align: center;
+
+            margin-top: 18px;
+
+            color: #086b3c;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+        }
+
+
+        .back-login:hover {
+
+            text-decoration: underline;
+
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 850px) {
+
+            body {
+
                 flex-direction: column;
+
             }
 
 
-            .left-section {
+            .privacy-section,
+            .password-section {
+
                 width: 100%;
 
                 min-height: auto;
 
-                padding: 40px 20px;
             }
 
 
-            .right-section {
-                width: 100%;
+            .privacy-section {
 
-                min-height: auto;
+                padding: 30px 20px;
 
-                padding: 50px 20px;
             }
 
 
-            .privacy-card {
-                max-width: 650px;
-            }
+            .password-section {
 
-        }
+                padding: 30px 20px;
 
-
-        /* =========================================
-           MOBILE
-        ========================================= */
-
-        @media (max-width: 600px) {
-
-            .left-section {
-                padding: 25px 15px;
-            }
-
-
-            .privacy-card {
-                padding: 28px 25px;
-            }
-
-
-            .privacy-heading h1 {
-                font-size: 23px;
-            }
-
-
-            .privacy-content {
-                font-size: 14px;
-
-                line-height: 1.6;
-            }
-
-
-            .right-section {
-                padding: 35px 15px;
-            }
-
-
-            .password-card {
-                width: 100%;
-
-                max-width: 355px;
-
-                padding: 25px;
-            }
-
-        }
-
-
-        /* =========================================
-           SMALL MOBILE
-        ========================================= */
-
-        @media (max-width: 400px) {
-
-            .privacy-card {
-                padding: 22px 18px;
-            }
-
-
-            .privacy-heading h1 {
-                font-size: 21px;
-            }
-
-
-            .privacy-content {
-                font-size: 13px;
-            }
-
-
-            .password-card {
-                padding: 20px;
             }
 
         }
@@ -501,246 +446,267 @@
 <body>
 
 
-    <!-- =========================================
-         MAIN SETUP PAGE
-    ========================================= -->
+    <!-- =========================
+         DATA PRIVACY
+    ========================= -->
 
-    <div class="setup-page">
+    <section class="privacy-section">
+
+        <div class="privacy-card">
+
+            <h2>
+                Data Privacy Note
+            </h2>
+
+            <p>
+                Your personal information and account
+                credentials are intended only for authorized
+                use within the MPSU ETEEAP LMS.
+            </p>
+
+            <p>
+                Please create a secure password and do not
+                share your login credentials with other
+                individuals.
+            </p>
+
+            <p>
+                Your information will be handled according
+                to the privacy and security policies of
+                Mountain Province State University.
+            </p>
+
+        </div>
+
+    </section>
 
 
-        <!-- =========================================
-             LEFT SIDE - DATA PRIVACY
-        ========================================= -->
+    <!-- =========================
+         PASSWORD SECTION
+    ========================= -->
 
-        <div class="left-section">
+    <section class="password-section">
 
-            <div class="privacy-card">
+        <div class="password-card">
+
+            <div class="welcome">
+                WELCOME
+            </div>
 
 
-                <!-- TITLE -->
+            <p class="description">
 
-                <div class="privacy-heading">
+                Your temporary password has been verified.
+                Please create a new password for your account.
 
-                    <h1>
-                        Data Privacy Note
-                    </h1>
+            </p>
+
+
+            <form id="setupForm">
+
+
+                <!-- NEW PASSWORD -->
+
+                <div class="form-group">
+
+                    <label for="newPassword">
+                        New Password
+                    </label>
+
+                    <div class="password-input">
+
+                        <input
+                            type="password"
+                            id="newPassword"
+                            placeholder="Enter new password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="toggle-password"
+                            onclick="togglePassword(
+                                'newPassword',
+                                'newPasswordIcon'
+                            )"
+                        >
+
+                            <i
+                                class="fa-solid fa-eye"
+                                id="newPasswordIcon"
+                            ></i>
+
+                        </button>
+
+                    </div>
 
                 </div>
 
 
-                <!-- PRIVACY TEXT -->
+                <!-- CONFIRM PASSWORD -->
 
-                <div class="privacy-content">
+                <div class="form-group">
 
-                    <p>
-                        By logging in to MPSU ETEEAP Learning
-                        Management System, you acknowledge and
-                        agree that Mountain Province State
-                        University (MPSU) will collect, process,
-                        and store your personal information solely
-                        for educational, administrative, and
-                        academic purposes in accordance with the
-                        <strong>
-                            Data Privacy Act of 2012
-                            (Republic Act No. 10173).
-                        </strong>
-                    </p>
+                    <label for="confirmPassword">
+                        Confirm Password
+                    </label>
 
+                    <div class="password-input">
 
-                    <p>
-                        Your personal information will be handled
-                        with strict confidentiality and will only be
-                        accessed by authorized university personnel.
-                        MPSU implements appropriate technical and
-                        organizational measures to protect your
-                        information against unauthorized access,
-                        disclosure, alteration, or loss.
-                    </p>
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            placeholder="Confirm new password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="toggle-password"
+                            onclick="togglePassword(
+                                'confirmPassword',
+                                'confirmPasswordIcon'
+                            )"
+                        >
+
+                            <i
+                                class="fa-solid fa-eye"
+                                id="confirmPasswordIcon"
+                            ></i>
+
+                        </button>
+
+                    </div>
 
                 </div>
 
-            </div>
+
+                <!-- REQUIREMENTS -->
+
+                <div class="requirements">
+
+                    <p>
+                        Password requirements:
+                    </p>
+
+
+                    <div
+                        class="requirement"
+                        id="lengthRequirement"
+                    >
+
+                        <i class="fa-solid fa-circle-xmark"></i>
+
+                        At least 8 characters
+
+                    </div>
+
+
+                    <div
+                        class="requirement"
+                        id="uppercaseRequirement"
+                    >
+
+                        <i class="fa-solid fa-circle-xmark"></i>
+
+                        One uppercase letter
+
+                    </div>
+
+
+                    <div
+                        class="requirement"
+                        id="numberRequirement"
+                    >
+
+                        <i class="fa-solid fa-circle-xmark"></i>
+
+                        One number
+
+                    </div>
+
+                </div>
+
+
+                <!-- PASSWORD STRENGTH -->
+
+                <div class="strength">
+
+                    Password Strength:
+                    <span id="strengthText">
+                        None
+                    </span>
+
+                    <div class="strength-bar">
+
+                        <div
+                            class="strength-progress"
+                            id="strengthProgress"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="set-password-btn"
+                >
+
+                    Set Password
+
+                </button>
+
+
+            </form>
+
+
+            <a
+                href="../index.html"
+                class="back-login"
+            >
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Back to Login
+
+            </a>
 
         </div>
 
+    </section>
 
-        <!-- =========================================
-             RIGHT SIDE
-        ========================================= -->
-
-        <div class="right-section">
-
-
-            <!-- PASSWORD CARD -->
-
-            <div class="password-card">
-
-
-                <!-- TITLE -->
-
-                <h2>
-                    WELCOME
-                </h2>
-
-
-                <!-- MESSAGE -->
-
-                <p class="welcome-message">
-
-                    Your temporary password has been
-                    verified. Please create a new secure
-                    password to continue.
-
-                </p>
-
-
-                <!-- =================================
-                     PASSWORD FORM
-                ================================== -->
-
-                <form id="setupForm">
-
-
-                    <!-- NEW PASSWORD -->
-
-                    <div class="form-group">
-
-                        <label for="newPassword">
-                            New Password
-                        </label>
-
-
-                        <div class="password-input">
-
-                            <input
-                                type="password"
-                                id="newPassword"
-                                placeholder="Create a secure password"
-                                required>
-
-
-                            <button
-                                type="button"
-                                class="password-toggle"
-                                onclick="togglePassword('newPassword', this)">
-
-                                <i class="fa-solid fa-eye"></i>
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- CONFIRM PASSWORD -->
-
-                    <div class="form-group">
-
-                        <label for="confirmPassword">
-                            Confirm Password
-                        </label>
-
-
-                        <div class="password-input">
-
-                            <input
-                                type="password"
-                                id="confirmPassword"
-                                placeholder="Confirm your password"
-                                required>
-
-
-                            <button
-                                type="button"
-                                class="password-toggle"
-                                onclick="togglePassword('confirmPassword', this)">
-
-                                <i class="fa-solid fa-eye"></i>
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- PASSWORD REQUIREMENTS -->
-
-                    <ul class="password-rules">
-
-                        <li>
-                            At least 8 characters
-                        </li>
-
-                        <li>
-                            One uppercase letter (A-Z)
-                        </li>
-
-                        <li>
-                            One number (0-9)
-                        </li>
-
-                    </ul>
-
-
-                    <!-- PASSWORD STRENGTH -->
-
-                    <div class="password-strength">
-
-                        <span id="strengthText">
-                            Password strength: None
-                        </span>
-
-
-                        <div class="strength-bar">
-
-                            <div id="strengthBar"></div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- SET PASSWORD -->
-
-                    <button
-                        type="submit"
-                        class="set-password-button">
-
-                        Set Password
-
-                    </button>
-
-
-                </form>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- =========================================
-         JAVASCRIPT
-    ========================================= -->
 
     <script>
 
+        const newPassword =
+            document.getElementById("newPassword");
 
-        /* =========================================
-           SHOW / HIDE PASSWORD
-        ========================================= */
+        const confirmPassword =
+            document.getElementById("confirmPassword");
 
-        function togglePassword(inputId, button) {
+        const strengthText =
+            document.getElementById("strengthText");
+
+        const strengthProgress =
+            document.getElementById("strengthProgress");
+
+
+        /*
+         * TOGGLE PASSWORD
+         */
+
+        function togglePassword(
+            inputId,
+            iconId
+        ) {
 
             const input =
                 document.getElementById(inputId);
 
             const icon =
-                button.querySelector("i");
-
+                document.getElementById(iconId);
 
             if (input.type === "password") {
 
@@ -763,167 +729,273 @@
         }
 
 
-        /* =========================================
-           PASSWORD STRENGTH
-        ========================================= */
+        /*
+         * UPDATE PASSWORD REQUIREMENTS
+         */
 
-        const newPassword =
-            document.getElementById("newPassword");
+        function updatePasswordStrength() {
 
-        const strengthText =
-            document.getElementById("strengthText");
-
-        const strengthBar =
-            document.getElementById("strengthBar");
+            const password =
+                newPassword.value;
 
 
-        newPassword.addEventListener("input", function() {
+            const hasLength =
+                password.length >= 8;
 
-            const password = newPassword.value;
+            const hasUppercase =
+                /[A-Z]/.test(password);
+
+            const hasNumber =
+                /[0-9]/.test(password);
+
+
+            updateRequirement(
+                "lengthRequirement",
+                hasLength
+            );
+
+            updateRequirement(
+                "uppercaseRequirement",
+                hasUppercase
+            );
+
+            updateRequirement(
+                "numberRequirement",
+                hasNumber
+            );
+
 
             let strength = 0;
 
-
-            if (password.length >= 8) {
-
+            if (hasLength) {
                 strength++;
-
             }
 
-
-            if (/[A-Z]/.test(password)) {
-
+            if (hasUppercase) {
                 strength++;
-
             }
 
-
-            if (/[0-9]/.test(password)) {
-
+            if (hasNumber) {
                 strength++;
-
             }
 
 
-            if (password.length === 0) {
+            if (strength === 0) {
 
                 strengthText.textContent =
-                    "Password strength: None";
+                    "None";
 
-                strengthBar.style.width = "0%";
+                strengthProgress.style.width =
+                    "0%";
 
-            }
-
-            else if (strength === 1) {
-
-                strengthText.textContent =
-                    "Password strength: Weak";
-
-                strengthBar.style.width = "33%";
-
-            }
-
-            else if (strength === 2) {
+            } else if (strength === 1) {
 
                 strengthText.textContent =
-                    "Password strength: Medium";
+                    "Weak";
 
-                strengthBar.style.width = "66%";
+                strengthProgress.style.width =
+                    "33%";
 
-            }
-
-            else {
+            } else if (strength === 2) {
 
                 strengthText.textContent =
-                    "Password strength: Strong";
+                    "Medium";
 
-                strengthBar.style.width = "100%";
+                strengthProgress.style.width =
+                    "66%";
+
+            } else {
+
+                strengthText.textContent =
+                    "Strong";
+
+                strengthProgress.style.width =
+                    "100%";
 
             }
 
-        });
+        }
 
 
-        /* =========================================
-           FORM SUBMIT
-        ========================================= */
+        /*
+         * UPDATE REQUIREMENT ICON
+         */
 
-        document.getElementById("setupForm")
-            .addEventListener("submit", function(event) {
+        function updateRequirement(
+            elementId,
+            valid
+        ) {
 
-                event.preventDefault();
+            const element =
+                document.getElementById(elementId);
 
-
-                const password =
-                    document.getElementById("newPassword").value;
-
-                const confirmPassword =
-                    document.getElementById("confirmPassword").value;
-
-
-                /* CHECK 8 CHARACTERS */
-
-                if (password.length < 8) {
-
-                    alert(
-                        "Password must be at least 8 characters."
-                    );
-
-                    return;
-                }
+            const icon =
+                element.querySelector("i");
 
 
-                /* CHECK UPPERCASE */
+            if (valid) {
 
-                if (!/[A-Z]/.test(password)) {
+                element.classList.add("valid");
 
-                    alert(
-                        "Password must contain at least one uppercase letter."
-                    );
-
-                    return;
-                }
-
-
-                /* CHECK NUMBER */
-
-                if (!/[0-9]/.test(password)) {
-
-                    alert(
-                        "Password must contain at least one number."
-                    );
-
-                    return;
-                }
-
-
-                /* CHECK PASSWORD MATCH */
-
-                if (password !== confirmPassword) {
-
-                    alert(
-                        "Passwords do not match."
-                    );
-
-                    return;
-                }
-
-
-                /* =================================
-                   SUCCESS
-                   GO TO CLASSES PAGE
-                ================================= */
-
-                alert(
-                    "Password successfully updated!"
+                icon.classList.remove(
+                    "fa-circle-xmark"
                 );
 
-                window.location.href = "classes.html";
+                icon.classList.add(
+                    "fa-circle-check"
+                );
 
-            });
+            } else {
+
+                element.classList.remove("valid");
+
+                icon.classList.remove(
+                    "fa-circle-check"
+                );
+
+                icon.classList.add(
+                    "fa-circle-xmark"
+                );
+
+            }
+
+        }
+
+
+        newPassword.addEventListener(
+            "input",
+            updatePasswordStrength
+        );
+
+
+        /*
+         * SET PASSWORD
+         */
+
+        document
+            .getElementById("setupForm")
+            .addEventListener(
+                "submit",
+                function (event) {
+
+                    event.preventDefault();
+
+
+                    const password =
+                        newPassword.value;
+
+                    const confirm =
+                        confirmPassword.value;
+
+
+                    const validLength =
+                        password.length >= 8;
+
+                    const validUppercase =
+                        /[A-Z]/.test(password);
+
+                    const validNumber =
+                        /[0-9]/.test(password);
+
+
+                    /*
+                     * Make sure this page was reached
+                     * through first login.
+                     */
+
+                    const firstLoginVerified =
+                        sessionStorage.getItem(
+                            "firstLoginVerified"
+                        );
+
+
+                    if (
+                        firstLoginVerified !== "true"
+                    ) {
+
+                        alert(
+                            "Please login first."
+                        );
+
+                        window.location.href =
+                            "../index.html";
+
+                        return;
+
+                    }
+
+
+                    if (
+                        !validLength ||
+                        !validUppercase ||
+                        !validNumber
+                    ) {
+
+                        alert(
+                            "Please meet all password requirements."
+                        );
+
+                        return;
+
+                    }
+
+
+                    if (password !== confirm) {
+
+                        alert(
+                            "Passwords do not match."
+                        );
+
+                        return;
+
+                    }
+
+
+                    /*
+                     * FRONTEND DEMO ONLY
+                     *
+                     * Laravel will hash and save this
+                     * password in MySQL later.
+                     */
+
+                    localStorage.setItem(
+                        "studentPassword",
+                        password
+                    );
+
+
+                    localStorage.setItem(
+                        "passwordSetupComplete",
+                        "true"
+                    );
+
+
+                    sessionStorage.removeItem(
+                        "firstLoginVerified"
+                    );
+
+
+                    sessionStorage.removeItem(
+                        "isLoggedIn"
+                    );
+
+
+                    alert(
+                        "Password created successfully. Please login again using your new password."
+                    );
+
+
+                    /*
+                     * Return to Login
+                     */
+
+                    window.location.href =
+                        "../index.html";
+
+                }
+            );
 
     </script>
-
 
 </body>
 

@@ -1,81 +1,99 @@
-let setupForm = document.getElementById("setupForm");
+/* =========================================================
+   STUDENT.JS
+   MPSU ETEEAP LMS
+========================================================= */
+
+
+/* =========================================================
+   SETUP / SET PASSWORD
+========================================================= */
+
+const setupForm = document.getElementById("setupForm");
 
 if (setupForm) {
 
-    let newPassword =
+    const newPassword =
         document.getElementById("newPassword");
 
-    let confirmPassword =
+    const confirmPassword =
         document.getElementById("confirmPassword");
 
-    let strengthText =
+    const strengthText =
         document.getElementById("strengthText");
 
 
-    // CHECK PASSWORD STRENGTH
+    /* PASSWORD STRENGTH */
 
-    newPassword.addEventListener("input", function() {
+    if (newPassword && strengthText) {
 
-        let password = newPassword.value;
+        newPassword.addEventListener("input", function () {
 
-        let strong = true;
+            const password = newPassword.value;
 
-
-        if (password.length < 8) {
-            strong = false;
-        }
-
-        if (!/[A-Z]/.test(password)) {
-            strong = false;
-        }
-
-        if (!/[0-9]/.test(password)) {
-            strong = false;
-        }
+            let strong = true;
 
 
-        if (password == "") {
+            if (password.length < 8) {
+                strong = false;
+            }
 
-            strengthText.innerHTML =
-                "Password strength: None";
+            if (!/[A-Z]/.test(password)) {
+                strong = false;
+            }
 
-        }
-
-        else if (strong) {
-
-            strengthText.innerHTML =
-                "Password strength: Strong";
-
-        }
-
-        else {
-
-            strengthText.innerHTML =
-                "Password strength: Weak";
-
-        }
-
-    });
+            if (!/[0-9]/.test(password)) {
+                strong = false;
+            }
 
 
-    // SAVE PASSWORD
+            if (password === "") {
 
-    setupForm.addEventListener("submit", function(event) {
+                strengthText.textContent =
+                    "Password strength: None";
+
+            }
+
+            else if (strong) {
+
+                strengthText.textContent =
+                    "Password strength: Strong";
+
+            }
+
+            else {
+
+                strengthText.textContent =
+                    "Password strength: Weak";
+
+            }
+
+        });
+
+    }
+
+
+    /* SAVE PASSWORD */
+
+    setupForm.addEventListener("submit", function (event) {
 
         event.preventDefault();
 
 
-        let privacy =
-            document.getElementById("privacy").checked;
-
-        let password =
-            newPassword.value;
-
-        let confirm =
-            confirmPassword.value;
+        const privacyElement =
+            document.getElementById("privacy");
 
 
-        if (!privacy) {
+        const password =
+            newPassword ? newPassword.value : "";
+
+
+        const confirm =
+            confirmPassword ? confirmPassword.value : "";
+
+
+        /* CHECK PRIVACY */
+
+        if (privacyElement && !privacyElement.checked) {
 
             alert(
                 "Please acknowledge the Data Privacy Notice."
@@ -86,9 +104,13 @@ if (setupForm) {
         }
 
 
-        if (password.length < 8 ||
+        /* CHECK PASSWORD */
+
+        if (
+            password.length < 8 ||
             !/[A-Z]/.test(password) ||
-            !/[0-9]/.test(password)) {
+            !/[0-9]/.test(password)
+        ) {
 
             alert(
                 "Password is not strong enough. Use at least 8 characters, one uppercase letter and one number."
@@ -99,7 +121,9 @@ if (setupForm) {
         }
 
 
-        if (password != confirm) {
+        /* CHECK CONFIRM PASSWORD */
+
+        if (password !== confirm) {
 
             alert("Passwords do not match.");
 
@@ -108,7 +132,12 @@ if (setupForm) {
         }
 
 
-        // Save demo information
+        /*
+         * FRONTEND DEMO ONLY
+         *
+         * In the final Laravel/MySQL version,
+         * the password must NOT be stored in localStorage.
+         */
 
         localStorage.setItem(
             "studentPassword",
@@ -127,19 +156,22 @@ if (setupForm) {
 
 
         window.location.href =
-            "dashboard.html";
+            "classes.html";
 
     });
 
 }
 
-// DASHBOARD FEEDBACK
 
+/* =========================================================
+   DASHBOARD FEEDBACK
+========================================================= */
 
 function dismissFeedback() {
 
-    let feedback =
+    const feedback =
         document.querySelector(".feedback");
+
 
     if (feedback) {
 
@@ -149,14 +181,18 @@ function dismissFeedback() {
 
 }
 
-// COMPLETED MODULE
+
+/* =========================================================
+   COMPLETED MODULE
+========================================================= */
 
 function showCompleted() {
 
-    let file =
+    const file =
         document.getElementById("completedFile");
 
-    let icon =
+
+    const icon =
         document.getElementById("completedIcon");
 
 
@@ -165,9 +201,13 @@ function showCompleted() {
     }
 
 
-    if (file.style.display == "none") {
+    if (
+        file.style.display === "none" ||
+        file.style.display === ""
+    ) {
 
         file.style.display = "block";
+
 
         if (icon) {
 
@@ -181,9 +221,12 @@ function showCompleted() {
 
         }
 
-    } else {
+    }
+
+    else {
 
         file.style.display = "none";
+
 
         if (icon) {
 
@@ -202,18 +245,21 @@ function showCompleted() {
 }
 
 
-// SUBMISSION
+/* =========================================================
+   SUBMISSION PAGE
+========================================================= */
 
 function saveSubmission() {
 
-    let file =
+    const file =
         document.getElementById("submissionFile");
 
-    let comment =
+
+    const comment =
         document.getElementById("submissionComment");
 
 
-    if (!file.files.length) {
+    if (!file || !file.files.length) {
 
         alert(
             "Please select a file before submitting."
@@ -224,16 +270,28 @@ function saveSubmission() {
     }
 
 
+    /*
+     * FRONTEND DEMO ONLY
+     *
+     * We save only the filename for now.
+     * The actual file will be uploaded to
+     * Laravel/MySQL later.
+     */
+
     localStorage.setItem(
         "submission",
         file.files[0].name
     );
 
 
-    localStorage.setItem(
-        "submissionComment",
-        comment.value
-    );
+    if (comment) {
+
+        localStorage.setItem(
+            "submissionComment",
+            comment.value
+        );
+
+    }
 
 
     alert(
@@ -247,19 +305,36 @@ function saveSubmission() {
 }
 
 
-// LOGOUT
+/* =========================================================
+   LOGOUT
+========================================================= */
 
 function logoutYes() {
 
-    // Remove login information
+    /*
+     * FRONTEND DEMO ONLY
+     *
+     * Remove temporary student information.
+     */
 
-    localStorage.removeItem("firstLogin");
+    localStorage.removeItem(
+        "firstLogin"
+    );
 
-    localStorage.removeItem("studentPassword");
 
-    localStorage.removeItem("submission");
+    localStorage.removeItem(
+        "studentPassword"
+    );
 
-    localStorage.removeItem("submissionComment");
+
+    localStorage.removeItem(
+        "submission"
+    );
+
+
+    localStorage.removeItem(
+        "submissionComment"
+    );
 
 
     window.location.href =
@@ -276,8 +351,24 @@ function logoutNo() {
 }
 
 
-// EDIT ACCOUNT
+function logoutUser() {
 
+    alert(
+        "You have successfully logged out."
+    );
+
+
+    window.location.href =
+        "../index.html";
+
+}
+
+
+/* =========================================================
+   EDIT ACCOUNT
+========================================================= */
+
+const editForm =
     document.getElementById("editForm");
 
 
@@ -285,38 +376,64 @@ if (editForm) {
 
     editForm.addEventListener(
         "submit",
-        function(event) {
+        function (event) {
 
             event.preventDefault();
 
 
-            let oldPassword =
-                document.getElementById(
-                    "oldPassword"
-                ).value;
-
-            let newPassword =
-                document.getElementById(
-                    "editNewPassword"
-                ).value;
-
-            let confirmPassword =
-                document.getElementById(
-                    "editConfirmPassword"
-                ).value;
-
-            let newEmail =
-                document.getElementById(
-                    "newEmail"
-                ).value;
-
-            let confirmEmail =
-                document.getElementById(
-                    "confirmEmail"
-                ).value;
+            const oldPasswordElement =
+                document.getElementById("oldPassword");
 
 
-            if (oldPassword == "") {
+            const newPasswordElement =
+                document.getElementById("editNewPassword");
+
+
+            const confirmPasswordElement =
+                document.getElementById("editConfirmPassword");
+
+
+            const newEmailElement =
+                document.getElementById("newEmail");
+
+
+            const confirmEmailElement =
+                document.getElementById("confirmEmail");
+
+
+            const oldPassword =
+                oldPasswordElement
+                    ? oldPasswordElement.value
+                    : "";
+
+
+            const newPassword =
+                newPasswordElement
+                    ? newPasswordElement.value
+                    : "";
+
+
+            const confirmPassword =
+                confirmPasswordElement
+                    ? confirmPasswordElement.value
+                    : "";
+
+
+            const newEmail =
+                newEmailElement
+                    ? newEmailElement.value
+                    : "";
+
+
+            const confirmEmail =
+                confirmEmailElement
+                    ? confirmEmailElement.value
+                    : "";
+
+
+            /* OLD PASSWORD */
+
+            if (oldPassword === "") {
 
                 alert(
                     "Please enter your old password."
@@ -327,9 +444,11 @@ if (editForm) {
             }
 
 
+            /* NEW PASSWORD */
+
             if (
-                newPassword != "" &&
-                newPassword != confirmPassword
+                newPassword !== "" &&
+                newPassword !== confirmPassword
             ) {
 
                 alert(
@@ -341,9 +460,11 @@ if (editForm) {
             }
 
 
+            /* EMAIL */
+
             if (
-                newEmail != "" &&
-                newEmail != confirmEmail
+                newEmail !== "" &&
+                newEmail !== confirmEmail
             ) {
 
                 alert(
@@ -355,7 +476,14 @@ if (editForm) {
             }
 
 
-            if (newPassword != "") {
+            /*
+             * FRONTEND DEMO ONLY
+             *
+             * This will later be handled
+             * by Laravel/MySQL.
+             */
+
+            if (newPassword !== "") {
 
                 localStorage.setItem(
                     "studentPassword",
@@ -377,144 +505,361 @@ if (editForm) {
     );
 
 }
+
+
+/* =========================================================
+   GO BACK
+========================================================= */
+
 function goBack() {
 
-    window.location.href = "dashboard.html";
+    window.location.href =
+        "dashboard.html";
 
 }
 
 
-function logoutUser() {
-
-    alert("You have successfully logged out.");
-
-    window.location.href = "../index.html";
-
-}
-const fileInput = document.getElementById("fileInput");
-const browseBtn = document.getElementById("browseBtn");
-const selectedFile = document.getElementById("selectedFile");
-const fileName = document.getElementById("fileName");
-const removeFile = document.getElementById("removeFile");
-const submitBtn = document.getElementById("submitBtn");
+/* =========================================================
+   MODULE FILE UPLOAD
+========================================================= */
 
 let attachedFile = null;
 
 
-// ============================
-// BROWSE
-// ============================
+/* Get elements only if they exist on the current page */
 
-browseBtn.addEventListener("click", function () {
-    fileInput.click();
-});
+const moduleFileInput =
+    document.getElementById("fileInput");
 
 
-// ============================
-// FILE SELECTED
-// ============================
-
-fileInput.addEventListener("change", function () {
-
-    if (fileInput.files.length === 0) {
-        return;
-    }
-
-    const file = fileInput.files[0];
-
-    // Allowed extensions
-    const allowedExtensions = ["pdf", "doc", "docx"];
-
-    const extension = file.name
-        .split(".")
-        .pop()
-        .toLowerCase();
-
-    // Check file type
-    if (!allowedExtensions.includes(extension)) {
-
-        alert("Please attach only PDF, DOC, or DOCX files.");
-
-        fileInput.value = "";
-        return;
-    }
+const moduleSelectedFile =
+    document.getElementById("selectedFile");
 
 
-    // Check file size (25 MB)
-    if (file.size > 25 * 1024 * 1024) {
-
-        alert("The file must not exceed 25 MB.");
-
-        fileInput.value = "";
-        return;
-    }
+const moduleFileName =
+    document.getElementById("fileName");
 
 
-    // Save selected file
-    attachedFile = file;
+const moduleSubmitBtn =
+    document.getElementById("submitBtn");
 
 
-    // Show file name
-    fileName.textContent = file.name;
+/* =========================================================
+   FILE INPUT
+========================================================= */
 
-    selectedFile.style.display = "flex";
+if (moduleFileInput) {
+
+    moduleFileInput.addEventListener(
+        "change",
+        function () {
+
+            if (!moduleFileInput.files.length) {
+                return;
+            }
 
 
-    // Enable submit
-    submitBtn.disabled = false;
-
-    console.log("File attached:", file.name);
-});
+            const file =
+                moduleFileInput.files[0];
 
 
-// ============================
-// REMOVE FILE
-// ============================
+            /* ALLOWED FILE TYPES */
 
-removeFile.addEventListener("click", function () {
+            const allowedExtensions = [
+                "pdf",
+                "doc",
+                "docx"
+            ];
+
+
+            const extension =
+                file.name
+                    .split(".")
+                    .pop()
+                    .toLowerCase();
+
+
+            if (
+                !allowedExtensions.includes(
+                    extension
+                )
+            ) {
+
+                alert(
+                    "Please attach only PDF, DOC, or DOCX files."
+                );
+
+
+                moduleFileInput.value = "";
+
+                return;
+
+            }
+
+
+            /* FILE SIZE */
+
+            if (
+                file.size >
+                25 * 1024 * 1024
+            ) {
+
+                alert(
+                    "The file must not exceed 25 MB."
+                );
+
+
+                moduleFileInput.value = "";
+
+                return;
+
+            }
+
+
+            /* SAVE FILE */
+
+            attachedFile = file;
+
+
+            /* DISPLAY FILE NAME */
+
+            if (moduleFileName) {
+
+                moduleFileName.textContent =
+                    file.name;
+
+            }
+
+
+            if (moduleSelectedFile) {
+
+                moduleSelectedFile.style.display =
+                    "flex";
+
+            }
+
+
+            /* ENABLE SUBMIT */
+
+            if (moduleSubmitBtn) {
+
+                moduleSubmitBtn.disabled =
+                    false;
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   REMOVE FILE
+========================================================= */
+
+function removeFile() {
 
     attachedFile = null;
 
-    fileInput.value = "";
 
-    fileName.textContent = "No file selected";
+    if (moduleFileInput) {
 
-    selectedFile.style.display = "none";
+        moduleFileInput.value = "";
 
-    submitBtn.disabled = true;
-});
-
-
-// ============================
-// SUBMIT FILE
-// ============================
-
-submitBtn.addEventListener("click", function () {
-
-    if (!attachedFile) {
-
-        alert("Please attach a file first.");
-
-        return;
     }
 
 
+    if (moduleFileName) {
+
+        moduleFileName.textContent =
+            "No file selected";
+
+    }
+
+
+    if (moduleSelectedFile) {
+
+        moduleSelectedFile.style.display =
+            "none";
+
+    }
+
+
+    if (moduleSubmitBtn) {
+
+        moduleSubmitBtn.disabled =
+            true;
+
+    }
+
+}
+
+
+/* =========================================================
+   SUBMIT FILE
+========================================================= */
+
+function submitFile() {
+
+    if (!attachedFile) {
+
+        alert(
+            "Please attach a file first."
+        );
+
+        return;
+
+    }
+
+
+    /*
+     * FRONTEND DEMO ONLY
+     *
+     * The real file upload will later
+     * be handled by Laravel.
+     */
+
+    localStorage.setItem(
+        "submission",
+        attachedFile.name
+    );
+
+
     alert(
-        "File attached successfully!\n\n" +
+        "File submitted successfully!\n\n" +
         "File: " + attachedFile.name
     );
 
 
-    // Change status
-    const status = document.querySelector(".submission-status");
+    /* UPDATE STATUS */
+
+    const status =
+        document.querySelector(
+            ".submission-status"
+        );
+
 
     if (status) {
-        status.textContent = "Submitted";
+
+        status.textContent =
+            "Submitted";
+
     }
 
 
-    // Disable submit after submission
-    submitBtn.textContent = "Submitted";
-    submitBtn.disabled = true;
+    /* UPDATE BUTTON */
 
-});
+    if (moduleSubmitBtn) {
+
+        moduleSubmitBtn.textContent =
+            "Submitted";
+
+        moduleSubmitBtn.disabled =
+            true;
+
+    }
+
+}
+
+
+/* =========================================================
+   DRAG AND DROP
+========================================================= */
+
+const dropArea =
+    document.getElementById("dropArea");
+
+
+if (dropArea && moduleFileInput) {
+
+
+    /* DRAG OVER */
+
+    dropArea.addEventListener(
+        "dragover",
+        function (event) {
+
+            event.preventDefault();
+
+            dropArea.style.borderColor =
+                "#086b3c";
+
+        }
+    );
+
+
+    /* DRAG LEAVE */
+
+    dropArea.addEventListener(
+        "dragleave",
+        function () {
+
+            dropArea.style.borderColor =
+                "#b5c9bd";
+
+        }
+    );
+
+
+    /* DROP */
+
+    dropArea.addEventListener(
+        "drop",
+        function (event) {
+
+            event.preventDefault();
+
+
+            dropArea.style.borderColor =
+                "#b5c9bd";
+
+
+            const files =
+                event.dataTransfer.files;
+
+
+            if (!files.length) {
+                return;
+            }
+
+
+            /*
+             * Put the dropped file into
+             * the file input.
+             */
+
+            try {
+
+                const dataTransfer =
+                    new DataTransfer();
+
+
+                dataTransfer.items.add(
+                    files[0]
+                );
+
+
+                moduleFileInput.files =
+                    dataTransfer.files;
+
+
+                moduleFileInput.dispatchEvent(
+                    new Event("change")
+                );
+
+            }
+
+            catch (error) {
+
+                console.log(
+                    "Drag and drop could not be processed.",
+                    error
+                );
+
+            }
+
+        }
+    );
+
+}
