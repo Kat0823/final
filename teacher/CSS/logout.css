@@ -35,9 +35,8 @@ body {
 }
 
 .logo-box {
-  width: 42px;
-  height: 42px;
-  background-color: #ca8a04;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   display: flex;
   align-items: center;

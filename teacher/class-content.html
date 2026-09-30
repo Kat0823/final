@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPSU ETEEAP LMS - CRIM-101 Intro to Criminology & Community</title>
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts Inter -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    
+    <!-- External Custom Stylesheet -->
+    <link rel="stylesheet" href="../teacher/CSS/classcontent.css">
+</head>
+<body>
+
+   
+  <!-- Top Header Navigation -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo-box">
+        <img src="../images/logo.png" alt="MSPU logo">
+      </div>
+
+      <div class="header-titles">
+        <div class="main-title">MPSU ETEEAP LMS</div>
+        <div class="sub-title">Mountain Province State University</div>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button class="icon-btn" title="Notifications">
+        <i class="fa-regular fa-bell"></i>
+      </button>
+
+      <div class="user-profile">
+        <div class="avatar-ring">
+          <img src="logo" alt="logo of MPSUx  " />
+        </div>
+        <div class="user-info">
+          <span class="user-name">Macross Arsel <i class="fa-solid fa-caret-down"></i></span>
+          <span class="user-role">Instructor</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+   <!-- Main Body Layout -->
+  <div class="app-body">
+
+    <!-- Deep Maroon Sidebar -->
+    <aside class="sidebar">
+      <div class="view-header">
+        <span class="view-label">View</span>
+        <button class="view-toggle-btn" title="Toggle Layout">
+          <i class="fa-regular fa-rectangle-list"></i>
+        </button>
+      </div>
+
+    
+        <a href="dashboard.html" class="nav-item">
+          <i class="fa-solid fa-users"></i>
+          <span>Learners Progress</span>
+        </a>
+
+        <!-- Active Menu Item: Classes -->
+        <a href="class.html" class="nav-item active">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>Classes</span>
+        </a>
+
+        <a href="submissions.html" class="nav-item">
+          <i class="fa-regular fa-folder"></i>
+          <span>Submission</span>
+        </a>
+
+        <a href="notification.html" class="nav-item">
+          <i class="fa-regular fa-bell"></i>
+          <span>Notification</span>
+        </a>
+
+        <!-- Logout Item Pushed To Bottom -->
+        <a href="logout.html" class="nav-item logout-bottom">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+    </aside>
+
+        <!-- MAIN CONTENT CANVAS -->
+        <main>
+
+            <!-- Breadcrumb Navigation -->
+            <nav class="breadcrumbs">
+                <a href="#instructor">Instructor</a>
+                <span>/</span>
+                <a href="class.html">Classes</a>
+                <span>/</span>
+                <span class="active">CRIM-101 | Intro to Criminology</span>
+            </nav>
+
+            <!-- COURSE BANNER CARD -->
+            <div class="course-card">
+                <div class="course-header">
+                    <div class="course-details">
+                        <div class="badges-group">
+                            <span class="badge badge-green">CRIM-101</span>
+                            <span class="badge badge-amber">1st Semester 2026-2027</span>
+                        </div>
+                        <h2 class="course-title">CRIM–101 | Intro to Criminology & Community</h2>
+                        <p class="course-description">
+                            Fundamentals of criminology, theories of crime causation, community policing models, and societal responses to crime in the Philippine context.
+                        </p>
+                        
+                        <div class="course-metrics">
+                            <div class="metric-item">
+                                <i class="fa-solid fa-user-graduate" style="color: var(--mpsu-green, #0c4827);"></i>
+                                <span><strong>21</strong> Enrolled Students</span>
+                            </div>
+                            <div class="metric-item">
+                                <i class="fa-solid fa-clock-rotate-left" style="color: #dc2626;"></i>
+                                <span id="pendingCountText"><strong>2</strong> Pending Reviews</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HIDDEN RADIO INPUTS TO CONTROL TABS VIA PURE CSS -->
+            <input type="radio" id="tab-modules" name="main-tabs" class="tab-radio" checked>
+            <input type="radio" id="tab-announcements" name="main-tabs" class="tab-radio">
+            <input type="radio" id="tab-learners" name="main-tabs" class="tab-radio">
+
+            <!-- NAVIGATION TABS HEADER (LABELS LINKED TO RADIOS) -->
+            <div class="tabs-header">
+                <label for="tab-modules" class="tab-btn">
+                    <i class="fa-solid fa-book"></i>
+                    <span>Modules & Syllabus</span>
+                    <span class="tab-badge tab-badge-green">4</span>
+                </label>
+
+                <label for="tab-announcements" class="tab-btn">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <span>Announcements</span>
+                    <span class="tab-badge tab-badge-amber">3</span>
+                </label>
+
+                <label for="tab-learners" class="tab-btn">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Learners Progress</span>
+                    <span class="tab-badge tab-badge-gray">21</span>
+                </label>
+            </div>
+
+            <!-- TAB 1: MODULES CONTENT -->
+            <div class="tab-panel" id="panel-modules">
+                <div class="modules-section">
+
+                    <!-- Unit 1 -->
+                    <details class="module-card" open>
+                        <summary>
+                            <div class="module-title-group">
+                                <span class="unit-badge">UNIT 1</span>
+                                <div>
+                                    <h3>Foundations of Criminology & Crime Concepts</h3>
+                                    <p>Week 1-2 • 3 Learning Resources • 1 Quiz</p>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </summary>
+
+                        <div class="module-body">
+                            <div class="resource-row">
+                                <div class="resource-info">
+                                    <div class="resource-icon icon-pdf">
+                                        <i class="fa-solid fa-file-pdf" style="font-size: 18px;"></i>
+                                    </div>
+                                    <div class="resource-text">
+                                        <h4>Lecture Notes: Classical vs Positivist School of Criminology</h4>
+                                        <p>PDF Document • 2.4 MB • Recommended Reading</p>
+                                    </div>
+                                </div>
+                                <a href="#download" class="resource-btn btn-download">
+                                    <i class="fa-solid fa-download"></i>
+                                    <span>Download</span>
+                                </a>
+                            </div>
+
+                            <div class="resource-row">
+                                <div class="resource-info">
+                                    <div class="resource-icon icon-video">
+                                        <i class="fa-solid fa-circle-play" style="font-size: 18px;"></i>
+                                    </div>
+                                    <div class="resource-text">
+                                        <h4>Recorded Lecture: Elements of Crime & Criminal Behavior</h4>
+                                        <p>Video Lesson • 42 mins • Recorded Oct 12</p>
+                                    </div>
+                                </div>
+                                <a href="#watch" class="resource-btn btn-watch">
+                                    <i class="fa-solid fa-play"></i>
+                                    <span>Watch</span>
+                                </a>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Unit 2 -->
+                    <details class="module-card" open>
+                        <summary>
+                            <div class="module-title-group">
+                                <span class="unit-badge">UNIT 2</span>
+                                <div>
+                                    <h3>Community-Oriented Policing System (COPS)</h3>
+                                    <p>Week 3-4 • 2 Learning Resources • 1 Case Study Assignment</p>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </summary>
+
+                        <div class="module-body">
+                            <div class="resource-row">
+                                <div class="resource-info">
+                                    <div class="resource-icon icon-pdf">
+                                        <i class="fa-solid fa-file-pdf" style="font-size: 18px;"></i>
+                                    </div>
+                                    <div class="resource-text">
+                                        <h4>PNP Manual: Community Relations & Barangay Crime Prevention</h4>
+                                        <p>PDF Guide • 4.1 MB</p>
+                                    </div>
+                                </div>
+                                <a href="#download" class="resource-btn btn-download">
+                                    <i class="fa-solid fa-download"></i>
+                                    <span>Download</span>
+                                </a>
+                            </div>
+                        </div>
+                    </details>
+
+                </div>
+            </div>
+
+            <!-- TAB 2: ANNOUNCEMENTS CONTENT -->
+            <div class="tab-panel" id="panel-announcements">
+                <h2>Announcements</h2>
+                <ul>
+                    <li><strong>Welcome to the Course!</strong> — Please review the syllabus.</li>
+                    <li><strong>Live Q&A Session Scheduled</strong> — Join us Thursday at 3:00 PM PST.</li>
+                    <li><strong>Module 2 Assignment Released</strong> — Practice exercises are now live.</li>
+                </ul>
+            </div>
+
+            <!-- TAB 3: LEARNERS PROGRESS CONTENT -->
+            <div class="tab-panel" id="panel-learners">
+                <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h2>Learners Progress</h2>
+                    <span style="font-size: 0.85rem; color: var(--text-secondary);">Showing 3 of 21 Enrolled Students</span>
+                </div>
+                
+                <table class="progress-table">
+                    <thead>
+                        <tr>
+                            <th>Learner</th>
+                            <th>Overall Progress</th>
+                            <th style="text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="learnersTableBody">
+                        <!-- Populated dynamically via JS or rendered statically -->
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL 1: GRADE COMPILED SUBMISSION MODAL -->
+    <div class="modal-overlay" id="gradingModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <h3 id="modalStudentName" class="modal-title">Grade Submission - Alex Johnson</h3>
+                    <p class="modal-subtitle">Compiled Module Activities & Manual Score Assignment</p>
+                </div>
+                <button class="modal-close-btn" id="closeGradingModal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Submitted File Box -->
+                <div class="file-preview-card">
+                    <div class="file-info">
+                        <div class="file-icon"><i class="fa-solid fa-file-zipper"></i></div>
+                        <div>
+                            <div class="file-name" id="modalFileName">AlexJohnson_Module1_Compiled.pdf</div>
+                            <div class="file-meta" id="modalFileMeta">PDF Document • 5.8 MB • Submitted Oct 24, 2026 at 11:42 AM</div>
+                        </div>
+                    </div>
+                    <button class="btn-download-file"><i class="fa-solid fa-download"></i> View Document</button>
+                </div>
+
+                <!-- Dynamic Activity Grading Form -->
+                <div class="grading-section">
+                    <div class="grading-section-header">
+                        <h4><i class="fa-solid fa-list-check" style="color: var(--mpsu-green);"></i> Compiled Activities Breakdown</h4>
+                        <button type="button" class="btn-add-activity" id="btnAddActivityRow">
+                            <i class="fa-solid fa-plus"></i> Add Activity Item
+                        </button>
+                    </div>
+
+                    <p class="help-text">Manually input each activity title contained in the student's compiled submission along with its raw score.</p>
+
+                    <div class="activity-items-list" id="activityItemsContainer">
+                        <!-- Dynamic activity input rows added here -->
+                    </div>
+
+                    <!-- Auto-Calculated Score Summary -->
+                    <div class="summary-box">
+                        <div>
+                            <span class="summary-label">Total Raw Score</span>
+                            <div class="summary-val" id="summaryRaw">0 / 0 pts</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <span class="summary-label">Computed Grade</span>
+                            <div class="summary-val" id="summaryPercent" style="color: var(--mpsu-green);">0%</div>
+                        </div>
+                    </div>
+
+                    <!-- Feedback Textarea -->
+                    <div class="feedback-group">
+                        <label for="instructorFeedback"><i class="fa-solid fa-comment-dots"></i> Instructor Feedback & Comments</label>
+                        <textarea id="instructorFeedback" rows="3" placeholder="Provide constructive feedback for the student..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-cancel" id="cancelGradingModal">Cancel</button>
+                <button class="btn-save" id="saveGradeBtn"><i class="fa-solid fa-floppy-disk"></i> Save & Publish Grade</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: VIEW GRADED MODAL -->
+    <div class="modal-overlay" id="viewGradedModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <h3 id="viewGradedTitle" class="modal-title">Graded Activities - Maria Garcia</h3>
+                    <p class="modal-subtitle">Summary of Evaluated Module Activities</p>
+                </div>
+                <button class="modal-close-btn" id="closeViewModal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="summary-box" style="margin-bottom: 1.25rem;">
+                    <div>
+                        <span class="summary-label">Final Raw Score</span>
+                        <div class="summary-val" id="viewTotalScore">100 / 100 pts</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="summary-label">Overall Grade</span>
+                        <div class="summary-val" id="viewTotalPercent" style="color: var(--mpsu-green);">100%</div>
+                    </div>
+                </div>
+
+                <h4>Itemized Activity Scores</h4>
+                <div id="gradedItemsList" class="graded-items-list">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <div class="feedback-group" style="margin-top: 1rem;">
+                    <label>Instructor Feedback</label>
+                    <div id="viewFeedbackBox" class="feedback-display-box">No feedback provided.</div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-cancel" id="btnEditGrade"><i class="fa-solid fa-pen"></i> Edit Scores</button>
+                <button class="btn-save" id="closeViewModalBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT FOR INTERACTIVITY & DYNAMIC MODALS -->
+    <script>
+        // Sample Student State Data
+        const studentsData = [
+            {
+                id: "2026-0012",
+                name: "Alex Johnson",
+                initials: "AJ",
+                progress: 75,
+                fileName: "AlexJohnson_Module1_Compiled.pdf",
+                fileMeta: "PDF Document • 5.8 MB • Submitted Oct 24, 2026 at 11:42 AM",
+                hasPending: true,
+                pendingCount: 1,
+                activities: [
+                    { title: "Activity 1: Theory Comparison Essay", raw: 45, max: 50 },
+                    { title: "Activity 2: Crime Causation Case Analysis", raw: 30, max: 50 }
+                ],
+                feedback: "Good analytical approach to the Classical School comparisons. Pay attention to formatting in Activity 2."
+            },
+            {
+                id: "2026-0045",
+                name: "Maria Garcia",
+                initials: "MG",
+                progress: 100,
+                fileName: "MariaGarcia_Module1_FullAssignment.pdf",
+                fileMeta: "PDF Document • 4.2 MB • Graded Oct 20, 2026",
+                hasPending: false,
+                pendingCount: 0,
+                activities: [
+                    { title: "Activity 1: Criminology Matrix", raw: 50, max: 50 },
+                    { title: "Activity 2: Positivist Essay", raw: 50, max: 50 }
+                ],
+                feedback: "Outstanding work! Thorough research and clear arguments throughout all compiled activities."
+            },
+            {
+                id: "2026-0089",
+                name: "Sam Lee",
+                initials: "SL",
+                progress: 50,
+                fileName: "SamLee_Module1_Compilation.pdf",
+                fileMeta: "PDF Document • 3.1 MB • Submitted Oct 25, 2026 at 09:15 AM",
+                hasPending: true,
+                pendingCount: 1,
+                activities: [
+                    { title: "Activity 1: Unit 1 Reflection Paper", raw: 25, max: 50 }
+                ],
+                feedback: ""
+            }
+        ];
+
+        let activeStudentIndex = null;
+
+        // Render Table Rows
+        function renderStudentsTable() {
+            const tbody = document.getElementById('learnersTableBody');
+            tbody.innerHTML = '';
+
+            let totalPending = 0;
+
+            studentsData.forEach((student, index) => {
+                if (student.hasPending) totalPending += student.pendingCount;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div class="learner-profile-cell">
+                            <div class="learner-avatar">${student.initials}</div>
+                            <div class="learner-info">
+                                <span class="learner-name">${student.name}</span>
+                                <span class="learner-id">ID: ${student.id}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="progress-container">
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" style="width: ${student.progress}%;"></div>
+                            </div>
+                            <span class="progress-text">${student.progress}%</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            ${student.hasPending ? `
+                                <button class="action-btn btn-grade-pending" onclick="openGradingModal(${index})">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                    <span>Grade Submission</span>
+                                    <span class="action-badge">${student.pendingCount}</span>
+                                </button>
+                            ` : ''}
+                            <button class="action-btn btn-view-graded" onclick="openViewGradedModal(${index})">
+                                <i class="fa-solid fa-square-check"></i>
+                                <span>View Graded</span>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('pendingCountText').innerHTML = `<strong>${totalPending}</strong> Pending Reviews`;
+        }
+
+        // --- GRADING MODAL FUNCTIONS ---
+        function openGradingModal(index) {
+            activeStudentIndex = index;
+            const student = studentsData[index];
+
+            document.getElementById('modalStudentName').textContent = `Grade Submission - ${student.name}`;
+            document.getElementById('modalFileName').textContent = student.fileName;
+            document.getElementById('modalFileMeta').textContent = student.fileMeta;
+            document.getElementById('instructorFeedback').value = student.feedback || '';
+
+            const container = document.getElementById('activityItemsContainer');
+            container.innerHTML = '';
+
+            if (student.activities && student.activities.length > 0) {
+                student.activities.forEach(act => addActivityRow(act.title, act.raw, act.max));
+            } else {
+                addActivityRow("Activity 1: ", 0, 50);
+            }
+
+            calculateTotals();
+            document.getElementById('gradingModal').classList.add('active');
+        }
+
+        function addActivityRow(title = '', raw = 0, max = 50) {
+            const container = document.getElementById('activityItemsContainer');
+            const row = document.createElement('div');
+            row.className = 'activity-item-row';
+            row.innerHTML = `
+                <div class="form-group flex-2">
+                    <label>Activity Title</label>
+                    <input type="text" class="act-title-input" value="${title}" placeholder="e.g. Activity 1: Theory Comparison">
+                </div>
+                <div class="form-group flex-1">
+                    <label>Raw Score</label>
+                    <input type="number" class="act-raw-input" value="${raw}" min="0" oninput="calculateTotals()">
+                </div>
+                <div class="form-group flex-1">
+                    <label>Max Score</label>
+                    <input type="number" class="act-max-input" value="${max}" min="1" oninput="calculateTotals()">
+                </div>
+                <button type="button" class="btn-remove-row" onclick="removeActivityRow(this)"><i class="fa-solid fa-trash-can"></i></button>
+            `;
+            container.appendChild(row);
+            calculateTotals();
+        }
+
+        function removeActivityRow(btn) {
+            const row = btn.closest('.activity-item-row');
+            row.remove();
+            calculateTotals();
+        }
+
+        function calculateTotals() {
+            const rows = document.querySelectorAll('.activity-item-row');
+            let totalRaw = 0;
+            let totalMax = 0;
+
+            rows.forEach(row => {
+                const rawVal = parseFloat(row.querySelector('.act-raw-input').value) || 0;
+                const maxVal = parseFloat(row.querySelector('.act-max-input').value) || 0;
+                totalRaw += rawVal;
+                totalMax += maxVal;
+            });
+
+            const percent = totalMax > 0 ? Math.round((totalRaw / totalMax) * 100) : 0;
+            document.getElementById('summaryRaw').textContent = `${totalRaw} / ${totalMax} pts`;
+            document.getElementById('summaryPercent').textContent = `${percent}%`;
+        }
+
+        function saveGrade() {
+            if (activeStudentIndex === null) return;
+            const student = studentsData[activeStudentIndex];
+
+            const rows = document.querySelectorAll('.activity-item-row');
+            const activities = [];
+            let totalRaw = 0;
+            let totalMax = 0;
+
+            rows.forEach(row => {
+                const title = row.querySelector('.act-title-input').value.trim() || 'Untitled Activity';
+                const raw = parseFloat(row.querySelector('.act-raw-input').value) || 0;
+                const max = parseFloat(row.querySelector('.act-max-input').value) || 0;
+                activities.push({ title, raw, max });
+                totalRaw += raw;
+                totalMax += max;
+            });
+
+            student.activities = activities;
+            student.feedback = document.getElementById('instructorFeedback').value;
+            student.progress = totalMax > 0 ? Math.round((totalRaw / totalMax) * 100) : 0;
+            student.hasPending = false;
+            student.pendingCount = 0;
+
+            closeGradingModal();
+            renderStudentsTable();
+        }
+
+        function closeGradingModal() {
+            document.getElementById('gradingModal').classList.remove('active');
+            activeStudentIndex = null;
+        }
+
+        // --- VIEW GRADED MODAL FUNCTIONS ---
+        function openViewGradedModal(index) {
+            activeStudentIndex = index;
+            const student = studentsData[index];
+
+            document.getElementById('viewGradedTitle').textContent = `Graded Activities - ${student.name}`;
+
+            let totalRaw = 0;
+            let totalMax = 0;
+            const listContainer = document.getElementById('gradedItemsList');
+            listContainer.innerHTML = '';
+
+            if (student.activities && student.activities.length > 0) {
+                student.activities.forEach(act => {
+                    totalRaw += act.raw;
+                    totalMax += act.max;
+                    const item = document.createElement('div');
+                    item.className = 'graded-item-row';
+                    item.innerHTML = `
+                        <span class="graded-item-title">${act.title}</span>
+                        <span class="graded-item-score">${act.raw} / ${act.max} pts</span>
+                    `;
+                    listContainer.appendChild(item);
+                });
+            } else {
+                listContainer.innerHTML = '<p style="font-size: 0.85rem; color: var(--text-muted);">No graded activities yet.</p>';
+            }
+
+            const percent = totalMax > 0 ? Math.round((totalRaw / totalMax) * 100) : student.progress;
+            document.getElementById('viewTotalScore').textContent = `${totalRaw} / ${totalMax} pts`;
+            document.getElementById('viewTotalPercent').textContent = `${percent}%`;
+            document.getElementById('viewFeedbackBox').textContent = student.feedback || 'No comments provided.';
+
+            document.getElementById('viewGradedModal').classList.add('active');
+        }
+
+        function closeViewGradedModal() {
+            document.getElementById('viewGradedModal').classList.remove('active');
+        }
+
+        // Event Listeners Initialization
+        document.getElementById('btnAddActivityRow').addEventListener('click', () => addActivityRow());
+        document.getElementById('closeGradingModal').addEventListener('click', closeGradingModal);
+        document.getElementById('cancelGradingModal').addEventListener('click', closeGradingModal);
+        document.getElementById('saveGradeBtn').addEventListener('click', saveGrade);
+
+        document.getElementById('closeViewModal').addEventListener('click', closeViewGradedModal);
+        document.getElementById('closeViewModalBtn').addEventListener('click', closeViewGradedModal);
+        document.getElementById('btnEditGrade').addEventListener('click', () => {
+            closeViewGradedModal();
+            openGradingModal(activeStudentIndex);
+        });
+
+        // Initialize App
+        renderStudentsTable();
+    </script>
+</body>
+</html>

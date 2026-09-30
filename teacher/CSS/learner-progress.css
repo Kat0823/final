@@ -1,4 +1,23 @@
-/* Reset and Base Styles */
+/* ==========================================================================
+   MPSU ETEEAP LMS - LEARNER PROGRESS STYLESHEET
+   ========================================================================== */
+
+:root {
+  --mpsu-green: #0a522d;
+  --mpsu-green-light: #eaf5ed;
+  --mpsu-card-bg: #f2f9f4;
+  --mpsu-maroon: #5b0000;
+  --mpsu-gold: #c28e0e;
+  
+  --border-color: #d1d5db;
+  --text-primary: #1e293b;
+  --text-muted: #64748b;
+  
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -6,26 +25,25 @@
   font-family: 'Poppins', sans-serif;
 }
 
-body {
-  background-color: #f0fdf4; /* Light green tint background */
-  color: #333333;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+html, body {
+  height: 100%;
+  background-color: var(--mpsu-green-light);
+  color: var(--text-primary);
 }
 
-/* 1. Top Navigation Header */
+/* 1. Header Styles */
 .header {
   height: 64px;
-  background-color: #0a522d; /* Forest Green */
+  background-color: var(--mpsu-green);
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 10;
+  padding: 0 1.5rem;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .header-left {
@@ -35,59 +53,56 @@ body {
 }
 
 .logo-box {
-  width: 42px;
-  height: 42px;
-  background-color: #ca8a04;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
-  color: #ffffff;
-  border: 2px solid #ffffff;
 }
 
-.header-titles .main-title {
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.2;
+.logo-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.header-titles .sub-title {
-  font-size: 12px;
+.main-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.sub-title {
+  font-size: 0.75rem;
   opacity: 0.85;
-  font-weight: 300;
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 18px;
 }
 
 .icon-btn {
-  background: none;
+  background: transparent;
   border: none;
   color: #ffffff;
-  font-size: 20px;
+  font-size: 1.1rem;
   cursor: pointer;
-  transition: opacity 0.2s;
-}
-
-.icon-btn:hover {
-  opacity: 0.8;
 }
 
 .user-profile {
   display: flex;
   align-items: center;
   gap: 10px;
-  cursor: pointer;
 }
 
 .avatar-ring {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid #ffffff;
@@ -99,22 +114,16 @@ body {
   object-fit: cover;
 }
 
-.user-info {
-  display: flex;
-  flex-direction: column;
-}
-
 .user-name {
-  font-size: 14px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: block;
 }
 
 .user-role {
-  font-size: 10px;
-  opacity: 0.75;
+  font-size: 0.7rem;
+  opacity: 0.8;
+  display: block;
 }
 
 /* 2. Main Body Layout */
@@ -182,7 +191,7 @@ body {
 }
 
 .nav-item.active {
-    background-color: #ca8a04 !important;
+  background-color: #ca8a04 !important;
   color: #1a0306 !important;
   font-weight: 600;
   border: 1px solid #eab308;
@@ -215,24 +224,34 @@ body {
 .logout-bottom {
   margin-top: auto;
 }
+/* 4. Main Content Area & Card Container */
+/* --- MAIN CONTENT AREA --- */
+main {
+    flex: 1;
+    padding: 2rem;
+    max-width: 1200px;
+    height: 100%;       /* Fills the remaining vertical space of .app-body */
+    overflow-y: auto;   /* Enables vertical scrolling for main content only */
+}
 
-/* 4. Content Area */
-.main-content {
+.content-card-wrapper {
+  background-color: var(--mpsu-card-bg);
+  border: 1px solid #d2e6d8;
+  border-radius: var(--radius-lg);
+  padding: 2rem;
   flex: 1;
-  padding: 32px 40px;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 1.5rem;
 }
 
 .page-title {
-  font-size: 32px;
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: 800;
   color: #000000;
 }
 
-/* 5. Search Bar Container */
+/* Search Box Component */
 .search-container {
   display: flex;
   align-items: center;
@@ -241,31 +260,28 @@ body {
 .search-wrapper {
   display: flex;
   align-items: center;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
   background-color: #ffffff;
-  overflow: hidden;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.75rem;
+  gap: 0.6rem;
+  width: 280px;
 }
 
 .search-icon-box {
-  padding: 10px 14px;
-  color: #6b7280;
-  font-size: 16px;
-  border-right: 1px solid #e5e7eb;
+  color: var(--text-muted);
+  font-size: 0.85rem;
 }
 
 .dropdown-input-wrapper {
   display: flex;
   flex-direction: column;
-  padding: 4px 12px;
-  width: 180px;
+  width: 100%;
 }
 
 .dropdown-label {
-  font-size: 9px;
-  color: #9ca3af;
-  text-transform: lowercase;
+  font-size: 0.65rem;
+  color: var(--text-muted);
   line-height: 1;
 }
 
@@ -279,112 +295,96 @@ body {
   border: none;
   outline: none;
   width: 100%;
-  font-size: 13px;
-  color: #374151;
+  font-size: 0.85rem;
   background: transparent;
 }
 
 .arrow-icon {
-  font-size: 10px;
-  color: #9ca3af;
-  margin-left: 6px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
 }
 
-/* 6. Data Table Styling */
+/* 5. Table Component */
 .table-card {
-  background-color: #ffffff;
-  border: 1px solid #9ca3af;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  min-height: 480px;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
 }
 
 .progress-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
+  font-size: 0.85rem;
 }
 
 .progress-table th {
-  padding: 16px 20px;
-  font-size: 13px;
+  background-color: #ffffff;
+  color: var(--text-muted);
   font-weight: 600;
-  color: #111827;
-  border-bottom: 1px solid #111827;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .progress-table td {
-  padding: 16px 20px;
-  font-size: 12px;
-  color: #374151;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
   vertical-align: middle;
 }
 
-.font-medium {
-  font-weight: 500;
-  color: #111827;
+.progress-table tr:last-child td {
+  border-bottom: none;
 }
 
-/* Progress Bar */
+/* Progress bar inside table */
 .progress-wrapper {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.75rem;
 }
 
 .progress-bar-container {
-  width: 80px;
-  height: 8px;
-  background-color: #d1d5db;
-  border-radius: 9999px;
+  flex: 1;
+  height: 6px;
+  background-color: #e2e8f0;
+  border-radius: 10px;
   overflow: hidden;
+  min-width: 80px;
 }
 
 .progress-bar-fill {
   height: 100%;
-  background-color: #0a522d; /* Forest green progress fill */
-  border-radius: 9999px;
+  background-color: var(--mpsu-green);
+  border-radius: 10px;
 }
 
 .progress-text {
-  font-size: 11px;
   font-weight: 600;
-  color: #374151;
-}
-
-.no-progress {
-  color: #9ca3af;
-  font-weight: 500;
-  padding-left: 20px;
+  font-size: 0.8rem;
 }
 
 /* Status Badges */
 .status-badge {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 9999px;
-  font-size: 10px;
-  font-weight: 600;
-  text-align: center;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 
 .status-active {
   background-color: #dcfce7;
-  color: #166534;
-}
-
-.status-pending {
-  background-color: #fef08a;
-  color: #854d0e;
+  color: #15803d;
 }
 
 .status-completed {
-  background-color: #bae6fd;
-  color: #075985;
+  background-color: #dbeafe;
+  color: #1e40af;
 }
 
-.last-login {
-  color: #6b7280;
+.status-pending {
+  background-color: #fef3c7;
+  color: #b45309;
 }
