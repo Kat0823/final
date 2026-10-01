@@ -11,13 +11,28 @@ use App\Http\Controllers\Api\GradeController;
 use App\Http\Controllers\Api\NotificationController;
 
 
-Route::post(
-    '/login',
-    [AuthController::class, 'login']
-);
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
 
+Route::post('/login', [AuthController::class, 'login']);
+
+
+/*
+|--------------------------------------------------------------------------
+| Protected Routes
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware('auth:sanctum')->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Student Routes
+    |--------------------------------------------------------------------------
+    */
 
     Route::get(
         '/student/courses',
@@ -29,27 +44,40 @@ Route::middleware('auth:sanctum')->group(function () {
         [StudentController::class, 'course']
     );
 
+    Route::post(
+        '/student/setup-password',
+        [PasswordController::class, 'setup']
+    );
+
     Route::get(
         '/student/modules/{moduleId}',
         [ModuleController::class, 'show']
     );
 
     Route::post(
-        '/student/setup-password',
-        [PasswordController::class, 'setup']
-    );
-
-    Route::post(
         '/student/submissions',
         [SubmissionController::class, 'store']
     );
-    Route::get(
-    '/student/grades',
-    [GradeController::class, 'index']
-);
-Route::get(
-    '/student/notifications',
-    [NotificationController::class, 'index']
-);
 
+    Route::get(
+        '/student/grades',
+        [GradeController::class, 'index']
+    );
+
+    Route::get(
+        '/student/notifications',
+        [NotificationController::class, 'index']
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Instructor Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/instructor/submissions/{submissionId}/grade',
+        [GradeController::class, 'store']
+    );
 });
