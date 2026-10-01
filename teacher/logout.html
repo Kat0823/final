@@ -9,7 +9,10 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <!-- Link external CSS -->
-  <link rel="stylesheet" href="logout.css" />
+   <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <link rel="stylesheet" href="../teacher/CSS/logout.css" />
 </head>
 <body>
 
@@ -17,7 +20,7 @@
   <header class="header">
     <div class="header-left">
       <div class="logo-box">
-        <i class="fa-solid fa-graduation-cap"></i>
+        <img src="../images/logo.png" alt="MPSU Logo">
       </div>
       <div class="header-titles">
         <div class="main-title">MPSU ETEEAP LMS</div>
@@ -55,13 +58,6 @@
       </div>
 
       <nav class="nav-menu">
-        <a href="#" class="nav-item user-item">
-          <div class="avatar-small">
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Macros Avatar" />
-          </div>
-          <span>Macros</span>
-        </a>
-
         <a href="dashboard.html" class="nav-item">
           <i class="fa-solid fa-users"></i>
           <span>Learners Progress</span>
@@ -80,7 +76,8 @@
         <a href="notification.html" class="nav-item">
           <i class="fa-regular fa-bell"></i>
           <span>Notifications</span>
-        </a>
+        </a> 
+      </nav>
 
         <!-- Highlighted Logout Item Pushed To Bottom -->
         <a href="logout.html" class="nav-item active-logout logout-bottom" id="logoutNavItem">
@@ -107,15 +104,19 @@
 
   </div>
 
-  <script>
-    document.getElementById('btnNo').addEventListener('click', () => {
-      alert('Logout cancelled.');
-    });
 
-    document.getElementById('btnYes').addEventListener('click', () => {
-      alert('Logging out...');
-      window.location.reload();
-    });
-  </script>
+    <script>
+        const viewToggle =
+            document.getElementById("viewToggle");
+        const sidebar =
+            document.querySelector(".sidebar");
+        const mainContent =
+            document.querySelector(".main-content");
+        viewToggle.addEventListener("click", function () {
+            sidebar.classList.toggle("collapsed");
+            mainContent.classList.toggle("expanded");
+        });
+    </script>
+
 </body>
 </html>

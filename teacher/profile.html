@@ -1,99 +1,259 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instructor Dashboard - MPSU ETEEAP LMS</title>
-    <link rel="stylesheet" href="teacher.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ETEEAP Instructor Portal</title>
+  <link rel="stylesheet" href="../teacher/CSS/profile.css">
 </head>
 <body>
-<div class="top-bar">
-    <div class="school-info">
-        <img src="../images/logo.png">
-        <div>
-            <h2>MPSU ETEEAP LMS</h2>
-            <p>Mountain Province State University</p>
+
+  <!-- Instructor Dashboard Background -->
+  <div class="dashboard-container" id="dashboard">
+    <header class="dash-header">
+      <div class="brand">
+        <h2>ETEEAP Faculty Portal</h2>
+        <span class="badge">Assessor Account</span>
+      </div>
+      <button class="btn btn-primary" id="openSettingsBtn">
+        ⚙️ Profile Settings
+      </button>
+    </header>
+
+    <main class="dash-content">
+      <div class="welcome-card">
+        <h1>Welcome back, Dr. Santos!</h1>
+        <p>Expanded Tertiary Education Equivalency and Accreditation Program — Panel Evaluator</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>14</h3>
+          <p>Active Candidates</p>
         </div>
+        <div class="stat-card">
+          <h3>6</h3>
+          <p>Pending Portfolios</p>
+        </div>
+        <div class="stat-card">
+          <h3>22</h3>
+          <p>Evaluations Completed</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal Overlay (Background Blur Target) -->
+  <div class="modal-overlay" id="modalOverlay">
+    
+    <!-- Profile Settings Card -->
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="close-btn" id="closeSettingsBtn" aria-label="Close Modal">&times;</button>
+
+      <!-- Modal Sidebar -->
+      <aside class="modal-sidebar">
+        <div class="instructor-summary">
+          <div class="avatar-sm">
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150" alt="Dr. Santos" id="sidebarAvatar">
+          </div>
+          <div>
+            <h4>Dr. Maria Santos</h4>
+            <span>ETEEAP Assessor</span>
+          </div>
+        </div>
+
+        <nav class="settings-nav">
+          <button class="nav-item active" data-tab="instructor-profile">Faculty Profile</button>
+          <button class="nav-item" data-tab="eteeap-accreditation">Accreditation & Modules</button>
+          <button class="nav-item" data-tab="security">Security & Credentials</button>
+          <button class="nav-item" data-tab="notifications">Evaluation Alerts</button>
+        </nav>
+      </aside>
+
+      <!-- Modal Content Area -->
+      <main class="modal-content">
+        
+        <!-- Tab 1: Faculty Profile -->
+        <section class="tab-panel active" id="instructor-profile">
+          <header class="panel-header">
+            <h2 id="modalTitle">Instructor Profile Settings</h2>
+            <p>Update your public faculty credentials and candidate-facing details.</p>
+          </header>
+
+          <form class="settings-form">
+            <!-- Photo Upload -->
+            <div class="avatar-section">
+              <div class="avatar-wrapper">
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150" alt="Faculty Photo" id="avatarPreview">
+                <label for="avatarUpload" class="avatar-change-btn">Change</label>
+                <input type="file" id="avatarUpload" accept="image/*" hidden>
+              </div>
+              <div class="avatar-info">
+                <h3>Official Faculty Photo</h3>
+                <p>Visible to ETEEAP candidates and panel evaluators. JPG or PNG, max 5MB.</p>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" value="Maria">
+              </div>
+
+              <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" value="Santos, Ph.D.">
+              </div>
+
+              <div class="form-group">
+                <label for="facultyId">Faculty ID / Assessor No.</label>
+                <input type="text" id="facultyId" value="ETEEAP-FAC-2024-089" readonly class="readonly-input">
+              </div>
+
+              <div class="form-group">
+                <label for="email">Institutional Email</label>
+                <input type="email" id="email" value="m.santos@university.edu.ph">
+              </div>
+
+              <div class="form-group full-width">
+                <label for="department">Department / College</label>
+                <select id="department">
+                  <option selected>College of Engineering & Technology</option>
+                  <option>College of Business & Management</option>
+                  <option>College of Arts & Sciences</option>
+                  <option>College of Computer Studies</option>
+                </select>
+              </div>
+
+              <div class="form-group full-width">
+                <label for="specialization">Academic / Industry Specialization</label>
+                <input type="text" id="specialization" value="Information Systems, IT Governance, Enterprise Architecture">
+              </div>
+
+              <div class="form-group full-width">
+                <label for="consultationHours">Candidate Consultation Hours</label>
+                <input type="text" id="consultationHours" value="Tue / Thu 2:00 PM - 5:00 PM (Online / Room 304)">
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary closeModalBtn">Cancel</button>
+              <button type="submit" class="btn btn-primary">Save Profile Changes</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Tab 2: Accreditation & Modules -->
+        <section class="tab-panel" id="eteeap-accreditation">
+          <header class="panel-header">
+            <h2>Accreditation & Module Assignments</h2>
+            <p>Manage subject areas you are certified to evaluate for equivalency credit.</p>
+          </header>
+
+          <form class="settings-form">
+            <div class="form-group full-width">
+              <label>Assessed Courses / Competency Areas</label>
+              <div class="checkbox-group">
+                <label class="checkbox-item">
+                  <input type="checkbox" checked> Systems Analysis & Design (ITE-301)
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" checked> IT Project Management (ITE-402)
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" checked> Enterprise Database Management (ITE-205)
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox"> Cybersecurity Risk & Governance (ITE-410)
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="evaluatorBio">Assessor Credentials & Experience Summary</label>
+              <textarea id="evaluatorBio" rows="4">15+ years in corporate IT infrastructure management combined with 8 years of university teaching. CHED-certified ETEEAP panel member for Technology & Computing disciplines.</textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary closeModalBtn">Cancel</button>
+              <button type="submit" class="btn btn-primary">Update Accreditation Info</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Tab 3: Security & Credentials -->
+        <section class="tab-panel" id="security">
+          <header class="panel-header">
+            <h2>Security & Authentication</h2>
+            <p>Update your portal access credentials and signature setup.</p>
+          </header>
+
+          <form class="settings-form">
+            <div class="form-group full-width">
+              <label for="currentPass">Current Password</label>
+              <input type="password" id="currentPass">
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="newPass">New Password</label>
+                <input type="password" id="newPass">
+              </div>
+              <div class="form-group">
+                <label for="confirmPass">Confirm New Password</label>
+                <input type="password" id="confirmPass">
+              </div>
+            </div>
+
+            <div class="form-group full-width">
+              <label>Digital Signature for Accreditation Documents</label>
+              <div class="signature-box">
+                <p>✓ Digital Signature Active (E-Sign Hash: <code>8f4a-99b1-eteeap-2026</code>)</p>
+                <button type="button" class="btn btn-secondary btn-sm">Re-upload E-Signature</button>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary closeModalBtn">Cancel</button>
+              <button type="submit" class="btn btn-primary">Update Security</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Tab 4: Evaluation Alerts -->
+        <section class="tab-panel" id="notifications">
+          <header class="panel-header">
+            <h2>Evaluation & Portfolio Alerts</h2>
+            <p>Configure notifications for candidate submissions and panel schedules.</p>
+          </header>
+
+          <form class="settings-form">
+            <div class="checkbox-group vertical">
+              <label class="checkbox-item">
+                <input type="checkbox" checked> Email me when a candidate submits a new Portfolio of Evidence
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" checked> Notify 24 hours prior to scheduled oral defense/panel interview
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" checked> Send weekly summary of assigned candidates pending evaluation
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox"> SMS alerts for urgent CHED/ETEEAP secretariat notices
+              </label>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary closeModalBtn">Cancel</button>
+              <button type="submit" class="btn btn-primary">Save Preferences</button>
+            </div>
+          </form>
+        </section>
+
+      </main>
     </div>
-    <a href="profile.html" class="user">
-        <div class="user-picture">
-            <i class="fa-solid fa-user"></i>
-        </div>
-        <div>
-            <b>Instructor Bev</b>
-        </div>
-    </a>   
-</div>
+  </div>
 
-<div class="main-container">
-
-<!-- sidebar -->
-    <div class="sidebar">
-        <div class="view-title"><p>View</p><i class="fa-solid fa-table-columns"></i></div>
-        <a href="dashboard.html" class="menu"><i class="fa-solid fa-house"></i><p>Dashboard</p></a>
-        <a href="modules.html" class="menu"><i class="fa-solid fa-folder-open"></i><p>My Modules</p></a>
-        <a href="assessments.html" class="menu"><i class="fa-solid fa-clipboard-list"></i><p>Assessments</p></a>
-        <a href="grades.html" class="menu"><i class="fa-solid fa-chart-line"></i><p>Grades</p></a>
-        <a href="announcements.html" class="menu"><i class="fa-solid fa-bullhorn"></i><p>Announcements</p></a>
-        <a href="profile.html" class="menu active"><i class="fa-solid fa-user"></i><p>Profile</p></a>
-        <a href="logout.html" class="menu logout"><i class="fa-solid fa-right-from-bracket"></i><p>Logout</p></a>
-    </div>
-
-<div class="main">
-<div class="profile-container">
-<h1>Teacher Profile</h1>
-<br>
-<div class="profile-card">
-<div class="profile-header">
-<img src="../images/profile.png" id="profileImage">
-<div>
-<h2 id="displayName">Prof. Maria Santos</h2>
-<p>Instructor</p>
-<p>MPSU ETEEAP LMS</p>
-</div>
-</div>
-
-<div class="profile-grid">
-<div>
-<label>Full Name</label>
-<input type="text" id="name" value="Prof. Maria Santos" disabled>
-</div>
-
-<div>
-<label>Email</label>
-<input type="email" id="email" value="maria.santos@mpsu.edu.ph" disabled>
-</div>
-
-<div>
-<label>Department</label>
-<input type="text" id="department" value="ETEEAP" disabled>
-</div>
-<div>
-
-<label>Contact Number</label>
-<input type="text" id="contact" value="09123456789" disabled>
-</div>
-
-<div>
-<label>Employee ID</label>
-<input type="text"id="employee"value="EMP-2026-001"disabled>
-</div>
-
-<div>
-<label>Office</label>
-<input type="text"id="office"value="MPSU Main Campus"disabled>
-</div>
-</div>
-
-<div class="button-group">
-<button onclick="editProfile()"><i class="fa-solid fa-pen"></i>Edit Profile</button>
-<button onclick="saveProfile()"><i class="fa-solid fa-floppy-disk"></i>Save Changes</button>
-<button class="cancel-btn" onclick="cancelEdit()">Cancel</button>
-</div>
-</div>
-</div>
-</div>
-<script>
-</script>
+  <script src="script.js"></script>
 </body>
 </html>
