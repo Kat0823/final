@@ -13,18 +13,17 @@ class AuthController extends Controller
     public function login(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'student_id' => ['required', 'string'],
+            'school_id' => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
 
-        $user = User::where('student_id', $validated['student_id'])
-            ->where('role', 'learner')
+        $user = User::where('school_id', $validated['school_id'])
             ->first();
 
         if (!$user || !Hash::check($validated['password'], $user->password)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Invalid Student ID or password.',
+                'message' => 'Invalid ID or password.',
             ], 401);
         }
 
@@ -35,11 +34,12 @@ class AuthController extends Controller
             'message' => 'Login successful.',
             'token' => $token,
             'first_login' => !$user->password_setup_complete,
+
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'student_id' => $user->student_id,
+                'school_id' => $user->school_id,
                 'program' => $user->program,
                 'contact' => $user->contact,
                 'role' => $user->role,

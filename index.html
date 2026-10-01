@@ -2,12 +2,8 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - MPSU ETEEAP LMS</title>
 
     <!-- Font Awesome -->
@@ -15,7 +11,6 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
     <style>
-
         * {
             margin: 0;
             padding: 0;
@@ -33,7 +28,6 @@
         }
 
         /* MAIN CONTAINER */
-
         .login-container {
             width: 100%;
             max-width: 1050px;
@@ -45,8 +39,7 @@
             overflow: hidden;
         }
 
-        /* LEFT SIDE */
-
+        /* LEFT SECTION */
         .left-section {
             width: 50%;
             background: #086b3c;
@@ -90,8 +83,7 @@
             color: #ffd34e;
         }
 
-        /* RIGHT SIDE */
-
+        /* RIGHT SECTION */
         .right-section {
             width: 50%;
             padding: 50px;
@@ -109,11 +101,11 @@
         .login-subtitle {
             color: #666;
             font-size: 15px;
+            line-height: 1.5;
             margin-bottom: 30px;
         }
 
         /* FORM */
-
         .form-group {
             margin-bottom: 20px;
         }
@@ -169,7 +161,6 @@
         }
 
         /* FORGOT PASSWORD */
-
         .forgot-password {
             display: flex;
             justify-content: flex-end;
@@ -188,10 +179,9 @@
         }
 
         /* LOGIN BUTTON */
-
         .login-button {
             width: 100%;
-            height: 48px;
+            min-height: 48px;
             border: none;
             border-radius: 7px;
             background: #086b3c;
@@ -199,7 +189,7 @@
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.2s;
+            transition: background 0.2s;
         }
 
         .login-button:hover {
@@ -212,37 +202,40 @@
         }
 
         /* MESSAGE */
-
         .message {
             display: none;
             padding: 12px;
             margin-bottom: 20px;
             border-radius: 7px;
             font-size: 14px;
-            line-height: 1.4;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .message.error,
+        .message.success {
+            display: block;
         }
 
         .message.error {
-            display: block;
             background: #ffe8e8;
             color: #a00000;
             border: 1px solid #f0b5b5;
         }
 
         .message.success {
-            display: block;
             background: #e8f6ee;
             color: #086b3c;
             border: 1px solid #a9d8bc;
         }
 
         /* FOOTER */
-
         .login-footer {
             text-align: center;
             margin-top: 25px;
             color: #777;
             font-size: 13px;
+            line-height: 1.8;
         }
 
         .login-footer a {
@@ -255,9 +248,7 @@
         }
 
         /* MOBILE */
-
         @media (max-width: 800px) {
-
             .login-container {
                 flex-direction: column;
                 max-width: 550px;
@@ -296,7 +287,6 @@
         }
 
         @media (max-width: 450px) {
-
             body {
                 padding: 10px;
             }
@@ -320,34 +310,24 @@
             .login-title {
                 font-size: 25px;
             }
-
         }
-
     </style>
-
 </head>
-
 
 <body>
 
     <div class="login-container">
 
         <!-- LEFT SECTION -->
-
         <section class="left-section">
 
-            <img
-                src="images/logo.png"
+            <img src="images/logo.png"
                 alt="MPSU Logo"
                 class="logo">
 
-            <h1>
-                MPSU ETEEAP LMS
-            </h1>
+            <h1>MPSU ETEEAP LMS</h1>
 
-            <h2>
-                Mountain Province State University
-            </h2>
+            <h2>Mountain Province State University</h2>
 
             <p>
                 Expanded Tertiary Education Equivalency
@@ -361,51 +341,39 @@
 
         </section>
 
-
         <!-- RIGHT SECTION -->
-
         <section class="right-section">
 
-            <h1 class="login-title">
-                Welcome Back
-            </h1>
+            <h1 class="login-title">Welcome Back</h1>
 
             <p class="login-subtitle">
                 Sign in to access your ETEEAP learning account.
             </p>
 
-
-            <!-- MESSAGE -->
-
-            <div
-                id="loginMessage"
-                class="message">
+            <!-- LOGIN MESSAGE -->
+            <div id="loginMessage"
+                class="message"
+                role="alert"
+                aria-live="polite">
             </div>
 
-
             <!-- LOGIN FORM -->
-
             <form id="loginForm">
 
-                <!-- STUDENT ID -->
-
+                <!-- SCHOOL ID -->
                 <div class="form-group">
 
-                    <label for="studentId">
-                        Student ID
-                    </label>
+                    <label for="studentId">ID</label>
 
                     <div class="input-container">
 
-                        <i
-                            class="fa-regular fa-id-card input-icon">
-                        </i>
+                        <i class="fa-regular fa-id-card input-icon"></i>
 
                         <input
                             type="text"
                             id="studentId"
-                            name="student_id"
-                            placeholder="Enter your Student ID"
+                            name="school_id"
+                            placeholder="Enter your ID"
                             required
                             autocomplete="username">
 
@@ -413,20 +381,14 @@
 
                 </div>
 
-
                 <!-- PASSWORD -->
-
                 <div class="form-group">
 
-                    <label for="password">
-                        Password
-                    </label>
+                    <label for="password">Password</label>
 
                     <div class="input-container">
 
-                        <i
-                            class="fa-solid fa-lock input-icon">
-                        </i>
+                        <i class="fa-solid fa-lock input-icon"></i>
 
                         <input
                             type="password"
@@ -439,16 +401,17 @@
                         <i
                             id="passwordIcon"
                             class="fa-regular fa-eye password-toggle"
-                            title="Show password">
+                            title="Show password"
+                            role="button"
+                            tabindex="0"
+                            aria-label="Show password">
                         </i>
 
                     </div>
 
                 </div>
 
-
                 <!-- FORGOT PASSWORD -->
-
                 <div class="forgot-password">
 
                     <a href="forgot-password.html">
@@ -457,35 +420,26 @@
 
                 </div>
 
-
                 <!-- LOGIN BUTTON -->
-
                 <button
                     type="submit"
                     class="login-button"
                     id="loginButton">
 
                     <i class="fa-solid fa-right-to-bracket"></i>
-
                     Login
 
                 </button>
 
             </form>
 
-
             <!-- FOOTER -->
-
             <div class="login-footer">
 
-                <p>
-                    MPSU ETEEAP LMS
-                </p>
+                <p>MPSU ETEEAP LMS</p>
 
                 <p>
-                    <a href="terms.html">
-                        Terms of Service
-                    </a>
+                    <a href="terms.html">Terms of Service</a>
                 </p>
 
             </div>
@@ -494,279 +448,197 @@
 
     </div>
 
-
     <script>
-
         /*
-            Laravel backend
-        */
+         * Laravel API address.
+         * Make sure your backend is running on port 8000.
+         */
+        const API_BASE_URL = "http://localhost:8000";
 
-        const API_BASE_URL =
-            "http://localhost:8000";
+        // Form elements
+        const loginForm = document.getElementById("loginForm");
+        const studentIdInput = document.getElementById("studentId");
+        const passwordInput = document.getElementById("password");
+        const passwordIcon = document.getElementById("passwordIcon");
+        const loginButton = document.getElementById("loginButton");
+        const loginMessage = document.getElementById("loginMessage");
 
+        // Show or hide password
+        function togglePassword() {
+            const isHidden = passwordInput.type === "password";
 
-        /*
-            Form elements
-        */
+            passwordInput.type = isHidden ? "text" : "password";
 
-        const loginForm =
-            document.getElementById("loginForm");
+            passwordIcon.classList.toggle("fa-eye", !isHidden);
+            passwordIcon.classList.toggle("fa-eye-slash", isHidden);
 
-        const studentIdInput =
-            document.getElementById("studentId");
+            passwordIcon.title = isHidden
+                ? "Hide password"
+                : "Show password";
 
-        const passwordInput =
-            document.getElementById("password");
-
-        const passwordIcon =
-            document.getElementById("passwordIcon");
-
-        const loginButton =
-            document.getElementById("loginButton");
-
-        const loginMessage =
-            document.getElementById("loginMessage");
-
-
-        /*
-            Show / hide password
-        */
-
-        passwordIcon.addEventListener(
-            "click",
-            function () {
-
-                if (passwordInput.type === "password") {
-
-                    passwordInput.type = "text";
-
-                    passwordIcon.classList.remove(
-                        "fa-eye"
-                    );
-
-                    passwordIcon.classList.add(
-                        "fa-eye-slash"
-                    );
-
-                    passwordIcon.title =
-                        "Hide password";
-
-                } else {
-
-                    passwordInput.type = "password";
-
-                    passwordIcon.classList.remove(
-                        "fa-eye-slash"
-                    );
-
-                    passwordIcon.classList.add(
-                        "fa-eye"
-                    );
-
-                    passwordIcon.title =
-                        "Show password";
-
-                }
-
-            }
-        );
-
-
-        /*
-            Show login message
-        */
-
-        function showMessage(message, type) {
-
-            loginMessage.textContent = message;
-
-            loginMessage.className =
-                "message " + type;
-
+            passwordIcon.setAttribute(
+                "aria-label",
+                isHidden ? "Hide password" : "Show password"
+            );
         }
 
+        passwordIcon.addEventListener("click", togglePassword);
 
-        /*
-            LOGIN
-        */
-
-        loginForm.addEventListener(
-            "submit",
-            async function (event) {
-
+        passwordIcon.addEventListener("keydown", function (event) {
+            if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault();
+                togglePassword();
+            }
+        });
 
+        // Display a message
+        function showMessage(message, type) {
+            loginMessage.textContent = message;
+            loginMessage.className = "message " + type;
+        }
 
-                const studentId =
-                    studentIdInput.value.trim();
+        // Redirect according to account role
+        function redirectByRole(role) {
+            const destinations = {
+                learner: "student/classes.html",
+                instructor: "teacher/dashboard.html",
+                admin: "Admin/dashboard.html",
+                administrator: "Admin/dashboard.html",
+                director: "director/dashboard.html"
+            };
 
-                const password =
-                    passwordInput.value;
+            return destinations[role] || null;
+        }
 
+        // Login form
+        loginForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
 
-                if (!studentId || !password) {
+            // Read the ID and password from the form
+            const studentId = studentIdInput.value.trim();
+            const password = passwordInput.value;
 
-                    showMessage(
-                        "Please enter your Student ID and password.",
-                        "error"
+            if (!studentId || !password) {
+                showMessage(
+                    "Please enter your ID and password.",
+                    "error"
+                );
+                return;
+            }
+
+            loginButton.disabled = true;
+
+            loginButton.innerHTML =
+                '<i class="fa-solid fa-spinner fa-spin"></i> Logging in...';
+
+            loginMessage.className = "message";
+            loginMessage.textContent = "";
+
+            try {
+                const response = await fetch(
+                    `${API_BASE_URL}/api/login`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json"
+                        },
+                        body: JSON.stringify({
+                            school_id: studentId,
+                            password: password
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message || "Invalid ID or password."
                     );
+                }
 
+                if (!data.token || !data.user || !data.user.role) {
+                    throw new Error(
+                        "The server returned incomplete login information."
+                    );
+                }
+
+                const role = data.user.role;
+                const destination = redirectByRole(role);
+
+                if (!destination) {
+                    throw new Error(
+                        "Your account has an unrecognized role."
+                    );
+                }
+
+                // Store the token and user for this browser session.
+                // Never store the user's password.
+                sessionStorage.setItem("authToken", data.token);
+
+                sessionStorage.setItem(
+                    "user",
+                    JSON.stringify(data.user)
+                );
+
+                // First-time password setup
+                if (data.first_login === true) {
+                    sessionStorage.setItem("firstLogin", "true");
+
+                    const setupPages = {
+                        learner: "student/setup.html",
+                        instructor: "teacher/setup.html",
+                        admin: "Admin/setup.html",
+                        administrator: "Admin/setup.html",
+                        director: "director/setup.html"
+                    };
+
+                    const setupDestination = setupPages[role];
+
+                    if (!setupDestination) {
+                        sessionStorage.removeItem("authToken");
+                        sessionStorage.removeItem("user");
+                        sessionStorage.removeItem("firstLogin");
+
+                        throw new Error(
+                            "No password setup page is configured for this role."
+                        );
+                    }
+
+                    window.location.href = setupDestination;
                     return;
                 }
 
+                sessionStorage.removeItem("firstLogin");
 
-                /*
-                    Disable button while
-                    Laravel is processing login.
-                */
+                // Existing accounts go to their own page.
+                window.location.href = destination;
 
-                loginButton.disabled = true;
+            } catch (error) {
+                console.error("Login error:", error);
 
-                loginButton.innerHTML = `
-                    <i class="fa-solid fa-spinner fa-spin"></i>
-                    Logging in...
-                `;
-
-
-                try {
-
-                    /*
-                        Send login request
-                        to Laravel.
-                    */
-
-                    const response =
-                        await fetch(
-                            `${API_BASE_URL}/api/login`,
-                            {
-                                method: "POST",
-
-                                headers: {
-                                    "Content-Type":
-                                        "application/json",
-
-                                    "Accept":
-                                        "application/json"
-                                },
-
-                                body: JSON.stringify({
-
-                                    student_id:
-                                        studentId,
-
-                                    password:
-                                        password
-
-                                })
-                            }
-                        );
-
-
-                    const data =
-                        await response.json();
-
-
-                    if (!response.ok) {
-
-                        throw new Error(
-                            data.message ||
-                            "Invalid Student ID or password."
-                        );
-
-                    }
-
-
-                    /*
-                        Save returned authentication
-                        information temporarily.
-
-                        We will replace this with
-                        proper Laravel authentication
-                        handling when Sanctum is connected.
-                    */
-
-                    if (data.token) {
-
-                        sessionStorage.setItem(
-                            "authToken",
-                            data.token
-                        );
-
-                    }
-
-
-                    if (data.user) {
-
-                        sessionStorage.setItem(
-                            "user",
-                            JSON.stringify(data.user)
-                        );
-
-                    }
-
-
-                    /*
-                        First login
-                    */
-
-                    if (
-                        data.first_login === true
-                    ) {
-
-                        sessionStorage.setItem(
-                            "firstLogin",
-                            "true"
-                        );
-
-                        window.location.href =
-                            "student/setup.html";
-
-                        return;
-                    }
-
-
-                    /*
-                        Existing learner
-                    */
-
-                    window.location.href =
-                        "student/classes.html";
-
-                }
-
-                catch (error) {
-
-                    console.error(
-                        "Login error:",
-                        error
-                    );
-
-
+                if (error instanceof TypeError) {
                     showMessage(
-                        error.message ||
-                        "Unable to connect to the server.",
+                        "Unable to connect to the server. Check that your Laravel backend is running and the API address is correct.",
                         "error"
                     );
-
+                } else {
+                    showMessage(
+                        error.message || "Unable to log in. Please try again.",
+                        "error"
+                    );
                 }
 
-
-                /*
-                    Enable button again
-                */
-
+            } finally {
                 loginButton.disabled = false;
 
-                loginButton.innerHTML = `
-                    <i class="fa-solid fa-right-to-bracket"></i>
-                    Login
-                `;
-
+                loginButton.innerHTML =
+                    '<i class="fa-solid fa-right-to-bracket"></i> Login';
             }
-        );
-
+        });
     </script>
 
 </body>
-
 </html>
+

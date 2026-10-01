@@ -95,7 +95,7 @@ class SubmissionController extends Controller
          * submissions/26-00123/filename.pdf
          */
         $path = $request->file('file')->store(
-            'submissions/' . $learner->student_id,
+            'submissions/' . $learner->school_id,
             'local'
         );
 

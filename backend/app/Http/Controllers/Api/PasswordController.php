@@ -9,7 +9,34 @@ use Illuminate\Support\Facades\Hash;
 
 class PasswordController extends Controller
 {
+    // Student password setup
     public function setup(Request $request): JsonResponse
+    {
+        if ($request->user()->role !== 'student') {
+            return response()->json([
+                'success' => false,
+                'message' => 'This endpoint is for students only.',
+            ], 403);
+        }
+
+        return $this->completeSetup($request);
+    }
+
+    // Instructor password setup
+    public function setupInstructor(Request $request): JsonResponse
+    {
+        if ($request->user()->role !== 'instructor') {
+            return response()->json([
+                'success' => false,
+                'message' => 'This endpoint is for instructors only.',
+            ], 403);
+        }
+
+        return $this->completeSetup($request);
+    }
+
+    // Shared password setup logic
+    private function completeSetup(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'password' => [
@@ -22,7 +49,6 @@ class PasswordController extends Controller
 
         $user = $request->user();
 
-        // Only allow password setup for first-time accounts
         if ($user->password_setup_complete) {
             return response()->json([
                 'success' => false,
@@ -35,12 +61,16 @@ class PasswordController extends Controller
             'password_setup_complete' => true,
         ]);
 
-        // Revoke the temporary login token
+        // Issue a replacement token so the user stays logged in.
+        $newToken = $user->createToken('auth_token')->plainTextToken;
+
+        // Revoke the temporary login token.
         $request->user()->currentAccessToken()?->delete();
 
         return response()->json([
             'success' => true,
             'message' => 'Password setup completed successfully.',
+            'token' => $newToken,
         ]);
     }
 }

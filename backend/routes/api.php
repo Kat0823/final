@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\SubmissionController;
 use App\Http\Controllers\Api\ModuleController;
 use App\Http\Controllers\Api\GradeController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\InstructorController;
 
 
 /*
@@ -80,4 +81,12 @@ Route::middleware('auth:sanctum')->group(function () {
         '/instructor/submissions/{submissionId}/grade',
         [GradeController::class, 'store']
     );
+    Route::get(
+    '/instructor/submissions',
+    [InstructorController::class, 'submissions']
+);
+Route::post(
+    '/instructor/setup-password',
+    [PasswordController::class, 'setupInstructor']
+);
 });
