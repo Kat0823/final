@@ -5,12 +5,16 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
-    public function courses(): JsonResponse
+    public function courses(Request $request): JsonResponse
     {
-        $courses = Course::with('instructor')
+        $student = $request->user();
+
+        $courses = $student->courses()
+            ->with('instructor')
             ->where('is_active', true)
             ->orderBy('name')
             ->get();
@@ -21,14 +25,27 @@ class StudentController extends Controller
         ]);
     }
 
-    public function course($courseId): JsonResponse
+    public function course(Request $request, $courseId): JsonResponse
     {
-        $course = Course::with([
-            'modules' => function ($query) {
-                $query->where('is_published', true)
-                    ->orderBy('module_order');
-            }
-        ])->findOrFail($courseId);
+        $student = $request->user();
+
+        $course = $student->courses()
+            ->with([
+                'modules' => function ($query) {
+                    $query->where('is_published', true)
+                        ->orderBy('module_order');
+                }
+            ])
+            ->where('courses.id', $courseId)
+            ->where('courses.is_active', true)
+            ->first();
+
+        if (!$course) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Course not found or you are not enrolled in this course.',
+            ], 404);
+        }
 
         return response()->json([
             'success' => true,

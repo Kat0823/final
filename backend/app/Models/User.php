@@ -14,34 +14,29 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
-    'name',
-    'email',
-    'password',
-    'role',
-    'student_id',
-    'program',
-    'contact',
-    'password_setup_complete',
-];
+        'name',
+        'email',
+        'password',
+        'role',
+        'student_id',
+        'program',
+        'contact',
+        'password_setup_complete',
+    ];
+
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
     protected function casts(): array
-{
-    return [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-        'password_setup_complete' => 'boolean',
-    ];
-}
-
-    /*
-    |--------------------------------------------------------------------------
-    | Course Relationships
-    |--------------------------------------------------------------------------
-    */
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            'password_setup_complete' => 'boolean',
+        ];
+    }
 
     public function courses(): BelongsToMany
     {
@@ -53,12 +48,6 @@ class User extends Authenticatable
         return $this->hasMany(Course::class, 'instructor_id');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Submission and Grade Relationships
-    |--------------------------------------------------------------------------
-    */
-
     public function submissions(): HasMany
     {
         return $this->hasMany(Submission::class, 'learner_id');
@@ -68,12 +57,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(Grade::class, 'instructor_id');
     }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Notification and Progress Relationships
-    |--------------------------------------------------------------------------
-    */
 
     public function notifications(): HasMany
     {
