@@ -12,14 +12,17 @@ class AuthController extends Controller
 {
     public function login(Request $request): JsonResponse
     {
+        // Validate login inputs
         $validated = $request->validate([
             'school_id' => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
 
+        // Find the account using the school ID
         $user = User::where('school_id', $validated['school_id'])
             ->first();
 
+        // Check whether the account and password are valid
         if (!$user || !Hash::check($validated['password'], $user->password)) {
             return response()->json([
                 'success' => false,
@@ -27,8 +30,10 @@ class AuthController extends Controller
             ], 401);
         }
 
+        // Create an authentication token
         $token = $user->createToken('siknayan-login')->plainTextToken;
 
+        // Return login information
         return response()->json([
             'success' => true,
             'message' => 'Login successful.',
@@ -47,3 +52,4 @@ class AuthController extends Controller
         ]);
     }
 }
+

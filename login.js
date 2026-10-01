@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    loginForm.addEventListener("submit", function (event) {
+    loginForm.addEventListener("submit", async function (event) {
 
         event.preventDefault();
 
@@ -20,133 +20,97 @@ document.addEventListener("DOMContentLoaded", function () {
             .value;
 
         if (studentId === "" || password === "") {
-
             alert("Please enter your Student ID and Password.");
             return;
-
         }
 
-        /*
-         * FRONTEND DEMO ACCOUNT
-         *
-         * This will be replaced by Laravel + MySQL.
-         */
+        try {
 
-        const demoStudent = {
-            studentId: "26-00123",
-            email: "arsel@gmail.com",
-            temporaryPassword: "temporary123"
-        };
+            // Connect to Laravel backend
+            const response = await fetch(
+                "https://improved-orbit-wvv7q6g6qrg2vx4-8000.app.github.dev/api/login",
+                {
+                    method: "POST",
 
-        /*
-         * Check Student ID
-         */
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
 
-        if (studentId !== demoStudent.studentId) {
+                    body: JSON.stringify({
+                        student_id: studentId,
+                        password: password
+                    })
+                }
+            );
 
-            alert("Student ID not found.");
-            return;
+            const data = await response.json();
 
-        }
-
-        /*
-         * Check whether the student has already
-         * created a permanent password.
-         */
-
-        const passwordSetupComplete =
-            localStorage.getItem("passwordSetupComplete");
-
-        /*
-         * FIRST LOGIN
-         *
-         * Student must use the temporary password.
-         */
-
-        if (passwordSetupComplete !== "true") {
-
-            if (password !== demoStudent.temporaryPassword) {
-
-                alert(
-                    "Incorrect temporary password."
-                );
-
+            // Login failed
+            if (!response.ok || !data.success) {
+                alert(data.message || "Login failed.");
                 return;
             }
 
+            // Save login information
+            sessionStorage.setItem("isLoggedIn", "true");
+            sessionStorage.setItem("studentId", studentId);
+            sessionStorage.setItem("userRole", data.user.role);
+            sessionStorage.setItem("userName", data.user.name);
+
+            // Save Laravel token
+            sessionStorage.setItem("authToken", data.token);
+
             /*
-             * Remember that this is a valid
-             * first login.
+             * FIRST LOGIN
+             */
+            if (data.first_login === true) {
+
+                sessionStorage.setItem(
+                    "firstLoginVerified",
+                    "true"
+                );
+
+                // Learner password setup
+                if (data.user.role === "learner") {
+                    window.location.href = "student/setup.html";
+                    return;
+                }
+            }
+
+            /*
+             * REDIRECT BASED ON ROLE
              */
 
-            sessionStorage.setItem(
-                "firstLoginVerified",
-                "true"
-            );
+            if (data.user.role === "instructor") {
 
-            sessionStorage.setItem(
-                "studentId",
-                studentId
-            );
+                window.location.href = "teacher/dashboard.html";
+                return;
+            }
 
-            window.location.href =
-                "student/setup.html";
+            if (data.user.role === "learner") {
 
-            return;
-        }
+                window.location.href = "student/classes.html";
+                return;
+            }
 
-        /*
-         * EXISTING ACCOUNT
-         *
-         * Password was previously created.
-         */
+            if (data.user.role === "admin") {
 
-        const savedPassword =
-            localStorage.getItem("studentPassword");
+                window.location.href = "Admin/dashboard.html";
+                return;
+            }
 
-        if (!savedPassword) {
+            alert("Unknown user role.");
+
+        } catch (error) {
+
+            console.error("Login error:", error);
 
             alert(
-                "Your account needs password setup."
+                "Unable to connect to the server. " +
+                "Please make sure the Laravel backend is running."
             );
-
-            window.location.href =
-                "student/setup.html";
-
-            return;
         }
-
-        /*
-         * Verify the student's password.
-         */
-
-        if (password !== savedPassword) {
-
-            alert("Incorrect password.");
-            return;
-
-        }
-
-        /*
-         * Successful login
-         */
-
-        sessionStorage.setItem(
-            "isLoggedIn",
-            "true"
-        );
-
-        sessionStorage.setItem(
-            "studentId",
-            studentId
-        );
-
-        /*
-         * Go to Classes after successful login.
-         */
-
-        window.location.href =
-            "student/classes.html";
 
     });
 
@@ -182,7 +146,5 @@ function toggleLoginPassword() {
 
         icon.classList.remove("fa-eye-slash");
         icon.classList.add("fa-eye");
-
     }
-
 }
