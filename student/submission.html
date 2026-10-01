@@ -8,28 +8,28 @@
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-    <title>Submit Work - MPSU ETEEAP LMS</title>
+    <title>Submit Activity - MPSU ETEEAP LMS</title>
 
     <!-- Font Awesome -->
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
-
     <style>
 
-        /* =========================
-           GENERAL
-        ========================= */
-
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
         body {
-            margin: 0;
             font-family: Arial, sans-serif;
-            background: #f5f7f6;
-            color: #333;
+            background: white;
+            color: #222;
+        }
+
+        a {
+            text-decoration: none;
         }
 
 
@@ -38,63 +38,52 @@
         ========================= */
 
         .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+
+            width: 100%;
             height: 84px;
+
             background: #086b3c;
-            color: white;
 
             display: flex;
             align-items: center;
             justify-content: space-between;
 
-            padding: 0 30px;
+            padding: 0 38px;
 
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            color: white;
 
             z-index: 1000;
         }
 
-
         .header-left {
             display: flex;
             align-items: center;
+            gap: 20px;
         }
-
 
         .header-logo {
-            width: 55px;
-            height: 55px;
+            width: 58px;
+            height: 58px;
             object-fit: contain;
-            margin-right: 15px;
         }
-
-
-        .header-titles {
-            display: flex;
-            flex-direction: column;
-        }
-
 
         .brand-title {
-            margin: 0;
-            font-size: 22px;
+            font-size: 23px;
+            font-weight: bold;
+            margin-bottom: 4px;
         }
-
 
         .brand-subtitle {
-            margin: 3px 0 0;
-            font-size: 13px;
+            font-size: 14px;
         }
-
 
         .user-link {
             color: white;
             text-decoration: none;
-            font-size: 15px;
         }
-
 
         .user-link:hover {
             text-decoration: underline;
@@ -102,11 +91,13 @@
 
 
         /* =========================
-           MAIN LAYOUT
+           MAIN
         ========================= */
 
         .main {
             display: flex;
+            min-height: 100vh;
+
             padding-top: 84px;
         }
 
@@ -116,69 +107,75 @@
         ========================= */
 
         .sidebar {
+            position: fixed;
+
+            top: 84px;
+            left: 0;
+
             width: 270px;
-            min-height: calc(100vh - 84px);
+            height: calc(100vh - 84px);
 
             background: #086b3c;
 
-            position: fixed;
-            left: 0;
-            top: 84px;
-            bottom: 0;
+            padding: 25px 12px;
 
             display: flex;
             flex-direction: column;
-
-            padding-top: 25px;
+            justify-content: space-between;
         }
-
 
         .view {
-            color: white;
-            font-size: 14px;
+            height: 60px;
 
-            padding: 12px 25px;
+            padding: 0 24px;
 
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+
+            color: white;
+
+            font-size: 20px;
         }
-
-
-        .view i {
-            font-size: 16px;
-        }
-
 
         .menu {
-            color: white;
-            text-decoration: none;
-
-            padding: 15px 25px;
+            width: 100%;
+            height: 47px;
 
             display: flex;
             align-items: center;
 
-            gap: 14px;
+            gap: 20px;
 
-            font-size: 15px;
+            padding: 0 25px;
+
+            margin-bottom: 5px;
+
+            border-radius: 9px;
+
+            color: white;
+
+            font-size: 18px;
+
+            text-decoration: none;
         }
-
-
-        .menu i {
-            width: 20px;
-            text-align: center;
-        }
-
 
         .menu:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.10);
         }
-
 
         .menu.active {
             background: #ffd34e;
             color: #222;
+        }
+
+        .menu i {
+            width: 22px;
+            text-align: center;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
         }
 
 
@@ -191,107 +188,139 @@
 
             width: calc(100% - 270px);
 
-            padding: 40px;
-        }
+            min-height: calc(100vh - 84px);
 
-
-        .content h1 {
-            margin-top: 0;
-            color: #222;
-            font-size: 30px;
-        }
-
-
-        .content hr {
-            border: none;
-            border-top: 1px solid #ddd;
-            margin-bottom: 30px;
+            padding: 35px 40px;
         }
 
 
         /* =========================
-           SUBMISSION BOX
+           BACK BUTTON
         ========================= */
 
-        .submission-box {
-            background: white;
+        .back-button {
+            display: inline-flex;
 
-            border: 1px solid #35a36b;
+            align-items: center;
 
-            border-radius: 10px;
+            gap: 8px;
 
-            padding: 30px;
-
-            max-width: 800px;
-
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-        }
-
-
-        .submission-box h2 {
-            margin-top: 0;
             color: #086b3c;
+
+            margin-bottom: 20px;
+
+            font-size: 15px;
+        }
+
+        .back-button:hover {
+            text-decoration: underline;
         }
 
 
-        .submission-box p {
-            color: #666;
+        /* =========================
+           PAGE TITLE
+        ========================= */
+
+        .content h1 {
+            font-size: 30px;
+
             margin-bottom: 25px;
         }
 
 
-        .submission-box label {
+        /* =========================
+           MODULE INFORMATION
+        ========================= */
+
+        .module-info {
+            border: 2px solid #35a36b;
+
+            border-radius: 9px;
+
+            padding: 22px;
+
+            margin-bottom: 25px;
+
+            background: white;
+        }
+
+        .module-info h2 {
+            font-size: 22px;
+
+            margin-bottom: 8px;
+
+            color: #086b3c;
+        }
+
+        .module-info p {
+            color: #666;
+
+            line-height: 1.5;
+        }
+
+
+        /* =========================
+           FORM
+        ========================= */
+
+        .submission-form {
+            border: 2px solid #35a36b;
+
+            border-radius: 9px;
+
+            padding: 25px;
+
+            max-width: 800px;
+
+            background: white;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
             display: block;
 
             font-weight: bold;
 
-            margin-top: 20px;
             margin-bottom: 8px;
         }
 
-
-        /* =========================
-           FILE INPUT
-        ========================= */
-
-        .submission-box input[type="file"] {
+        .file-input {
             width: 100%;
 
-            padding: 12px;
-
-            border: 1px solid #ccc;
+            border: 1px solid #bbb;
 
             border-radius: 6px;
 
+            padding: 12px;
+
             background: #fafafa;
+
+            cursor: pointer;
         }
 
-
-        /* =========================
-           COMMENTS
-        ========================= */
-
-        .submission-box textarea {
+        textarea {
             width: 100%;
 
-            min-height: 120px;
+            min-height: 130px;
 
             resize: vertical;
 
-            padding: 12px;
-
-            border: 1px solid #ccc;
+            border: 1px solid #bbb;
 
             border-radius: 6px;
 
+            padding: 12px;
+
             font-family: Arial, sans-serif;
 
-            font-size: 14px;
+            font-size: 15px;
         }
 
-
-        .submission-box textarea:focus,
-        .submission-box input[type="file"]:focus {
+        textarea:focus,
+        .file-input:focus {
             outline: none;
 
             border-color: #086b3c;
@@ -299,30 +328,81 @@
 
 
         /* =========================
+           FILE NAME
+        ========================= */
+
+        .file-name {
+            margin-top: 8px;
+
+            color: #666;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =========================
            BUTTON
         ========================= */
 
-        .main-button {
-            margin-top: 25px;
-
-            padding: 12px 25px;
+        .submit-button {
+            border: none;
 
             background: #086b3c;
 
             color: white;
 
-            border: none;
+            padding: 12px 22px;
 
             border-radius: 6px;
 
-            cursor: pointer;
-
             font-size: 15px;
+
+            cursor: pointer;
+        }
+
+        .submit-button:hover {
+            background: #064d2c;
+        }
+
+        .submit-button:disabled {
+            background: #999;
+
+            cursor: not-allowed;
         }
 
 
-        .main-button:hover {
-            background: #075b32;
+        /* =========================
+           MESSAGE
+        ========================= */
+
+        .message {
+            display: none;
+
+            padding: 12px 15px;
+
+            border-radius: 6px;
+
+            margin-bottom: 20px;
+
+            font-size: 14px;
+        }
+
+        .message.success {
+            display: block;
+
+            background: #dff3e7;
+
+            color: #176b3a;
+        }
+
+        .message.error {
+            display: block;
+
+            background: #f8dddd;
+
+            color: #9b2525;
         }
 
 
@@ -330,39 +410,94 @@
            MOBILE
         ========================= */
 
-        @media (max-width: 768px) {
+        @media (max-width: 650px) {
 
             .header {
-                padding: 0 15px;
+                position: relative;
+
+                height: auto;
+
+                min-height: 75px;
+
+                padding: 10px 15px;
             }
 
+            .header-logo {
+                width: 45px;
+                height: 45px;
+            }
 
             .brand-title {
-                font-size: 17px;
+                font-size: 16px;
             }
-
 
             .brand-subtitle {
-                font-size: 11px;
+                font-size: 10px;
             }
 
-
-            .user-link {
+            .header-right {
                 display: none;
             }
 
+            .main {
+                padding-top: 0;
 
-            .sidebar {
-                width: 210px;
+                display: block;
             }
 
+            .sidebar {
+                position: relative;
+
+                top: auto;
+                left: auto;
+
+                width: 100%;
+
+                height: auto;
+
+                display: flex;
+
+                flex-direction: row;
+
+                overflow-x: auto;
+
+                padding: 8px;
+            }
+
+            .view {
+                display: none;
+            }
+
+            .menu {
+                min-width: 105px;
+
+                justify-content: center;
+
+                font-size: 13px;
+
+                padding: 10px;
+
+                margin: 0 3px;
+            }
+
+            .sidebar-bottom {
+                margin-top: 0;
+            }
 
             .content {
-                margin-left: 210px;
+                margin-left: 0;
 
-                width: calc(100% - 210px);
+                width: 100%;
 
-                padding: 25px;
+                padding: 20px 15px;
+            }
+
+            .content h1 {
+                font-size: 25px;
+            }
+
+            .submission-form {
+                padding: 18px;
             }
 
         }
@@ -375,198 +510,921 @@
 <body>
 
 
-<!-- =========================
-     HEADER
-========================= -->
+    <!-- =========================
+         HEADER
+    ========================== -->
 
-<header class="header">
+    <header class="header">
 
-    <div class="header-left">
+        <div class="header-left">
 
-        <img
-            src="../images/logo.png"
-            class="header-logo"
-            alt="MPSU Logo"
-        >
+            <img
+                src="../images/logo.png"
+                class="header-logo"
+                alt="MPSU Logo">
 
-        <div class="header-titles">
+            <div>
 
-            <h1 class="brand-title">
-                MPSU ETEEAP LMS
+                <div class="brand-title">
+                    MPSU ETEEAP LMS
+                </div>
+
+                <div class="brand-subtitle">
+                    Mountain Province State University
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="header-right">
+
+            <a
+                href="profile.html"
+                class="user-link"
+                id="userName">
+
+                Learner
+
+            </a>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <div class="main">
+
+
+        <!-- =========================
+             SIDEBAR
+        ========================== -->
+
+        <aside class="sidebar">
+
+            <div>
+
+                <div class="view">
+
+                    <span>
+                        View
+                    </span>
+
+                    <i class="fa-solid fa-table-columns"></i>
+
+                </div>
+
+
+                <a
+                    href="classes.html"
+                    class="menu active">
+
+                    <i class="fa-regular fa-folder"></i>
+
+                    <span>
+                        Classes
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="grades.html"
+                    class="menu">
+
+                    <i class="fa-solid fa-chart-column"></i>
+
+                    <span>
+                        Grades
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="notification.html"
+                    class="menu">
+
+                    <i class="fa-regular fa-bell"></i>
+
+                    <span>
+                        Notifications
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="profile.html"
+                    class="menu">
+
+                    <i class="fa-regular fa-user"></i>
+
+                    <span>
+                        Profile
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <div class="sidebar-bottom">
+
+                <a
+                    href="logout.html"
+                    class="menu">
+
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+
+                    <span>
+                        Logout
+                    </span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+
+
+        <!-- =========================
+             CONTENT
+        ========================== -->
+
+        <main class="content">
+
+
+            <a
+                href="javascript:history.back()"
+                class="back-button">
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Back
+
+            </a>
+
+
+            <h1>
+                Submit Activity
             </h1>
 
-            <p class="brand-subtitle">
-                Mountain Province State University
-            </p>
 
-        </div>
+            <!-- MODULE INFORMATION -->
+
+            <div
+                class="module-info"
+                id="moduleInfo">
+
+                Loading module...
+
+            </div>
+
+
+            <!-- MESSAGE -->
+
+            <div
+                id="message"
+                class="message">
+            </div>
+
+
+            <!-- SUBMISSION FORM -->
+
+            <form
+                id="submissionForm"
+                class="submission-form">
+
+
+                <div class="form-group">
+
+                    <label for="file">
+
+                        Upload File
+
+                    </label>
+
+
+                    <input
+                        type="file"
+                        id="file"
+                        name="file"
+                        class="file-input"
+                        accept=".pdf,.doc,.docx"
+                        required>
+
+
+                    <div
+                        class="file-name"
+                        id="fileName">
+
+                        Accepted formats:
+                        PDF, DOC, DOCX
+                        (maximum 10 MB)
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="comment">
+
+                        Comment
+
+                        <span
+                            style="font-weight: normal;">
+
+                            (Optional)
+
+                        </span>
+
+                    </label>
+
+
+                    <textarea
+                        id="comment"
+                        name="comment"
+                        placeholder="Add a comment about your submission..."></textarea>
+
+                </div>
+
+
+
+                <button
+                    type="submit"
+                    class="submit-button"
+                    id="submitButton">
+
+                    <i class="fa-solid fa-upload"></i>
+
+                    Submit Activity
+
+                </button>
+
+
+            </form>
+
+        </main>
 
     </div>
 
 
-    <div class="header-right">
 
-        <a
-            href="profile.html"
-            class="user-link"
-        >
-            Macross Arsel
-        </a>
+    <script>
 
-    </div>
+        /* ================================
+           API
+        ================================= */
 
-</header>
+        const API_BASE_URL =
+            "http://localhost:8000";
 
 
+        /* ================================
+           GET MODULE ID
+        ================================= */
 
-<!-- =========================
-     MAIN
-========================= -->
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
 
-<div class="main">
+        const moduleId =
+            params.get("module");
 
 
-    <!-- SIDEBAR -->
+        /* ================================
+           GET AUTH TOKEN
+        ================================= */
 
-    <aside class="sidebar">
+        const token =
+            sessionStorage.getItem(
+                "authToken"
+            );
 
-        <div class="view">
 
-            <span>View</span>
+        /* ================================
+           GET USER INFORMATION
+        ================================= */
 
-            <i class="fa-solid fa-table-columns"></i>
+        const savedUser =
+            sessionStorage.getItem(
+                "user"
+            );
 
-        </div>
+        const userName =
+            document.getElementById(
+                "userName"
+            );
 
 
-        <a
-            href="classes.html"
-            class="menu active"
-        >
+        if (savedUser) {
 
-            <i class="fa-regular fa-folder"></i>
+            try {
 
-            <span>Classes</span>
+                const user =
+                    JSON.parse(savedUser);
 
-        </a>
+                userName.textContent =
+                    user.name || "Learner";
 
+            } catch (error) {
 
-        <a
-            href="grades.html"
-            class="menu"
-        >
+                userName.textContent =
+                    "Learner";
 
-            <i class="fa-solid fa-chart-column"></i>
+            }
 
-            <span>Grades</span>
+        }
 
-        </a>
 
+        /* ================================
+           GET ELEMENTS
+        ================================= */
 
-        <a
-            href="notification.html"
-            class="menu"
-        >
+        const moduleInfo =
+            document.getElementById(
+                "moduleInfo"
+            );
 
-            <i class="fa-regular fa-bell"></i>
+        const form =
+            document.getElementById(
+                "submissionForm"
+            );
 
-            <span>Notifications</span>
+        const message =
+            document.getElementById(
+                "message"
+            );
 
-        </a>
+        const submitButton =
+            document.getElementById(
+                "submitButton"
+            );
 
+        const fileInput =
+            document.getElementById(
+                "file"
+            );
 
-        <a
-            href="profile.html"
-            class="menu"
-        >
+        const fileName =
+            document.getElementById(
+                "fileName"
+            );
 
-            <i class="fa-regular fa-user"></i>
+        const commentInput =
+            document.getElementById(
+                "comment"
+            );
 
-            <span>Profile</span>
 
-        </a>
+        /* ================================
+           LOGIN CHECK
+        ================================= */
 
+        if (!token) {
 
-        <a
-            href="logout.html"
-            class="menu"
-        >
+            window.location.href =
+                "../index.html";
 
-            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        }
 
-            <span>Logout</span>
 
-        </a>
+        /* ================================
+           MODULE ID CHECK
+        ================================= */
 
-    </aside>
+        if (!moduleId) {
 
+            showMessage(
+                "Module ID is missing.",
+                "error"
+            );
 
+            moduleInfo.innerHTML = `
+                <strong>
+                    Unable to open module.
+                </strong>
 
-    <!-- CONTENT -->
+                <p style="margin-top: 8px;">
+                    No module was selected.
+                </p>
+            `;
 
-    <main class="content">
+            form.style.display = "none";
 
-        <h1>
-            Submit Work
-        </h1>
+        } else {
 
-        <hr>
+            loadModule();
 
+        }
 
-        <div class="submission-box">
 
-            <h2>
-                Introduction to Criminal Law
-            </h2>
+        /* ================================
+           LOAD MODULE
+        ================================= */
 
+        async function loadModule() {
 
-            <p>
-                Instructor: Kim Reyes
-            </p>
+            try {
 
+                const response =
+                    await fetch(
+                        `${API_BASE_URL}/api/student/modules/${moduleId}`,
+                        {
+                            method: "GET",
 
-            <label for="submissionFile">
-                Select your file
-            </label>
+                            headers: {
+                                "Accept":
+                                    "application/json",
 
+                                "Authorization":
+                                    `Bearer ${token}`
+                            }
+                        }
+                    );
 
-            <input
-                type="file"
-                id="submissionFile"
-                accept=".pdf,.doc,.docx"
-            >
 
+                const data =
+                    await response.json();
 
-            <label for="submissionComment">
-                Comments
-            </label>
 
+                /* =========================
+                   SESSION EXPIRED
+                ========================== */
 
-            <textarea
-                id="submissionComment"
-                placeholder="Enter comments"
-            ></textarea>
+                if (
+                    response.status === 401
+                ) {
 
+                    sessionStorage.clear();
 
-            <button
-                type="button"
-                onclick="saveSubmission()"
-                class="main-button"
-            >
-                Save Submission
-            </button>
+                    window.location.href =
+                        "../index.html";
 
-        </div>
+                    return;
 
-    </main>
+                }
 
-</div>
 
+                /* =========================
+                   OTHER ERROR
+                ========================== */
 
-<!-- STUDENT JAVASCRIPT -->
+                if (!response.ok) {
 
-<script src="student.js"></script>
+                    throw new Error(
+                        data.message ||
+                        "Unable to load module."
+                    );
 
+                }
+
+
+                /* =========================
+                   MODULE DATA
+                ========================== */
+
+                const module =
+                    data.module;
+
+
+                if (!module) {
+
+                    throw new Error(
+                        "Module information was not found."
+                    );
+
+                }
+
+
+                moduleInfo.innerHTML = `
+
+                    <h2>
+                        ${escapeHtml(
+                            module.name
+                        )}
+                    </h2>
+
+                    <p>
+                        ${escapeHtml(
+                            module.description ||
+                            "No description available."
+                        )}
+                    </p>
+
+                    ${
+                        module.course
+                            ? `
+                                <p style="margin-top: 10px;">
+                                    <strong>
+                                        Course:
+                                    </strong>
+
+                                    ${escapeHtml(
+                                        module.course.name
+                                    )}
+                                </p>
+                              `
+                            : ""
+                    }
+
+                `;
+
+
+            } catch (error) {
+
+                moduleInfo.innerHTML = `
+
+                    <strong>
+                        Unable to load module.
+                    </strong>
+
+                    <p style="margin-top: 8px;">
+                        ${escapeHtml(
+                            error.message
+                        )}
+                    </p>
+
+                `;
+
+                form.style.display =
+                    "none";
+
+            }
+
+        }
+
+
+        /* ================================
+           FILE SELECTION
+        ================================= */
+
+        fileInput.addEventListener(
+            "change",
+            function () {
+
+                if (
+                    fileInput.files &&
+                    fileInput.files.length > 0
+                ) {
+
+                    const file =
+                        fileInput.files[0];
+
+
+                    /* Check file size */
+
+                    if (
+                        file.size >
+                        10 * 1024 * 1024
+                    ) {
+
+                        fileName.textContent =
+                            "File is larger than 10 MB.";
+
+                        fileName.style.color =
+                            "#9b2525";
+
+                        fileInput.value =
+                            "";
+
+                        return;
+
+                    }
+
+
+                    fileName.textContent =
+                        `Selected file: ${file.name}`;
+
+                    fileName.style.color =
+                        "#666";
+
+                } else {
+
+                    fileName.textContent =
+                        "Accepted formats: PDF, DOC, DOCX (maximum 10 MB)";
+
+                }
+
+            }
+        );
+
+
+        /* ================================
+           SUBMIT FORM
+        ================================= */
+
+        form.addEventListener(
+            "submit",
+            async function (event) {
+
+                event.preventDefault();
+
+
+                /* =========================
+                   CHECK FILE
+                ========================== */
+
+                const file =
+                    fileInput.files[0];
+
+
+                if (!file) {
+
+                    showMessage(
+                        "Please select a file.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                /* =========================
+                   CHECK FILE SIZE
+                ========================== */
+
+                if (
+                    file.size >
+                    10 * 1024 * 1024
+                ) {
+
+                    showMessage(
+                        "The file must not be larger than 10 MB.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                /* =========================
+                   CHECK FILE TYPE
+                ========================== */
+
+                const allowedTypes = [
+                    "application/pdf",
+                    "application/msword",
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                ];
+
+
+                if (
+                    !allowedTypes.includes(
+                        file.type
+                    )
+                ) {
+
+                    showMessage(
+                        "Only PDF, DOC, and DOCX files are allowed.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                /* =========================
+                   DISABLE BUTTON
+                ========================== */
+
+                submitButton.disabled =
+                    true;
+
+                submitButton.innerHTML = `
+
+                    <i
+                        class="fa-solid fa-spinner fa-spin">
+                    </i>
+
+                    Uploading...
+
+                `;
+
+
+                /* =========================
+                   CREATE FORM DATA
+                ========================== */
+
+                const formData =
+                    new FormData();
+
+
+                formData.append(
+                    "module_id",
+                    moduleId
+                );
+
+
+                formData.append(
+                    "file",
+                    file
+                );
+
+
+                formData.append(
+                    "comment",
+                    commentInput.value.trim()
+                );
+
+
+                try {
+
+                    /* =====================
+                       SEND TO LARAVEL
+                    ====================== */
+
+                    const response =
+                        await fetch(
+                            `${API_BASE_URL}/api/student/submissions`,
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Accept":
+                                        "application/json",
+
+                                    "Authorization":
+                                        `Bearer ${token}`
+                                },
+
+                                body: formData
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    /* =====================
+                       SESSION EXPIRED
+                    ====================== */
+
+                    if (
+                        response.status === 401
+                    ) {
+
+                        sessionStorage.clear();
+
+                        window.location.href =
+                            "../index.html";
+
+                        return;
+
+                    }
+
+
+                    /* =====================
+                       SERVER ERROR
+                    ====================== */
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            data.message ||
+                            "Submission failed."
+                        );
+
+                    }
+
+
+                    /* =====================
+                       SUCCESS
+                    ====================== */
+
+                    showMessage(
+                        "Your activity has been submitted successfully.",
+                        "success"
+                    );
+
+
+                    form.reset();
+
+
+                    fileName.textContent =
+                        "Submission completed successfully.";
+
+
+                    submitButton.innerHTML = `
+
+                        <i
+                            class="fa-solid fa-check">
+                        </i>
+
+                        Submitted
+
+                    `;
+
+
+                } catch (error) {
+
+                    showMessage(
+                        error.message ||
+                        "Something went wrong while submitting your activity.",
+                        "error"
+                    );
+
+
+                    submitButton.disabled =
+                        false;
+
+
+                    submitButton.innerHTML = `
+
+                        <i
+                            class="fa-solid fa-upload">
+                        </i>
+
+                        Submit Activity
+
+                    `;
+
+                }
+
+            }
+        );
+
+
+        /* ================================
+           SHOW MESSAGE
+        ================================= */
+
+        function showMessage(
+            text,
+            type
+        ) {
+
+            message.textContent =
+                text;
+
+            message.className =
+                `message ${type}`;
+
+        }
+
+
+        /* ================================
+           ESCAPE HTML
+        ================================= */
+
+        function escapeHtml(value) {
+
+            if (
+                value === null ||
+                value === undefined
+            ) {
+
+                return "";
+            }
+
+
+            return String(value)
+
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+
+        }
+
+    </script>
 
 </body>
+
 </html>

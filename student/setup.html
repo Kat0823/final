@@ -12,6 +12,7 @@
 
     <title>Set Password - MPSU ETEEAP LMS</title>
 
+    <!-- Font Awesome -->
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
@@ -26,221 +27,154 @@
             font-family: Arial, sans-serif;
         }
 
-
         body {
-
             min-height: 100vh;
-
             display: flex;
-
             background: #f5f5f5;
-
         }
-
 
         /* =========================
            LEFT SECTION
         ========================= */
 
         .privacy-section {
-
             width: 50%;
-
             min-height: 100vh;
-
             background: #ffffff;
 
             display: flex;
-
             justify-content: center;
-
             align-items: center;
 
             padding: 40px;
-
         }
 
-
         .privacy-card {
-
             width: 100%;
-
             max-width: 500px;
 
             background: #7d1721;
-
             color: white;
 
             padding: 35px;
-
             border-radius: 12px;
 
             box-shadow:
                 0 5px 20px
                 rgba(0, 0, 0, 0.15);
-
         }
-
 
         .privacy-card h2 {
-
             color: #ffd34e;
-
             margin-bottom: 20px;
-
             font-size: 25px;
-
         }
-
 
         .privacy-card p {
-
             font-size: 15px;
-
             line-height: 1.7;
-
             margin-bottom: 15px;
-
         }
-
 
         /* =========================
            RIGHT SECTION
         ========================= */
 
         .password-section {
-
             width: 50%;
-
             min-height: 100vh;
-
             background: #086b3c;
 
             display: flex;
-
             justify-content: center;
-
             align-items: center;
 
             padding: 40px;
-
         }
 
-
         .password-card {
-
             width: 100%;
-
             max-width: 500px;
 
             background: white;
 
             border-radius: 12px;
-
             padding: 35px;
 
             box-shadow:
                 0 5px 20px
                 rgba(0, 0, 0, 0.15);
-
         }
 
-
         .welcome {
-
             text-align: center;
-
             color: #086b3c;
 
             font-size: 30px;
-
             font-weight: bold;
 
             margin-bottom: 10px;
-
         }
 
-
         .description {
-
             text-align: center;
-
             color: #666;
 
             font-size: 14px;
-
             line-height: 1.6;
 
             margin-bottom: 25px;
-
         }
 
+        /* =========================
+           FORM
+        ========================= */
 
         .form-group {
-
             margin-bottom: 20px;
-
         }
 
-
         label {
-
             display: block;
 
             font-size: 14px;
-
             font-weight: bold;
 
             color: #333;
 
             margin-bottom: 8px;
-
         }
-
 
         .password-input {
-
             position: relative;
-
         }
 
-
         .password-input input {
-
             width: 100%;
 
             padding: 13px 45px 13px 13px;
 
             border: 1px solid #ccc;
-
             border-radius: 7px;
 
             font-size: 14px;
 
             outline: none;
-
         }
-
 
         .password-input input:focus {
-
             border-color: #086b3c;
-
         }
 
-
         .toggle-password {
-
             position: absolute;
 
             right: 12px;
-
             top: 50%;
 
             transform: translateY(-50%);
 
             border: none;
-
             background: transparent;
 
             color: #666;
@@ -248,76 +182,54 @@
             cursor: pointer;
 
             font-size: 16px;
-
         }
 
+        /* =========================
+           REQUIREMENTS
+        ========================= */
 
         .requirements {
-
             margin: 10px 0 20px 0;
-
             padding: 15px;
 
             background: #f4f7f5;
-
             border-radius: 7px;
-
         }
-
 
         .requirements p {
-
             font-size: 13px;
-
             margin-bottom: 7px;
-
             color: #555;
-
         }
-
 
         .requirement {
-
             font-size: 13px;
-
             margin: 5px 0;
-
             color: #777;
-
         }
-
 
         .requirement.valid {
-
             color: #086b3c;
-
             font-weight: bold;
-
         }
-
 
         .requirement.valid i {
-
             color: #086b3c;
-
         }
 
+        /* =========================
+           PASSWORD STRENGTH
+        ========================= */
 
         .strength {
-
             margin-top: 8px;
 
             font-size: 13px;
-
             color: #666;
-
         }
 
-
         .strength-bar {
-
             height: 7px;
-
             width: 100%;
 
             background: #ddd;
@@ -327,57 +239,85 @@
             margin-top: 7px;
 
             overflow: hidden;
-
         }
 
-
         .strength-progress {
-
             width: 0%;
-
             height: 100%;
 
             background: #086b3c;
 
             transition: width 0.3s;
-
         }
 
+        /* =========================
+           MESSAGE
+        ========================= */
+
+        .message {
+            display: none;
+
+            padding: 12px;
+
+            margin-bottom: 15px;
+
+            border-radius: 7px;
+
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .message.error {
+            display: block;
+
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .message.success {
+            display: block;
+
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        /* =========================
+           BUTTON
+        ========================= */
 
         .set-password-btn {
-
             width: 100%;
 
             padding: 13px;
 
             border: none;
-
             border-radius: 7px;
 
             background: #086b3c;
-
             color: white;
 
             font-size: 15px;
-
             font-weight: bold;
 
             cursor: pointer;
 
             margin-top: 10px;
-
         }
-
 
         .set-password-btn:hover {
-
             background: #07582f;
-
         }
 
+        .set-password-btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        /* =========================
+           BACK TO LOGIN
+        ========================= */
 
         .back-login {
-
             display: block;
 
             text-align: center;
@@ -389,16 +329,11 @@
             text-decoration: none;
 
             font-size: 14px;
-
         }
-
 
         .back-login:hover {
-
             text-decoration: underline;
-
         }
-
 
         /* =========================
            RESPONSIVE
@@ -407,33 +342,21 @@
         @media (max-width: 850px) {
 
             body {
-
                 flex-direction: column;
-
             }
-
 
             .privacy-section,
             .password-section {
-
                 width: 100%;
-
                 min-height: auto;
-
             }
-
 
             .privacy-section {
-
                 padding: 30px 20px;
-
             }
 
-
             .password-section {
-
                 padding: 30px 20px;
-
             }
 
         }
@@ -493,14 +416,21 @@
                 WELCOME
             </div>
 
-
             <p class="description">
-
                 Your temporary password has been verified.
                 Please create a new password for your account.
-
             </p>
 
+
+            <!-- MESSAGE -->
+
+            <div
+                id="message"
+                class="message"
+            ></div>
+
+
+            <!-- PASSWORD FORM -->
 
             <form id="setupForm">
 
@@ -589,7 +519,6 @@
                         Password requirements:
                     </p>
 
-
                     <div
                         class="requirement"
                         id="lengthRequirement"
@@ -633,6 +562,7 @@
                 <div class="strength">
 
                     Password Strength:
+
                     <span id="strengthText">
                         None
                     </span>
@@ -649,9 +579,12 @@
                 </div>
 
 
+                <!-- SUBMIT BUTTON -->
+
                 <button
                     type="submit"
                     class="set-password-btn"
+                    id="setPasswordButton"
                 >
 
                     Set Password
@@ -661,6 +594,8 @@
 
             </form>
 
+
+            <!-- BACK TO LOGIN -->
 
             <a
                 href="../index.html"
@@ -678,7 +613,15 @@
     </section>
 
 
+    <!-- =========================
+         JAVASCRIPT
+    ========================= -->
+
     <script>
+
+        const API_BASE_URL = "http://localhost:8000";
+
+        const form = document.getElementById("setupForm");
 
         const newPassword =
             document.getElementById("newPassword");
@@ -686,21 +629,47 @@
         const confirmPassword =
             document.getElementById("confirmPassword");
 
-        const strengthText =
-            document.getElementById("strengthText");
+        const message =
+            document.getElementById("message");
 
-        const strengthProgress =
-            document.getElementById("strengthProgress");
+        const setPasswordButton =
+            document.getElementById("setPasswordButton");
 
 
         /*
-         * TOGGLE PASSWORD
+         * SHOW MESSAGE
          */
 
-        function togglePassword(
-            inputId,
-            iconId
-        ) {
+        function showMessage(text, type = "error") {
+
+            message.textContent = text;
+
+            message.className =
+                "message " + type;
+
+            message.style.display = "block";
+        }
+
+
+        /*
+         * HIDE MESSAGE
+         */
+
+        function hideMessage() {
+
+            message.textContent = "";
+
+            message.className = "message";
+
+            message.style.display = "none";
+        }
+
+
+        /*
+         * SHOW / HIDE PASSWORD
+         */
+
+        function togglePassword(inputId, iconId) {
 
             const input =
                 document.getElementById(inputId);
@@ -723,9 +692,7 @@
                 icon.classList.remove("fa-eye-slash");
 
                 icon.classList.add("fa-eye");
-
             }
-
         }
 
 
@@ -733,10 +700,25 @@
          * UPDATE PASSWORD REQUIREMENTS
          */
 
-        function updatePasswordStrength() {
+        function updateRequirements() {
 
             const password =
                 newPassword.value;
+
+            const lengthRequirement =
+                document.getElementById(
+                    "lengthRequirement"
+                );
+
+            const uppercaseRequirement =
+                document.getElementById(
+                    "uppercaseRequirement"
+                );
+
+            const numberRequirement =
+                document.getElementById(
+                    "numberRequirement"
+                );
 
 
             const hasLength =
@@ -750,22 +732,87 @@
 
 
             updateRequirement(
-                "lengthRequirement",
+                lengthRequirement,
                 hasLength
             );
 
             updateRequirement(
-                "uppercaseRequirement",
+                uppercaseRequirement,
                 hasUppercase
             );
 
             updateRequirement(
-                "numberRequirement",
+                numberRequirement,
                 hasNumber
             );
 
 
+            updateStrength(
+                hasLength,
+                hasUppercase,
+                hasNumber
+            );
+        }
+
+
+        /*
+         * UPDATE INDIVIDUAL REQUIREMENT
+         */
+
+        function updateRequirement(
+            element,
+            valid
+        ) {
+
+            const icon =
+                element.querySelector("i");
+
+            if (valid) {
+
+                element.classList.add("valid");
+
+                icon.className =
+                    "fa-solid fa-circle-check";
+
+            } else {
+
+                element.classList.remove("valid");
+
+                icon.className =
+                    "fa-solid fa-circle-xmark";
+            }
+        }
+
+
+        /*
+         * PASSWORD STRENGTH
+         */
+
+        function updateStrength(
+            hasLength,
+            hasUppercase,
+            hasNumber
+        ) {
+
+            const password =
+                newPassword.value;
+
+            const strengthText =
+                document.getElementById(
+                    "strengthText"
+                );
+
+            const strengthProgress =
+                document.getElementById(
+                    "strengthProgress"
+                );
+
+
             let strength = 0;
+
+            if (password.length > 0) {
+                strength++;
+            }
 
             if (hasLength) {
                 strength++;
@@ -780,29 +827,28 @@
             }
 
 
-            if (strength === 0) {
+            if (password.length === 0) {
 
-                strengthText.textContent =
-                    "None";
+                strengthText.textContent = "None";
 
                 strengthProgress.style.width =
                     "0%";
 
-            } else if (strength === 1) {
+            } else if (strength <= 2) {
 
                 strengthText.textContent =
                     "Weak";
 
                 strengthProgress.style.width =
-                    "33%";
+                    "35%";
 
-            } else if (strength === 2) {
+            } else if (strength === 3) {
 
                 strengthText.textContent =
                     "Medium";
 
                 strengthProgress.style.width =
-                    "66%";
+                    "65%";
 
             } else {
 
@@ -811,189 +857,267 @@
 
                 strengthProgress.style.width =
                     "100%";
-
             }
-
         }
 
 
         /*
-         * UPDATE REQUIREMENT ICON
+         * UPDATE WHILE TYPING
          */
-
-        function updateRequirement(
-            elementId,
-            valid
-        ) {
-
-            const element =
-                document.getElementById(elementId);
-
-            const icon =
-                element.querySelector("i");
-
-
-            if (valid) {
-
-                element.classList.add("valid");
-
-                icon.classList.remove(
-                    "fa-circle-xmark"
-                );
-
-                icon.classList.add(
-                    "fa-circle-check"
-                );
-
-            } else {
-
-                element.classList.remove("valid");
-
-                icon.classList.remove(
-                    "fa-circle-check"
-                );
-
-                icon.classList.add(
-                    "fa-circle-xmark"
-                );
-
-            }
-
-        }
-
 
         newPassword.addEventListener(
             "input",
-            updatePasswordStrength
+            updateRequirements
         );
 
 
         /*
-         * SET PASSWORD
+         * FORM SUBMISSION
          */
 
-        document
-            .getElementById("setupForm")
-            .addEventListener(
-                "submit",
-                function (event) {
+        form.addEventListener(
+            "submit",
+            async function (event) {
 
-                    event.preventDefault();
+                event.preventDefault();
 
-
-                    const password =
-                        newPassword.value;
-
-                    const confirm =
-                        confirmPassword.value;
+                hideMessage();
 
 
-                    const validLength =
-                        password.length >= 8;
+                const password =
+                    newPassword.value;
 
-                    const validUppercase =
-                        /[A-Z]/.test(password);
-
-                    const validNumber =
-                        /[0-9]/.test(password);
+                const confirmation =
+                    confirmPassword.value;
 
 
-                    /*
-                     * Make sure this page was reached
-                     * through first login.
-                     */
+                /*
+                 * FRONTEND VALIDATION
+                 */
 
-                    const firstLoginVerified =
-                        sessionStorage.getItem(
-                            "firstLoginVerified"
-                        );
+                if (password.length < 8) {
 
-
-                    if (
-                        firstLoginVerified !== "true"
-                    ) {
-
-                        alert(
-                            "Please login first."
-                        );
-
-                        window.location.href =
-                            "../index.html";
-
-                        return;
-
-                    }
-
-
-                    if (
-                        !validLength ||
-                        !validUppercase ||
-                        !validNumber
-                    ) {
-
-                        alert(
-                            "Please meet all password requirements."
-                        );
-
-                        return;
-
-                    }
-
-
-                    if (password !== confirm) {
-
-                        alert(
-                            "Passwords do not match."
-                        );
-
-                        return;
-
-                    }
-
-
-                    /*
-                     * FRONTEND DEMO ONLY
-                     *
-                     * Laravel will hash and save this
-                     * password in MySQL later.
-                     */
-
-                    localStorage.setItem(
-                        "studentPassword",
-                        password
+                    showMessage(
+                        "Password must be at least 8 characters."
                     );
 
-
-                    localStorage.setItem(
-                        "passwordSetupComplete",
-                        "true"
-                    );
-
-
-                    sessionStorage.removeItem(
-                        "firstLoginVerified"
-                    );
-
-
-                    sessionStorage.removeItem(
-                        "isLoggedIn"
-                    );
-
-
-                    alert(
-                        "Password created successfully. Please login again using your new password."
-                    );
-
-
-                    /*
-                     * Return to Login
-                     */
-
-                    window.location.href =
-                        "../index.html";
-
+                    return;
                 }
-            );
+
+
+                if (!/[A-Z]/.test(password)) {
+
+                    showMessage(
+                        "Password must contain at least one uppercase letter."
+                    );
+
+                    return;
+                }
+
+
+                if (!/[0-9]/.test(password)) {
+
+                    showMessage(
+                        "Password must contain at least one number."
+                    );
+
+                    return;
+                }
+
+
+                if (password !== confirmation) {
+
+                    showMessage(
+                        "Passwords do not match."
+                    );
+
+                    return;
+                }
+
+
+                /*
+                 * GET SANCTUM TOKEN
+                 */
+
+                const token =
+                    sessionStorage.getItem(
+                        "authToken"
+                    );
+
+
+                if (!token) {
+
+                    showMessage(
+                        "Your login session has expired. Please log in again."
+                    );
+
+                    return;
+                }
+
+
+                /*
+                 * DISABLE BUTTON
+                 */
+
+                setPasswordButton.disabled = true;
+
+                setPasswordButton.textContent =
+                    "Saving...";
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            `${API_BASE_URL}/api/student/setup-password`,
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json",
+
+                                    "Accept":
+                                        "application/json",
+
+                                    "Authorization":
+                                        `Bearer ${token}`
+                                },
+
+                                body:
+                                    JSON.stringify({
+                                        password:
+                                            password,
+
+                                        password_confirmation:
+                                            confirmation
+                                    })
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    /*
+                     * VALIDATION ERROR
+                     */
+
+                    if (!response.ok) {
+
+                        if (data.errors) {
+
+                            const firstError =
+                                Object.values(
+                                    data.errors
+                                )[0];
+
+                            if (
+                                Array.isArray(
+                                    firstError
+                                )
+                            ) {
+
+                                showMessage(
+                                    firstError[0]
+                                );
+
+                            } else {
+
+                                showMessage(
+                                    firstError
+                                );
+                            }
+
+                        } else {
+
+                            showMessage(
+                                data.message ||
+                                "Unable to set password."
+                            );
+                        }
+
+                        setPasswordButton.disabled =
+                            false;
+
+                        setPasswordButton.textContent =
+                            "Set Password";
+
+                        return;
+                    }
+
+
+                    /*
+                     * SUCCESS
+                     */
+
+                    showMessage(
+                        "Password setup completed successfully. Please log in again.",
+                        "success"
+                    );
+
+
+                    /*
+                     * CLEAR OLD LOGIN SESSION
+                     */
+
+                    sessionStorage.removeItem(
+                        "authToken"
+                    );
+
+                    sessionStorage.removeItem(
+                        "user"
+                    );
+
+                    sessionStorage.removeItem(
+                        "firstLogin"
+                    );
+
+
+                    /*
+                     * RETURN TO LOGIN
+                     */
+
+                    setTimeout(
+                        function () {
+
+                            window.location.href =
+                                "../index.html";
+
+                        },
+                        1500
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "Password setup error:",
+                        error
+                    );
+
+
+                    showMessage(
+                        "Unable to connect to the server. Please make sure the Laravel backend is running."
+                    );
+
+
+                    setPasswordButton.disabled =
+                        false;
+
+                    setPasswordButton.textContent =
+                        "Set Password";
+                }
+
+            }
+        );
+
+
+        /*
+         * INITIAL PASSWORD STATE
+         */
+
+        updateRequirements();
 
     </script>
 

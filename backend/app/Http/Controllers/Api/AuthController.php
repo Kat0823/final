@@ -17,8 +17,13 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
+<<<<<<< HEAD
         // Find the user without restricting the role to learner
         $user = User::where('student_id', $validated['student_id'])
+=======
+        $user = User::where('student_id', $validated['student_id'])
+            ->where('role', 'learner')
+>>>>>>> 253e8325fb03187f0b8023923cf451930cf6214a
             ->first();
 
         if (!$user || !Hash::check($validated['password'], $user->password)) {
@@ -28,7 +33,10 @@ class AuthController extends Controller
             ], 401);
         }
 
+<<<<<<< HEAD
         // Create Sanctum token
+=======
+>>>>>>> 253e8325fb03187f0b8023923cf451930cf6214a
         $token = $user->createToken('siknayan-login')->plainTextToken;
 
         return response()->json([
