@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Siknayan | Class Details</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <script
+        src="https://unpkg.com/lucide@latest"
+    ></script>
+
+</head>
+
+<body>
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <img
+                src="../assets/images/mpsu_logo.png"
+                alt="MPSU Logo"
+                class="brand-logo"
+            >
+
+            <div class="brand-text">
+
+                <h1>
+                    MPSU ETEEAP LMS
+                </h1>
+
+                <p>
+                    Mountain Province State University
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="topbar-right">
+
+            <button
+                class="icon-button notification-button"
+                type="button"
+                aria-label="Notifications"
+            >
+
+                <i data-lucide="bell"></i>
+
+                <span
+                    class="notification-dot"
+                ></span>
+
+            </button>
+
+
+            <div class="profile">
+
+                <img
+                    src="../assets/images/macross.jpg"
+                    alt="Macross Arsel"
+                    class="profile-avatar"
+                >
+
+                <div class="profile-info">
+
+                    <strong>
+                        Macross Arsel
+                    </strong>
+
+                    <span>
+                        Administrator
+                    </span>
+
+                </div>
+
+                <i
+                    data-lucide="chevron-down"
+                    class="profile-chevron"
+                ></i>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <div class="app-layout">
+
+        <aside
+            class="sidebar"
+            id="sidebar"
+        >
+
+            <div class="sidebar-top">
+
+                <span class="sidebar-view-text">
+                    View
+                </span>
+
+                <button
+                    class="sidebar-toggle"
+                    id="sidebarToggle"
+                    type="button"
+                    aria-label="Toggle sidebar"
+                >
+
+                    <i data-lucide="panel-left"></i>
+
+                </button>
+
+            </div>
+
+
+            <div class="sidebar-profile">
+
+                <img
+                    src="../assets/images/macross.jpg"
+                    alt="Macross Arsel"
+                    class="sidebar-avatar"
+                >
+
+                <span class="sidebar-profile-name">
+                    Macross
+                </span>
+
+            </div>
+
+
+            <nav class="sidebar-nav">
+
+                <a
+                    href="../index.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="layout-dashboard"></i>
+
+                    <span class="nav-label">
+                        Dashboard
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="learners.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="users"></i>
+
+                    <span class="nav-label">
+                        Learners
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="classes.html"
+                    class="nav-item active"
+                >
+
+                    <i data-lucide="book-open"></i>
+
+                    <span class="nav-label">
+                        Classes
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="module-library.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="folder"></i>
+
+                    <span class="nav-label">
+                        Module Library
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="circle-user-round"></i>
+
+                    <span class="nav-label">
+                        Accounts
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="pie-chart"></i>
+
+                    <span class="nav-label">
+                        Reports
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="bell"></i>
+
+                    <span class="nav-label">
+                        Notifications
+                    </span>
+
+                </a>
+
+            </nav>
+
+
+            <div class="sidebar-bottom">
+
+                <a
+                    href="#"
+                    class="nav-item logout"
+                >
+
+                    <i data-lucide="log-out"></i>
+
+                    <span class="nav-label">
+                        Logout
+                    </span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <main
+            class="main-content class-details-page"
+        >
+
+            <div
+                class="class-details-workspace"
+            >
+
+                <!-- =================================================
+                     LEFT / MAIN CLASS DETAILS PANEL
+                     ================================================= -->
+
+                <div
+                    class="class-details-main-panel"
+                >
+
+                    <section
+                        class="class-details-header"
+                    >
+
+                        <div
+                            class="class-details-heading-left"
+                        >
+
+                            <a
+                                href="classes.html"
+                                class="class-details-back"
+                            >
+
+                                <i data-lucide="arrow-left"></i>
+
+                                <span>
+                                    Back to Classes
+                                </span>
+
+                            </a>
+
+
+                            <h2
+                                class="class-details-title"
+                                id="classDetailsTitle"
+                            >
+                                Class Details
+                            </h2>
+
+
+                            <p
+                                class="class-details-course"
+                                id="classDetailsCourse"
+                            >
+                                Loading class information...
+                            </p>
+
+                        </div>
+
+
+                        <div
+                            class="class-details-header-actions"
+                        >
+
+                            <button
+                                type="button"
+                                class="class-details-action-button secondary"
+                                id="editClassButton"
+                            >
+
+                                <i data-lucide="pencil"></i>
+
+                                <span>
+                                    Edit Class
+                                </span>
+
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="class-details-action-button primary"
+                                id="manageLearnersButton"
+                            >
+
+                                <i data-lucide="users"></i>
+
+                                <span>
+                                    Manage Learners
+                                </span>
+
+                            </button>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =================================================
+                         CLASS OVERVIEW
+                         ================================================= -->
+
+                    <section
+                        class="class-overview-card"
+                    >
+
+                        <div
+                            class="class-overview-header"
+                        >
+
+                            <h3>
+                                Class Overview
+                            </h3>
+
+                            <span
+                                id="classDetailsStatus"
+                                class="class-details-status active"
+                            >
+                                Active
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="class-overview-grid"
+                        >
+
+                            <div
+                                class="class-overview-item"
+                            >
+
+                                <span>
+                                    Class Code
+                                </span>
+
+                                <strong
+                                    id="classDetailsCode"
+                                    class="class-overview-class-code"
+                                >
+                                    —
+                                </strong>
+
+                            </div>
+
+
+                            <div
+                                class="class-overview-item"
+                            >
+
+                                <span>
+                                    Program
+                                </span>
+
+                                <strong
+                                    id="classDetailsProgram"
+                                >
+                                    —
+                                </strong>
+
+                            </div>
+
+
+                            <div
+                                class="class-overview-item"
+                            >
+
+                                <span>
+                                    Course
+                                </span>
+
+                                <strong
+                                    id="classDetailsCourseCode"
+                                >
+                                    —
+                                </strong>
+
+                            </div>
+
+
+                            <div
+                                class="class-overview-item"
+                            >
+
+                                <span>
+                                    Instructor
+                                </span>
+
+                                <strong
+                                    id="classDetailsInstructor"
+                                >
+                                    —
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =================================================
+                         ASSIGNED MODULES
+                         ================================================= -->
+
+                    <section
+                        class="class-modules-card"
+                    >
+
+                        <div
+                            class="class-modules-header"
+                        >
+
+                            <div
+                                class="class-modules-heading"
+                            >
+
+                                <h3>
+                                    Assigned Modules
+                                </h3>
+
+                                <p
+                                    id="classAssignedModuleCount"
+                                >
+                                    0 Modules
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            id="classAssignedModuleList"
+                            class="class-assigned-module-list"
+                        ></div>
+
+
+                        <div
+                            id="classAssignedModulesEmpty"
+                            class="class-assigned-modules-empty"
+                            hidden
+                        >
+
+                            <i data-lucide="folder-open"></i>
+
+                            <h4>
+                                No modules assigned
+                            </h4>
+
+                            <p>
+                                Assign modules from the Module Library for this course.
+                            </p>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =================================================
+                         LEARNER ROSTER
+                         ================================================= -->
+
+                    <section
+                        class="class-roster-card"
+                    >
+
+                        <div
+                            class="class-roster-header"
+                        >
+
+                            <div
+                                class="class-roster-heading"
+                            >
+
+                                <h3>
+                                    Enrolled Learners
+                                </h3>
+
+                                <p
+                                    class="class-roster-count"
+                                    id="classRosterCount"
+                                >
+                                    0 Learners
+                                </p>
+
+                            </div>
+
+
+                            <div
+                                class="class-roster-search"
+                            >
+
+                                <i data-lucide="search"></i>
+
+                                <input
+                                    type="text"
+                                    id="classRosterSearch"
+                                    placeholder="Search learners..."
+                                    autocomplete="off"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="class-roster-table-wrapper"
+                        >
+
+                            <table
+                                class="class-roster-table"
+                            >
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>
+                                            Student ID
+                                        </th>
+
+                                        <th>
+                                            Learner
+                                        </th>
+
+                                        <th>
+                                            Status
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody
+                                    id="classRosterBody"
+                                ></tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        <div
+                            class="class-roster-empty"
+                            id="classRosterEmpty"
+                            hidden
+                        >
+
+                            <i data-lucide="users"></i>
+
+                            <h4>
+                                No learners found
+                            </h4>
+
+                            <p>
+                                No learners are currently enrolled
+                                in this class.
+                            </p>
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+
+                <!-- =================================================
+                     PERMANENT RIGHT MODULE SIDEBAR
+                     ================================================= -->
+
+                <aside
+                    class="class-modules-sidebar"
+                    id="classModulesSidebar"
+                    aria-hidden="false"
+                >
+
+                    <div
+                        class="class-modules-sidebar-header"
+                    >
+
+                        <div>
+
+                            <span
+                                class="class-modules-sidebar-label"
+                            >
+                                MODULE MANAGEMENT
+                            </span>
+
+                            <h3>
+                                Manage Modules
+                            </h3>
+
+                            <p
+                                id="classModulesSidebarCourse"
+                            >
+                                Loading course...
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="class-modules-sidebar-body"
+                    >
+
+                        <div
+                            class="class-modules-sidebar-search"
+                        >
+
+                            <i data-lucide="search"></i>
+
+                            <input
+                                type="text"
+                                id="manageModuleSearch"
+                                placeholder="Search by module title..."
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+
+                        <div
+                            class="class-modules-sidebar-toolbar"
+                        >
+
+                            <label
+                                class="manage-modules-select-all"
+                            >
+
+                                <input
+                                    type="checkbox"
+                                    id="manageModuleSelectAll"
+                                >
+
+                                <span>
+                                    Select All
+                                </span>
+
+                            </label>
+
+
+                            <span
+                                id="manageModuleSelectedCount"
+                                class="manage-modules-selected-count"
+                            >
+                                0 selected
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            id="manageModuleList"
+                            class="manage-module-list"
+                        ></div>
+
+
+                        <div
+                            id="manageModuleNoResults"
+                            class="manage-module-no-results"
+                            hidden
+                        >
+                            No modules are available for this course.
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="class-modules-sidebar-footer"
+                    >
+
+                        <button
+                            type="button"
+                            class="modal-button cancel"
+                            id="manageModulesCancel"
+                        >
+                            Reset
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="modal-button primary"
+                            id="manageModulesSave"
+                        >
+                            Save Modules
+                        </button>
+
+                    </div>
+
+                </aside>
+
+            </div>
+
+        </main>
+
+
+    <script src="../js/shared.js"></script>
+
+    <script src="../js/module-library-data.js"></script>
+
+    <script src="../js/class-details.js"></script>
+
+</body>
+
+</html>

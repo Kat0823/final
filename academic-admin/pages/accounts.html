@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Siknayan | Accounts</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+    <!-- =========================
+         TOP HEADER
+    ========================== -->
+    <header class="topbar">
+
+        <div class="brand">
+
+            <img
+                src="../assets/images/mpsu_logo.png"
+                alt="MPSU Logo"
+                class="brand-logo"
+            >
+
+            <div class="brand-text">
+                <h1>MPSU ETEEAP LMS</h1>
+                <p>Mountain Province State University</p>
+            </div>
+
+        </div>
+
+
+        <div class="topbar-right">
+
+            <button
+                class="icon-button notification-button"
+                type="button"
+                aria-label="Notifications"
+            >
+                <i data-lucide="bell"></i>
+                <span class="notification-dot"></span>
+            </button>
+
+
+            <div class="profile">
+
+                <img
+                    src="../assets/images/macross.jpg"
+                    alt="Macross Arsel"
+                    class="profile-avatar"
+                >
+
+                <div class="profile-info">
+                    <strong>Macross Arsel</strong>
+                    <span>Administrator</span>
+                </div>
+
+                <i
+                    data-lucide="chevron-down"
+                    class="profile-chevron"
+                ></i>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         APPLICATION LAYOUT
+    ========================== -->
+    <div class="app-layout">
+
+
+        <!-- =====================
+             SIDEBAR
+        ====================== -->
+        <aside class="sidebar" id="sidebar">
+
+            <div class="sidebar-top">
+
+                <span class="sidebar-view-text">
+                    View
+                </span>
+
+                <button
+                    class="sidebar-toggle"
+                    id="sidebarToggle"
+                    aria-label="Toggle sidebar"
+                    type="button"
+                >
+                    <i data-lucide="panel-left"></i>
+                </button>
+
+            </div>
+
+
+            <!-- Profile -->
+            <div class="sidebar-profile">
+
+                <img
+                    src="../assets/images/macross.jpg"
+                    alt="Macross Arsel"
+                    class="sidebar-avatar"
+                >
+
+                <span class="sidebar-profile-name">
+                    Macross
+                </span>
+
+            </div>
+
+
+            <!-- Navigation -->
+            <nav class="sidebar-nav">
+
+                <a href="../index.html" class="nav-item">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+
+
+                <a href="learners.html" class="nav-item">
+                    <i data-lucide="users"></i>
+                    <span class="nav-label">Learners</span>
+                </a>
+
+
+                <a href="classes.html" class="nav-item">
+                    <i data-lucide="book-open"></i>
+                    <span class="nav-label">Classes</span>
+                </a>
+
+
+                <a href="module-library.html" class="nav-item">
+                    <i data-lucide="folder"></i>
+                    <span class="nav-label">Module Library</span>
+                </a>
+
+
+                <a
+                    href="accounts.html"
+                    class="nav-item active"
+                    aria-current="page"
+                >
+                    <i data-lucide="circle-user-round"></i>
+                    <span class="nav-label">Accounts</span>
+                </a>
+
+
+                <a href="#" class="nav-item">
+                    <i data-lucide="pie-chart"></i>
+                    <span class="nav-label">Reports</span>
+                </a>
+
+
+                <a href="#" class="nav-item">
+                    <i data-lucide="bell"></i>
+                    <span class="nav-label">Notifications</span>
+                </a>
+
+            </nav>
+
+
+            <!-- Logout -->
+            <div class="sidebar-bottom">
+
+                <a href="#" class="nav-item logout">
+                    <i data-lucide="log-out"></i>
+                    <span class="nav-label">Logout</span>
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =====================
+             MAIN CONTENT
+        ====================== -->
+        <main class="main-content accounts-page">
+
+            <!-- Page Heading -->
+            <section class="accounts-heading">
+
+                <div>
+                    <h2>Accounts</h2>
+
+                    <p>
+                        Manage learner and instructor accounts
+                    </p>
+                </div>
+
+            </section>
+
+
+            <!-- Account Sections -->
+            <section class="accounts-grid">
+
+
+                <!-- =====================
+                     LEARNER ACCOUNTS
+                ====================== -->
+                <article
+                    class="account-type-card"
+                    data-account-type="learner"
+                >
+
+                    <div class="account-type-icon">
+                        <i data-lucide="graduation-cap"></i>
+                    </div>
+
+
+                    <div class="account-type-content">
+
+                        <h3>
+                            Learner Accounts
+                        </h3>
+
+                        <p>
+                            Manage learner login accounts,
+                            account status, and access credentials.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="account-type-button"
+                        data-target="accounts-learners.html"
+                    >
+                        Manage Learner Accounts
+                        <i data-lucide="arrow-right"></i>
+                    </button>
+
+                </article>
+
+
+                <!-- =====================
+                     INSTRUCTOR ACCOUNTS
+                ====================== -->
+                <article
+                    class="account-type-card"
+                    data-account-type="instructor"
+                >
+
+                    <div class="account-type-icon">
+                        <i data-lucide="presentation"></i>
+                    </div>
+
+
+                    <div class="account-type-content">
+
+                        <h3>
+                            Instructor Accounts
+                        </h3>
+
+                        <p>
+                            Manage instructor login accounts,
+                            account status, and access credentials.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="account-type-button"
+                        data-target="accounts-instructors.html"
+                    >
+                        Manage Instructor Accounts
+                        <i data-lucide="arrow-right"></i>
+                    </button>
+
+                </article>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script src="../js/shared.js"></script>
+    <script src="../js/accounts.js"></script>
+
+</body>
+
+</html>

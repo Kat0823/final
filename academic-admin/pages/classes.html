@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Siknayan | Classes</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <script
+        src="https://unpkg.com/lucide@latest"
+    ></script>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================================
+         TOP HEADER
+         ========================================================= -->
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <img
+                src="../assets/images/mpsu_logo.png"
+                alt="MPSU Logo"
+                class="brand-logo"
+            >
+
+            <div class="brand-text">
+
+                <h1>
+                    MPSU ETEEAP LMS
+                </h1>
+
+                <p>
+                    Mountain Province State University
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="topbar-right">
+
+            <button
+                class="icon-button notification-button"
+                type="button"
+                aria-label="Notifications"
+            >
+
+                <i data-lucide="bell"></i>
+
+                <span
+                    class="notification-dot"
+                ></span>
+
+            </button>
+
+
+            <div class="profile">
+
+                <img
+                    src="../assets/images/macross.jpg"
+                    alt="Macross Arsel"
+                    class="profile-avatar"
+                >
+
+                <div class="profile-info">
+
+                    <strong>
+                        Macross Arsel
+                    </strong>
+
+                    <span>
+                        Administrator
+                    </span>
+
+                </div>
+
+                <i
+                    data-lucide="chevron-down"
+                    class="profile-chevron"
+                ></i>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =========================================================
+         APPLICATION LAYOUT
+         ========================================================= -->
+
+    <div class="app-layout">
+
+
+        <!-- =====================================================
+             MAIN SIDEBAR
+             ===================================================== -->
+
+        <aside
+            class="sidebar"
+            id="sidebar"
+        >
+
+
+            <div class="sidebar-top">
+
+                <span class="sidebar-view-text">
+                    View
+                </span>
+
+                <button
+                    class="sidebar-toggle"
+                    id="sidebarToggle"
+                    type="button"
+                    aria-label="Toggle sidebar"
+                >
+
+                    <i data-lucide="panel-left"></i>
+
+                </button>
+
+            </div>
+
+
+
+            <div class="sidebar-profile">
+
+                <img
+                    src="../assets/images/macross.jpg"
+                    alt="Macross Arsel"
+                    class="sidebar-avatar"
+                >
+
+                <span class="sidebar-profile-name">
+                    Macross
+                </span>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 NAVIGATION
+                 ================================================= -->
+
+            <nav class="sidebar-nav">
+
+
+                <!-- Dashboard -->
+
+                <a
+                    href="../index.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="layout-dashboard"></i>
+
+                    <span class="nav-label">
+                        Dashboard
+                    </span>
+
+                </a>
+
+
+
+                <!-- Learners -->
+
+                <a
+                    href="learners.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="users"></i>
+
+                    <span class="nav-label">
+                        Learners
+                    </span>
+
+                </a>
+
+
+
+                <!-- Classes -->
+
+                <a
+                    href="classes.html"
+                    class="nav-item active"
+                >
+
+                    <i data-lucide="book-open"></i>
+
+                    <span class="nav-label">
+                        Classes
+                    </span>
+
+                </a>
+
+
+
+                <!-- Module Library -->
+
+                <a
+                    href="module-library.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="folder"></i>
+
+                    <span class="nav-label">
+                        Module Library
+                    </span>
+
+                </a>
+
+
+
+                <!-- Accounts -->
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="circle-user-round"></i>
+
+                    <span class="nav-label">
+                        Accounts
+                    </span>
+
+                </a>
+
+
+
+                <!-- Reports -->
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="pie-chart"></i>
+
+                    <span class="nav-label">
+                        Reports
+                    </span>
+
+                </a>
+
+
+
+                <!-- Notifications -->
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="bell"></i>
+
+                    <span class="nav-label">
+                        Notifications
+                    </span>
+
+                </a>
+
+
+            </nav>
+
+
+
+            <!-- =================================================
+                 LOGOUT
+                 ================================================= -->
+
+            <div class="sidebar-bottom">
+
+                <a
+                    href="#"
+                    class="nav-item logout"
+                >
+
+                    <i data-lucide="log-out"></i>
+
+                    <span class="nav-label">
+                        Logout
+                    </span>
+
+                </a>
+
+            </div>
+
+
+        </aside>
+
+
+
+        <!-- =====================================================
+             MAIN CONTENT
+             ===================================================== -->
+
+        <main class="main-content classes-page">
+
+
+            <!-- =================================================
+                 PAGE HEADER
+                 ================================================= -->
+
+            <section class="classes-heading">
+
+                <div>
+
+                    <h2>
+                        Classes
+                    </h2>
+
+                    <p>
+                        Manage class codes, courses, instructors,
+                        and learner enrollment.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="classes-add-button"
+                    id="addClassButton"
+                >
+
+                    <i data-lucide="plus"></i>
+
+                    <span>
+                        Add Class
+                    </span>
+
+                </button>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 SEARCH + FILTERS
+                 ================================================= -->
+
+            <section class="classes-controls">
+
+
+                <div class="classes-search-box">
+
+                    <i data-lucide="search"></i>
+
+                    <input
+                        type="text"
+                        id="classSearch"
+                        placeholder="Search class code, course, or instructor..."
+                    >
+
+                </div>
+
+
+
+                <div class="classes-filter-group">
+
+
+                    <select
+                        id="programFilter"
+                    >
+
+                        <option value="all">
+                            All Programs
+                        </option>
+
+                    </select>
+
+
+
+                    <select
+                        id="courseFilter"
+                    >
+
+                        <option value="all">
+                            All Courses
+                        </option>
+
+                    </select>
+
+
+
+                    <select
+                        id="statusFilter"
+                    >
+
+                        <option value="all">
+                            All Status
+                        </option>
+
+                        <option value="active">
+                            Active
+                        </option>
+
+                        <option value="inactive">
+                            Inactive
+                        </option>
+
+                    </select>
+
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- =================================================
+                 CLASS TABLE
+                 ================================================= -->
+
+            <section class="classes-table-card">
+
+
+                <div class="classes-table-wrapper">
+
+                    <table class="classes-table">
+
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Class Code
+                                </th>
+
+                                <th>
+                                    Program
+                                </th>
+
+                                <th>
+                                    Course
+                                </th>
+
+                                <th>
+                                    Instructor
+                                </th>
+
+                                <th>
+                                    Learners
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Actions
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody
+                            id="classesTableBody"
+                        ></tbody>
+
+
+                    </table>
+
+                </div>
+
+
+
+                <!-- Empty State -->
+
+                <div
+                    class="classes-empty-state"
+                    id="classesEmptyState"
+                    hidden
+                >
+
+                    <i data-lucide="book-open"></i>
+
+                    <h3>
+                        No classes found
+                    </h3>
+
+                    <p>
+                        Try changing your search or filters,
+                        or create a new class.
+                    </p>
+
+                </div>
+
+
+            </section>
+
+
+        </main>
+
+
+    </div>
+
+
+
+    <!-- =========================================================
+         ADD / EDIT CLASS MODAL
+         ========================================================= -->
+
+    <div
+        class="classes-modal-overlay"
+        id="classModal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="classes-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="classModalTitle"
+        >
+
+
+            <div class="classes-modal-header">
+
+                <div>
+
+                    <h3 id="classModalTitle">
+                        Add Class
+                    </h3>
+
+                    <p id="classModalDescription">
+                        Create a class and assign one instructor.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="classes-modal-close"
+                    id="closeClassModalButton"
+                    aria-label="Close"
+                >
+
+                    <i data-lucide="x"></i>
+
+                </button>
+
+            </div>
+
+
+
+            <form
+                id="classForm"
+                novalidate
+            >
+
+
+                <!-- Program -->
+
+                <div class="classes-form-group">
+
+                    <label for="classProgram">
+                        Program
+                    </label>
+
+                    <select
+                        id="classProgram"
+                        class="classes-form-control"
+                        required
+                    >
+
+                        <option value="">
+                            Select Program
+                        </option>
+
+                    </select>
+
+                    <small
+                        class="classes-form-error"
+                        id="programError"
+                    ></small>
+
+                </div>
+
+
+
+                <!-- Course -->
+
+                <div class="classes-form-group">
+
+                    <label for="classCourse">
+                        Course
+                    </label>
+
+                    <select
+                        id="classCourse"
+                        class="classes-form-control"
+                        required
+                    >
+
+                        <option value="">
+                            Select Course
+                        </option>
+
+                    </select>
+
+                    <small
+                        class="classes-form-error"
+                        id="courseError"
+                    ></small>
+
+                </div>
+
+
+
+                <!-- Class Code -->
+
+                <div class="classes-form-group">
+
+                    <label for="classCode">
+                        Class Code
+                    </label>
+
+                    <input
+                        type="text"
+                        id="classCode"
+                        class="classes-form-control"
+                        placeholder="e.g. CRIM 101-A"
+                        maxlength="30"
+                        autocomplete="off"
+                        required
+                    >
+
+                    <small class="classes-field-help">
+                        The class code identifies this specific class.
+                    </small>
+
+                    <small
+                        class="classes-form-error"
+                        id="classCodeError"
+                    ></small>
+
+                </div>
+
+
+
+                <!-- Instructor -->
+
+                <div class="classes-form-group">
+
+                    <label for="classInstructor">
+                        Instructor
+                    </label>
+
+                    <select
+                        id="classInstructor"
+                        class="classes-form-control"
+                        required
+                    >
+
+                        <option value="">
+                            Select Instructor
+                        </option>
+
+                    </select>
+
+                    <small class="classes-field-help">
+                        Each class can have exactly one instructor.
+                    </small>
+
+                    <small
+                        class="classes-form-error"
+                        id="instructorError"
+                    ></small>
+
+                </div>
+
+
+
+                <!-- Status -->
+
+                <div class="classes-form-group">
+
+                    <label for="classStatus">
+                        Status
+                    </label>
+
+                    <select
+                        id="classStatus"
+                        class="classes-form-control"
+                    >
+
+                        <option value="active">
+                            Active
+                        </option>
+
+                        <option value="inactive">
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- Actions -->
+
+                <div class="classes-modal-actions">
+
+                    <button
+                        type="button"
+                        class="classes-modal-button cancel"
+                        id="cancelClassButton"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="classes-modal-button primary"
+                    >
+                        Save Class
+                    </button>
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================================
+         VIEW CLASS MODAL
+         ========================================================= -->
+
+    <div
+        class="classes-modal-overlay"
+        id="viewClassModal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="classes-modal classes-view-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="viewClassTitle"
+        >
+
+
+            <div class="classes-modal-header">
+
+                <div>
+
+                    <h3 id="viewClassTitle">
+                        Class Details
+                    </h3>
+
+                    <p>
+                        Information for this class.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="classes-modal-close"
+                    id="closeViewClassButton"
+                    aria-label="Close"
+                >
+
+                    <i data-lucide="x"></i>
+
+                </button>
+
+            </div>
+
+
+
+            <div class="classes-detail-list">
+
+
+                <div class="classes-detail-row">
+
+                    <span>
+                        Class Code
+                    </span>
+
+                    <strong id="viewClassCode">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="classes-detail-row">
+
+                    <span>
+                        Program
+                    </span>
+
+                    <strong id="viewClassProgram">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="classes-detail-row">
+
+                    <span>
+                        Course
+                    </span>
+
+                    <strong id="viewClassCourse">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="classes-detail-row">
+
+                    <span>
+                        Instructor
+                    </span>
+
+                    <strong id="viewClassInstructor">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="classes-detail-row">
+
+                    <span>
+                        Learners
+                    </span>
+
+                    <strong id="viewClassLearners">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="classes-detail-row">
+
+                    <span>
+                        Status
+                    </span>
+
+                    <strong id="viewClassStatus">
+                        —
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="classes-modal-actions">
+
+                <button
+                    type="button"
+                    class="classes-modal-button cancel"
+                    id="closeViewClassButtonBottom"
+                >
+                    Close
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================================
+         DELETE CLASS MODAL
+         ========================================================= -->
+
+    <div
+        class="classes-modal-overlay"
+        id="deleteClassModal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="classes-modal classes-delete-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="deleteClassTitle"
+        >
+
+
+            <div class="classes-modal-header">
+
+                <div>
+
+                    <h3 id="deleteClassTitle">
+                        Delete Class
+                    </h3>
+
+                    <p>
+                        This action cannot be undone.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="classes-modal-close"
+                    id="closeDeleteClassButton"
+                    aria-label="Close"
+                >
+
+                    <i data-lucide="x"></i>
+
+                </button>
+
+            </div>
+
+
+
+            <p
+                class="classes-delete-message"
+                id="deleteClassMessage"
+            >
+                Are you sure you want to delete this class?
+            </p>
+
+
+
+            <div class="classes-modal-actions">
+
+                <button
+                    type="button"
+                    class="classes-modal-button cancel"
+                    id="cancelDeleteClassButton"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="button"
+                    class="classes-modal-button danger"
+                    id="confirmDeleteClassButton"
+                >
+                    Delete Class
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <script src="../js/shared.js"></script>
+    <script src="../js/program-data.js"></script>
+    <script src="../js/module-library-data.js"></script>
+    <script src="../js/classes.js"></script>
+
+
+</body>
+
+</html>

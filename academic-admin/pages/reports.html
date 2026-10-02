@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Siknayan | Reports</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+    <!-- =========================
+         TOP HEADER
+    ========================== -->
+    <header class="topbar">
+
+        <div class="brand">
+            <img
+                src="../assets/images/mpsu_logo.png"
+                alt="MPSU Logo"
+                class="brand-logo"
+            >
+
+            <div class="brand-text">
+                <h1>MPSU ETEEAP LMS</h1>
+                <p>Mountain Province State University</p>
+            </div>
+        </div>
+
+
+        <div class="topbar-right">
+
+            <button
+                class="icon-button notification-button"
+                type="button"
+                aria-label="Notifications"
+            >
+                <i data-lucide="bell"></i>
+                <span class="notification-dot"></span>
+            </button>
+
+
+            <div class="profile">
+
+                <img
+                    src="../assets/images/macross.jpg"
+                    alt="Macross Arsel"
+                    class="profile-avatar"
+                >
+
+                <div class="profile-info">
+                    <strong>Macross Arsel</strong>
+                    <span>Administrator</span>
+                </div>
+
+                <i
+                    data-lucide="chevron-down"
+                    class="profile-chevron"
+                ></i>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         APPLICATION LAYOUT
+    ========================== -->
+    <div class="app-layout">
+
+
+        <!-- =====================
+             SIDEBAR
+        ====================== -->
+        <aside class="sidebar" id="sidebar">
+
+            <div class="sidebar-top">
+                <span class="sidebar-view-text">View</span>
+
+                <button
+                    class="sidebar-toggle"
+                    id="sidebarToggle"
+                    type="button"
+                    aria-label="Toggle sidebar"
+                >
+                    <i data-lucide="panel-left"></i>
+                </button>
+            </div>
+
+
+            <div class="sidebar-profile">
+                <img
+                    src="../assets/images/macross.jpg"
+                    alt="Macross Arsel"
+                    class="sidebar-avatar"
+                >
+
+                <span class="sidebar-profile-name">
+                    Macross
+                </span>
+            </div>
+
+
+            <nav class="sidebar-nav">
+
+                <a href="../index.html" class="nav-item">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+
+
+                <a href="learners.html" class="nav-item">
+                    <i data-lucide="users"></i>
+                    <span class="nav-label">Learners</span>
+                </a>
+
+
+                <a href="classes.html" class="nav-item">
+                    <i data-lucide="book-open"></i>
+                    <span class="nav-label">Classes</span>
+                </a>
+
+
+                <a href="module-library.html" class="nav-item">
+                    <i data-lucide="folder"></i>
+                    <span class="nav-label">Module Library</span>
+                </a>
+
+
+                <a href="accounts.html" class="nav-item">
+                    <i data-lucide="circle-user-round"></i>
+                    <span class="nav-label">Accounts</span>
+                </a>
+
+
+                <a
+                    href="reports.html"
+                    class="nav-item active"
+                    aria-current="page"
+                >
+                    <i data-lucide="pie-chart"></i>
+                    <span class="nav-label">Reports</span>
+                </a>
+
+
+                <a href="#" class="nav-item">
+                    <i data-lucide="bell"></i>
+                    <span class="nav-label">Notifications</span>
+                </a>
+
+            </nav>
+
+
+            <div class="sidebar-bottom">
+                <a href="#" class="nav-item logout">
+                    <i data-lucide="log-out"></i>
+                    <span class="nav-label">Logout</span>
+                </a>
+            </div>
+
+        </aside>
+
+
+        <!-- =====================
+             MAIN CONTENT
+        ====================== -->
+        <main class="main-content reports-page">
+
+            <!-- =====================
+                 PAGE HEADING
+            ====================== -->
+            <section class="reports-heading">
+
+                <div>
+                    <h2>Reports</h2>
+                    <p>
+                        Generate and review operational reports from current Siknayan records.
+                    </p>
+                </div>
+
+                <div class="reports-heading-right">
+                    <span id="reportUpdated">
+                        Updated —
+                    </span>
+
+                    <button
+                        type="button"
+                        class="reports-refresh-button"
+                        id="refreshReportBtn"
+                        title="Refresh report data"
+                        aria-label="Refresh report data"
+                    >
+                        <i data-lucide="refresh-cw"></i>
+                    </button>
+                </div>
+
+            </section>
+
+
+            <!-- =====================
+                 REPORT TYPES
+            ====================== -->
+            <section
+                class="reports-type-grid"
+                role="tablist"
+                aria-label="Report types"
+            >
+
+                <button
+                    type="button"
+                    class="report-type-card active"
+                    data-report="learner"
+                    role="tab"
+                    aria-selected="true"
+                >
+                    <span class="report-type-icon">
+                        <i data-lucide="users"></i>
+                    </span>
+                    <span class="report-type-copy">
+                        <strong>Learner Progress</strong>
+                        <small>Learner status, completion, and progress</small>
+                    </span>
+                    <i
+                        data-lucide="chevron-right"
+                        class="report-type-arrow"
+                    ></i>
+                </button>
+
+
+                <button
+                    type="button"
+                    class="report-type-card"
+                    data-report="classes"
+                    role="tab"
+                    aria-selected="false"
+                >
+                    <span class="report-type-icon">
+                        <i data-lucide="book-open"></i>
+                    </span>
+                    <span class="report-type-copy">
+                        <strong>Class Enrollment</strong>
+                        <small>Class membership and enrollment details</small>
+                    </span>
+                    <i
+                        data-lucide="chevron-right"
+                        class="report-type-arrow"
+                    ></i>
+                </button>
+
+
+                <button
+                    type="button"
+                    class="report-type-card"
+                    data-report="modules"
+                    role="tab"
+                    aria-selected="false"
+                >
+                    <span class="report-type-icon">
+                        <i data-lucide="file-check-2"></i>
+                    </span>
+                    <span class="report-type-copy">
+                        <strong>Module &amp; Submission</strong>
+                        <small>Assigned, submitted, and completed work</small>
+                    </span>
+                    <i
+                        data-lucide="chevron-right"
+                        class="report-type-arrow"
+                    ></i>
+                </button>
+
+
+                <button
+                    type="button"
+                    class="report-type-card"
+                    data-report="instructors"
+                    role="tab"
+                    aria-selected="false"
+                >
+                    <span class="report-type-icon">
+                        <i data-lucide="graduation-cap"></i>
+                    </span>
+                    <span class="report-type-copy">
+                        <strong>Instructor Workload</strong>
+                        <small>Assignments, classes, and learner load</small>
+                    </span>
+                    <i
+                        data-lucide="chevron-right"
+                        class="report-type-arrow"
+                    ></i>
+                </button>
+
+
+                <button
+                    type="button"
+                    class="report-type-card"
+                    data-report="programs"
+                    role="tab"
+                    aria-selected="false"
+                >
+                    <span class="report-type-icon">
+                        <i data-lucide="school"></i>
+                    </span>
+                    <span class="report-type-copy">
+                        <strong>Program Overview</strong>
+                        <small>Program-level learners, classes, and progress</small>
+                    </span>
+                    <i
+                        data-lucide="chevron-right"
+                        class="report-type-arrow"
+                    ></i>
+                </button>
+
+            </section>
+
+
+            <!-- =====================
+                 FILTERS
+            ====================== -->
+            <section
+                class="reports-filter-card"
+                id="reportFilters"
+            >
+                <!-- Populated by reports.js -->
+            </section>
+
+
+            <!-- =====================
+                 REPORT SUMMARY
+            ====================== -->
+            <section
+                class="reports-summary-grid"
+                id="reportSummary"
+                aria-label="Report summary"
+            >
+                <!-- Populated by reports.js -->
+            </section>
+
+
+            <!-- =====================
+                 REPORT TABLE
+            ====================== -->
+            <section class="reports-table-card">
+
+                <div class="reports-table-header">
+
+                    <div>
+                        <h3 id="reportTableTitle">
+                            Learner Progress Report
+                        </h3>
+
+                        <p id="reportTableSubtitle">
+                            Overview of learner progress, module completion, and current status.
+                        </p>
+                    </div>
+
+
+                    <div class="reports-table-actions">
+
+                        <span
+                            class="reports-record-count"
+                            id="reportCount"
+                        >
+                            0 records
+                        </span>
+
+                        <button
+                            type="button"
+                            class="reports-outline-button"
+                            id="exportReportBtn"
+                        >
+                            <i data-lucide="download"></i>
+                            Export CSV
+                        </button>
+
+                        <button
+                            type="button"
+                            class="reports-outline-button"
+                            id="printReportBtn"
+                        >
+                            <i data-lucide="printer"></i>
+                            Print
+                        </button>
+                    </div>
+
+                </div>
+
+
+                <div class="reports-table-wrapper">
+
+                    <table class="reports-table">
+
+                        <thead>
+                            <tr id="reportTableHead">
+                                <!-- Populated by reports.js -->
+                            </tr>
+                        </thead>
+
+                        <tbody id="reportTableBody">
+                            <!-- Populated by reports.js -->
+                        </tbody>
+
+                    </table>
+
+                    <div
+                        class="reports-empty-state"
+                        id="reportEmpty"
+                        hidden
+                    >
+                        <div class="reports-empty-icon">
+                            <i data-lucide="file-search"></i>
+                        </div>
+
+                        <strong>No report records found</strong>
+
+                        <p id="reportEmptyText">
+                            No records match the current filters.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <!-- =====================
+                     PAGINATION
+                ====================== -->
+                <div class="reports-table-footer">
+
+                    <span id="reportFooterCount">
+                        Showing 0 of 0 records
+                    </span>
+
+                    <div
+                        class="reports-pagination"
+                        id="reportPagination"
+                    >
+
+                        <button
+                            type="button"
+                            class="reports-page-arrow"
+                            id="reportPreviousPage"
+                            aria-label="Previous page"
+                        >
+                            <i data-lucide="chevron-left"></i>
+                        </button>
+
+                        <div
+                            class="reports-page-numbers"
+                            id="reportPageNumbers"
+                        ></div>
+
+                        <button
+                            type="button"
+                            class="reports-page-arrow"
+                            id="reportNextPage"
+                            aria-label="Next page"
+                        >
+                            <i data-lucide="chevron-right"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+    <script src="../js/shared.js"></script>
+    <script src="../js/program-data.js"></script>
+    <script src="../js/module-library-data.js"></script>
+    <script src="../js/reports.js"></script>
+
+</body>
+</html>

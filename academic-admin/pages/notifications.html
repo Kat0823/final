@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Siknayan | Notifications
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+</head>
+
+
+<body>
+
+
+    <!-- =================================
+         TOP HEADER
+    ================================== -->
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <img
+                src="../assets/images/mpsu_logo.png"
+                alt="MPSU Logo"
+                class="brand-logo"
+            >
+
+            <div class="brand-text">
+
+                <h1>
+                    MPSU ETEEAP LMS
+                </h1>
+
+                <p>
+                    Mountain Province State University
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="topbar-right">
+
+            <button
+                class="icon-button notification-button"
+                type="button"
+                aria-label="Notifications"
+            >
+
+                <i data-lucide="bell"></i>
+
+                <span
+                    class="notification-dot"
+                ></span>
+
+            </button>
+
+
+            <div class="profile">
+
+                <img
+                    src="../assets/images/macross.jpg"
+                    alt="Macross Arsel"
+                    class="profile-avatar"
+                >
+
+                <div class="profile-info">
+
+                    <strong>
+                        Macross Arsel
+                    </strong>
+
+                    <span>
+                        Administrator
+                    </span>
+
+                </div>
+
+                <i
+                    data-lucide="chevron-down"
+                    class="profile-chevron"
+                ></i>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =================================
+         APPLICATION LAYOUT
+    ================================== -->
+
+    <div class="app-layout">
+
+
+        <!-- =================================
+             SIDEBAR
+        ================================== -->
+
+        <aside
+            class="sidebar"
+            id="sidebar"
+        >
+
+            <div class="sidebar-top">
+
+                <span class="sidebar-view-text">
+                    View
+                </span>
+
+                <button
+                    class="sidebar-toggle"
+                    id="sidebarToggle"
+                    type="button"
+                    aria-label="Toggle sidebar"
+                >
+
+                    <i data-lucide="panel-left"></i>
+
+                </button>
+
+            </div>
+
+
+            <div class="sidebar-profile">
+
+                <img
+                    src="../assets/images/macross.jpg"
+                    alt="Macross Arsel"
+                    class="sidebar-avatar"
+                >
+
+                <span class="sidebar-profile-name">
+                    Macross
+                </span>
+
+            </div>
+
+
+            <nav class="sidebar-nav">
+
+
+                <!-- Dashboard -->
+
+                <a
+                    href="../index.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="layout-dashboard"></i>
+
+                    <span class="nav-label">
+                        Dashboard
+                    </span>
+
+                </a>
+
+
+                <!-- Learners -->
+
+                <a
+                    href="learners.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="users"></i>
+
+                    <span class="nav-label">
+                        Learners
+                    </span>
+
+                </a>
+
+
+                <!-- Classes -->
+
+                <a
+                    href="classes.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="book-open"></i>
+
+                    <span class="nav-label">
+                        Classes
+                    </span>
+
+                </a>
+
+
+                <!-- Module Library -->
+
+                <a
+                    href="module-library.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="folder"></i>
+
+                    <span class="nav-label">
+                        Module Library
+                    </span>
+
+                </a>
+
+
+                <!-- Accounts -->
+
+                <a
+                    href="accounts.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="circle-user-round"></i>
+
+                    <span class="nav-label">
+                        Accounts
+                    </span>
+
+                </a>
+
+
+                <!-- Reports -->
+
+                <a
+                    href="reports.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="pie-chart"></i>
+
+                    <span class="nav-label">
+                        Reports
+                    </span>
+
+                </a>
+
+
+                <!-- Notifications -->
+
+                <a
+                    href="notifications.html"
+                    class="nav-item active"
+                    aria-current="page"
+                >
+
+                    <i data-lucide="bell"></i>
+
+                    <span class="nav-label">
+                        Notifications
+                    </span>
+
+                </a>
+
+
+            </nav>
+
+
+            <div class="sidebar-bottom">
+
+                <a
+                    href="#"
+                    class="nav-item logout"
+                >
+
+                    <i data-lucide="log-out"></i>
+
+                    <span class="nav-label">
+                        Logout
+                    </span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+
+
+        <!-- =================================
+             MAIN CONTENT
+        ================================== -->
+
+        <main class="main-content notifications-page">
+
+
+            <!-- =================================
+                 PAGE HEADER
+            ================================== -->
+
+            <section class="notifications-page-header">
+
+                <div class="notifications-page-heading">
+
+                    <h2>
+                        Notifications
+                    </h2>
+
+                    <p>
+                        Stay informed about important activity in Siknayan.
+                    </p>
+
+                </div>
+
+
+                <div class="notifications-header-search">
+
+                    <i data-lucide="search"></i>
+
+                    <input
+                        type="search"
+                        id="notificationSearch"
+                        placeholder="Search notifications..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================
+                 CATEGORY TABS
+            ================================== -->
+
+            <section
+                class="notifications-tabs"
+                role="tablist"
+                aria-label="Notification categories"
+            >
+
+                <button
+                    type="button"
+                    class="notification-tab active"
+                    data-tab="all"
+                    role="tab"
+                    aria-selected="true"
+                >
+
+                    <span>
+                        All
+                    </span>
+
+                    <strong
+                        id="tabAllCount"
+                        hidden
+                    >
+                        0
+                    </strong>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="notification-tab"
+                    data-tab="unread"
+                    role="tab"
+                    aria-selected="false"
+                >
+
+                    <span>
+                        Unread
+                    </span>
+
+                    <strong
+                        id="tabUnreadCount"
+                        hidden
+                    >
+                        0
+                    </strong>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="notification-tab"
+                    data-tab="submission"
+                    role="tab"
+                    aria-selected="false"
+                >
+
+                    <span>
+                        Submissions
+                    </span>
+
+                    <strong
+                        id="tabSubmissionCount"
+                        hidden
+                    >
+                        0
+                    </strong>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="notification-tab"
+                    data-tab="grading"
+                    role="tab"
+                    aria-selected="false"
+                >
+
+                    <span>
+                        Grading
+                    </span>
+
+                    <strong
+                        id="tabGradingCount"
+                        hidden
+                    >
+                        0
+                    </strong>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="notification-tab"
+                    data-tab="status"
+                    role="tab"
+                    aria-selected="false"
+                >
+
+                    <span>
+                        Status
+                    </span>
+
+                    <strong
+                        id="tabStatusCount"
+                        hidden
+                    >
+                        0
+                    </strong>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="notification-tab"
+                    data-tab="system"
+                    role="tab"
+                    aria-selected="false"
+                >
+
+                    <span>
+                        System
+                    </span>
+
+                    <strong
+                        id="tabSystemCount"
+                        hidden
+                    >
+                        0
+                    </strong>
+
+                </button>
+
+            </section>
+
+
+
+            <!-- =================================
+                 NOTIFICATION WORKSPACE
+            ================================== -->
+
+            <section class="notifications-workspace">
+
+
+                <!-- =================================
+                     LIST
+                ================================== -->
+
+                <div class="notifications-inbox">
+
+
+                    <!-- Toolbar -->
+
+                    <div class="notifications-list-toolbar">
+
+
+                        <label
+                            class="notification-select-all"
+                        >
+
+                            <input
+                                type="checkbox"
+                                id="selectAllNotifications"
+                            >
+
+                            <span>
+                                Select all
+                            </span>
+
+                        </label>
+
+
+                        <div class="notifications-bulk-actions">
+
+
+                            <button
+                                type="button"
+                                id="markSelectedReadButton"
+                                class="notification-toolbar-button"
+                                disabled
+                            >
+
+                                <i data-lucide="check"></i>
+
+                                Mark as read
+
+                            </button>
+
+
+                            <button
+                                type="button"
+                                id="markAllReadButton"
+                                class="notification-toolbar-button"
+                            >
+
+                                <i data-lucide="check-check"></i>
+
+                                Mark all as read
+
+                            </button>
+
+
+                            <button
+                                type="button"
+                                id="deleteSelectedButton"
+                                class="
+                                    notification-toolbar-button
+                                    notification-toolbar-danger
+                                "
+                                disabled
+                            >
+
+                                <i data-lucide="trash-2"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- List -->
+
+                    <div
+                        class="notifications-list"
+                        id="notificationList"
+                    >
+                    </div>
+
+
+
+                    <!-- Empty State -->
+
+                    <div
+                        class="notifications-list-empty"
+                        id="notificationListEmpty"
+                        hidden
+                    >
+
+                        <div class="notifications-list-empty-icon">
+
+                            <i data-lucide="bell-off"></i>
+
+                        </div>
+
+                        <strong>
+                            No notifications
+                        </strong>
+
+                        <span>
+                            There are no notifications matching the current selection.
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- Footer -->
+
+                    <div class="notifications-list-footer">
+
+                        <span id="notificationFooterText">
+                            Showing 0 of 0 notifications
+                        </span>
+
+
+                        <div
+                            class="notifications-pagination"
+                            id="notificationPagination"
+                        >
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================
+                     PREVIEW / DETAILS
+                ================================== -->
+
+                <aside
+                    class="notification-preview"
+                    id="notificationPreview"
+                >
+
+                    <div class="notification-preview-empty">
+
+                        <div class="notification-preview-empty-icon">
+
+                            <i data-lucide="mouse-pointer-click"></i>
+
+                        </div>
+
+                        <strong>
+                            Select a notification
+                        </strong>
+
+                        <span>
+                            Select an item from the list to view its details.
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="notification-preview-content"
+                        id="notificationPreviewContent"
+                        hidden
+                    >
+
+                        <!-- Populated by notifications.js -->
+
+                    </div>
+
+                </aside>
+
+
+            </section>
+
+
+        </main>
+
+    </div>
+
+
+
+    <!-- =================================
+         JAVASCRIPT
+    ================================== -->
+
+    <script src="../js/shared.js"></script>
+    <script src="../js/notification-events.js"></script>
+    <script src="../js/notifications.js"></script>
+
+</body>
+
+</html>

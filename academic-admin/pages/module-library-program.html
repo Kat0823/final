@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        BSCRIM Modules - MPSU ETEEAP LMS
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <script
+        src="https://unpkg.com/lucide@latest"
+    ></script>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================================
+         TOP HEADER
+         ========================================================= -->
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <img
+                src="../assets/images/mpsu_logo.png"
+                alt="MPSU Logo"
+                class="brand-logo"
+            >
+
+            <div class="brand-text">
+
+                <h1>
+                    MPSU ETEEAP LMS
+                </h1>
+
+                <p>
+                    Mountain Province State University
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="topbar-right">
+
+            <button
+                class="icon-button notification-button"
+                aria-label="Notifications"
+            >
+
+                <i data-lucide="bell"></i>
+
+                <span class="notification-dot"></span>
+
+            </button>
+
+
+            <div class="profile">
+
+                <img
+                    src="../assets/images/macross.jpg"
+                    alt="Macross Arsel"
+                    class="profile-avatar"
+                >
+
+                <div class="profile-info">
+
+                    <strong>
+                        Macross Arsel
+                    </strong>
+
+                    <span>
+                        Administrator
+                    </span>
+
+                </div>
+
+
+                <i
+                    data-lucide="chevron-down"
+                    class="profile-chevron"
+                ></i>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================================
+         APP LAYOUT
+         ========================================================= -->
+
+    <div class="app-layout">
+
+
+        <!-- =====================================================
+             MAIN SIDEBAR
+             ===================================================== -->
+
+        <aside
+            class="sidebar"
+            id="sidebar"
+        >
+
+            <div class="sidebar-top">
+
+                <span class="sidebar-view-text">
+                    View
+                </span>
+
+
+                <button
+                    class="sidebar-toggle"
+                    id="sidebarToggle"
+                    aria-label="Toggle sidebar"
+                    type="button"
+                >
+
+                    <i data-lucide="panel-left"></i>
+
+                </button>
+
+            </div>
+
+
+            <div class="sidebar-profile">
+
+                <img
+                    src="../assets/images/macross.jpg"
+                    alt="Macross Arsel"
+                    class="sidebar-avatar"
+                >
+
+                <span class="sidebar-profile-name">
+                    Macross
+                </span>
+
+            </div>
+
+
+            <nav class="sidebar-nav">
+
+
+                <a
+                    href="../index.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="layout-dashboard"></i>
+
+                    <span class="nav-label">
+                        Dashboard
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="learners.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="users"></i>
+
+                    <span class="nav-label">
+                        Learners
+                    </span>
+
+                </a>
+
+                <a
+                    href="classes.html"
+                    class="nav-item"
+                >
+                    <i data-lucide="book-open"></i>
+                    <span class="nav-label">
+                        Classes
+                    </span>
+                </a>
+                <a
+                    href="module-library.html"
+                    class="nav-item active"
+                >
+
+                    <i data-lucide="folder"></i>
+
+                    <span class="nav-label">
+                        Module Library
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="circle-user-round"></i>
+
+                    <span class="nav-label">
+                        Accounts
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="pie-chart"></i>
+
+                    <span class="nav-label">
+                        Reports
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="bell"></i>
+
+                    <span class="nav-label">
+                        Notifications
+                    </span>
+
+                </a>
+
+
+            </nav>
+
+
+            <div class="sidebar-bottom">
+
+                <a
+                    href="#"
+                    class="nav-item logout"
+                >
+
+                    <i data-lucide="log-out"></i>
+
+                    <span class="nav-label">
+                        Logout
+                    </span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =====================================================
+             MAIN CONTENT
+             ===================================================== -->
+
+        <main
+            class="main-content program-library-main"
+        >
+
+            <section
+                class="program-library-page"
+            >
+
+
+                <!-- =================================================
+                     COURSE SIDEBAR
+                     ================================================= -->
+
+                <aside
+                    class="course-sidebar"
+                >
+
+                    <div class="course-sidebar-header">
+                        Courses
+                    </div>
+
+
+                    <div class="course-list-scroll">
+
+                        <nav
+                            class="course-list"
+                            id="courseList"
+                        ></nav>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="add-course-button"
+                        id="addCourseButton"
+                    >
+                        + Add Course
+                    </button>
+
+                </aside>
+
+
+                <!-- =================================================
+                     MODULE CONTENT
+                     ================================================= -->
+
+                <section
+                    class="program-library-content"
+                >
+
+
+                    <div
+                        class="program-library-breadcrumb"
+                    >
+                        Module Library / BSCRIM
+                    </div>
+
+
+                    <div
+                        class="program-library-heading-row"
+                    >
+
+                        <div
+                            class="program-library-heading"
+                        >
+
+                            <h2>
+                                BSCRIM Modules
+                            </h2>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="upload-module-button"
+                            id="uploadModuleButton"
+                        >
+
+                            <i data-lucide="plus"></i>
+
+                            Upload Module
+
+                        </button>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         SEARCH
+                         ================================================= -->
+
+                    <div
+                        class="module-search-wrap"
+                    >
+
+                        <i
+                            data-lucide="search"
+                            class="module-search-icon"
+                        ></i>
+
+
+                        <input
+                            type="search"
+                            id="moduleSearch"
+                            class="module-search-input"
+                            placeholder="Search module"
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+
+                    <!-- =================================================
+                         MODULE SECTIONS
+                         ================================================= -->
+
+                    <div id="moduleSections">
+
+
+                        <!-- =================================================
+                             CRIMINAL LAW
+                             ================================================= -->
+
+                        <section
+                            class="module-course-section"
+                            data-course-section="criminal-law"
+                        >
+
+                            <div
+                                class="module-course-heading"
+                            >
+
+                                <h3
+                                    class="module-course-title"
+                                >
+                                    Criminal Law Fundamentals
+                                </h3>
+
+
+                                <span
+                                    class="module-course-code"
+                                    data-course-code="criminal-law"
+                                >
+                                    CRIM 101
+                                </span>
+
+                            </div>
+
+
+                            <div class="module-grid">
+
+
+                                <article
+                                    class="module-card"
+                                    data-module-id="criminal-law-introduction"
+                                    data-course="criminal-law"
+                                    data-title="Introduction to Criminal Law"
+                                    data-assigned="22"
+                                    data-uploaded="June 12"
+                                    data-status="active"
+                                >
+
+                                    <button
+                                        type="button"
+                                        class="module-menu-button"
+                                        aria-label="Module actions"
+                                    >
+
+                                        <i
+                                            data-lucide="more-vertical"
+                                        ></i>
+
+                                    </button>
+
+
+                                    <h4
+                                        class="module-card-title"
+                                    >
+                                        Introduction to Criminal Law
+                                    </h4>
+
+
+                                    <div
+                                        class="module-card-meta"
+                                    >
+
+                                        <span>
+                                            Uploaded June 12
+                                        </span>
+
+                                        <span>
+                                            Assigned to 22
+                                        </span>
+
+                                    </div>
+
+
+                                    <span
+                                        class="module-status active"
+                                    >
+                                        Active
+                                    </span>
+
+                                </article>
+
+
+                                <article
+                                    class="module-card"
+                                    data-module-id="criminal-law-terminology"
+                                    data-course="criminal-law"
+                                    data-title="Legal Terminology Basics"
+                                    data-assigned="19"
+                                    data-uploaded="June 12"
+                                    data-status="active"
+                                >
+
+                                    <button
+                                        type="button"
+                                        class="module-menu-button"
+                                        aria-label="Module actions"
+                                    >
+
+                                        <i
+                                            data-lucide="more-vertical"
+                                        ></i>
+
+                                    </button>
+
+
+                                    <h4
+                                        class="module-card-title"
+                                    >
+                                        Legal Terminology Basics
+                                    </h4>
+
+
+                                    <div
+                                        class="module-card-meta"
+                                    >
+
+                                        <span>
+                                            Uploaded June 12
+                                        </span>
+
+                                        <span>
+                                            Assigned to 19
+                                        </span>
+
+                                    </div>
+
+
+                                    <span
+                                        class="module-status active"
+                                    >
+                                        Active
+                                    </span>
+
+                                </article>
+
+
+                            </div>
+
+                        </section>
+
+
+                        <!-- =================================================
+                             FORENSIC SCIENCE
+                             ================================================= -->
+
+                        <section
+                            class="module-course-section"
+                            data-course-section="forensic-science"
+                        >
+
+                            <div
+                                class="module-course-heading"
+                            >
+
+                                <h3
+                                    class="module-course-title"
+                                >
+                                    Forensic Science
+                                </h3>
+
+
+                                <span
+                                    class="module-course-code"
+                                    data-course-code="forensic-science"
+                                >
+                                    CRIM 102
+                                </span>
+
+                            </div>
+
+
+                            <div class="module-grid">
+
+
+                                <article
+                                    class="module-card"
+                                    data-module-id="forensic-science-basics"
+                                    data-course="forensic-science"
+                                    data-title="Forensic Science Basics"
+                                    data-assigned="18"
+                                    data-uploaded="June 15"
+                                    data-status="active"
+                                >
+
+                                    <button
+                                        type="button"
+                                        class="module-menu-button"
+                                        aria-label="Module actions"
+                                    >
+
+                                        <i
+                                            data-lucide="more-vertical"
+                                        ></i>
+
+                                    </button>
+
+
+                                    <h4
+                                        class="module-card-title"
+                                    >
+                                        Forensic Science Basics
+                                    </h4>
+
+
+                                    <div
+                                        class="module-card-meta"
+                                    >
+
+                                        <span>
+                                            Uploaded June 15
+                                        </span>
+
+                                        <span>
+                                            Assigned to 18
+                                        </span>
+
+                                    </div>
+
+
+                                    <span
+                                        class="module-status active"
+                                    >
+                                        Active
+                                    </span>
+
+                                </article>
+
+
+                                <article
+                                    class="module-card"
+                                    data-module-id="crime-scene-analysis"
+                                    data-course="forensic-science"
+                                    data-title="Crime Scene Analysis"
+                                    data-assigned="0"
+                                    data-uploaded="July 2"
+                                    data-status="active"
+                                >
+
+                                    <button
+                                        type="button"
+                                        class="module-menu-button"
+                                        aria-label="Module actions"
+                                    >
+
+                                        <i
+                                            data-lucide="more-vertical"
+                                        ></i>
+
+                                    </button>
+
+
+                                    <h4
+                                        class="module-card-title"
+                                    >
+                                        Crime Scene Analysis
+                                    </h4>
+
+
+                                    <div
+                                        class="module-card-meta"
+                                    >
+
+                                        <span>
+                                            Uploaded July 2
+                                        </span>
+
+                                        <span>
+                                            Assigned to 0
+                                        </span>
+
+                                    </div>
+
+
+                                    <span
+                                        class="module-status active"
+                                    >
+                                        Active
+                                    </span>
+
+                                </article>
+
+
+                                <article
+                                    class="module-card"
+                                    data-module-id="dna-analysis"
+                                    data-course="forensic-science"
+                                    data-title="DNA Analysis"
+                                    data-assigned="3"
+                                    data-uploaded="July 4"
+                                    data-status="archived"
+                                >
+
+                                    <button
+                                        type="button"
+                                        class="module-menu-button"
+                                        aria-label="Module actions"
+                                    >
+
+                                        <i
+                                            data-lucide="more-vertical"
+                                        ></i>
+
+                                    </button>
+
+
+                                    <h4
+                                        class="module-card-title"
+                                    >
+                                        DNA Analysis
+                                    </h4>
+
+
+                                    <div
+                                        class="module-card-meta"
+                                    >
+
+                                        <span>
+                                            Uploaded July 4
+                                        </span>
+
+                                        <span>
+                                            Assigned to 3
+                                        </span>
+
+                                    </div>
+
+
+                                    <span
+                                        class="module-status archived"
+                                    >
+                                        Archived
+                                    </span>
+
+                                </article>
+
+
+                            </div>
+
+                        </section>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         EMPTY COURSE
+                         ================================================= -->
+
+                    <div
+                        id="courseEmptyState"
+                        class="course-empty-state"
+                    >
+
+                        <i
+                            data-lucide="folder-open"
+                        ></i>
+
+
+                        <h3 id="courseEmptyTitle">
+                            No modules yet
+                        </h3>
+
+
+                        <p id="courseEmptyText">
+                            This course currently has no modules.
+                            Upload a module to add learning material
+                            to this course.
+                        </p>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         EMPTY SEARCH
+                         ================================================= -->
+
+                    <div
+                        id="modulesEmpty"
+                        class="modules-empty"
+                    >
+                        No modules found.
+                    </div>
+
+
+                </section>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- =========================================================
+         ADD COURSE MODAL
+         ========================================================= -->
+
+    <div
+        class="modal-overlay"
+        id="courseModal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="modal-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="courseModalTitle"
+        >
+
+            <div class="modal-header">
+
+                <h3 id="courseModalTitle">
+                    Add Course
+                </h3>
+
+                <p>
+                    Add a new course to the BSCRIM module library.
+                </p>
+
+            </div>
+
+
+            <form id="addCourseForm">
+
+
+                <div class="form-group">
+
+                    <label for="courseName">
+                        Course Name
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="courseName"
+                        class="form-input"
+                        placeholder="e.g. Criminal Procedure"
+                        maxlength="100"
+                        required
+                    >
+
+
+                    <div
+                        class="form-error"
+                        id="courseNameError"
+                    >
+                        Please enter a course name.
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="courseCode">
+                        Course Code
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="courseCode"
+                        class="form-input"
+                        placeholder="e.g. CRIM 201"
+                        maxlength="30"
+                        required
+                    >
+
+
+                    <div
+                        class="form-error"
+                        id="courseCodeError"
+                    >
+                        Please enter a course code.
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="form-error"
+                    id="duplicateCourseError"
+                >
+                    A course with this name or course code
+                    already exists.
+                </div>
+
+
+                <div class="modal-actions">
+
+                    <button
+                        type="button"
+                        class="modal-button cancel"
+                        id="cancelCourseButton"
+                    >
+                        Cancel
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="modal-button primary"
+                    >
+                        Publish
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         ADD MODULE MODAL
+         ========================================================= -->
+
+    <div
+        class="modal-overlay"
+        id="moduleModal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="modal-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="moduleModalTitle"
+        >
+
+            <div class="modal-header">
+
+                <h3 id="moduleModalTitle">
+                    Add Module
+                </h3>
+
+                <p>
+                    Publish a learning module to the BSCRIM
+                    module library.
+                </p>
+
+            </div>
+
+
+            <form id="addModuleForm">
+
+
+                <div class="form-group">
+
+                    <label for="moduleTitle">
+                        Module Title
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="moduleTitle"
+                        class="form-input"
+                        placeholder="e.g. Introduction to Criminal Law"
+                        maxlength="150"
+                        required
+                    >
+
+
+                    <div
+                        class="form-error"
+                        id="moduleTitleError"
+                    >
+                        Please enter a module title.
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="moduleProgram">
+                        Program
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="moduleProgram"
+                        class="form-input locked-field"
+                        value="BSCRIM"
+                        readonly
+                    >
+
+
+                    <div class="field-help">
+                        The program is determined by the current
+                        Module Library.
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="moduleCourse">
+                        Course
+                    </label>
+
+
+                    <select
+                        id="moduleCourse"
+                        class="form-select"
+                        required
+                    >
+
+                        <option value="">
+                            Select course
+                        </option>
+
+                    </select>
+
+
+                    <div
+                        class="form-error"
+                        id="moduleCourseError"
+                    >
+                        Please select a course.
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Module File
+                    </label>
+
+
+                    <div
+                        class="file-drop-zone"
+                        id="fileDropZone"
+                    >
+
+                        <i
+                            data-lucide="upload-cloud"
+                        ></i>
+
+
+                        <div class="file-drop-main">
+                            Click to upload or drag and drop
+                        </div>
+
+
+                        <div class="file-drop-sub">
+                            PDF or DOCX · Maximum 25 MB
+                        </div>
+
+
+                        <div
+                            class="selected-file"
+                            id="selectedFile"
+                        ></div>
+
+
+                        <input
+                            type="file"
+                            id="moduleFileInput"
+                            accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        >
+
+                    </div>
+
+
+                    <div
+                        class="form-error"
+                        id="moduleFileError"
+                    >
+                        Please select a PDF or DOCX file up to 25 MB.
+                    </div>
+
+                </div>
+
+
+                <div class="modal-actions">
+
+                    <button
+                        type="button"
+                        class="modal-button cancel"
+                        id="cancelModuleButton"
+                    >
+                        Cancel
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="modal-button primary"
+                    >
+                        Publish
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         DELETE MODAL
+         ========================================================= -->
+
+    <div
+        class="modal-overlay"
+        id="deleteModal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="modal-card delete-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="deleteModalTitle"
+        >
+
+            <div class="modal-header">
+
+                <h3 id="deleteModalTitle">
+                    Delete Course
+                </h3>
+
+                <p id="deleteModalText">
+                    Are you sure you want to delete this course?
+                </p>
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="modal-button cancel"
+                    id="cancelDeleteButton"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="button"
+                    class="modal-button delete-confirm-button"
+                    id="confirmDeleteButton"
+                >
+                    Delete
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         FLOATING COURSE ACTION MENU
+         ========================================================= -->
+
+    <div
+        class="course-floating-menu"
+        id="courseFloatingMenu"
+    ></div>
+
+
+    <!-- =========================================================
+         PAGE JAVASCRIPT
+         ========================================================= -->
+
+    <script src="../js/shared.js"></script>
+    <script src="../js/module-library-data.js"></script>
+    <script src="../js/module-library-program.js"></script>
+
+
+</body>
+
+</html>
