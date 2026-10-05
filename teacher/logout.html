@@ -82,25 +82,9 @@
         </a>
       </nav>
     </aside>
-
-    <!-- Content Workspace -->
-    <main class="main-content">
-      <!-- Confirmation Modal Box -->
-      <div class="confirmation-box" id="confirmModal">
-        <div class="box-header">Confirmation Box</div>
-        <div class="box-body">
-          Are you sure you want to logout?
-        </div>
-        <div class="box-actions">
-          <button class="btn btn-no" id="btnNo">No</button>
-          <button class="btn btn-yes" id="btnYes">Yes</button>
-        </div>
-      </div>
-    </main>
-
   </div>
 
-<!-- INSTRUCTOR PROFILE SETTINGS MODAL -->
+  <!-- INSTRUCTOR PROFILE SETTINGS MODAL -->
   <div class="profile-modal-overlay" id="profileModalOverlay">
     <div class="profile-modal-card">
       
@@ -153,13 +137,12 @@
             <input type="tel" id="instructorPhone" value="+63 917 123 4567" placeholder="+63 9XX XXX XXXX" required>
           </div>
 
-          <!-- Optional Change Password Accordion -->
-          <div class="password-section" id="passwordSection">
-            <div class="password-toggle-header" id="passwordToggleBtn">
-              <h4><i class="fa-solid fa-lock"></i> Change Password (Optional)</h4>
-              <i class="fa-solid fa-chevron-down chevron-icon"></i>
+          <!-- Permanently Displayed Change Password Section -->
+          <div class="password-section">
+            <div class="section-title">
+              <h4><i class="fa-solid fa-lock"></i> Change Password</h4>
             </div>
-            <div class="password-fields">
+            <div class="password-fields-wrapper">
               <div class="profile-form-group">
                 <label for="currentPassword">Current Password</label>
                 <input type="password" id="currentPassword" placeholder="Enter current password">
@@ -186,7 +169,102 @@
 
     </div>
   </div>
+  <!-- CONTENT -->
 
+        <main class="content">
+
+
+            <div class="title-row">
+
+                <h1>
+                    Logout
+                </h1>
+
+            </div>
+
+
+            <hr>
+
+
+            <!-- LOGOUT CARD -->
+
+            <div class="logout-container">
+
+                <div class="logout-box">
+
+                    <div class="logout-icon">
+
+                        <i class="fa-solid fa-right-from-bracket"></i>
+
+                    </div>
+
+
+                    <h2>
+                        Are you sure?
+                    </h2>
+
+
+                    <p>
+                        Do you really want to logout from
+                        your student account?
+                    </p>
+
+
+                    <div class="logout-buttons">
+
+                        <button
+                            type="button"
+                            class="cancel-btn"
+                            onclick="goBack()">
+
+                            Cancel
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="confirm-logout-btn"
+                            onclick="logoutUser()">
+
+                            Yes, Logout
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+
+    <!-- JAVASCRIPT -->
+
+    <script>
+
+        function goBack() {
+
+            window.location.href = "classes.html";
+
+        }
+
+
+        function logoutUser() {
+
+            sessionStorage.clear();
+
+            localStorage.removeItem("isLoggedIn");
+
+            window.location.href = "../index.html";
+
+        }
+
+    </script>
    <!-- -->
   <script>
     // Sidebar Toggle

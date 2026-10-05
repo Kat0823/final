@@ -56,6 +56,10 @@ Route::middleware('auth:sanctum')->group(function () {
         '/instructor/submissions',
         [InstructorController::class, 'submissions']
     );
+    Route::get(
+    '/instructor/submissions',
+    [SubmissionController::class, 'instructorIndex']
+);
 
     Route::post(
         '/instructor/submissions/{submissionId}/grade',

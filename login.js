@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Connect to Laravel backend
             const response = await fetch(
-                "https://improved-orbit-wvv7q6g6qrg2vx4-8000.app.github.dev/api/login",
+                "http://localhost:8000/",
                 {
                     method: "POST",
 

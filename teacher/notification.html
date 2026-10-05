@@ -1,34 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MPSU ETEEAP LMS - Notifications</title>
-  <!-- External CSS -->
-  <link rel="stylesheet" href="../teacher/CSS/notification.css">
-  <!-- Font Awesome Icons -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MPSU ETEEAP LMS - Instructor Notifications</title>
+  <!-- Google Fonts: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <!-- External CSS -->
+  <link rel="stylesheet" href="../teacher/CSS/class.css" />
 </head>
 <body>
 
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
   <!-- Top Header Navigation -->
- <header class="header">
+  <header class="header">
     <div class="header-left">
       <div class="logo-box">
-        <img src="../images/logo.png" alt="MSPU logo">
+        <img src="../images/logo.png" alt="MPSU logo">
       </div>
 
-      <div class="header-title">
-        <div class="system-title">MPSU ETEEAP LMS</div>
-        <div class="university-name">Mountain Province State University</div>
+      <div class="header-titles">
+        <div class="main-title">MPSU ETEEAP LMS</div>
+        <div class="sub-title">Mountain Province State University</div>
       </div>
     </div>
-    
-     <div class="header-right">
-      
+
+    <div class="header-right">
       <div class="user-profile" id="userProfileBtn" style="cursor: pointer;">
         <div class="avatar-ring">
           <img id="headerAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Macross Arsel Avatar" />
@@ -41,19 +42,19 @@
     </div>
   </header>
 
-  <!-- Main Layout -->
+  <!-- Main Body Layout -->
   <div class="app-body">
 
     <!-- Deep Maroon Sidebar -->
     <aside class="sidebar">
-       <div class="view-header">
+      <div class="view-header">
         <span class="view-label">View</span>
         <button type="button" class="view-toggle-btn" id="viewToggle" title="Toggle Sidebar">
             <i class="fa-regular fa-rectangle-list"></i>
         </button>
-    </div>
+      </div>
 
-        <!-- Active Menu Item -->
+      <nav class="nav-menu">
         <a href="dashboard.html" class="nav-item">
           <i class="fa-solid fa-users"></i>
           <span>Learners Progress</span>
@@ -69,12 +70,13 @@
           <span>Submission</span>
         </a>
 
+        <!-- Active Menu Item: Notification -->
         <a href="notification.html" class="nav-item active">
           <i class="fa-regular fa-bell"></i>
           <span>Notification</span>
         </a>
 
-        <!-- Logout Item Pushed to Bottom -->
+        <!-- Logout Item Pushed To Bottom -->
         <a href="logout.html" class="nav-item logout-bottom">
           <i class="fa-solid fa-arrow-right-from-bracket"></i>
           <span>Logout</span>
@@ -82,34 +84,155 @@
       </nav>
     </aside>
 
-    <!-- Content Workspace Area -->
+    <!-- ==========================================================================
+       INSTRUCTOR NOTIFICATIONS MAIN CONTENT
+       ========================================================================== -->
     <main class="main-content">
-      <div class="notifications-card-box">
+      <div class="notifications-header-wrapper">
         <h1 class="page-title">Notifications</h1>
+        <button class="mark-all-read-btn" id="markAllReadBtn">
+          <i class="fa-solid fa-check-double"></i> Mark all as read
+        </button>
+      </div>
 
-        <div class="notifications-list">
-          
-          <!-- Notification Item 1 -->
-          <div class="notification-card">
-            <div class="notification-avatar default-avatar-placeholder">
-              <!-- No image avatar version -->
+      <!-- Controls Row: Filter Tabs & Search -->
+      <div class="controls-row notif-controls">
+        <div class="filter-tabs">
+          <button class="tab-btn active" data-filter="all">All <span class="badge-count">5</span></button>
+          <button class="tab-btn" data-filter="unread">Unread <span class="badge-count unread-badge">3</span></button>
+          <button class="tab-btn" data-filter="submission">Submissions</button>
+          <button class="tab-btn" data-filter="system">System</button>
+        </div>
+
+        <div class="search-wrapper">
+          <div class="search-icon-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </div>
+          <div class="dropdown-input-wrapper">
+            <span class="dropdown-label">Search</span>
+            <div class="input-with-arrow">
+              <input type="text" id="searchInput" placeholder="Search notification..." />
             </div>
-            <div class="notification-details">
-              <h3 class="student-name">Kim Reyes</h3>
-              <p class="notification-action">Graded: Module 1</p>
-              <p class="course-name">Intro to Criminal Law</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications Container -->
+      <div class="notifications-card-container">
+        <div class="notification-list">
+
+          <!-- Notification Item 1: Unread Submission -->
+          <div class="notification-item unread" data-category="submission">
+            <div class="notif-icon-box submission-icon">
+              <i class="fa-solid fa-file-arrow-up"></i>
+            </div>
+            <div class="notif-avatar">
+              <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=120" alt="Juan Dela Cruz">
+            </div>
+            <div class="notif-content">
+              <div class="notif-title-row">
+                <p class="notif-text">
+                  <strong>Juan Dela Cruz</strong> submitted <strong>Activity 1: Crime Scene Analysis</strong> in <span class="course-code">CRIM-101 | Intro to Criminology</span>
+                </p>
+                <span class="unread-dot" title="Unread"></span>
+              </div>
+              <div class="notif-footer">
+                <span class="notif-time"><i class="fa-regular fa-clock"></i> 10 minutes ago</span>
+                <div class="notif-actions">
+                  <a href="review-submission.html?id=101" class="btn-action-primary">Review Submission</a>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Notification Item 2 -->
-          <div class="notification-card">
-            <div class="notification-avatar">
-              <i class="fa-regular fa-user"></i>
+          <!-- Notification Item 2: Unread Submission -->
+          <div class="notification-item unread" data-category="submission">
+            <div class="notif-icon-box submission-icon">
+              <i class="fa-solid fa-file-arrow-up"></i>
             </div>
-            <div class="notification-details">
-              <h3 class="student-name">Patricia Flores</h3>
-              <p class="notification-action">Graded: Module 5</p>
-              <p class="course-name">Criminal Law Fundamental</p>
+            <div class="notif-avatar">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=120" alt="Maria Santos">
+            </div>
+            <div class="notif-content">
+              <div class="notif-title-row">
+                <p class="notif-text">
+                  <strong>Maria Santos</strong> submitted <strong>Quiz 2: Evidence Handling & Fingerprinting</strong> in <span class="course-code">CRIM-102 | Forensic Science Basics</span>
+                </p>
+                <span class="unread-dot" title="Unread"></span>
+              </div>
+              <div class="notif-footer">
+                <span class="notif-time"><i class="fa-regular fa-clock"></i> 45 minutes ago</span>
+                <div class="notif-actions">
+                  <a href="review-submission.html?id=102" class="btn-action-primary">Grade Now</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notification Item 3: Unread Late Submission -->
+          <div class="notification-item unread" data-category="submission">
+            <div class="notif-icon-box late-icon">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <div class="notif-avatar">
+              <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&q=80&w=120" alt="Pedro Penduko">
+            </div>
+            <div class="notif-content">
+              <div class="notif-title-row">
+                <p class="notif-text">
+                  <strong>Pedro Penduko</strong> submitted <span class="tag-late">Late Submission</span> <strong>Activity 3: Case Brief Synthesis</strong> in <span class="course-code">CRIM-103 | Criminal Law Fundamental</span>
+                </p>
+                <span class="unread-dot" title="Unread"></span>
+              </div>
+              <div class="notif-footer">
+                <span class="notif-time"><i class="fa-regular fa-clock"></i> 2 hours ago</span>
+                <div class="notif-actions">
+                  <a href="review-submission.html?id=103" class="btn-action-primary">Review Submission</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notification Item 4: Read Discussion Post -->
+          <div class="notification-item read" data-category="system">
+            <div class="notif-icon-box comment-icon">
+              <i class="fa-regular fa-comment-dots"></i>
+            </div>
+            <div class="notif-avatar">
+              <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=120" alt="Elena Rostova">
+            </div>
+            <div class="notif-content">
+              <div class="notif-title-row">
+                <p class="notif-text">
+                  <strong>Elena Rostova</strong> posted a query in the discussion thread <em>"Module 2 Quiz Clarifications"</em> in <span class="course-code">GEC-201 | Understanding the Self</span>
+                </p>
+              </div>
+              <div class="notif-footer">
+                <span class="notif-time"><i class="fa-regular fa-clock"></i> Yesterday at 3:15 PM</span>
+                <div class="notif-actions">
+                  <a href="forum-thread.html?id=204" class="btn-action-secondary">View Post</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notification Item 5: Read System Announcement -->
+          <div class="notification-item read" data-category="system">
+            <div class="notif-icon-box system-icon">
+              <i class="fa-solid fa-bullhorn"></i>
+            </div>
+            <div class="notif-avatar system-avatar">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div class="notif-content">
+              <div class="notif-title-row">
+                <p class="notif-text">
+                  <strong>ETEEAP LMS System</strong> scheduled a database maintenance for <strong>Saturday, 11:00 PM PST</strong>.
+                </p>
+              </div>
+              <div class="notif-footer">
+                <span class="notif-time"><i class="fa-regular fa-clock"></i> 2 days ago</span>
+              </div>
             </div>
           </div>
 
@@ -119,8 +242,7 @@
 
   </div>
 
-  
- <!-- INSTRUCTOR PROFILE SETTINGS MODAL -->
+  <!-- INSTRUCTOR PROFILE SETTINGS MODAL -->
   <div class="profile-modal-overlay" id="profileModalOverlay">
     <div class="profile-modal-card">
       
@@ -173,12 +295,13 @@
             <input type="tel" id="instructorPhone" value="+63 917 123 4567" placeholder="+63 9XX XXX XXXX" required>
           </div>
 
-          <!-- Optional Change Password Accordion -->
+          <!-- Change Password Accordion -->
           <div class="password-section" id="passwordSection">
             <div class="password-toggle-header" id="passwordToggleBtn">
-              <h4><i class="fa-solid fa-lock"></i> Change Password (Optional)</h4>
+              <h4><i class="fa-solid fa-lock"></i> Change Password </h4>
               <i class="fa-solid fa-chevron-down chevron-icon"></i>
             </div>
+            
             <div class="password-fields">
               <div class="profile-form-group">
                 <label for="currentPassword">Current Password</label>
@@ -194,7 +317,6 @@
               </div>
             </div>
           </div>
-
         </div>
 
         <!-- Modal Footer Actions -->
@@ -207,96 +329,138 @@
     </div>
   </div>
 
-   <!-- -->
-  <script>
-    // Sidebar Toggle
-   const viewToggle =
-            document.getElementById("viewToggle");
-        const sidebar =
-            document.querySelector(".sidebar");
-        const mainContent =
-            document.querySelector(".main-content");
-        viewToggle.addEventListener("click", function () {
-            sidebar.classList.toggle("collapsed");
-            mainContent.classList.toggle("expanded");
-        });
+<script>
+  // Sidebar Toggle
+  const viewToggle = document.getElementById("viewToggle");
+  const sidebar = document.querySelector(".sidebar");
+  const mainContent = document.querySelector(".main-content");
+  if (viewToggle) {
+    viewToggle.addEventListener("click", function () {
+      sidebar.classList.toggle("collapsed");
+      mainContent.classList.toggle("expanded");
+    });
+  }
+
+  // Mark All Read Button Handler
+  const markAllReadBtn = document.getElementById("markAllReadBtn");
+  if (markAllReadBtn) {
+    markAllReadBtn.addEventListener("click", () => {
+      document.querySelectorAll(".notification-item.unread").forEach(item => {
+        item.classList.remove("unread");
+        item.classList.add("read");
+        const dot = item.querySelector(".unread-dot");
+        if (dot) dot.remove();
+      });
+      const unreadBadge = document.querySelector(".unread-badge");
+      if (unreadBadge) unreadBadge.textContent = "0";
+      showToast("All notifications marked as read!", "success");
+    });
+  }
+
+  // Filter Tabs
+  const tabBtns = document.querySelectorAll(".tab-btn");
+  const notifItems = document.querySelectorAll(".notification-item");
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      tabBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      const filter = btn.getAttribute("data-filter");
+
+      notifItems.forEach(item => {
+        if (filter === "all") {
+          item.style.display = "flex";
+        } else if (filter === "unread") {
+          item.style.display = item.classList.contains("unread") ? "flex" : "none";
+        } else {
+          item.style.display = item.getAttribute("data-category") === filter ? "flex" : "none";
+        }
+      });
+    });
+  });
+
+  // Modal Elements
+  const userProfileBtn = document.getElementById("userProfileBtn");
+  const profileModalOverlay = document.getElementById("profileModalOverlay");
+  const closeProfileModal = document.getElementById("closeProfileModal");
+  const cancelProfileModal = document.getElementById("cancelProfileModal");
+  const avatarInput = document.getElementById("avatarInput");
+  const avatarPreview = document.getElementById("avatarPreview");
+  const headerAvatar = document.getElementById("headerAvatar");
+  const profileForm = document.getElementById("profileSettingsForm");
+
+  // Password Accordion
+  const passwordSection = document.getElementById("passwordSection");
+  const passwordToggleBtn = document.getElementById("passwordToggleBtn");
+  const currentPasswordInput = document.getElementById("currentPassword");
+  const newPasswordInput = document.getElementById("newPassword");
+  const confirmPasswordInput = document.getElementById("confirmPassword");
+
+  // Toast Helper
+  function showToast(message, type = "success") {
+    let toastContainer = document.getElementById("toastContainer");
+    if (!toastContainer) {
+      toastContainer = document.createElement("div");
+      toastContainer.id = "toastContainer";
+      toastContainer.className = "toast-container";
+      document.body.appendChild(toastContainer);
+    }
     
+    const toast = document.createElement("div");
+    toast.className = `toast toast-${type}`;
+    const iconClass = type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
+    toast.innerHTML = `<i class="fa-solid ${iconClass}"></i> <span>${message}</span>`;
+    
+    toastContainer.appendChild(toast);
+    setTimeout(() => toast.classList.add("show"), 10);
+    setTimeout(() => {
+      toast.classList.remove("show");
+      setTimeout(() => toast.remove(), 300);
+    }, 3500);
+  }
 
-    // Modal Elements
-    const userProfileBtn = document.getElementById("userProfileBtn");
-    const profileModalOverlay = document.getElementById("profileModalOverlay");
-    const closeProfileModal = document.getElementById("closeProfileModal");
-    const cancelProfileModal = document.getElementById("cancelProfileModal");
-    const avatarInput = document.getElementById("avatarInput");
-    const avatarPreview = document.getElementById("avatarPreview");
-    const headerAvatar = document.getElementById("headerAvatar");
-    const profileForm = document.getElementById("profileSettingsForm");
+  // Password Accordion Toggle
+  if (passwordToggleBtn && passwordSection) {
+    passwordToggleBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      passwordSection.classList.toggle("open");
+    });
+  }
 
-    // Password Accordion Elements
-    const passwordSection = document.getElementById("passwordSection");
-    const passwordToggleBtn = document.getElementById("passwordToggleBtn");
-    const currentPasswordInput = document.getElementById("currentPassword");
-    const newPasswordInput = document.getElementById("newPassword");
-    const confirmPasswordInput = document.getElementById("confirmPassword");
+  // Modal Open
+  if (userProfileBtn && profileModalOverlay) {
+    userProfileBtn.addEventListener("click", () => {
+      profileModalOverlay.classList.add("active");
+      document.body.style.overflow = "hidden";
+    });
+  }
 
-    // Toast Notification Helper
-    function showToast(message, type = "success") {
-      const toastContainer = document.getElementById("toastContainer");
-      const toast = document.createElement("div");
-      toast.className = `toast toast-${type}`;
-      
-      const iconClass = type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
-      toast.innerHTML = `<i class="fa-solid ${iconClass}"></i> <span>${message}</span>`;
-      
-      toastContainer.appendChild(toast);
+  // Reset Password Fields
+  function resetPasswordFields() {
+    if (passwordSection) passwordSection.classList.remove("open");
+    if (currentPasswordInput) currentPasswordInput.value = "";
+    if (newPasswordInput) newPasswordInput.value = "";
+    if (confirmPasswordInput) confirmPasswordInput.value = "";
+  }
 
-      setTimeout(() => {
-        toast.classList.add("show");
-      }, 10);
+  // Modal Close
+  const closeModal = () => {
+    if (profileModalOverlay) profileModalOverlay.classList.remove("active");
+    document.body.style.overflow = "";
+    resetPasswordFields();
+  };
 
-      setTimeout(() => {
-        toast.classList.remove("show");
-        setTimeout(() => toast.remove(), 300);
-      }, 3500);
-    }
-
-    // Toggle Change Password Accordion
-    if (passwordToggleBtn) {
-      passwordToggleBtn.addEventListener("click", () => {
-        passwordSection.classList.toggle("open");
-      });
-    }
-
-    // Open Profile Modal
-    if (userProfileBtn) {
-      userProfileBtn.addEventListener("click", () => {
-        profileModalOverlay.classList.add("active");
-      });
-    }
-
-    // Reset Form Fields
-    function resetPasswordFields() {
-      passwordSection.classList.remove("open");
-      currentPasswordInput.value = "";
-      newPasswordInput.value = "";
-      confirmPasswordInput.value = "";
-    }
-
-    // Close Modal Handler
-    const closeModal = () => {
-      profileModalOverlay.classList.remove("active");
-      resetPasswordFields();
-    };
-
-    if (closeProfileModal) closeProfileModal.addEventListener("click", closeModal);
-    if (cancelProfileModal) cancelProfileModal.addEventListener("click", closeModal);
-
-    // Close Modal on backdrop click
+  if (closeProfileModal) closeProfileModal.addEventListener("click", closeModal);
+  if (cancelProfileModal) cancelProfileModal.addEventListener("click", closeModal);
+  if (profileModalOverlay) {
     profileModalOverlay.addEventListener("click", (e) => {
       if (e.target === profileModalOverlay) closeModal();
     });
+  }
 
-    // Avatar Image Preview
+  // Image Upload Preview
+  if (avatarInput) {
     avatarInput.addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (file) {
@@ -306,70 +470,46 @@
         }
         const reader = new FileReader();
         reader.onload = (event) => {
-          avatarPreview.src = event.target.result;
+          if (avatarPreview) avatarPreview.src = event.target.result;
         };
         reader.readAsDataURL(file);
       }
     });
+  }
 
-    // Form Submission & Interactive Password Validation
+  // Profile Save
+  if (profileForm) {
     profileForm.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const email = document.getElementById("instructorEmail").value.trim();
-      const phone = document.getElementById("instructorPhone").value.trim();
+      const currentPass = currentPasswordInput ? currentPasswordInput.value.trim() : "";
+      const newPass = newPasswordInput ? newPasswordInput.value.trim() : "";
+      const confirmPass = confirmPasswordInput ? confirmPasswordInput.value.trim() : "";
 
-      if (!email || !phone) {
-        showToast("Please fill in all contact information", "error");
-        return;
-      }
-
-      const currentPass = currentPasswordInput.value.trim();
-      const newPass = newPasswordInput.value.trim();
-      const confirmPass = confirmPasswordInput.value.trim();
-
-      // Password Validation Logic
-      const isPasswordTouched = currentPass || newPass || confirmPass;
-
-      if (isPasswordTouched) {
-        // Automatically open section if error occurs
-        if (!passwordSection.classList.contains("open")) {
-          passwordSection.classList.add("open");
-        }
-
+      if (currentPass || newPass || confirmPass) {
         if (!currentPass) {
           showToast("Please enter your current password", "error");
-          currentPasswordInput.focus();
           return;
         }
-
-        if (!newPass) {
-          showToast("Please enter a new password", "error");
-          newPasswordInput.focus();
+        if (!newPass || newPass.length < 6) {
+          showToast("New password must be at least 6 characters", "error");
           return;
         }
-
-        if (newPass.length < 6) {
-          showToast("New password must be at least 6 characters long", "error");
-          newPasswordInput.focus();
-          return;
-        }
-
         if (newPass !== confirmPass) {
           showToast("New passwords do not match", "error");
-          confirmPasswordInput.focus();
           return;
         }
       }
 
-      // Sync avatar picture to header
-      headerAvatar.src = avatarPreview.src;
+      if (headerAvatar && avatarPreview) {
+        headerAvatar.src = avatarPreview.src;
+      }
 
       showToast("Profile settings saved successfully!", "success");
       closeModal();
     });
-  </script>
-
+  }
+</script>
 
 </body>
 </html>
