@@ -3,16 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MPSU ETEEAP LMS - CRIM-101 Intro to Criminology & Community</title>
+    <title>Class Content - MPSU ETEEAP LMS</title>
     
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Google Fonts Inter -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
     
     <!-- External Custom Stylesheet -->
-    <link rel="stylesheet" href="../teacher/CSS/classcontent.css">
+    <style>
+
+:root{
+  --mpsu-green:#0a5a32;
+  --mpsu-green-dark:#064222;
+  --mpsu-green-light:#effbf4;
+  --mpsu-maroon:#5a0710;
+  --mpsu-maroon-dark:#43050b;
+  --mpsu-gold:#d69a00;
+  --bg-body:#effaf3;
+  --bg-surface:#ffffff;
+  --border-color:#dce7df;
+  --text-primary:#183126;
+  --text-secondary:#64748b;
+  --text-muted:#94a3b8;
+  --amber-bg:#fff4cc;
+  --amber-text:#8a5700;
+  --green-bg:#dcfce7;
+  --green-text:#166534;
+  --gray-bg:#eef2f5;
+  --gray-text:#475569;
+  --radius-sm:6px;
+  --radius-md:10px;
+  --radius-lg:14px;
+  --shadow-sm:0 2px 8px rgba(15,23,42,.05);
+  --shadow-md:0 8px 20px rgba(15,23,42,.08);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins','Inter',sans-serif;}
+html,body{width:100%;height:100%;}
+body{background:var(--bg-body);color:var(--text-primary);overflow:hidden;}
+
+/* HEADER */
+.header{
+  position:fixed;top:0;left:0;right:0;height:72px;
+  background:#0a5a32;color:#fff;display:flex;align-items:center;
+  justify-content:space-between;padding:0 26px;z-index:1000;
+  box-shadow:0 2px 8px rgba(0,0,0,.14);
+}
+.header-left{display:flex;align-items:center;gap:14px;min-width:0;}
+.logo-box{width:56px;height:56px;border-radius:50%;border:2px solid #fff;overflow:hidden;flex:0 0 56px;box-shadow:0 2px 5px rgba(0,0,0,.18);background:#fff;}
+.logo-box img{width:100%;height:100%;object-fit:contain;display:block;}
+.header-titles{min-width:0;}
+.header-titles .main-title{font-size:16px;font-weight:700;line-height:1.15;}
+.header-titles .sub-title{font-size:12px;opacity:.88;margin-top:3px;}
+.header-right{display:flex;align-items:center;gap:18px;}
+.user-profile{display:flex;align-items:center;gap:10px;color:#fff;cursor:pointer;}
+.avatar-ring{width:44px;height:44px;border:2px solid #fff;border-radius:50%;overflow:hidden;flex:0 0 44px;background:#fff;}
+.avatar-ring img{width:100%;height:100%;object-fit:cover;display:block;}
+.user-info{display:flex;flex-direction:column;line-height:1.15;}
+.user-name{font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.user-role{font-size:11px;opacity:.82;margin-top:3px;}
+
+/* BODY */
+.app-body{width:100%;height:100vh;}
+
+/* SIDEBAR */
+.sidebar{
+  position:fixed;left:0;top:96px;width:280px;height:calc(100vh - 96px);
+  background:var(--mpsu-maroon);color:#fff;padding:26px 18px 18px;
+  display:flex;flex-direction:column;gap:24px;border-radius:0 12px 0 0;
+  overflow:hidden;z-index:900;transition:width .25s ease,padding .25s ease;
+}
+.view-header{display:flex;align-items:center;justify-content:space-between;padding:0 8px;}
+.view-label{font-size:15px;font-weight:500;}
+.view-toggle-btn{border:0;background:transparent;color:#fff;font-size:20px;cursor:pointer;padding:4px;}
+.nav-menu{display:flex;flex-direction:column;gap:14px;flex:1;min-height:0;}
+.nav-item{display:flex;align-items:center;gap:14px;color:#fff;text-decoration:none;padding:11px 14px;border-radius:7px;font-size:15px;font-weight:500;min-height:43px;transition:.2s ease;}
+.nav-item:hover{background:rgba(255,255,255,.09);}
+.nav-item.active{background:#d49a00;color:#170d00;border:1px solid #edbd27;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.2);}
+.nav-item i{width:25px;text-align:center;font-size:18px;flex:0 0 25px;}
+.logout-bottom{margin-top:auto;}
+.sidebar.collapsed{width:82px;padding-left:11px;padding-right:11px;}
+.sidebar.collapsed .view-label,.sidebar.collapsed .nav-item span{display:none;}
+.sidebar.collapsed .view-header{justify-content:center;padding:0;}
+.sidebar.collapsed .nav-item{justify-content:center;gap:0;padding-left:8px;padding-right:8px;}
+.sidebar.collapsed + main{margin-left:82px;width:calc(100% - 82px);}
+
+/* MAIN CONTENT */
+main{
+  position:relative;margin-left:280px;width:calc(100% - 280px);
+  height:100vh;overflow-y:auto;overflow-x:hidden;
+  padding:132px 44px 40px;background:var(--bg-body);
+  transition:margin-left .25s ease,width .25s ease;
+}
+main::-webkit-scrollbar{width:8px;}
+main::-webkit-scrollbar-thumb{background:#c9d8ce;border-radius:10px;}
+main::-webkit-scrollbar-track{background:transparent;}
+
+.breadcrumbs{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text-secondary);margin-bottom:22px;}
+.breadcrumbs a{color:#155f39;text-decoration:underline;}
+.breadcrumbs .active{color:#334155;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* COURSE CARD */
+.course-card{background:#fff;border:1px solid #dce7df;border-radius:15px;padding:28px 32px;margin-bottom:32px;box-shadow:var(--shadow-sm);}
+.badges-group{display:flex;gap:10px;margin-bottom:12px;}
+.badge{display:inline-flex;align-items:center;padding:5px 12px;border-radius:999px;font-size:13px;font-weight:700;}
+.badge-green{background:#dcfce7;color:#166534;}
+.badge-amber{background:#fff0bd;color:#8a5700;}
+.course-title{font-size:28px;line-height:1.2;color:#0b4e2d;margin-bottom:6px;font-weight:700;}
+.course-description{font-size:16px;color:#64748b;line-height:1.55;margin-bottom:20px;}
+.course-metrics{display:flex;align-items:center;gap:28px;border-top:1px solid #e1e8e3;padding-top:17px;flex-wrap:wrap;}
+.metric-item{display:flex;align-items:center;gap:8px;color:#60748a;font-size:15px;}
+.metric-item strong{color:#334155;font-weight:600;}
+
+/* TABS */
+.tab-radio{position:absolute;opacity:0;pointer-events:none;}
+.tabs-header{display:flex;align-items:stretch;gap:8px;border-bottom:1px solid #cfded4;margin-bottom:26px;}
+.tab-btn{display:flex;align-items:center;gap:9px;padding:0 18px 14px;color:#718096;font-size:16px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap;}
+.tab-btn:hover{color:#0a5a32;}
+.tab-badge{min-width:24px;height:22px;padding:2px 7px;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;font-size:12px;font-weight:700;}
+.tab-badge-green{background:#dcfce7;color:#16803a;}.tab-badge-amber{background:#fff0bd;color:#9a6400;}.tab-badge-gray{background:#eef2f5;color:#64748b;}
+.tab-panel{display:none;}
+#tab-modules:checked~.tabs-header label[for=tab-modules],#tab-announcements:checked~.tabs-header label[for=tab-announcements],#tab-learners:checked~.tabs-header label[for=tab-learners]{color:#0a5a32;border-bottom-color:#0a5a32;}
+#tab-modules:checked~#panel-modules,#tab-announcements:checked~#panel-announcements,#tab-learners:checked~#panel-learners{display:block;}
+
+/* MODULES */
+.modules-section{display:flex;flex-direction:column;gap:16px;}
+.module-list-header{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:16px;margin-bottom:4px!important;}
+.module-list-header h2,.panel-header h2,#panel-announcements h2{font-size:25px;color:#1e293b;font-weight:700;}
+.module-list-header p{font-size:14px;color:#64748b;margin-top:2px;}
+#modulesContainer{display:flex;flex-direction:column;gap:12px;}
+.module-card{background:#fff;border:1px solid #dce7df;border-radius:12px;box-shadow:var(--shadow-sm);overflow:hidden;}
+.module-card summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:18px 20px;}
+.module-card summary::-webkit-details-marker{display:none;}
+.module-title-group{display:flex;align-items:center;gap:14px;min-width:0;}
+.unit-badge{background:#e6f4ec;color:#0a5a32;border-radius:7px;padding:7px 9px;font-size:12px;font-weight:700;white-space:nowrap;}
+.module-title-group h3{font-size:16px;color:#1e293b;margin-bottom:4px;}
+.module-title-group p{font-size:13px;color:#64748b;line-height:1.4;}
+.module-card summary>i{color:#64748b;transition:transform .2s;}
+.module-card[open] summary>i{transform:rotate(180deg);}
+.module-body{padding:0 20px 18px;border-top:1px solid #eef2ef;}
+.module-body>div{padding-top:14px;}
+.resource-btn{border:1px solid #cbd5e1;background:#fff;color:#334155;border-radius:7px;padding:8px 12px;font-size:13px;font-weight:600;cursor:pointer;}
+.resource-btn:hover{background:#f8fafc;}
+
+/* ANNOUNCEMENTS */
+#panel-announcements{background:#fff;border:1px solid #dce7df;border-radius:12px;padding:22px;box-shadow:var(--shadow-sm);}
+#panel-announcements ul{margin-top:15px;padding-left:22px;color:#475569;line-height:1.8;}
+#panel-announcements li{margin-bottom:8px;}
+
+/* LEARNERS TABLE */
+#panel-learners{background:#fff;border:1px solid #dce7df;border-radius:12px;box-shadow:var(--shadow-sm);overflow:hidden;}
+#panel-learners .panel-header{padding:20px 22px!important;margin-bottom:0!important;border-bottom:1px solid #e5ebe7;}
+.progress-table{width:100%;border-collapse:collapse;}
+.progress-table th{background:#f7faf8;color:#64748b;font-size:12px;text-transform:uppercase;letter-spacing:.04em;text-align:left;padding:13px 18px;border-bottom:1px solid #e2e8f0;}
+.progress-table td{padding:15px 18px;border-bottom:1px solid #eef2ef;color:#334155;font-size:14px;vertical-align:middle;}
+.progress-table tr:last-child td{border-bottom:0;}
+
+/* BUTTONS */
+.btn-save{background:#0a5a32;color:#fff;border:0;padding:10px 16px;border-radius:7px;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap;}
+.btn-save:hover{background:#064222;}
+.btn-cancel{background:#fff;border:1px solid #cbd5e1;color:#475569;padding:9px 15px;border-radius:7px;font-weight:600;cursor:pointer;}
+
+/* MODALS */
+.modal-overlay,.profile-modal-overlay{position:fixed;inset:0;background:rgba(5,25,14,.48);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;z-index:2000;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-overlay.active,.profile-modal-overlay.active{opacity:1;pointer-events:auto;}
+.modal-card,.profile-modal-card{width:min(680px,100%);max-height:90vh;background:#fff;border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,.2);display:flex;flex-direction:column;overflow:hidden;}
+.modal-header,.profile-modal-header{display:flex;justify-content:space-between;align-items:flex-start;padding:18px 22px;border-bottom:1px solid #e2e8f0;background:#fafcfb;}
+.modal-title,.profile-modal-title{font-size:18px;font-weight:700;color:#1e293b;}
+.modal-subtitle{font-size:13px;color:#64748b;margin-top:4px;}
+.modal-close-btn,.profile-modal-close{border:0;background:none;color:#64748b;font-size:21px;cursor:pointer;padding:2px 5px;}
+.modal-body,.profile-modal-body{padding:22px;overflow:auto;}
+.modal-footer,.profile-modal-footer{padding:14px 22px;border-top:1px solid #e2e8f0;background:#fafcfb;display:flex;justify-content:flex-end;gap:10px;}
+.feedback-group{display:flex;flex-direction:column;gap:7px;margin-bottom:15px;}
+.feedback-group label{font-size:13px;font-weight:600;color:#334155;}
+.feedback-group input,.feedback-group textarea,.profile-form-group input{width:100%;border:1px solid #cbd5e1;border-radius:7px;padding:10px 12px;font-size:14px;outline:none;}
+.feedback-group input:focus,.feedback-group textarea:focus,.profile-form-group input:focus{border-color:#0a5a32;box-shadow:0 0 0 3px rgba(10,90,50,.1);}
+.profile-modal-card{max-width:520px;}
+#profileSettingsForm{display:flex;flex-direction:column;min-height:0;overflow:hidden;}
+.profile-modal-body{display:flex;flex-direction:column;gap:16px;}
+.avatar-upload-section{display:flex;align-items:center;gap:16px;background:#f7faf8;border:1px solid #e2e8f0;border-radius:10px;padding:14px;}
+.avatar-upload-preview{position:relative;width:70px;height:70px;flex:0 0 70px;}.avatar-upload-preview img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid #0a5a32;}.avatar-edit-badge{position:absolute;right:-2px;bottom:-2px;width:25px;height:25px;border-radius:50%;background:#0a5a32;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;border:2px solid #fff;cursor:pointer;}.avatar-file-input{display:none;}
+.form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}.profile-form-group{display:flex;flex-direction:column;gap:6px;}.profile-form-group label{font-size:12px;font-weight:600;color:#334155;}.input-disabled{background:#f1f5f9!important;color:#64748b!important;}
+.password-section{border:1px solid #e2e8f0;border-radius:9px;overflow:hidden;}.password-toggle-header{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;background:#fafcfb;}.password-toggle-header h4{font-size:13px;color:#334155;}.password-toggle-header h4 i{color:#0a5a32;margin-right:6px;}.password-fields{display:none;padding:14px;border-top:1px solid #e2e8f0;gap:12px;flex-direction:column;}.password-section.open .password-fields{display:flex;}.password-section.open .chevron-icon{transform:rotate(180deg);}
+
+/* TOAST */
+.toast-container{position:fixed;right:24px;bottom:24px;display:flex;flex-direction:column;gap:10px;z-index:3000;}.toast{background:#163b27;color:#fff;padding:12px 16px;border-radius:8px;box-shadow:0 8px 20px rgba(0,0,0,.16);font-size:13px;}.toast.error{background:#9f1239;}
+
+@media(max-width:900px){
+  .sidebar{width:220px;}.sidebar.collapsed{width:72px;}
+  main{margin-left:220px;width:calc(100% - 220px);padding:110px 24px 30px;}
+  .sidebar.collapsed+main{margin-left:72px;width:calc(100% - 72px);}
+  .tab-btn{padding-left:10px;padding-right:10px;font-size:14px;}
+}
+@media(max-width:700px){
+  body{overflow:auto;}
+  .header{height:68px;padding:0 14px;}.logo-box{width:48px;height:48px;flex-basis:48px;}.header-titles .main-title{font-size:14px;}.header-titles .sub-title{font-size:10px;}.user-info{display:none;}.avatar-ring{width:38px;height:38px;flex-basis:38px;}
+  .sidebar{top:68px;width:74px;height:calc(100vh - 68px);padding:20px 9px;}.sidebar .view-label,.sidebar .nav-item span{display:none;}.sidebar .view-header{justify-content:center;padding:0;}.sidebar .nav-item{justify-content:center;gap:0;padding:11px 7px;}.sidebar.collapsed{width:74px;}
+  main, .sidebar.collapsed+main{margin-left:74px;width:calc(100% - 74px);height:100vh;padding:90px 14px 24px;}
+  .course-card{padding:20px;margin-bottom:22px;}.course-title{font-size:22px;}.course-metrics{gap:14px;}.tabs-header{overflow-x:auto;}.tab-btn{font-size:13px;padding:0 10px 12px;}.module-list-header{align-items:flex-start!important;}.module-list-header h2{font-size:21px;}.form-grid-2{grid-template-columns:1fr;}
+}
+
+</style>
 </head>
 <body>
 
@@ -21,7 +214,7 @@
   <header class="header">
     <div class="header-left">
       <div class="logo-box">
-        <img src="../images/logo.png" alt="MSPU logo">
+        <img src="../images/mpsu-logo.png" alt="MPSU logo">
       </div>
 
       <div class="header-titles">
@@ -83,7 +276,6 @@
           <i class="fa-solid fa-arrow-right-from-bracket"></i>
           <span>Logout</span>
         </a>
-      </nav>
     </aside>
 
         <!-- MAIN CONTENT CANVAS -->
@@ -132,19 +324,19 @@
                 <label for="tab-modules" class="tab-btn">
                     <i class="fa-solid fa-book"></i>
                     <span>Modules & Syllabus</span>
-                    <span class="tab-badge tab-badge-green">4</span>
+                    <span class="tab-badge tab-badge-green" id="modulesBadge">0</span>
                 </label>
 
                 <label for="tab-announcements" class="tab-btn">
                     <i class="fa-solid fa-bullhorn"></i>
                     <span>Announcements</span>
-                    <span class="tab-badge tab-badge-amber">3</span>
+                    <span class="tab-badge tab-badge-amber" id="announcementsBadge">—</span>
                 </label>
 
                 <label for="tab-learners" class="tab-btn">
                     <i class="fa-solid fa-users"></i>
                     <span>Learners Progress</span>
-                    <span class="tab-badge tab-badge-gray">21</span>
+                    <span class="tab-badge tab-badge-gray" id="learnersBadge">0</span>
                 </label>
             </div>
 
@@ -156,9 +348,7 @@
                             <h2>Modules</h2>
                             <p id="moduleCountText">Loading modules...</p>
                         </div>
-                        <button type="button" class="btn-save" id="addModuleBtn">
-                            <i class="fa-solid fa-plus"></i> Add Module
-                        </button>
+                       
                     </div>
 
                     <div id="modulesContainer">
@@ -191,7 +381,7 @@
             <div class="tab-panel" id="panel-learners">
                 <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                     <h2>Learners Progress</h2>
-                    <span style="font-size: 0.85rem; color: var(--text-secondary);">Showing 3 of 21 Enrolled Students</span>
+                    <span id="learnersSummary" style="font-size: 0.85rem; color: var(--text-secondary);">0 enrolled students</span>
                 </div>
                 
                 <table class="progress-table">
@@ -374,104 +564,175 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT FOR INTERACTIVITY & DYNAMIC MODALS -->
+    <!-- COMBINED CLASS PAGE JAVASCRIPT -->
     <script>
-        // ========================================
-        // COURSE DATA FROM LARAVEL
-        // ========================================
-
-        const API_BASE_URL = "http://localhost:8000";
-        const authToken = sessionStorage.getItem("authToken");
+        const API_BASE_URL = "http://127.0.0.1:8000/api";
+        const authToken =
+            sessionStorage.getItem("token") ||
+            sessionStorage.getItem("authToken");
 
         const params = new URLSearchParams(window.location.search);
         const courseId = params.get("course_id");
 
         let courseData = null;
         let activeModuleId = null;
+        let learnersData = [];
 
-        function getAuthHeaders() {
-            return {
-                "Accept": "application/json",
-                "Authorization": `Bearer ${authToken}`
+        const $ = (id) => document.getElementById(id);
+
+        function showToast(message, type = "success") {
+            const container = $("toastContainer");
+            if (!container) return;
+
+            const toast = document.createElement("div");
+            toast.className = `toast toast-${type}`;
+
+            const icon = type === "success"
+                ? "fa-circle-check"
+                : "fa-circle-exclamation";
+
+            toast.innerHTML = `
+                <i class="fa-solid ${icon}"></i>
+                <span>${escapeHtml(message)}</span>
+            `;
+
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => toast.classList.add("show"));
+
+            setTimeout(() => {
+                toast.classList.remove("show");
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function getAuthHeaders(json = false) {
+            const headers = {
+                "Accept": "application/json"
             };
+
+            if (authToken) {
+                headers["Authorization"] = `Bearer ${authToken}`;
+            }
+
+            if (json) {
+                headers["Content-Type"] = "application/json";
+            }
+
+            return headers;
+        }
+
+        function handleUnauthorized() {
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("authToken");
+            showToast("Your session has expired. Please log in again.", "error");
+            setTimeout(() => {
+                window.location.href = "../index.html";
+            }, 900);
+        }
+
+        async function apiRequest(url, options = {}) {
+            const response = await fetch(url, options);
+            let data = {};
+
+            try {
+                data = await response.json();
+            } catch (_) {
+                data = {};
+            }
+
+            if (response.status === 401) {
+                handleUnauthorized();
+                throw new Error("Unauthorized");
+            }
+
+            if (!response.ok) {
+                throw new Error(data.message || "Request failed.");
+            }
+
+            return data;
         }
 
         async function loadCourse() {
-
             if (!authToken) {
-                showToast("Please login first.", "error");
+                showToast("Please log in first.", "error");
                 return;
             }
 
             if (!courseId) {
-                showToast("No course selected.", "error");
+                showToast("No course was selected.", "error");
                 return;
             }
 
             try {
-
-                const response = await fetch(
-                    `${API_BASE_URL}/api/instructor/classes/${courseId}`,
+                const data = await apiRequest(
+                    `${API_BASE_URL}/instructor/classes/${encodeURIComponent(courseId)}`,
                     {
                         method: "GET",
                         headers: getAuthHeaders()
                     }
                 );
 
-                const data = await response.json();
+                // InstructorCourseController returns the course inside data.class.
+                courseData = data.class || data.course || data;
 
-                if (!response.ok) {
-                    throw new Error(
-                        data.message || "Failed to load class."
-                    );
+                if (!courseData || !courseData.id) {
+                    throw new Error("The class data returned by the server is invalid.");
                 }
 
-                courseData = data.course || data;
-
-                document.getElementById("courseCode").textContent =
-                    courseData.code || "Course";
-
-                document.getElementById("courseTitle").textContent =
-                    `${courseData.code || ""} | ${courseData.name || "Class"}`;
-
-                document.getElementById("breadcrumbCourse").textContent =
-                    `${courseData.code || ""} | ${courseData.name || "Class"}`;
-
-                document.getElementById("courseDescription").textContent =
-                    courseData.description || "No course description.";
-
-                const students =
-                    courseData.student_count ??
-                    courseData.students_count ??
-                    (Array.isArray(courseData.students)
-                        ? courseData.students.length
-                        : 0);
-
-                document.getElementById("studentCount").textContent =
-                    students;
-
-                renderModules(
-                    courseData.modules || []
-                );
+                renderCourse(courseData);
+                renderModules(courseData.modules || []);
+                renderLearners(courseData.learners || []);
 
             } catch (error) {
-
                 console.error("Error loading class:", error);
 
-                showToast(
-                    error.message || "Unable to load class.",
-                    "error"
-                );
+                if (error.message !== "Unauthorized") {
+                    showToast(error.message || "Unable to load class.", "error");
+                }
             }
         }
 
+        function renderCourse(course) {
+            const title = course.name || "Class";
+            const code = course.code || "Course";
+            const learners = Number(course.learner_count ?? 0);
+            const modules = Array.isArray(course.modules)
+                ? course.modules.length
+                : Number(course.module_count ?? 0);
+
+            $("courseCode").textContent = code;
+            $("courseTitle").textContent = `${code} | ${title}`;
+            $("breadcrumbCourse").textContent = `${code} | ${title}`;
+            $("courseDescription").textContent =
+                course.description || "No course description.";
+            $("studentCount").textContent = learners;
+            $("moduleCountText").textContent =
+                `${modules} module${modules === 1 ? "" : "s"}`;
+
+            // Pending reviews are not returned by InstructorCourseController.
+            $("pendingCountText").innerHTML =
+                `<strong>—</strong> Pending Reviews`;
+
+            $("modulesBadge").textContent = modules;
+            $("learnersBadge").textContent = learners;
+            $("announcementsBadge").textContent = "—";
+            $("learnersSummary").textContent =
+                `${learners} enrolled student${learners === 1 ? "" : "s"}`;
+        }
+
         function renderModules(modules) {
-
-            const container =
-                document.getElementById("modulesContainer");
-
-            const countText =
-                document.getElementById("moduleCountText");
+            const container = $("modulesContainer");
+            const countText = $("moduleCountText");
 
             container.innerHTML = "";
 
@@ -479,52 +740,51 @@
                 `${modules.length} module${modules.length === 1 ? "" : "s"}`;
 
             if (!modules.length) {
-
                 container.innerHTML = `
-                    <div class="module-card">
+                    <div class="module-card empty-state-card">
                         <div class="module-body">
+                            <i class="fa-solid fa-book-open empty-icon"></i>
                             <p>No modules have been added yet.</p>
                         </div>
                     </div>
                 `;
-
                 return;
             }
 
-            modules.forEach(function(module, index) {
+            modules.forEach((module, index) => {
+                const card = document.createElement("details");
+                card.className = "module-card";
+                card.open = index === 0;
 
-                const moduleCard =
-                    document.createElement("details");
+                const moduleTitle = module.name || module.title || "Untitled Module";
+                const description = module.description || "No description";
+                const status = module.is_published ? "Published" : "Draft";
+                const order = module.module_order || index + 1;
 
-                moduleCard.className = "module-card";
-                moduleCard.open = index === 0;
-
-                moduleCard.innerHTML = `
+                card.innerHTML = `
                     <summary>
                         <div class="module-title-group">
-                            <span class="unit-badge">
-                                UNIT ${module.module_order || index + 1}
-                            </span>
-
+                            <span class="unit-badge">UNIT ${escapeHtml(order)}</span>
                             <div>
-                                <h3>${module.name || module.title || "Untitled Module"}</h3>
-                                <p>
-                                    ${module.description || "No description"}
-                                    •
-                                    ${module.is_published ? "Published" : "Draft"}
-                                </p>
+                                <h3>${escapeHtml(moduleTitle)}</h3>
+                                <p>${escapeHtml(description)} • ${status}</p>
                             </div>
                         </div>
-
                         <i class="fa-solid fa-chevron-down"></i>
                     </summary>
 
                     <div class="module-body">
-                        <div style="display:flex; justify-content:flex-end; gap:.5rem;">
-                            <button
-                                type="button"
-                                class="resource-btn btn-download"
-                                onclick="openEditModule(${module.id}, '${escapeAttribute(module.name || module.title || "")}', '${escapeAttribute(module.description || "")}', ${module.is_published ? "true" : "false"})">
+                        <div class="module-description">
+                            ${escapeHtml(description)}
+                        </div>
+                        <div class="module-actions">
+                            ${module.material_path ? `
+                                <span class="resource-btn btn-download">
+                                    <i class="fa-solid fa-paperclip"></i>
+                                    Material attached
+                                </span>
+                            ` : ""}
+                            <button type="button" class="resource-btn btn-download edit-module-btn">
                                 <i class="fa-solid fa-pen"></i>
                                 Edit Module
                             </button>
@@ -532,63 +792,111 @@
                     </div>
                 `;
 
-                container.appendChild(moduleCard);
+                card.querySelector(".edit-module-btn").addEventListener("click", () => {
+                    openEditModule(
+                        module.id,
+                        moduleTitle,
+                        description,
+                        Boolean(module.is_published)
+                    );
+                });
+
+                container.appendChild(card);
             });
         }
 
-        function escapeAttribute(value) {
-            return String(value)
-                .replace(/\\/g, "\\\\")
-                .replace(/'/g, "\\'")
-                .replace(/\n/g, "\\n")
-                .replace(/\r/g, "");
+        function renderLearners(learners) {
+            learnersData = Array.isArray(learners) ? learners : [];
+            const tbody = $("learnersTableBody");
+
+            tbody.innerHTML = "";
+
+            if (!learnersData.length) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="3" class="empty-table-cell">
+                            No learners are enrolled in this class yet.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            learnersData.forEach((learner) => {
+                const initials = getInitials(learner.name);
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>
+                        <div class="learner-profile-cell">
+                            <div class="learner-avatar">${escapeHtml(initials)}</div>
+                            <div class="learner-info">
+                                <span class="learner-name">${escapeHtml(learner.name || "Unknown Learner")}</span>
+                                <span class="learner-id">${escapeHtml(learner.school_id || "No School ID")}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="progress-container">
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" style="width:0%"></div>
+                            </div>
+                            <span class="progress-text">N/A</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <span class="action-btn btn-view-graded" title="Progress data is not included in the current class API.">
+                                <i class="fa-solid fa-circle-info"></i>
+                                No Progress Data
+                            </span>
+                        </div>
+                    </td>
+                `;
+
+                tbody.appendChild(row);
+            });
+        }
+
+        function getInitials(name) {
+            return String(name || "?")
+                .trim()
+                .split(/\s+/)
+                .slice(0, 2)
+                .map(part => part.charAt(0).toUpperCase())
+                .join("") || "?";
         }
 
         async function saveModule() {
-
-            const title =
-                document.getElementById("moduleTitleInput").value.trim();
-
-            const description =
-                document.getElementById("moduleDescriptionInput").value.trim();
-
-            const isPublished =
-                document.getElementById("modulePublishedInput").checked;
+            const title = $("moduleTitleInput").value.trim();
+            const description = $("moduleDescriptionInput").value.trim();
+            const isPublished = $("modulePublishedInput").checked;
 
             if (!title) {
                 showToast("Please enter a module title.", "error");
                 return;
             }
 
+            if (!authToken) {
+                showToast("Please log in first.", "error");
+                return;
+            }
+
             try {
-
                 const isEditing = activeModuleId !== null;
-
                 const url = isEditing
-                    ? `${API_BASE_URL}/api/instructor/modules/${activeModuleId}`
-                    : `${API_BASE_URL}/api/instructor/classes/${courseId}/modules`;
+                    ? `${API_BASE_URL}/instructor/modules/${activeModuleId}`
+                    : `${API_BASE_URL}/instructor/classes/${courseId}/modules`;
 
-                const response = await fetch(url, {
+                await apiRequest(url, {
                     method: isEditing ? "PUT" : "POST",
-                    headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${authToken}`
-                    },
+                    headers: getAuthHeaders(true),
                     body: JSON.stringify({
-                        title: title,
-                        description: description,
+                        title,
+                        description,
                         is_published: isPublished
                     })
                 });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(
-                        data.message || "Unable to save module."
-                    );
-                }
 
                 showToast(
                     isEditing
@@ -601,250 +909,248 @@
                 await loadCourse();
 
             } catch (error) {
-
                 console.error("Module save error:", error);
-
-                showToast(
-                    error.message || "Unable to save module.",
-                    "error"
-                );
+                if (error.message !== "Unauthorized") {
+                    showToast(error.message || "Unable to save module.", "error");
+                }
             }
         }
 
         function openAddModule() {
-
             activeModuleId = null;
-
-            document.getElementById("moduleModalTitle").textContent =
-                "Add Module";
-
-            document.getElementById("moduleTitleInput").value = "";
-            document.getElementById("moduleDescriptionInput").value = "";
-            document.getElementById("modulePublishedInput").checked = false;
-
-            document.getElementById("moduleModal").classList.add("active");
+            $("moduleModalTitle").textContent = "Add Module";
+            $("moduleTitleInput").value = "";
+            $("moduleDescriptionInput").value = "";
+            $("modulePublishedInput").checked = false;
+            $("moduleModal").classList.add("active");
+            setTimeout(() => $("moduleTitleInput").focus(), 50);
         }
 
-        function openEditModule(
-            moduleId,
-            title,
-            description,
-            isPublished
-        ) {
-
+        function openEditModule(moduleId, title, description, isPublished) {
             activeModuleId = moduleId;
-
-            document.getElementById("moduleModalTitle").textContent =
-                "Edit Module";
-
-            document.getElementById("moduleTitleInput").value = title;
-            document.getElementById("moduleDescriptionInput").value =
-                description;
-            document.getElementById("modulePublishedInput").checked =
-                isPublished;
-
-            document.getElementById("moduleModal").classList.add("active");
+            $("moduleModalTitle").textContent = "Edit Module";
+            $("moduleTitleInput").value = title;
+            $("moduleDescriptionInput").value = description;
+            $("modulePublishedInput").checked = Boolean(isPublished);
+            $("moduleModal").classList.add("active");
+            setTimeout(() => $("moduleTitleInput").focus(), 50);
         }
 
         function closeModuleModal() {
-            document.getElementById("moduleModal").classList.remove("active");
+            $("moduleModal").classList.remove("active");
             activeModuleId = null;
         }
 
-        document.getElementById("addModuleBtn").addEventListener(
-            "click",
-            openAddModule
-        );
-
-        document.getElementById("saveModuleBtn").addEventListener(
-            "click",
-            saveModule
-        );
-
-        document.getElementById("closeModuleModal").addEventListener(
-            "click",
-            closeModuleModal
-        );
-
-        document.getElementById("cancelModuleModal").addEventListener(
-            "click",
-            closeModuleModal
-        );
-
-        // Load the selected class when the page opens.
-        loadCourse();
-
-        // --- GRADING MODAL FUNCTIONS ---
-        function openGradingModal(index) {
-            activeStudentIndex = index;
-            const student = studentsData[index];
-
-            document.getElementById('modalStudentName').textContent = `Grade Submission - ${student.name}`;
-            document.getElementById('modalFileName').textContent = student.fileName;
-            document.getElementById('modalFileMeta').textContent = student.fileMeta;
-            document.getElementById('instructorFeedback').value = student.feedback || '';
-
-            const container = document.getElementById('activityItemsContainer');
-            container.innerHTML = '';
-
-            if (student.activities && student.activities.length > 0) {
-                student.activities.forEach(act => addActivityRow(act.title, act.raw, act.max));
-            } else {
-                addActivityRow("Activity 1: ", 0, 50);
-            }
-
-            calculateTotals();
-            document.getElementById('gradingModal').classList.add('active');
-        }
-
-        function addActivityRow(title = '', raw = 0, max = 50) {
-            const container = document.getElementById('activityItemsContainer');
-            const row = document.createElement('div');
-            row.className = 'activity-item-row';
-            row.innerHTML = `
-                <div class="form-group flex-2">
-                    <label>Activity Title</label>
-                    <input type="text" class="act-title-input" value="${title}" placeholder="e.g. Activity 1: Theory Comparison">
-                </div>
-                <div class="form-group flex-1">
-                    <label>Raw Score</label>
-                    <input type="number" class="act-raw-input" value="${raw}" min="0" oninput="calculateTotals()">
-                </div>
-                <div class="form-group flex-1">
-                    <label>Max Score</label>
-                    <input type="number" class="act-max-input" value="${max}" min="1" oninput="calculateTotals()">
-                </div>
-                <button type="button" class="btn-remove-row" onclick="removeActivityRow(this)"><i class="fa-solid fa-trash-can"></i></button>
-            `;
-            container.appendChild(row);
-            calculateTotals();
-        }
-
-        function removeActivityRow(btn) {
-            const row = btn.closest('.activity-item-row');
-            row.remove();
-            calculateTotals();
-        }
-
-        function calculateTotals() {
-            const rows = document.querySelectorAll('.activity-item-row');
-            let totalRaw = 0;
-            let totalMax = 0;
-
-            rows.forEach(row => {
-                const rawVal = parseFloat(row.querySelector('.act-raw-input').value) || 0;
-                const maxVal = parseFloat(row.querySelector('.act-max-input').value) || 0;
-                totalRaw += rawVal;
-                totalMax += maxVal;
-            });
-
-            const percent = totalMax > 0 ? Math.round((totalRaw / totalMax) * 100) : 0;
-            document.getElementById('summaryRaw').textContent = `${totalRaw} / ${totalMax} pts`;
-            document.getElementById('summaryPercent').textContent = `${percent}%`;
-        }
-
-        function saveGrade() {
-            if (activeStudentIndex === null) return;
-            const student = studentsData[activeStudentIndex];
-
-            const rows = document.querySelectorAll('.activity-item-row');
-            const activities = [];
-            let totalRaw = 0;
-            let totalMax = 0;
-
-            rows.forEach(row => {
-                const title = row.querySelector('.act-title-input').value.trim() || 'Untitled Activity';
-                const raw = parseFloat(row.querySelector('.act-raw-input').value) || 0;
-                const max = parseFloat(row.querySelector('.act-max-input').value) || 0;
-                activities.push({ title, raw, max });
-                totalRaw += raw;
-                totalMax += max;
-            });
-
-            student.activities = activities;
-            student.feedback = document.getElementById('instructorFeedback').value;
-            student.progress = totalMax > 0 ? Math.round((totalRaw / totalMax) * 100) : 0;
-            student.hasPending = false;
-            student.pendingCount = 0;
-
-            closeGradingModal();
-            renderStudentsTable();
-        }
-
-        function closeGradingModal() {
-            document.getElementById('gradingModal').classList.remove('active');
-            activeStudentIndex = null;
-        }
-
-        // --- VIEW GRADED MODAL FUNCTIONS ---
-        function openViewGradedModal(index) {
-            activeStudentIndex = index;
-            const student = studentsData[index];
-
-            document.getElementById('viewGradedTitle').textContent = `Graded Activities - ${student.name}`;
-
-            let totalRaw = 0;
-            let totalMax = 0;
-            const listContainer = document.getElementById('gradedItemsList');
-            listContainer.innerHTML = '';
-
-            if (student.activities && student.activities.length > 0) {
-                student.activities.forEach(act => {
-                    totalRaw += act.raw;
-                    totalMax += act.max;
-                    const item = document.createElement('div');
-                    item.className = 'graded-item-row';
-                    item.innerHTML = `
-                        <span class="graded-item-title">${act.title}</span>
-                        <span class="graded-item-score">${act.raw} / ${act.max} pts</span>
-                    `;
-                    listContainer.appendChild(item);
+        function setupTabs() {
+            document.querySelectorAll('.tab-btn').forEach((tab) => {
+                tab.addEventListener('click', () => {
+                    setTimeout(() => {
+                        const target = tab.getAttribute('for');
+                        if (target === 'tab-learners') {
+                            renderLearners(learnersData);
+                        }
+                    }, 0);
                 });
-            } else {
-                listContainer.innerHTML = '<p style="font-size: 0.85rem; color: var(--text-muted);">No graded activities yet.</p>';
+            });
+        }
+
+        function setupSidebar() {
+            const toggle = $("viewToggle");
+            const sidebar = document.querySelector(".sidebar");
+            const main = document.querySelector("main");
+
+            if (!toggle || !sidebar || !main) return;
+
+            toggle.addEventListener("click", () => {
+                sidebar.classList.toggle("collapsed");
+                main.classList.toggle("expanded");
+            });
+        }
+
+        async function loadProfile() {
+            if (!authToken) return;
+
+            try {
+                const data = await apiRequest(
+                    `${API_BASE_URL}/instructor/profile`,
+                    {
+                        method: "GET",
+                        headers: getAuthHeaders()
+                    }
+                );
+
+                const user = data.user || {};
+
+                $("instructorId").value = user.school_id || "";
+                $("instructorName").value = user.name || "";
+                $("instructorEmail").value = user.email || "";
+                $("instructorPhone").value = user.contact || "";
+
+                const headerName = document.querySelector(".user-name");
+                if (headerName) {
+                    headerName.innerHTML = `${escapeHtml(user.name || "Instructor")} <i class="fa-solid fa-caret-down"></i>`;
+                }
+            } catch (error) {
+                console.error("Profile load error:", error);
+            }
+        }
+
+        async function saveProfile(event) {
+            event.preventDefault();
+
+            const name = $("instructorName").value.trim();
+            const email = $("instructorEmail").value.trim();
+            const contact = $("instructorPhone").value.trim();
+
+            if (!name || !email) {
+                showToast("Name and email are required.", "error");
+                return;
             }
 
-            const percent = totalMax > 0 ? Math.round((totalRaw / totalMax) * 100) : student.progress;
-            document.getElementById('viewTotalScore').textContent = `${totalRaw} / ${totalMax} pts`;
-            document.getElementById('viewTotalPercent').textContent = `${percent}%`;
-            document.getElementById('viewFeedbackBox').textContent = student.feedback || 'No comments provided.';
+            try {
+                await apiRequest(`${API_BASE_URL}/instructor/profile`, {
+                    method: "PUT",
+                    headers: getAuthHeaders(true),
+                    body: JSON.stringify({ name, email, contact })
+                });
 
-            document.getElementById('viewGradedModal').classList.add('active');
+                const currentPassword = $("currentPassword").value.trim();
+                const newPassword = $("newPassword").value.trim();
+                const confirmPassword = $("confirmPassword").value.trim();
+
+                const passwordTouched =
+                    currentPassword || newPassword || confirmPassword;
+
+                if (passwordTouched) {
+                    if (!currentPassword || !newPassword || !confirmPassword) {
+                        showToast("Complete all password fields.", "error");
+                        return;
+                    }
+
+                    if (newPassword.length < 8) {
+                        showToast("New password must be at least 8 characters.", "error");
+                        return;
+                    }
+
+                    if (newPassword !== confirmPassword) {
+                        showToast("New passwords do not match.", "error");
+                        return;
+                    }
+
+                    await apiRequest(`${API_BASE_URL}/instructor/profile/password`, {
+                        method: "POST",
+                        headers: getAuthHeaders(true),
+                        body: JSON.stringify({
+                            current_password: currentPassword,
+                            new_password: newPassword,
+                            new_password_confirmation: confirmPassword
+                        })
+                    });
+                }
+
+                showToast("Profile updated successfully!", "success");
+                closeProfileModal();
+                await loadProfile();
+
+            } catch (error) {
+                console.error("Profile save error:", error);
+                if (error.message !== "Unauthorized") {
+                    showToast(error.message || "Unable to update profile.", "error");
+                }
+            }
         }
 
-        function closeViewGradedModal() {
-            document.getElementById('viewGradedModal').classList.remove('active');
+        function closeProfileModal() {
+            $("profileModalOverlay").classList.remove("active");
+            $("currentPassword").value = "";
+            $("newPassword").value = "";
+            $("confirmPassword").value = "";
+            $("passwordSection").classList.remove("open");
         }
 
-        // Event Listeners Initialization
-        document.getElementById('btnAddActivityRow').addEventListener('click', () => addActivityRow());
-        document.getElementById('closeGradingModal').addEventListener('click', closeGradingModal);
-        document.getElementById('cancelGradingModal').addEventListener('click', closeGradingModal);
-        document.getElementById('saveGradeBtn').addEventListener('click', saveGrade);
+        function setupProfile() {
+            $("userProfileBtn")?.addEventListener("click", async () => {
+                await loadProfile();
+                $("profileModalOverlay").classList.add("active");
+            });
 
-        document.getElementById('closeViewModal').addEventListener('click', closeViewGradedModal);
-        document.getElementById('closeViewModalBtn').addEventListener('click', closeViewGradedModal);
-        document.getElementById('btnEditGrade').addEventListener('click', () => {
-            closeViewGradedModal();
-            openGradingModal(activeStudentIndex);
-        });
+            $("closeProfileModal")?.addEventListener("click", closeProfileModal);
+            $("cancelProfileModal")?.addEventListener("click", closeProfileModal);
 
-        // Initialize App
-        renderStudentsTable();
-    </script>
-      
-    <script>
-        const viewToggle =
-            document.getElementById("viewToggle");
-        const sidebar =
-            document.querySelector(".sidebar");
-        const mainContent =
-            document.querySelector(".main-content");
-        viewToggle.addEventListener("click", function () {
-            sidebar.classList.toggle("collapsed");
-            mainContent.classList.toggle("expanded");
+            $("profileModalOverlay")?.addEventListener("click", (event) => {
+                if (event.target === $("profileModalOverlay")) {
+                    closeProfileModal();
+                }
+            });
+
+            $("profileSettingsForm")?.addEventListener("submit", saveProfile);
+
+            $("passwordToggleBtn")?.addEventListener("click", () => {
+                $("passwordSection").classList.toggle("open");
+            });
+
+            $("avatarInput")?.addEventListener("change", (event) => {
+                const file = event.target.files?.[0];
+                if (!file) return;
+
+                if (file.size > 2 * 1024 * 1024) {
+                    showToast("Image size exceeds 2MB.", "error");
+                    event.target.value = "";
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    $("avatarPreview").src = e.target.result;
+                    $("headerAvatar").src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function setupModalButtons() {
+            $("addModuleBtn")?.addEventListener("click", openAddModule);
+            $("saveModuleBtn")?.addEventListener("click", saveModule);
+            $("closeModuleModal")?.addEventListener("click", closeModuleModal);
+            $("cancelModuleModal")?.addEventListener("click", closeModuleModal);
+
+            $("moduleModal")?.addEventListener("click", (event) => {
+                if (event.target === $("moduleModal")) {
+                    closeModuleModal();
+                }
+            });
+        }
+
+        function setupLogout() {
+            const logoutLink = document.querySelector('a[href="logout.html"]');
+            if (!logoutLink) return;
+
+            logoutLink.addEventListener("click", () => {
+                sessionStorage.removeItem("token");
+                sessionStorage.removeItem("authToken");
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            setupSidebar();
+            setupTabs();
+            setupProfile();
+            setupModalButtons();
+            setupLogout();
+
+            if (!authToken) {
+                showToast("Please log in first.", "error");
+                return;
+            }
+
+            await Promise.all([
+                loadCourse(),
+                loadProfile()
+            ]);
         });
     </script>
+
+<div id="toastContainer" class="toast-container" aria-live="polite"></div>
 
 <!-- INSTRUCTOR PROFILE SETTINGS MODAL -->
   <div class="profile-modal-overlay" id="profileModalOverlay">
@@ -880,23 +1186,23 @@
           <div class="form-grid-2">
             <div class="profile-form-group">
               <label for="instructorId">Instructor ID</label>
-              <input type="text" id="instructorId" value="INST-2024-008" disabled class="input-disabled">
+              <input type="text" id="instructorId" value="" disabled class="input-disabled">
             </div>
             <div class="profile-form-group">
               <label for="instructorName">Full Name</label>
-              <input type="text" id="instructorName" value="Macross Arsel" disabled class="input-disabled">
+              <input type="text" id="instructorName" value="">
             </div>
           </div>
 
           <!-- Editable Fields: Email & Phone -->
           <div class="profile-form-group">
             <label for="instructorEmail">Email Address</label>
-            <input type="email" id="instructorEmail" value="macross.arsel@mpsu.edu.ph" required>
+            <input type="email" id="instructorEmail" value="" required>
           </div>
 
           <div class="profile-form-group">
             <label for="instructorPhone">Mobile Number</label>
-            <input type="tel" id="instructorPhone" value="+63 917 123 4567" placeholder="+63 9XX XXX XXXX" required>
+            <input type="tel" id="instructorPhone" value="" placeholder="+63 9XX XXX XXXX">
           </div>
 
           <!-- Optional Change Password Accordion -->
@@ -912,7 +1218,7 @@
               </div>
               <div class="profile-form-group">
                 <label for="newPassword">New Password</label>
-                <input type="password" id="newPassword" placeholder="Enter new password (min. 6 characters)">
+                <input type="password" id="newPassword" placeholder="Enter new password (min. 8 characters)">
               </div>
               <div class="profile-form-group">
                 <label for="confirmPassword">Confirm New Password</label>
@@ -934,166 +1240,5 @@
   </div>
 
    <!-- -->
-  <script>
-    // Sidebar Toggle
-   const viewToggle =
-            document.getElementById("viewToggle");
-        const sidebar =
-            document.querySelector(".sidebar");
-        const mainContent =
-            document.querySelector(".main-content");
-        viewToggle.addEventListener("click", function () {
-            sidebar.classList.toggle("collapsed");
-            mainContent.classList.toggle("expanded");
-        });
-    
-
-    // Modal Elements
-    const userProfileBtn = document.getElementById("userProfileBtn");
-    const profileModalOverlay = document.getElementById("profileModalOverlay");
-    const closeProfileModal = document.getElementById("closeProfileModal");
-    const cancelProfileModal = document.getElementById("cancelProfileModal");
-    const avatarInput = document.getElementById("avatarInput");
-    const avatarPreview = document.getElementById("avatarPreview");
-    const headerAvatar = document.getElementById("headerAvatar");
-    const profileForm = document.getElementById("profileSettingsForm");
-
-    // Password Accordion Elements
-    const passwordSection = document.getElementById("passwordSection");
-    const passwordToggleBtn = document.getElementById("passwordToggleBtn");
-    const currentPasswordInput = document.getElementById("currentPassword");
-    const newPasswordInput = document.getElementById("newPassword");
-    const confirmPasswordInput = document.getElementById("confirmPassword");
-
-    // Toast Notification Helper
-    function showToast(message, type = "success") {
-      const toastContainer = document.getElementById("toastContainer");
-      const toast = document.createElement("div");
-      toast.className = `toast toast-${type}`;
-      
-      const iconClass = type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
-      toast.innerHTML = `<i class="fa-solid ${iconClass}"></i> <span>${message}</span>`;
-      
-      toastContainer.appendChild(toast);
-
-      setTimeout(() => {
-        toast.classList.add("show");
-      }, 10);
-
-      setTimeout(() => {
-        toast.classList.remove("show");
-        setTimeout(() => toast.remove(), 300);
-      }, 3500);
-    }
-
-    // Toggle Change Password Accordion
-    if (passwordToggleBtn) {
-      passwordToggleBtn.addEventListener("click", () => {
-        passwordSection.classList.toggle("open");
-      });
-    }
-
-    // Open Profile Modal
-    if (userProfileBtn) {
-      userProfileBtn.addEventListener("click", () => {
-        profileModalOverlay.classList.add("active");
-      });
-    }
-
-    // Reset Form Fields
-    function resetPasswordFields() {
-      passwordSection.classList.remove("open");
-      currentPasswordInput.value = "";
-      newPasswordInput.value = "";
-      confirmPasswordInput.value = "";
-    }
-
-    // Close Modal Handler
-    const closeModal = () => {
-      profileModalOverlay.classList.remove("active");
-      resetPasswordFields();
-    };
-
-    if (closeProfileModal) closeProfileModal.addEventListener("click", closeModal);
-    if (cancelProfileModal) cancelProfileModal.addEventListener("click", closeModal);
-
-    // Close Modal on backdrop click
-    profileModalOverlay.addEventListener("click", (e) => {
-      if (e.target === profileModalOverlay) closeModal();
-    });
-
-    // Avatar Image Preview
-    avatarInput.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        if (file.size > 2 * 1024 * 1024) {
-          showToast("Image size exceeds 2MB limit", "error");
-          return;
-        }
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          avatarPreview.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    // Form Submission & Interactive Password Validation
-    profileForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const email = document.getElementById("instructorEmail").value.trim();
-      const phone = document.getElementById("instructorPhone").value.trim();
-
-      if (!email || !phone) {
-        showToast("Please fill in all contact information", "error");
-        return;
-      }
-
-      const currentPass = currentPasswordInput.value.trim();
-      const newPass = newPasswordInput.value.trim();
-      const confirmPass = confirmPasswordInput.value.trim();
-
-      // Password Validation Logic
-      const isPasswordTouched = currentPass || newPass || confirmPass;
-
-      if (isPasswordTouched) {
-        // Automatically open section if error occurs
-        if (!passwordSection.classList.contains("open")) {
-          passwordSection.classList.add("open");
-        }
-
-        if (!currentPass) {
-          showToast("Please enter your current password", "error");
-          currentPasswordInput.focus();
-          return;
-        }
-
-        if (!newPass) {
-          showToast("Please enter a new password", "error");
-          newPasswordInput.focus();
-          return;
-        }
-
-        if (newPass.length < 6) {
-          showToast("New password must be at least 6 characters long", "error");
-          newPasswordInput.focus();
-          return;
-        }
-
-        if (newPass !== confirmPass) {
-          showToast("New passwords do not match", "error");
-          confirmPasswordInput.focus();
-          return;
-        }
-      }
-
-      // Sync avatar picture to header
-      headerAvatar.src = avatarPreview.src;
-
-      showToast("Profile settings saved successfully!", "success");
-      closeModal();
-    });
-  </script>
 </body>
 </html>

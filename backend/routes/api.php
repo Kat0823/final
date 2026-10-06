@@ -9,70 +9,81 @@ use App\Http\Controllers\Api\SubmissionController;
 use App\Http\Controllers\Api\ModuleController;
 use App\Http\Controllers\Api\GradeController;
 use App\Http\Controllers\Api\NotificationController;
+
 use App\Http\Controllers\Api\InstructorController;
 use App\Http\Controllers\Api\InstructorDashboardController;
 use App\Http\Controllers\Api\InstructorCourseController;
-use App\Http\Controllers\Api\InstructorModuleController;
 use App\Http\Controllers\Api\InstructorNotificationController;
 use App\Http\Controllers\Api\InstructorProfileController;
 
 
-// =====================================================
-// PUBLIC ROUTES
-// =====================================================
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Siknayan API routes
+|
+*/
+
+
+/*
+|--------------------------------------------------------------------------
+| Public Authentication Routes
+|--------------------------------------------------------------------------
+*/
 
 // Learner Login
-Route::post(
-    '/login',
-    [AuthController::class, 'login']
-);
+Route::post('/login', [
+    AuthController::class,
+    'login'
+]);
 
 // Instructor Login
-Route::post(
-    '/instructor/login',
-    [AuthController::class, 'instructorLogin']
-);
+Route::post('/instructor/login', [
+    AuthController::class,
+    'instructorLogin'
+]);
 
 
-// =====================================================
-// PASSWORD SETUP ROUTES
-// =====================================================
-//
-// These routes require authentication,
-// but they are NOT protected by password.setup.
-//
-// This allows first-time users to change
-// their default password.
-//
+/*
+|--------------------------------------------------------------------------
+| Password Setup Routes
+|--------------------------------------------------------------------------
+|
+| These routes are accessible after the user's first login
+| before the password setup is completed.
+|
+*/
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    // Student first-login password setup
-    Route::post(
-        '/student/setup-password',
-        [PasswordController::class, 'setup']
-    );
+    // Learner Password Setup
+    Route::post('/student/setup-password', [
+        PasswordController::class,
+        'studentSetupPassword'
+    ]);
 
-    // Instructor first-login password setup
-    Route::post(
-        '/instructor/setup-password',
-        [PasswordController::class, 'setupInstructor']
-    );
+    // Instructor Password Setup
+    Route::post('/instructor/setup-password', [
+        PasswordController::class,
+        'instructorSetupPassword'
+    ]);
+
 });
 
 
-// =====================================================
-// NORMAL AUTHENTICATED ROUTES
-// =====================================================
-//
-// Users must:
-//
-// 1. Be authenticated
-// 2. Have completed password setup
-//
-// First-time users who have not changed their password
-// will receive a 403 response.
-//
+/*
+|--------------------------------------------------------------------------
+| Authenticated Routes
+|--------------------------------------------------------------------------
+|
+| All routes below require:
+|
+| 1. Sanctum authentication
+| 2. Completed password setup
+|
+*/
 
 Route::middleware([
     'auth:sanctum',
@@ -80,156 +91,234 @@ Route::middleware([
 ])->group(function () {
 
 
-    // =================================================
-    // STUDENT ROUTES
-    // =================================================
+    /*
+    |--------------------------------------------------------------------------
+    | STUDENT / LEARNER ROUTES
+    |--------------------------------------------------------------------------
+    */
 
-    // View enrolled courses
-    Route::get(
-        '/student/courses',
-        [StudentController::class, 'courses']
-    );
 
-    // View one course
-    Route::get(
-        '/student/courses/{courseId}',
-        [StudentController::class, 'course']
-    );
+    /*
+    |----------------------------------------------------------------------
+    | Student Courses
+    |----------------------------------------------------------------------
+    */
 
-    // View module
-    Route::get(
-        '/student/modules/{moduleId}',
-        [ModuleController::class, 'show']
-    );
+    // View all courses/classes of the logged-in learner
+    Route::get('/student/courses', [
+        StudentController::class,
+        'courses'
+    ]);
 
-    // Submit activity
-    Route::post(
-        '/student/submissions',
-        [SubmissionController::class, 'store']
-    );
+    // View a specific course/class
+    Route::get('/student/courses/{courseId}', [
+        StudentController::class,
+        'course'
+    ]);
+
+
+    /*
+    |----------------------------------------------------------------------
+    | Student Modules
+    |----------------------------------------------------------------------
+    */
+
+    // View a specific module
+    Route::get('/student/modules/{moduleId}', [
+        ModuleController::class,
+        'show'
+    ]);
+
+
+    /*
+    |----------------------------------------------------------------------
+    | Student Submissions
+    |----------------------------------------------------------------------
+    */
+
+    // Submit an activity
+    Route::post('/student/submissions', [
+        SubmissionController::class,
+        'store'
+    ]);
+
+
+    /*
+    |----------------------------------------------------------------------
+    | Student Grades
+    |----------------------------------------------------------------------
+    */
 
     // View grades
-    Route::get(
-        '/student/grades',
-        [GradeController::class, 'index']
-    );
+    Route::get('/student/grades', [
+        GradeController::class,
+        'index'
+    ]);
 
 
-    // =================================================
-    // STUDENT NOTIFICATIONS
-    // =================================================
+    /*
+    |----------------------------------------------------------------------
+    | Student Notifications
+    |----------------------------------------------------------------------
+    */
 
     // View notifications
-    Route::get(
-        '/student/notifications',
-        [NotificationController::class, 'index']
-    );
+    Route::get('/student/notifications', [
+        NotificationController::class,
+        'index'
+    ]);
 
     // Mark one notification as read
-    Route::post(
-        '/student/notifications/{notificationId}/read',
-        [NotificationController::class, 'markAsRead']
-    );
+    Route::post('/student/notifications/{notificationId}/read', [
+        NotificationController::class,
+        'markAsRead'
+    ]);
 
     // Mark all notifications as read
-    Route::post(
-        '/student/notifications/read-all',
-        [NotificationController::class, 'markAllAsRead']
-    );
+    Route::post('/student/notifications/read-all', [
+        NotificationController::class,
+        'markAllAsRead'
+    ]);
 
 
-    // =================================================
-    // INSTRUCTOR ROUTES
-    // =================================================
 
-    // -------------------------
-    // Instructor Dashboard
-    // -------------------------
-
-    Route::get(
-        '/instructor/dashboard',
-        [InstructorDashboardController::class, 'index']
-    );
+    /*
+    |--------------------------------------------------------------------------
+    | INSTRUCTOR ROUTES
+    |--------------------------------------------------------------------------
+    */
 
 
-    // -------------------------
-    // Instructor Classes
-    // -------------------------
+    /*
+    |----------------------------------------------------------------------
+    | Instructor Dashboard
+    |----------------------------------------------------------------------
+    |
+    | The dashboard displays:
+    | - Total learners
+    | - Total classes
+    | - Total modules
+    | - Pending submissions
+    | - Graded submissions
+    | - Learner progress
+    |
+    */
 
-    // View all assigned classes
-    Route::get(
-        '/instructor/classes',
-        [InstructorCourseController::class, 'index']
-    );
-
-    // View one assigned class
-    Route::get(
-        '/instructor/classes/{courseId}',
-        [InstructorCourseController::class, 'show']
-    );
-
-    // Add module to a class
-    Route::post(
-        '/instructor/classes/{courseId}/modules',
-        [InstructorModuleController::class, 'store']
-    );
-
-    // Edit existing module
-    Route::put(
-        '/instructor/modules/{moduleId}',
-        [InstructorModuleController::class, 'update']
-    );
+    Route::get('/instructor/dashboard', [
+        InstructorDashboardController::class,
+        'index'
+    ]);
 
 
-    // -------------------------
-    // Instructor Submissions
-    // -------------------------
+    /*
+    |----------------------------------------------------------------------
+    | Instructor Classes
+    |----------------------------------------------------------------------
+    |
+    | IMPORTANT:
+    | Instructors do NOT create classes or modules.
+    |
+    | These routes are READ-ONLY.
+    |
+    | Instructor can:
+    | - View assigned classes
+    | - Open a class
+    | - View existing modules
+    | - View enrolled learners
+    |
+    */
+
+    // View all classes assigned to instructor
+    Route::get('/instructor/classes', [
+        InstructorCourseController::class,
+        'index'
+    ]);
+
+    // View a specific assigned class
+    Route::get('/instructor/classes/{courseId}', [
+        InstructorCourseController::class,
+        'show'
+    ]);
+
+
+    /*
+    |----------------------------------------------------------------------
+    | Instructor Submissions
+    |----------------------------------------------------------------------
+    |
+    | Instructor can:
+    | - View learner submissions
+    | - Open submitted files
+    | - Grade submissions
+    |
+    */
 
     // View learner submissions
-    Route::get(
-        '/instructor/submissions',
-        [InstructorController::class, 'submissions']
-    );
+    Route::get('/instructor/submissions', [
+        InstructorController::class,
+        'submissions'
+    ]);
 
-    // View submitted file
-    Route::get(
-        '/instructor/submissions/{submissionId}/file',
-        [InstructorController::class, 'file']
-    );
+    // View/download submitted file
+    Route::get('/instructor/submissions/{submissionId}/file', [
+        InstructorController::class,
+        'file'
+    ]);
 
-    // Grade learner submission
-    Route::post(
-        '/instructor/submissions/{submissionId}/grade',
-        [GradeController::class, 'store']
-    );
-    Route::get(
-    '/instructor/notifications',
-    [InstructorNotificationController::class, 'index']
-);
+    // Grade a learner submission
+    Route::post('/instructor/submissions/{submissionId}/grade', [
+        GradeController::class,
+        'store'
+    ]);
 
-Route::post(
-    '/instructor/notifications/{notificationId}/read',
-    [InstructorNotificationController::class, 'markAsRead']
-);
 
-Route::post(
-    '/instructor/notifications/read-all',
-    [InstructorNotificationController::class, 'markAllAsRead']
-);
+    /*
+    |----------------------------------------------------------------------
+    | Instructor Notifications
+    |----------------------------------------------------------------------
+    */
 
-Route::get(
-    '/instructor/profile',
-    [InstructorProfileController::class, 'show']
-);
+    // View instructor notifications
+    Route::get('/instructor/notifications', [
+        InstructorNotificationController::class,
+        'index'
+    ]);
 
-Route::put(
-    '/instructor/profile',
-    [InstructorProfileController::class, 'update']
-);
+    // Mark one notification as read
+    Route::post('/instructor/notifications/{notificationId}/read', [
+        InstructorNotificationController::class,
+        'markAsRead'
+    ]);
 
-Route::post(
-    '/instructor/profile/password',
-    [InstructorProfileController::class, 'changePassword']
-);
+    // Mark all notifications as read
+    Route::post('/instructor/notifications/read-all', [
+        InstructorNotificationController::class,
+        'markAllAsRead'
+    ]);
+
+
+    /*
+    |----------------------------------------------------------------------
+    | Instructor Profile
+    |----------------------------------------------------------------------
+    */
+
+    // View instructor profile
+    Route::get('/instructor/profile', [
+        InstructorProfileController::class,
+        'show'
+    ]);
+
+    // Update instructor profile
+    Route::put('/instructor/profile', [
+        InstructorProfileController::class,
+        'update'
+    ]);
+
+    // Change instructor password
+    Route::post('/instructor/profile/password', [
+        InstructorProfileController::class,
+        'changePassword'
+    ]);
 
 });
