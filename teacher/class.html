@@ -1,388 +1,2989 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MPSU ETEEAP LMS - Instructor Classes</title>
-  <!-- Google Fonts: Poppins -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <!-- External CSS -->
-  <link rel="stylesheet" href="../teacher/CSS/class.css" />
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>My Classes - MPSU ETEEAP LMS</title>
+
+    <!-- Google Font -->
+    <link rel="preconnect"
+        href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <style>
+
+/* ==========================================================================
+   RESET & ROOT VARIABLES
+   ========================================================================== */
+
+:root {
+
+    --mpsu-green: #0a522d;
+    --mpsu-green-light: #eaf5ed;
+    --mpsu-card-bg: #f2f9f4;
+    --mpsu-maroon: #5b0000;
+    --mpsu-gold: #c28e0e;
+
+    --border-color: #d1d5db;
+    --text-primary: #1e293b;
+    --text-muted: #64748b;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+html,
+body {
+    min-height: 100%;
+    background-color: var(--mpsu-green-light);
+    color: var(--text-primary);
+}
+
+/* ==========================================================================
+   1. HEADER STYLES
+   ========================================================================== */
+
+.header {
+
+    height: 85px;
+
+    background-color: var(--mpsu-green);
+
+    color: #ffffff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 1.5rem;
+
+    width: 100%;
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 100;
+}
+
+.header-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+.logo-box {
+
+    width: 60px;
+
+    height: 60px;
+
+    border-radius: 50%;
+
+    overflow: hidden;
+
+    border: 2px solid #ffffff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+}
+
+.logo-box img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.main-title {
+
+    font-size: 0.95rem;
+
+    font-weight: 700;
+
+    line-height: 1.1;
+}
+
+.sub-title {
+
+    font-size: 0.75rem;
+
+    opacity: 0.85;
+
+    margin-top: 3px;
+}
+
+.header-right {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+}
+
+.icon-btn {
+
+    background: transparent;
+
+    border: none;
+
+    color: #ffffff;
+
+    font-size: 1.1rem;
+
+    cursor: pointer;
+
+    width: 35px;
+
+    height: 35px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    transition: background-color 0.2s ease;
+}
+
+.icon-btn:hover {
+
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.user-profile {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+.avatar-ring {
+
+    width: 36px;
+
+    height: 36px;
+
+    border-radius: 50%;
+
+    overflow: hidden;
+
+    border: 2px solid #ffffff;
+
+    flex-shrink: 0;
+}
+
+.avatar-ring img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.user-name {
+
+    font-size: 0.85rem;
+
+    font-weight: 600;
+
+    display: block;
+}
+
+.user-role {
+
+    font-size: 0.7rem;
+
+    opacity: 0.8;
+
+    display: block;
+}
+
+/* ==========================================================================
+   2. MAIN BODY LAYOUT & SIDEBAR
+   ========================================================================== */
+
+.app-body {
+
+    width: 100%;
+
+    display: flex;
+
+    min-height: calc(100vh - 85px);
+}
+
+.sidebar {
+
+    position: fixed;
+
+    top: 85px;
+
+    left: 0;
+
+    width: 250px;
+
+    height: calc(100vh - 85px);
+
+    background-color: #500b13;
+
+    color: #ffffff;
+
+    display: flex;
+
+    flex-direction: column;
+
+    padding: 24px 16px;
+
+    gap: 24px;
+
+    border-radius: 0 10px 5px 0;
+
+    overflow: hidden;
+
+    z-index: 99;
+
+    transition:
+        width 0.25s ease,
+        padding 0.25s ease;
+}
+
+.view-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 0 8px;
+}
+
+.view-label {
+
+    font-size: 14px;
+
+    font-weight: 400;
+
+    opacity: 0.9;
+}
+
+.view-toggle-btn {
+
+    width: 32px;
+
+    height: 32px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-decoration: none;
+
+    font-size: 17px;
+
+    transition: 0.2s ease;
+
+    color: #ffffff;
+
+    background: transparent;
+
+    border: none;
+
+    cursor: pointer;
+
+    border-radius: 5px;
+}
+
+.view-toggle-btn:hover {
+
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-menu {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 16px;
+
+    flex: 1;
+}
+
+.nav-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    padding: 8px 12px;
+
+    border-radius: 6px;
+
+    font-size: 14px;
+
+    font-weight: 400;
+
+    transition: background 0.2s;
+}
+
+.nav-item:hover {
+
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.nav-item.active {
+
+    background-color: #ca8a04 !important;
+
+    color: #1a0306 !important;
+
+    font-weight: 600;
+
+    border: 1px solid #eab308;
+
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.nav-item i {
+
+    font-size: 18px;
+
+    width: 24px;
+
+    text-align: center;
+}
+
+.logout-bottom {
+
+    margin-top: auto;
+}
+
+/* Collapsed Sidebar */
+
+.sidebar.collapsed {
+
+    width: 80px;
+
+    padding-left: 10px;
+
+    padding-right: 10px;
+}
+
+.sidebar.collapsed .view-label {
+
+    display: none;
+}
+
+.sidebar.collapsed .view-header {
+
+    justify-content: center;
+
+    padding: 0;
+}
+
+.sidebar.collapsed .nav-item span {
+
+    display: none;
+}
+
+.sidebar.collapsed .nav-item {
+
+    justify-content: center;
+
+    padding-left: 10px;
+
+    padding-right: 10px;
+
+    gap: 0;
+}
+
+.sidebar.collapsed .nav-item i {
+
+    font-size: 17px;
+}
+
+/* ==========================================================================
+   3. CONTENT AREA
+   ========================================================================== */
+
+.main-content {
+
+    margin-left: 250px;
+
+    margin-top: 10px;
+
+    width: calc(100% - 250px);
+
+    min-height: calc(100vh - 95px);
+
+    padding: 30px 40px;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    transition:
+        margin-left 0.25s ease,
+        width 0.25s ease;
+}
+
+.main-content.expanded {
+
+    margin-left: 80px;
+
+    width: calc(100% - 80px);
+}
+
+.page-title {
+
+    font-size: 32px;
+
+    font-weight: 700;
+
+    color: #000000;
+
+    margin-bottom: 5px;
+}
+
+.page-description {
+
+    color: var(--text-muted);
+
+    font-size: 13px;
+
+    margin-bottom: 15px;
+}
+
+/* ==========================================================================
+   SEARCH AND CONTROLS
+   ========================================================================== */
+
+.controls-row {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 10px 0;
+
+    margin-bottom: 15px;
+}
+
+.search-wrapper {
+
+    display: flex;
+
+    align-items: center;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 6px;
+
+    background-color: #ffffff;
+
+    overflow: hidden;
+
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+    width: 300px;
+}
+
+.search-icon-box {
+
+    padding: 10px 14px;
+
+    color: #6b7280;
+
+    font-size: 16px;
+
+    border-right: 1px solid #e5e7eb;
+}
+
+.dropdown-input-wrapper {
+
+    display: flex;
+
+    flex-direction: column;
+
+    padding: 4px 12px;
+
+    width: 100%;
+}
+
+.dropdown-label {
+
+    font-size: 9px;
+
+    color: #9ca3af;
+
+    text-transform: lowercase;
+
+    line-height: 1;
+}
+
+.input-with-arrow {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+.input-with-arrow input {
+
+    border: none;
+
+    outline: none;
+
+    width: 100%;
+
+    font-size: 13px;
+
+    color: #374151;
+
+    background: transparent;
+
+    padding: 3px 0;
+}
+
+.arrow-icon {
+
+    font-size: 10px;
+
+    color: #9ca3af;
+
+    margin-left: 6px;
+}
+
+.add-class-btn {
+
+    width: 42px;
+
+    height: 42px;
+
+    border-radius: 10px;
+
+    border: 2px solid #0a522d;
+
+    background-color: #ffffff;
+
+    color: #0a522d;
+
+    font-size: 22px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    transition: all 0.2s;
+}
+
+.add-class-btn:hover {
+
+    background-color: #0a522d;
+
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   4. CLASS GRID & CARDS
+   ========================================================================== */
+
+.classes-card-container {
+
+    background-color: #ffffff;
+
+    border: 1px solid #9ca3af;
+
+    border-radius: 12px;
+
+    padding: 24px;
+
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+    min-height: 480px;
+}
+
+.classes-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    gap: 24px;
+}
+
+.class-card {
+
+    border: 2px solid #0a522d;
+
+    border-radius: 12px;
+
+    padding: 20px 24px;
+
+    background-color: #ffffff;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: space-between;
+
+    min-height: 110px;
+
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s;
+
+    text-decoration: none;
+
+    color: inherit;
+}
+
+.class-card:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.15);
+}
+
+.class-title {
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    color: #1f2937;
+
+    line-height: 1.3;
+}
+
+.class-code {
+
+    font-size: 12px;
+
+    color: #0a522d;
+
+    font-weight: 600;
+
+    margin-top: 5px;
+}
+
+.class-program {
+
+    font-size: 11px;
+
+    color: #64748b;
+
+    margin-top: 4px;
+}
+
+.class-students {
+
+    font-size: 12px;
+
+    color: #6b7280;
+
+    text-align: right;
+
+    margin-top: 12px;
+}
+
+.empty-state {
+
+    grid-column: 1 / -1;
+
+    min-height: 300px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #64748b;
+
+    text-align: center;
+}
+
+.empty-state i {
+
+    font-size: 40px;
+
+    margin-bottom: 15px;
+
+    color: #94a3b8;
+}
+
+.empty-state h3 {
+
+    font-size: 18px;
+
+    margin-bottom: 5px;
+
+    color: #334155;
+}
+
+.empty-state p {
+
+    font-size: 13px;
+}
+
+/* ==========================================================================
+   5. PROFILE SETTINGS MODAL
+   ========================================================================== */
+
+.profile-modal-overlay {
+
+    position: fixed;
+
+    top: 0;
+
+    left: 0;
+
+    width: 100vw;
+
+    height: 100vh;
+
+    background-color: rgba(10, 25, 15, 0.45);
+
+    backdrop-filter: blur(8px);
+
+    -webkit-backdrop-filter: blur(8px);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    z-index: 1000;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition: opacity 0.25s ease;
+
+    padding: 1.5rem;
+}
+
+.profile-modal-overlay.active {
+
+    opacity: 1;
+
+    pointer-events: auto;
+}
+
+.profile-modal-card {
+
+    background-color: #ffffff;
+
+    width: 100%;
+
+    max-width: 520px;
+
+    max-height: 90vh;
+
+    border-radius: 14px;
+
+    border: 1px solid #e2e8f0;
+
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+
+    display: flex;
+
+    flex-direction: column;
+
+    overflow: hidden;
+
+    margin: auto;
+
+    animation: modalSlideUp 0.25s ease-out;
+}
+
+#profileSettingsForm {
+
+    display: flex;
+
+    flex-direction: column;
+
+    flex: 1;
+
+    min-height: 0;
+
+    overflow: hidden;
+}
+
+@keyframes modalSlideUp {
+
+    from {
+        transform: translateY(14px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.profile-modal-header {
+
+    padding: 1.25rem 1.5rem;
+
+    border-bottom: 1px solid #e2e8f0;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    background-color: #fafafa;
+
+    flex-shrink: 0;
+}
+
+.profile-modal-title {
+
+    font-size: 1.1rem;
+
+    font-weight: 600;
+
+    color: #1e293b;
+}
+
+.profile-modal-close {
+
+    background: none;
+
+    border: none;
+
+    font-size: 1.35rem;
+
+    color: #94a3b8;
+
+    cursor: pointer;
+
+    line-height: 1;
+
+    padding: 0.2rem;
+}
+
+.profile-modal-close:hover {
+
+    color: #1e293b;
+}
+
+.profile-modal-body {
+
+    padding: 1.5rem;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 1.15rem;
+
+    overflow-y: auto;
+
+    flex: 1;
+
+    min-height: 0;
+}
+
+.avatar-upload-section {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 1.25rem;
+
+    background-color: #f8fafc;
+
+    padding: 1rem;
+
+    border-radius: 10px;
+
+    border: 1px solid #e2e8f0;
+}
+
+.avatar-upload-preview {
+
+    position: relative;
+
+    width: 76px;
+
+    height: 76px;
+
+    flex-shrink: 0;
+}
+
+.avatar-upload-preview img {
+
+    width: 100%;
+
+    height: 100%;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    border: 3px solid #0c4827;
+}
+
+.avatar-edit-badge {
+
+    position: absolute;
+
+    bottom: -2px;
+
+    right: -2px;
+
+    width: 28px;
+
+    height: 28px;
+
+    background-color: #0c4827;
+
+    color: #ffffff;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 0.75rem;
+
+    cursor: pointer;
+
+    border: 2px solid #ffffff;
+
+    transition: background-color 0.2s ease;
+}
+
+.avatar-edit-badge:hover {
+
+    background-color: #08331b;
+}
+
+.avatar-file-input {
+
+    display: none;
+}
+
+.avatar-upload-text h4 {
+
+    font-size: 0.9rem;
+
+    color: #1e293b;
+
+    margin-bottom: 0.2rem;
+}
+
+.avatar-upload-text p {
+
+    font-size: 0.72rem;
+
+    color: #64748b;
+}
+
+.form-grid-2 {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 0.85rem;
+}
+
+.profile-form-group {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 0.35rem;
+}
+
+.profile-form-group label {
+
+    font-size: 0.8rem;
+
+    font-weight: 600;
+
+    color: #1e293b;
+}
+
+.profile-form-group input {
+
+    padding: 0.55rem 0.75rem;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 6px;
+
+    font-size: 0.85rem;
+
+    font-family: inherit;
+
+    transition: border-color 0.2s ease;
+}
+
+.profile-form-group input:focus {
+
+    outline: none;
+
+    border-color: #0c4827;
+
+    box-shadow: 0 0 0 3px rgba(12, 72, 39, 0.1);
+}
+
+.input-disabled {
+
+    background-color: #f1f5f9 !important;
+
+    color: #64748b !important;
+
+    cursor: not-allowed;
+
+    font-weight: 500;
+}
+
+/* Password Section */
+
+.password-section {
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 8px;
+
+    background-color: #ffffff;
+
+    padding: 1rem;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 0.85rem;
+}
+
+.section-title h4 {
+
+    font-size: 0.85rem;
+
+    font-weight: 600;
+
+    color: #1e293b;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.5rem;
+}
+
+.section-title h4 i {
+
+    color: #0c4827;
+}
+
+.password-fields-wrapper {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 0.85rem;
+}
+
+.profile-modal-footer {
+
+    padding: 1rem 1.5rem;
+
+    border-top: 1px solid #e2e8f0;
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 0.75rem;
+
+    background-color: #fafafa;
+
+    flex-shrink: 0;
+}
+
+.btn-cancel {
+
+    background-color: #ffffff;
+
+    border: 1px solid #cbd5e1;
+
+    padding: 0.5rem 1rem;
+
+    border-radius: 6px;
+
+    font-weight: 600;
+
+    font-size: 0.85rem;
+
+    color: #475569;
+
+    cursor: pointer;
+}
+
+.btn-cancel:hover {
+
+    background-color: #f1f5f9;
+}
+
+.btn-save {
+
+    background-color: #0c4827;
+
+    color: #ffffff;
+
+    border: none;
+
+    padding: 0.5rem 1.25rem;
+
+    border-radius: 6px;
+
+    font-weight: 600;
+
+    font-size: 0.85rem;
+
+    cursor: pointer;
+
+    transition: background-color 0.2s ease;
+}
+
+.btn-save:hover {
+
+    background-color: #08331b;
+}
+
+/* ==========================================================================
+   6. TOAST NOTIFICATIONS
+   ========================================================================== */
+
+.toast-container {
+
+    position: fixed;
+
+    top: 20px;
+
+    right: 20px;
+
+    z-index: 2000;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    pointer-events: none;
+}
+
+.toast {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 12px 18px;
+
+    border-radius: 8px;
+
+    font-size: 0.85rem;
+
+    font-weight: 500;
+
+    color: #ffffff;
+
+    background-color: #333333;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+    opacity: 0;
+
+    transform: translateY(-10px);
+
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
+
+    pointer-events: auto;
+}
+
+.toast.show {
+
+    opacity: 1;
+
+    transform: translateY(0);
+}
+
+.toast-success {
+
+    background-color: #0c4827;
+}
+
+.toast-error {
+
+    background-color: #991b1b;
+}
+
+/* ==========================================================================
+   7. RESPONSIVE DESIGN
+   ========================================================================== */
+
+@media (max-width: 1000px) {
+
+    .classes-grid {
+
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+
+    .sidebar {
+
+        width: 80px;
+
+        padding-left: 10px;
+
+        padding-right: 10px;
+    }
+
+    .sidebar .view-label {
+
+        display: none;
+    }
+
+    .sidebar .view-header {
+
+        justify-content: center;
+
+        padding: 0;
+    }
+
+    .sidebar .nav-item span {
+
+        display: none;
+    }
+
+    .sidebar .nav-item {
+
+        justify-content: center;
+
+        padding-left: 10px;
+
+        padding-right: 10px;
+
+        gap: 0;
+    }
+
+    .main-content {
+
+        margin-left: 80px;
+
+        width: calc(100% - 80px);
+
+        padding: 25px 20px;
+    }
+
+    .classes-grid {
+
+        grid-template-columns: 1fr;
+    }
+
+    .controls-row {
+
+        gap: 15px;
+    }
+
+    .search-wrapper {
+
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .header {
+
+        padding: 0 1rem;
+    }
+
+    .main-title {
+
+        font-size: 0.8rem;
+    }
+
+    .sub-title {
+
+        font-size: 0.65rem;
+    }
+
+    .user-profile > div {
+
+        display: none;
+    }
+
+    .main-content {
+
+        padding: 20px 15px;
+    }
+
+    .page-title {
+
+        font-size: 25px;
+    }
+
+    .controls-row {
+
+        align-items: stretch;
+    }
+
+    .form-grid-2 {
+
+        grid-template-columns: 1fr;
+    }
+
+    .profile-modal-overlay {
+
+        padding: 10px;
+    }
+
+    .profile-modal-card {
+
+        max-height: 95vh;
+    }
+}
+
+    </style>
+
 </head>
+
 <body>
 
-  <!-- Toast Notification Container -->
-  <div id="toastContainer" class="toast-container"></div>
+<!-- ======================================================================
+     HEADER
+     ====================================================================== -->
 
-  <!-- Top Header Navigation -->
-  <header class="header">
+<header class="header">
+
     <div class="header-left">
-      <div class="logo-box">
-        <img src="../images/logo.png" alt="MSPU logo">
-      </div>
 
-      <div class="header-titles">
-        <div class="main-title">MPSU ETEEAP LMS</div>
-        <div class="sub-title">Mountain Province State University</div>
-      </div>
+        <div class="logo-box">
+
+            <img src="../images/mpsu-logo.png"
+                 alt="MPSU Logo">
+
+        </div>
+
+        <div>
+
+            <div class="main-title">
+                MPSU ETEEAP LMS
+            </div>
+
+            <div class="sub-title">
+                Mountain Province State University
+            </div>
+
+        </div>
+
     </div>
+
 
     <div class="header-right">
-      <div class="user-profile" id="userProfileBtn" style="cursor: pointer;">
-        <div class="avatar-ring">
-          <img id="headerAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Macross Arsel Avatar" />
-        </div>
-        <div class="user-info">
-          <span class="user-name">Macross Arsel <i class="fa-solid fa-caret-down"></i></span>
-          <span class="user-role">Instructor</span>
-        </div>
-      </div>
-    </div>
-  </header>
 
-  <!-- Main Body Layout -->
-  <div class="app-body">
+        <button class="icon-btn"
+                type="button"
+                title="Notifications"
+                onclick="goToNotifications()">
 
-    <!-- Deep Maroon Sidebar -->
-    <aside class="sidebar">
-      <div class="view-header">
-        <span class="view-label">View</span>
-        <button type="button" class="view-toggle-btn" id="viewToggle" title="Toggle Sidebar">
-            <i class="fa-regular fa-rectangle-list"></i>
+            <i class="fa-solid fa-bell"></i>
+
         </button>
-      </div>
 
-      <a href="dashboard.html" class="nav-item">
-        <i class="fa-solid fa-users"></i>
-        <span>Learners Progress</span>
-      </a>
 
-      <!-- Active Menu Item: Classes -->
-      <a href="class.html" class="nav-item active">
-        <i class="fa-solid fa-layer-group"></i>
-        <span>Classes</span>
-      </a>
+        <div class="user-profile">
 
-      <a href="submissions.html" class="nav-item">
-        <i class="fa-regular fa-folder"></i>
-        <span>Submission</span>
-      </a>
+            <div class="avatar-ring">
 
-      <a href="notification.html" class="nav-item">
-        <i class="fa-regular fa-bell"></i>
-        <span>Notification</span>
-      </a>
+                <img id="headerAvatar"
+                     src="../images/mpsu-logo.png"
+                     alt="Instructor">
 
-      <!-- Logout Item Pushed To Bottom -->
-      <a href="logout.html" class="nav-item logout-bottom">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i>
-        <span>Logout</span>
-      </a>
+            </div>
+
+            <div>
+
+                <span class="user-name"
+                      id="headerInstructorName">
+                    Instructor
+                </span>
+
+                <span class="user-role">
+                    Instructor
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- ======================================================================
+     APP BODY
+     ====================================================================== -->
+
+<div class="app-body">
+
+
+    <!-- ==================================================================
+         SIDEBAR
+         ================================================================== -->
+
+    <aside class="sidebar"
+           id="sidebar">
+
+        <div class="view-header">
+
+            <span class="view-label">
+                Instructor Menu
+            </span>
+
+            <button class="view-toggle-btn"
+                    id="sidebarToggle"
+                    type="button"
+                    title="Collapse Sidebar">
+
+                <i class="fa-solid fa-bars"></i>
+
+            </button>
+
+        </div>
+
+
+        <nav class="nav-menu">
+
+            <a href="dashboard.html"
+               class="nav-item">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a href="class.html"
+               class="nav-item active">
+
+                <i class="fa-solid fa-book"></i>
+
+                <span>
+                    My Classes
+                </span>
+
+            </a>
+
+
+            <a href="notification.html"
+               class="nav-item">
+
+                <i class="fa-solid fa-bell"></i>
+
+                <span>
+                    Notifications
+                </span>
+
+            </a>
+
+
+            <a href="#"
+               class="nav-item"
+               id="profileNav">
+
+                <i class="fa-solid fa-user"></i>
+
+                <span>
+                    Profile
+                </span>
+
+            </a>
+
+
+            <a href="#"
+               class="nav-item logout-bottom"
+               id="logoutNav">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>
+                    Logout
+                </span>
+
+            </a>
+
+        </nav>
+
     </aside>
 
-    <!-- Content Area -->
-    <main class="main-content">
-      <h1 class="page-title">Classes</h1>
 
-      <!-- Top Controls Row (Search Box + Plus Button) -->
-      <div class="controls-row">
-        <div class="search-wrapper">
-          <div class="search-icon-box">
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </div>
-          <div class="dropdown-input-wrapper">
-            <span class="dropdown-label">dropdown</span>
-            <div class="input-with-arrow">
-              <input type="text" id="searchInput" placeholder="Search" />
-              <i class="fa-solid fa-chevron-down arrow-icon"></i>
+    <!-- ==================================================================
+         MAIN CONTENT
+         ================================================================== -->
+
+    <main class="main-content"
+          id="mainContent">
+
+
+        <h1 class="page-title">
+            My Classes
+        </h1>
+
+        <p class="page-description">
+            View and manage the classes assigned to you.
+        </p>
+
+
+        <!-- Controls -->
+
+        <div class="controls-row">
+
+
+            <div class="search-wrapper">
+
+                <div class="search-icon-box">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                </div>
+
+                <div class="dropdown-input-wrapper">
+
+                    <span class="dropdown-label">
+                        search
+                    </span>
+
+                    <div class="input-with-arrow">
+
+                        <input type="text"
+                               id="classSearch"
+                               placeholder="Search class...">
+
+                    </div>
+
+                </div>
+
             </div>
-          </div>
+
+
+            <button class="add-class-btn"
+                    id="addClassBtn"
+                    type="button"
+                    title="Add Class">
+
+                <i class="fa-solid fa-plus"></i>
+
+            </button>
+
         </div>
 
-        <button class="add-class-btn" title="Add Class">
-          <i class="fa-solid fa-plus"></i>
-        </button>
-      </div>
 
-      <!-- Main Border Container for Class Grid -->
-      <div class="classes-card-container">
-        <div class="classes-grid">
+        <!-- Classes -->
 
-          <!-- Class Card 1 -->
-          <div class="class-card">
-            <div class="class-title">CRIM-101 | Intro to Criminology</div>
-            <div class="class-students">21 Students</div>
-          </div>
+        <section class="classes-card-container">
 
-          <!-- Class Card 2 -->
-          <a href="class-content.html" class="class-card-link" style="text-decoration: none; color: inherit;">
-            <div class="class-card">
-              <div class="class-title">CRIM-102 | Forensic Science Basics</div>
-              <div class="class-students">25 Students</div>
+            <div class="classes-grid"
+                 id="classesGrid">
+
+                <div class="empty-state">
+
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+
+                    <h3>
+                        Loading classes...
+                    </h3>
+
+                    <p>
+                        Please wait while your classes are loaded.
+                    </p>
+
+                </div>
+
             </div>
-          </a>
 
-          <!-- Class Card 3 -->
-          <div class="class-card">
-            <div class="class-title">CRIM-103 | Criminal Law Fundamental</div>
-            <div class="class-students">20 Students</div>
-          </div>
+        </section>
 
-          <!-- Class Card 4 -->
-          <div class="class-card">
-            <div class="class-title">GEC-201 | Understanding the Self</div>
-            <div class="class-students">30 Students</div>
-          </div>
 
-        </div>
-      </div>
     </main>
 
-  </div>
+</div>
 
-  <!-- INSTRUCTOR PROFILE SETTINGS MODAL -->
-  <div class="profile-modal-overlay" id="profileModalOverlay">
+
+<!-- ======================================================================
+     PROFILE MODAL
+     ====================================================================== -->
+
+<div class="profile-modal-overlay"
+     id="profileModal">
+
+
     <div class="profile-modal-card">
-      
-      <!-- Modal Header -->
-      <div class="profile-modal-header">
-        <div>
-          <h3 class="profile-modal-title">Instructor Profile Settings</h3>
-        </div>
-        <button class="profile-modal-close" id="closeProfileModal" aria-label="Close">&times;</button>
-      </div>
 
-      <!-- Modal Body Form -->
-      <form id="profileSettingsForm">
-        <div class="profile-modal-body">
-          
-          <!-- Photo Upload Section -->
-          <div class="avatar-upload-section">
-            <div class="avatar-upload-preview">
-              <img id="avatarPreview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Instructor Profile Picture">
-              <label for="avatarInput" class="avatar-edit-badge" title="Change Photo">
-                <i class="fa-solid fa-camera"></i>
-              </label>
-              <input type="file" id="avatarInput" accept="image/*" class="avatar-file-input">
-            </div>
-            <div class="avatar-upload-text">
-              <h4>Profile Photo</h4>
-            </div>
-          </div>
 
-          <!-- Read-Only Grid: Instructor ID & Full Name -->
-          <div class="form-grid-2">
-            <div class="profile-form-group">
-              <label for="instructorId">Instructor ID</label>
-              <input type="text" id="instructorId" value="INST-2024-008" disabled class="input-disabled">
-            </div>
-            <div class="profile-form-group">
-              <label for="instructorName">Full Name</label>
-              <input type="text" id="instructorName" value="Macross Arsel" disabled class="input-disabled">
-            </div>
-          </div>
+        <div class="profile-modal-header">
 
-          <!-- Editable Fields: Email & Phone -->
-          <div class="profile-form-group">
-            <label for="instructorEmail">Email Address</label>
-            <input type="email" id="instructorEmail" value="macross.arsel@mpsu.edu.ph" required>
-          </div>
+            <div>
 
-          <div class="profile-form-group">
-            <label for="instructorPhone">Mobile Number</label>
-            <input type="tel" id="instructorPhone" value="+63 917 123 4567" placeholder="+63 9XX XXX XXXX" required>
-          </div>
+                <div class="profile-modal-title">
+                    Profile Settings
+                </div>
 
-          <!-- Permanently Displayed Change Password Section -->
-          <div class="password-section">
-            <div class="section-title">
-              <h4><i class="fa-solid fa-lock"></i> Change Password</h4>
             </div>
-            <div class="password-fields-wrapper">
-              <div class="profile-form-group">
-                <label for="currentPassword">Current Password</label>
-                <input type="password" id="currentPassword" placeholder="Enter current password">
-              </div>
-              <div class="profile-form-group">
-                <label for="newPassword">New Password</label>
-                <input type="password" id="newPassword" placeholder="Enter new password (min. 6 characters)">
-              </div>
-              <div class="profile-form-group">
-                <label for="confirmPassword">Confirm New Password</label>
-                <input type="password" id="confirmPassword" placeholder="Confirm new password">
-              </div>
-            </div>
-          </div>
+
+            <button class="profile-modal-close"
+                    id="closeProfileModal"
+                    type="button">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
 
         </div>
 
-        <!-- Modal Footer Actions -->
-        <div class="profile-modal-footer">
-          <button type="button" class="btn-cancel" id="cancelProfileModal">Cancel</button>
-          <button type="submit" class="btn-save">Save Changes</button>
-        </div>
-      </form>
+
+        <form id="profileSettingsForm">
+
+
+            <div class="profile-modal-body">
+
+
+                <!-- Avatar -->
+
+                <div class="avatar-upload-section">
+
+
+                    <div class="avatar-upload-preview">
+
+                        <img id="profileAvatar"
+                             src="../images/mpsu-logo.png"
+                             alt="Profile Avatar">
+
+                        <label class="avatar-edit-badge"
+                               for="avatarFile">
+
+                            <i class="fa-solid fa-camera"></i>
+
+                        </label>
+
+                        <input type="file"
+                               id="avatarFile"
+                               class="avatar-file-input"
+                               accept="image/*">
+
+                    </div>
+
+
+                    <div class="avatar-upload-text">
+
+                        <h4>
+                            Profile Picture
+                        </h4>
+
+                        <p>
+                            Select an image to preview your avatar.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Profile Fields -->
+
+                <div class="form-grid-2">
+
+
+                    <div class="profile-form-group">
+
+                        <label for="profileName">
+                            Full Name
+                        </label>
+
+                        <input type="text"
+                               id="profileName"
+                               required>
+
+                    </div>
+
+
+                    <div class="profile-form-group">
+
+                        <label for="profileSchoolId">
+                            Instructor ID
+                        </label>
+
+                        <input type="text"
+                               id="profileSchoolId"
+                               class="input-disabled"
+                               disabled>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="profile-form-group">
+
+                    <label for="profileEmail">
+                        Email Address
+                    </label>
+
+                    <input type="email"
+                           id="profileEmail"
+                           required>
+
+                </div>
+
+
+                <div class="form-grid-2">
+
+
+                    <div class="profile-form-group">
+
+                        <label for="profileProgram">
+                            Program
+                        </label>
+
+                        <input type="text"
+                               id="profileProgram"
+                               class="input-disabled"
+                               disabled>
+
+                    </div>
+
+
+                    <div class="profile-form-group">
+
+                        <label for="profileContact">
+                            Contact Number
+                        </label>
+
+                        <input type="text"
+                               id="profileContact">
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- Password -->
+
+                <div class="password-section">
+
+
+                    <div class="section-title">
+
+                        <h4>
+
+                            <i class="fa-solid fa-lock"></i>
+
+                            Change Password
+
+                        </h4>
+
+                    </div>
+
+
+                    <div class="password-fields-wrapper">
+
+
+                        <div class="profile-form-group">
+
+                            <label for="currentPassword">
+                                Current Password
+                            </label>
+
+                            <input type="password"
+                                   id="currentPassword"
+                                   autocomplete="current-password">
+
+                        </div>
+
+
+                        <div class="profile-form-group">
+
+                            <label for="newPassword">
+                                New Password
+                            </label>
+
+                            <input type="password"
+                                   id="newPassword"
+                                   minlength="8"
+                                   autocomplete="new-password">
+
+                        </div>
+
+
+                        <div class="profile-form-group">
+
+                            <label for="confirmPassword">
+                                Confirm New Password
+                            </label>
+
+                            <input type="password"
+                                   id="confirmPassword"
+                                   minlength="8"
+                                   autocomplete="new-password">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="profile-modal-footer">
+
+                <button type="button"
+                        class="btn-cancel"
+                        id="cancelProfile">
+
+                    Cancel
+
+                </button>
+
+
+                <button type="submit"
+                        class="btn-save">
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+
+                    Save Changes
+
+                </button>
+
+            </div>
+
+
+        </form>
 
     </div>
-  </div>
+
+</div>
+
+
+<!-- ======================================================================
+     TOAST CONTAINER
+     ====================================================================== -->
+
+<div class="toast-container"
+     id="toastContainer">
+</div>
+
+
+<!-- ======================================================================
+     JAVASCRIPT
+     ====================================================================== -->
 
 <script>
-  // Sidebar Toggle
-  const viewToggle = document.getElementById("viewToggle");
-  const sidebar = document.querySelector(".sidebar");
-  const mainContent = document.querySelector(".main-content");
 
-  if (viewToggle) {
-    viewToggle.addEventListener("click", function () {
-      sidebar.classList.toggle("collapsed");
-      mainContent.classList.toggle("expanded");
-    });
-  }
+const API_BASE_URL = "http://127.0.0.1:8080/api";
 
-  // Modal Elements
-  const userProfileBtn = document.getElementById("userProfileBtn");
-  const profileModalOverlay = document.getElementById("profileModalOverlay");
-  const closeProfileModal = document.getElementById("closeProfileModal");
-  const cancelProfileModal = document.getElementById("cancelProfileModal");
-  const avatarInput = document.getElementById("avatarInput");
-  const avatarPreview = document.getElementById("avatarPreview");
-  const headerAvatar = document.getElementById("headerAvatar");
-  const profileForm = document.getElementById("profileSettingsForm");
 
-  const currentPasswordInput = document.getElementById("currentPassword");
-  const newPasswordInput = document.getElementById("newPassword");
-  const confirmPasswordInput = document.getElementById("confirmPassword");
+/* ========================================================================
+   AUTH TOKEN
+   ======================================================================== */
 
-  // Toast Notification Helper
-  function showToast(message, type = "success") {
-    const toastContainer = document.getElementById("toastContainer");
-    if (!toastContainer) return;
+const authToken =
+    sessionStorage.getItem("token") ||
+    sessionStorage.getItem("authToken");
 
-    const toast = document.createElement("div");
-    toast.className = `toast toast-${type}`;
-    
-    const iconClass = type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
-    toast.innerHTML = `<i class="fa-solid ${iconClass}"></i> <span>${message}</span>`;
-    
+
+/* ========================================================================
+   CHECK LOGIN
+   ======================================================================== */
+
+if (!authToken) {
+
+    window.location.href = "../index.html";
+
+}
+
+
+/* ========================================================================
+   DOM ELEMENTS
+   ======================================================================== */
+
+const sidebar =
+    document.getElementById("sidebar");
+
+const mainContent =
+    document.getElementById("mainContent");
+
+const sidebarToggle =
+    document.getElementById("sidebarToggle");
+
+const classesGrid =
+    document.getElementById("classesGrid");
+
+const classSearch =
+    document.getElementById("classSearch");
+
+const addClassBtn =
+    document.getElementById("addClassBtn");
+
+const profileModal =
+    document.getElementById("profileModal");
+
+const profileSettingsForm =
+    document.getElementById("profileSettingsForm");
+
+const closeProfileModal =
+    document.getElementById("closeProfileModal");
+
+const cancelProfile =
+    document.getElementById("cancelProfile");
+
+const profileNav =
+    document.getElementById("profileNav");
+
+const logoutNav =
+    document.getElementById("logoutNav");
+
+const avatarFile =
+    document.getElementById("avatarFile");
+
+const profileAvatar =
+    document.getElementById("profileAvatar");
+
+const headerAvatar =
+    document.getElementById("headerAvatar");
+
+const headerInstructorName =
+    document.getElementById("headerInstructorName");
+
+
+let allClasses = [];
+
+
+/* ========================================================================
+   API HEADERS
+   ======================================================================== */
+
+function getHeaders() {
+
+    return {
+
+        "Authorization":
+            `Bearer ${authToken}`,
+
+        "Accept":
+            "application/json"
+
+    };
+
+}
+
+
+/* ========================================================================
+   TOAST
+   ======================================================================== */
+
+function showToast(message, type = "success") {
+
+    const toastContainer =
+        document.getElementById("toastContainer");
+
+    const toast =
+        document.createElement("div");
+
+    toast.className =
+        `toast ${type === "success"
+            ? "toast-success"
+            : "toast-error"}`;
+
+    const icon =
+        type === "success"
+            ? "fa-circle-check"
+            : "fa-circle-exclamation";
+
+    toast.innerHTML = `
+
+        <i class="fa-solid ${icon}"></i>
+
+        <span>${message}</span>
+
+    `;
+
     toastContainer.appendChild(toast);
 
-    setTimeout(() => {
-      toast.classList.add("show");
-    }, 10);
+    requestAnimationFrame(() => {
 
-    setTimeout(() => {
-      toast.classList.remove("show");
-      setTimeout(() => toast.remove(), 300);
-    }, 3500);
-  }
+        toast.classList.add("show");
 
-  // Open Profile Modal
-  if (userProfileBtn) {
-    userProfileBtn.addEventListener("click", () => {
-      profileModalOverlay.classList.add("active");
-      document.body.style.overflow = "hidden"; // Prevents main page from scrolling
     });
-  }
 
-  // Reset Password Inputs on Modal Close
-  function resetPasswordFields() {
-    if (currentPasswordInput) currentPasswordInput.value = "";
-    if (newPasswordInput) newPasswordInput.value = "";
-    if (confirmPasswordInput) confirmPasswordInput.value = "";
-  }
+    setTimeout(() => {
 
-  // Close Modal Handler
-  const closeModal = () => {
-    profileModalOverlay.classList.remove("active");
-    document.body.style.overflow = ""; // Restores main page scrolling
-    resetPasswordFields();
-  };
+        toast.classList.remove("show");
 
-  if (closeProfileModal) closeProfileModal.addEventListener("click", closeModal);
-  if (cancelProfileModal) cancelProfileModal.addEventListener("click", closeModal);
+        setTimeout(() => {
 
-  if (profileModalOverlay) {
-    profileModalOverlay.addEventListener("click", (e) => {
-      if (e.target === profileModalOverlay) closeModal();
-    });
-  }
+            toast.remove();
 
-  // Avatar Image Preview
-  if (avatarInput) {
-    avatarInput.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        if (file.size > 2 * 1024 * 1024) {
-          showToast("Image size exceeds 2MB limit", "error");
-          return;
+        }, 300);
+
+    }, 3000);
+
+}
+
+
+/* ========================================================================
+   LOAD INSTRUCTOR PROFILE
+   ======================================================================== */
+
+async function loadProfile() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/instructor/profile`,
+                {
+                    method: "GET",
+                    headers: getHeaders()
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load instructor profile."
+            );
+
         }
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          avatarPreview.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-  }
 
-  // Form Submission & Password Validation Logic
-  if (profileForm) {
-    profileForm.addEventListener("submit", (e) => {
-      e.preventDefault();
 
-      const email = document.getElementById("instructorEmail").value.trim();
-      const phone = document.getElementById("instructorPhone").value.trim();
+        const data =
+            await response.json();
 
-      if (!email || !phone) {
-        showToast("Please fill in all contact information", "error");
+
+        if (!data.success || !data.user) {
+
+            throw new Error(
+                "Invalid profile response."
+            );
+
+        }
+
+
+        const user =
+            data.user;
+
+
+        headerInstructorName.textContent =
+            user.name || "Instructor";
+
+
+        document.getElementById(
+            "profileName"
+        ).value =
+            user.name || "";
+
+
+        document.getElementById(
+            "profileSchoolId"
+        ).value =
+            user.school_id || "";
+
+
+        document.getElementById(
+            "profileEmail"
+        ).value =
+            user.email || "";
+
+
+        document.getElementById(
+            "profileProgram"
+        ).value =
+            user.program || "";
+
+
+        document.getElementById(
+            "profileContact"
+        ).value =
+            user.contact || "";
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        showToast(
+            "Unable to load profile.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* ========================================================================
+   LOAD CLASSES
+   ======================================================================== */
+
+async function loadClasses() {
+
+    classesGrid.innerHTML = `
+
+        <div class="empty-state">
+
+            <i class="fa-solid fa-spinner fa-spin"></i>
+
+            <h3>
+                Loading classes...
+            </h3>
+
+            <p>
+                Please wait while your classes are loaded.
+            </p>
+
+        </div>
+
+    `;
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/instructor/classes`,
+                {
+                    method: "GET",
+                    headers: getHeaders()
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            sessionStorage.removeItem("token");
+
+            sessionStorage.removeItem("authToken");
+
+            window.location.href =
+                "../index.html";
+
+            return;
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                "Unable to load classes."
+            );
+
+        }
+
+
+        allClasses =
+            Array.isArray(data.classes)
+                ? data.classes
+                : [];
+
+
+        renderClasses(allClasses);
+
+
+    } catch (error) {
+
+        console.error(
+            "Class loading error:",
+            error
+        );
+
+
+        classesGrid.innerHTML = `
+
+            <div class="empty-state">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                <h3>
+                    Unable to load classes
+                </h3>
+
+                <p>
+                    ${escapeHtml(error.message)}
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* ========================================================================
+   RENDER CLASSES
+   ======================================================================== */
+
+function renderClasses(classes) {
+
+    classesGrid.innerHTML = "";
+
+
+    if (!classes.length) {
+
+        classesGrid.innerHTML = `
+
+            <div class="empty-state">
+
+                <i class="fa-solid fa-book-open"></i>
+
+                <h3>
+                    No classes found
+                </h3>
+
+                <p>
+                    You currently have no assigned classes.
+                </p>
+
+            </div>
+
+        `;
+
         return;
-      }
 
-      const currentPass = currentPasswordInput.value.trim();
-      const newPass = newPasswordInput.value.trim();
-      const confirmPass = confirmPasswordInput.value.trim();
+    }
 
-      // Validate password only if any password field has input
-      const isPasswordTouched = currentPass || newPass || confirmPass;
 
-      if (isPasswordTouched) {
-        if (!currentPass) {
-          showToast("Please enter your current password", "error");
-          currentPasswordInput.focus();
-          return;
-        }
+    classes.forEach(course => {
 
-        if (!newPass) {
-          showToast("Please enter a new password", "error");
-          newPasswordInput.focus();
-          return;
-        }
+        const classLink =
+            document.createElement("a");
 
-        if (newPass.length < 6) {
-          showToast("New password must be at least 6 characters long", "error");
-          newPasswordInput.focus();
-          return;
-        }
 
-        if (newPass !== confirmPass) {
-          showToast("New passwords do not match", "error");
-          confirmPasswordInput.focus();
-          return;
-        }
-      }
+        classLink.className =
+            "class-card";
 
-      // Sync avatar picture to header
-      if (headerAvatar && avatarPreview) {
-        headerAvatar.src = avatarPreview.src;
-      }
 
-      showToast("Profile settings saved successfully!", "success");
-      closeModal();
+        classLink.href =
+            `class-content.html?course_id=${encodeURIComponent(course.id)}`;
+
+
+        const code =
+            course.code || "No Code";
+
+
+        const name =
+            course.name || "Unnamed Class";
+
+
+        const program =
+            course.program || "";
+
+
+        const studentCount =
+            course.student_count ??
+            course.learner_count ??
+            course.students_count ??
+            0;
+
+
+        classLink.innerHTML = `
+
+            <div>
+
+                <div class="class-title">
+                    ${escapeHtml(name)}
+                </div>
+
+                <div class="class-code">
+                    ${escapeHtml(code)}
+                </div>
+
+                ${
+                    program
+                        ? `
+                        <div class="class-program">
+                            ${escapeHtml(program)}
+                        </div>
+                        `
+                        : ""
+                }
+
+            </div>
+
+
+            <div class="class-students">
+
+                <i class="fa-solid fa-users"></i>
+
+                ${studentCount} student${studentCount == 1 ? "" : "s"}
+
+            </div>
+
+        `;
+
+
+        classesGrid.appendChild(
+            classLink
+        );
+
     });
-  }
+
+}
+
+
+/* ========================================================================
+   SEARCH CLASSES
+   ======================================================================== */
+
+classSearch.addEventListener(
+    "input",
+    function () {
+
+        const search =
+            this.value
+                .trim()
+                .toLowerCase();
+
+
+        if (!search) {
+
+            renderClasses(allClasses);
+
+            return;
+
+        }
+
+
+        const filtered =
+            allClasses.filter(course => {
+
+                const code =
+                    String(course.code || "")
+                        .toLowerCase();
+
+                const name =
+                    String(course.name || "")
+                        .toLowerCase();
+
+                const program =
+                    String(course.program || "")
+                        .toLowerCase();
+
+
+                return (
+                    code.includes(search) ||
+                    name.includes(search) ||
+                    program.includes(search)
+                );
+
+            });
+
+
+        renderClasses(filtered);
+
+    }
+);
+
+
+/* ========================================================================
+   SIDEBAR TOGGLE
+   ======================================================================== */
+
+sidebarToggle.addEventListener(
+    "click",
+    function () {
+
+        sidebar.classList.toggle(
+            "collapsed"
+        );
+
+        mainContent.classList.toggle(
+            "expanded"
+        );
+
+    }
+);
+
+
+/* ========================================================================
+   PROFILE MODAL
+   ======================================================================== */
+
+function openProfileModal() {
+
+    profileModal.classList.add(
+        "active"
+    );
+
+    loadProfile();
+
+}
+
+
+function closeProfile() {
+
+    profileModal.classList.remove(
+        "active"
+    );
+
+}
+
+
+profileNav.addEventListener(
+    "click",
+    function (event) {
+
+        event.preventDefault();
+
+        openProfileModal();
+
+    }
+);
+
+
+closeProfileModal.addEventListener(
+    "click",
+    closeProfile
+);
+
+
+cancelProfile.addEventListener(
+    "click",
+    closeProfile
+);
+
+
+profileModal.addEventListener(
+    "click",
+    function (event) {
+
+        if (
+            event.target === profileModal
+        ) {
+
+            closeProfile();
+
+        }
+
+    }
+);
+
+
+/* ========================================================================
+   AVATAR PREVIEW
+   ======================================================================== */
+
+avatarFile.addEventListener(
+    "change",
+    function () {
+
+        const file =
+            this.files[0];
+
+
+        if (!file) {
+
+            return;
+
+        }
+
+
+        if (!file.type.startsWith("image/")) {
+
+            showToast(
+                "Please select an image file.",
+                "error"
+            );
+
+            this.value = "";
+
+            return;
+
+        }
+
+
+        const reader =
+            new FileReader();
+
+
+        reader.onload =
+            function (event) {
+
+                profileAvatar.src =
+                    event.target.result;
+
+                headerAvatar.src =
+                    event.target.result;
+
+            };
+
+
+        reader.readAsDataURL(file);
+
+        showToast(
+            "Profile picture preview updated."
+        );
+
+    }
+);
+
+
+/* ========================================================================
+   SAVE PROFILE
+   ======================================================================== */
+
+profileSettingsForm.addEventListener(
+    "submit",
+    async function (event) {
+
+        event.preventDefault();
+
+
+        const name =
+            document.getElementById(
+                "profileName"
+            ).value.trim();
+
+
+        const email =
+            document.getElementById(
+                "profileEmail"
+            ).value.trim();
+
+
+        const contact =
+            document.getElementById(
+                "profileContact"
+            ).value.trim();
+
+
+        const currentPassword =
+            document.getElementById(
+                "currentPassword"
+            ).value;
+
+
+        const newPassword =
+            document.getElementById(
+                "newPassword"
+            ).value;
+
+
+        const confirmPassword =
+            document.getElementById(
+                "confirmPassword"
+            ).value;
+
+
+        if (!name || !email) {
+
+            showToast(
+                "Name and email are required.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            /* ------------------------------------------------------------
+               UPDATE PROFILE
+               ------------------------------------------------------------ */
+
+            const profileResponse =
+                await fetch(
+                    `${API_BASE_URL}/instructor/profile`,
+                    {
+
+                        method: "PUT",
+
+                        headers: {
+                            ...getHeaders(),
+
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            name: name,
+
+                            email: email,
+
+                            contact: contact
+
+                        })
+
+                    }
+                );
+
+
+            const profileData =
+                await profileResponse.json();
+
+
+            if (!profileResponse.ok) {
+
+                throw new Error(
+                    profileData.message ||
+                    "Unable to update profile."
+                );
+
+            }
+
+
+            /* ------------------------------------------------------------
+               UPDATE PASSWORD
+               ------------------------------------------------------------ */
+
+            if (
+                currentPassword ||
+                newPassword ||
+                confirmPassword
+            ) {
+
+
+                if (
+                    !currentPassword ||
+                    !newPassword ||
+                    !confirmPassword
+                ) {
+
+                    throw new Error(
+                        "Please complete all password fields."
+                    );
+
+                }
+
+
+                if (newPassword.length < 8) {
+
+                    throw new Error(
+                        "New password must be at least 8 characters."
+                    );
+
+                }
+
+
+                if (
+                    newPassword !==
+                    confirmPassword
+                ) {
+
+                    throw new Error(
+                        "New passwords do not match."
+                    );
+
+                }
+
+
+                const passwordResponse =
+                    await fetch(
+                        `${API_BASE_URL}/instructor/profile/password`,
+                        {
+
+                            method: "POST",
+
+                            headers: {
+                                ...getHeaders(),
+
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                current_password:
+                                    currentPassword,
+
+                                new_password:
+                                    newPassword,
+
+                                new_password_confirmation:
+                                    confirmPassword
+
+                            })
+
+                        }
+                    );
+
+
+                const passwordData =
+                    await passwordResponse.json();
+
+
+                if (!passwordResponse.ok) {
+
+                    throw new Error(
+                        passwordData.message ||
+                        "Unable to change password."
+                    );
+
+                }
+
+            }
+
+
+            showToast(
+                "Profile updated successfully."
+            );
+
+
+            document.getElementById(
+                "currentPassword"
+            ).value = "";
+
+
+            document.getElementById(
+                "newPassword"
+            ).value = "";
+
+
+            document.getElementById(
+                "confirmPassword"
+            ).value = "";
+
+
+            headerInstructorName.textContent =
+                name;
+
+
+            setTimeout(
+                closeProfile,
+                700
+            );
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            showToast(
+                error.message ||
+                "Unable to save changes.",
+                "error"
+            );
+
+        }
+
+    }
+);
+
+
+/* ========================================================================
+   ADD CLASS BUTTON
+   ======================================================================== */
+
+addClassBtn.addEventListener(
+    "click",
+    function () {
+
+        /*
+         * There is currently no backend endpoint for:
+         *
+         * POST /api/instructor/classes
+         *
+         * Therefore this button does not pretend
+         * that a class was created.
+         */
+
+        showToast(
+            "Class creation is not connected yet.",
+            "error"
+        );
+
+    }
+);
+
+
+/* ========================================================================
+   NOTIFICATIONS
+   ======================================================================== */
+
+function goToNotifications() {
+
+    window.location.href =
+        "notification.html";
+
+}
+
+
+/* ========================================================================
+   LOGOUT
+   ======================================================================== */
+
+logoutNav.addEventListener(
+    "click",
+    function (event) {
+
+        event.preventDefault();
+
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to logout?"
+            );
+
+
+        if (!confirmed) {
+
+            return;
+
+        }
+
+
+        sessionStorage.removeItem(
+            "token"
+        );
+
+        sessionStorage.removeItem(
+            "authToken"
+        );
+
+
+        window.location.href =
+            "../index.html";
+
+    }
+);
+
+
+/* ========================================================================
+   ESCAPE HTML
+   ======================================================================== */
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* ========================================================================
+   INITIALIZE
+   ======================================================================== */
+
+loadProfile();
+
+loadClasses();
+
 </script>
 
 </body>
+
 </html>

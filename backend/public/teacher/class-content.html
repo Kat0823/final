@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPSU ETEEAP LMS - CRIM-101 Intro to Criminology & Community</title>
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts Inter -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    
+    <!-- External Custom Stylesheet -->
+    <link rel="stylesheet" href="../teacher/CSS/classcontent.css">
+</head>
+<body>
+
+   
+  <!-- Top Header Navigation -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo-box">
+        <img src="../images/logo.png" alt="MSPU logo">
+      </div>
+
+      <div class="header-titles">
+        <div class="main-title">MPSU ETEEAP LMS</div>
+        <div class="sub-title">Mountain Province State University</div>
+      </div>
+    </div>
+
+   <div class="header-right">
+      
+      <div class="user-profile" id="userProfileBtn" style="cursor: pointer;">
+        <div class="avatar-ring">
+          <img id="headerAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Macross Arsel Avatar" />
+        </div>
+        <div class="user-info">
+          <span class="user-name">Macross Arsel <i class="fa-solid fa-caret-down"></i></span>
+          <span class="user-role">Instructor</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+   <!-- Main Body Layout -->
+  <div class="app-body">
+
+    <!-- Deep Maroon Sidebar -->
+    <aside class="sidebar">
+      <div class="view-header">
+        <span class="view-label">View</span>
+        <button type="button" class="view-toggle-btn" id="viewToggle" title="Toggle Sidebar">
+            <i class="fa-regular fa-rectangle-list"></i>
+        </button>
+    </div>
+
+        <a href="dashboard.html" class="nav-item">
+          <i class="fa-solid fa-users"></i>
+          <span>Learners Progress</span>
+        </a>
+
+        <!-- Active Menu Item: Classes -->
+        <a href="class.html" class="nav-item active">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>Classes</span>
+        </a>
+
+        <a href="submissions.html" class="nav-item">
+          <i class="fa-regular fa-folder"></i>
+          <span>Submission</span>
+        </a>
+
+        <a href="notification.html" class="nav-item">
+          <i class="fa-regular fa-bell"></i>
+          <span>Notification</span>
+        </a>
+
+        <!-- Logout Item Pushed To Bottom -->
+        <a href="logout.html" class="nav-item logout-bottom">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+    </aside>
+
+        <!-- MAIN CONTENT CANVAS -->
+        <main>
+            <!-- Breadcrumb Navigation -->
+            <nav class="breadcrumbs">
+                <a href="#instructor">Instructor</a>
+                <span>/</span>
+                <a href="class.html">Classes</a>
+                <span>/</span>
+                <span class="active" id="breadcrumbCourse">Loading class...</span>
+            </nav>
+
+            <!-- COURSE BANNER CARD -->
+            <div class="course-card">
+                <div class="course-header">
+                    <div class="course-details">
+                        <div class="badges-group">
+                            <span class="badge badge-green" id="courseCode">Loading...</span>
+                            <span class="badge badge-amber" id="courseTerm">Instructor Class</span>
+                        </div>
+                        <h2 class="course-title" id="courseTitle">Loading class...</h2>
+                        <p class="course-description" id="courseDescription">Loading course information...</p>
+                        
+                        <div class="course-metrics">
+                            <div class="metric-item">
+                                <i class="fa-solid fa-user-graduate" style="color: var(--mpsu-green, #0c4827);"></i>
+                                <span><strong id="studentCount">0</strong> Enrolled Students</span>
+                            </div>
+                            <div class="metric-item">
+                                <i class="fa-solid fa-clock-rotate-left" style="color: #dc2626;"></i>
+                                <span id="pendingCountText"><strong>0</strong> Pending Reviews</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HIDDEN RADIO INPUTS TO CONTROL TABS VIA PURE CSS -->
+            <input type="radio" id="tab-modules" name="main-tabs" class="tab-radio" checked>
+            <input type="radio" id="tab-announcements" name="main-tabs" class="tab-radio">
+            <input type="radio" id="tab-learners" name="main-tabs" class="tab-radio">
+
+            <!-- NAVIGATION TABS HEADER (LABELS LINKED TO RADIOS) -->
+            <div class="tabs-header">
+                <label for="tab-modules" class="tab-btn">
+                    <i class="fa-solid fa-book"></i>
+                    <span>Modules & Syllabus</span>
+                    <span class="tab-badge tab-badge-green">4</span>
+                </label>
+
+                <label for="tab-announcements" class="tab-btn">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <span>Announcements</span>
+                    <span class="tab-badge tab-badge-amber">3</span>
+                </label>
+
+                <label for="tab-learners" class="tab-btn">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Learners Progress</span>
+                    <span class="tab-badge tab-badge-gray">21</span>
+                </label>
+            </div>
+
+            <!-- TAB 1: MODULES CONTENT -->
+            <div class="tab-panel" id="panel-modules">
+                <div class="modules-section">
+                    <div class="module-list-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                        <div>
+                            <h2>Modules</h2>
+                            <p id="moduleCountText">Loading modules...</p>
+                        </div>
+                        <button type="button" class="btn-save" id="addModuleBtn">
+                            <i class="fa-solid fa-plus"></i> Add Module
+                        </button>
+                    </div>
+
+                    <div id="modulesContainer">
+                        <div class="module-card">
+                            <summary>
+                                <div class="module-title-group">
+                                    <span class="unit-badge">...</span>
+                                    <div>
+                                        <h3>Loading modules...</h3>
+                                        <p>Please wait.</p>
+                                    </div>
+                                </div>
+                            </summary>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: ANNOUNCEMENTS CONTENT -->
+            <div class="tab-panel" id="panel-announcements">
+                <h2>Announcements</h2>
+                <ul>
+                    <li><strong>Welcome to the Course!</strong> — Please review the syllabus.</li>
+                    <li><strong>Live Q&A Session Scheduled</strong> — Join us Thursday at 3:00 PM PST.</li>
+                    <li><strong>Module 2 Assignment Released</strong> — Practice exercises are now live.</li>
+                </ul>
+            </div>
+
+            <!-- TAB 3: LEARNERS PROGRESS CONTENT -->
+            <div class="tab-panel" id="panel-learners">
+                <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h2>Learners Progress</h2>
+                    <span style="font-size: 0.85rem; color: var(--text-secondary);">Showing 3 of 21 Enrolled Students</span>
+                </div>
+                
+                <table class="progress-table">
+                    <thead>
+                        <tr>
+                            <th>Learner</th>
+                            <th>Overall Progress</th>
+                            <th style="text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="learnersTableBody">
+                        <!-- Populated dynamically via JS or rendered statically -->
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL: ADD / EDIT MODULE -->
+    <div class="modal-overlay" id="moduleModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <h3 id="moduleModalTitle" class="modal-title">Add Module</h3>
+                    <p class="modal-subtitle">Create or update a module for this class.</p>
+                </div>
+                <button class="modal-close-btn" id="closeModuleModal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="feedback-group">
+                    <label for="moduleTitleInput">Module Title</label>
+                    <input
+                        type="text"
+                        id="moduleTitleInput"
+                        placeholder="Enter module title"
+                    >
+                </div>
+
+                <div class="feedback-group">
+                    <label for="moduleDescriptionInput">Description</label>
+                    <textarea
+                        id="moduleDescriptionInput"
+                        rows="4"
+                        placeholder="Enter module description"
+                    ></textarea>
+                </div>
+
+                <div class="feedback-group">
+                    <label>
+                        <input
+                            type="checkbox"
+                            id="modulePublishedInput"
+                        >
+                        Publish module
+                    </label>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-cancel" id="cancelModuleModal">
+                    Cancel
+                </button>
+
+                <button class="btn-save" id="saveModuleBtn">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Module
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 1: GRADE COMPILED SUBMISSION MODAL -->
+    <div class="modal-overlay" id="gradingModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <h3 id="modalStudentName" class="modal-title">Grade Submission - Alex Johnson</h3>
+                    <p class="modal-subtitle">Compiled Module Activities & Manual Score Assignment</p>
+                </div>
+                <button class="modal-close-btn" id="closeGradingModal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Submitted File Box -->
+                <div class="file-preview-card">
+                    <div class="file-info">
+                        <div class="file-icon"><i class="fa-solid fa-file-zipper"></i></div>
+                        <div>
+                            <div class="file-name" id="modalFileName">AlexJohnson_Module1_Compiled.pdf</div>
+                            <div class="file-meta" id="modalFileMeta">PDF Document • 5.8 MB • Submitted Oct 24, 2026 at 11:42 AM</div>
+                        </div>
+                    </div>
+                    <button class="btn-download-file"><i class="fa-solid fa-download"></i> View Document</button>
+                </div>
+
+                <!-- Dynamic Activity Grading Form -->
+                <div class="grading-section">
+                    <div class="grading-section-header">
+                        <h4><i class="fa-solid fa-list-check" style="color: var(--mpsu-green);"></i> Compiled Activities Breakdown</h4>
+                        <button type="button" class="btn-add-activity" id="btnAddActivityRow">
+                            <i class="fa-solid fa-plus"></i> Add Activity Item
+                        </button>
+                    </div>
+
+                    <p class="help-text">Manually input each activity title contained in the student's compiled submission along with its raw score.</p>
+
+                    <div class="activity-items-list" id="activityItemsContainer">
+                        <!-- Dynamic activity input rows added here -->
+                    </div>
+
+                    <!-- Auto-Calculated Score Summary -->
+                    <div class="summary-box">
+                        <div>
+                            <span class="summary-label">Total Raw Score</span>
+                            <div class="summary-val" id="summaryRaw">0 / 0 pts</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <span class="summary-label">Computed Grade</span>
+                            <div class="summary-val" id="summaryPercent" style="color: var(--mpsu-green);">0%</div>
+                        </div>
+                    </div>
+
+                    <!-- Feedback Textarea -->
+                    <div class="feedback-group">
+                        <label for="instructorFeedback"><i class="fa-solid fa-comment-dots"></i> Instructor Feedback & Comments</label>
+                        <textarea id="instructorFeedback" rows="3" placeholder="Provide constructive feedback for the student..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-cancel" id="cancelGradingModal">Cancel</button>
+                <button class="btn-save" id="saveGradeBtn"><i class="fa-solid fa-floppy-disk"></i> Save & Publish Grade</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: VIEW GRADED MODAL -->
+    <div class="modal-overlay" id="viewGradedModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <h3 id="viewGradedTitle" class="modal-title">Graded Activities - Maria Garcia</h3>
+                    <p class="modal-subtitle">Summary of Evaluated Module Activities</p>
+                </div>
+                <button class="modal-close-btn" id="closeViewModal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="summary-box" style="margin-bottom: 1.25rem;">
+                    <div>
+                        <span class="summary-label">Final Raw Score</span>
+                        <div class="summary-val" id="viewTotalScore">100 / 100 pts</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="summary-label">Overall Grade</span>
+                        <div class="summary-val" id="viewTotalPercent" style="color: var(--mpsu-green);">100%</div>
+                    </div>
+                </div>
+
+                <h4>Itemized Activity Scores</h4>
+                <div id="gradedItemsList" class="graded-items-list">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <div class="feedback-group" style="margin-top: 1rem;">
+                    <label>Instructor Feedback</label>
+                    <div id="viewFeedbackBox" class="feedback-display-box">No feedback provided.</div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-cancel" id="btnEditGrade"><i class="fa-solid fa-pen"></i> Edit Scores</button>
+                <button class="btn-save" id="closeViewModalBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT FOR INTERACTIVITY & DYNAMIC MODALS -->
+    <script>
+        // ========================================
+        // COURSE DATA FROM LARAVEL
+        // ========================================
+
+        const API_BASE_URL = "http://localhost:8000";
+        const authToken = sessionStorage.getItem("authToken");
+
+        const params = new URLSearchParams(window.location.search);
+        const courseId = params.get("course_id");
+
+        let courseData = null;
+        let activeModuleId = null;
+
+        function getAuthHeaders() {
+            return {
+                "Accept": "application/json",
+                "Authorization": `Bearer ${authToken}`
+            };
+        }
+
+        async function loadCourse() {
+
+            if (!authToken) {
+                showToast("Please login first.", "error");
+                return;
+            }
+
+            if (!courseId) {
+                showToast("No course selected.", "error");
+                return;
+            }
+
+            try {
+
+                const response = await fetch(
+                    `${API_BASE_URL}/api/instructor/classes/${courseId}`,
+                    {
+                        method: "GET",
+                        headers: getAuthHeaders()
+                    }
+                );
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message || "Failed to load class."
+                    );
+                }
+
+                courseData = data.course || data;
+
+                document.getElementById("courseCode").textContent =
+                    courseData.code || "Course";
+
+                document.getElementById("courseTitle").textContent =
+                    `${courseData.code || ""} | ${courseData.name || "Class"}`;
+
+                document.getElementById("breadcrumbCourse").textContent =
+                    `${courseData.code || ""} | ${courseData.name || "Class"}`;
+
+                document.getElementById("courseDescription").textContent =
+                    courseData.description || "No course description.";
+
+                const students =
+                    courseData.student_count ??
+                    courseData.students_count ??
+                    (Array.isArray(courseData.students)
+                        ? courseData.students.length
+                        : 0);
+
+                document.getElementById("studentCount").textContent =
+                    students;
+
+                renderModules(
+                    courseData.modules || []
+                );
+
+            } catch (error) {
+
+                console.error("Error loading class:", error);
+
+                showToast(
+                    error.message || "Unable to load class.",
+                    "error"
+                );
+            }
+        }
+
+        function renderModules(modules) {
+
+            const container =
+                document.getElementById("modulesContainer");
+
+            const countText =
+                document.getElementById("moduleCountText");
+
+            container.innerHTML = "";
+
+            countText.textContent =
+                `${modules.length} module${modules.length === 1 ? "" : "s"}`;
+
+            if (!modules.length) {
+
+                container.innerHTML = `
+                    <div class="module-card">
+                        <div class="module-body">
+                            <p>No modules have been added yet.</p>
+                        </div>
+                    </div>
+                `;
+
+                return;
+            }
+
+            modules.forEach(function(module, index) {
+
+                const moduleCard =
+                    document.createElement("details");
+
+                moduleCard.className = "module-card";
+                moduleCard.open = index === 0;
+
+                moduleCard.innerHTML = `
+                    <summary>
+                        <div class="module-title-group">
+                            <span class="unit-badge">
+                                UNIT ${module.module_order || index + 1}
+                            </span>
+
+                            <div>
+                                <h3>${module.name || module.title || "Untitled Module"}</h3>
+                                <p>
+                                    ${module.description || "No description"}
+                                    •
+                                    ${module.is_published ? "Published" : "Draft"}
+                                </p>
+                            </div>
+                        </div>
+
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </summary>
+
+                    <div class="module-body">
+                        <div style="display:flex; justify-content:flex-end; gap:.5rem;">
+                            <button
+                                type="button"
+                                class="resource-btn btn-download"
+                                onclick="openEditModule(${module.id}, '${escapeAttribute(module.name || module.title || "")}', '${escapeAttribute(module.description || "")}', ${module.is_published ? "true" : "false"})">
+                                <i class="fa-solid fa-pen"></i>
+                                Edit Module
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(moduleCard);
+            });
+        }
+
+        function escapeAttribute(value) {
+            return String(value)
+                .replace(/\\/g, "\\\\")
+                .replace(/'/g, "\\'")
+                .replace(/\n/g, "\\n")
+                .replace(/\r/g, "");
+        }
+
+        async function saveModule() {
+
+            const title =
+                document.getElementById("moduleTitleInput").value.trim();
+
+            const description =
+                document.getElementById("moduleDescriptionInput").value.trim();
+
+            const isPublished =
+                document.getElementById("modulePublishedInput").checked;
+
+            if (!title) {
+                showToast("Please enter a module title.", "error");
+                return;
+            }
+
+            try {
+
+                const isEditing = activeModuleId !== null;
+
+                const url = isEditing
+                    ? `${API_BASE_URL}/api/instructor/modules/${activeModuleId}`
+                    : `${API_BASE_URL}/api/instructor/classes/${courseId}/modules`;
+
+                const response = await fetch(url, {
+                    method: isEditing ? "PUT" : "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        description: description,
+                        is_published: isPublished
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message || "Unable to save module."
+                    );
+                }
+
+                showToast(
+                    isEditing
+                        ? "Module updated successfully!"
+                        : "Module added successfully!",
+                    "success"
+                );
+
+                closeModuleModal();
+                await loadCourse();
+
+            } catch (error) {
+
+                console.error("Module save error:", error);
+
+                showToast(
+                    error.message || "Unable to save module.",
+                    "error"
+                );
+            }
+        }
+
+        function openAddModule() {
+
+            activeModuleId = null;
+
+            document.getElementById("moduleModalTitle").textContent =
+                "Add Module";
+
+            document.getElementById("moduleTitleInput").value = "";
+            document.getElementById("moduleDescriptionInput").value = "";
+            document.getElementById("modulePublishedInput").checked = false;
+
+            document.getElementById("moduleModal").classList.add("active");
+        }
+
+        function openEditModule(
+            moduleId,
+            title,
+            description,
+            isPublished
+        ) {
+
+            activeModuleId = moduleId;
+
+            document.getElementById("moduleModalTitle").textContent =
+                "Edit Module";
+
+            document.getElementById("moduleTitleInput").value = title;
+            document.getElementById("moduleDescriptionInput").value =
+                description;
+            document.getElementById("modulePublishedInput").checked =
+                isPublished;
+
+            document.getElementById("moduleModal").classList.add("active");
+        }
+
+        function closeModuleModal() {
+            document.getElementById("moduleModal").classList.remove("active");
+            activeModuleId = null;
+        }
+
+        document.getElementById("addModuleBtn").addEventListener(
+            "click",
+            openAddModule
+        );
+
+        document.getElementById("saveModuleBtn").addEventListener(
+            "click",
+            saveModule
+        );
+
+        document.getElementById("closeModuleModal").addEventListener(
+            "click",
+            closeModuleModal
+        );
+
+        document.getElementById("cancelModuleModal").addEventListener(
+            "click",
+            closeModuleModal
+        );
+
+        // Load the selected class when the page opens.
+        loadCourse();
+
+        // --- GRADING MODAL FUNCTIONS ---
+        function openGradingModal(index) {
+            activeStudentIndex = index;
+            const student = studentsData[index];
+
+            document.getElementById('modalStudentName').textContent = `Grade Submission - ${student.name}`;
+            document.getElementById('modalFileName').textContent = student.fileName;
+            document.getElementById('modalFileMeta').textContent = student.fileMeta;
+            document.getElementById('instructorFeedback').value = student.feedback || '';
+
+            const container = document.getElementById('activityItemsContainer');
+            container.innerHTML = '';
+
+            if (student.activities && student.activities.length > 0) {
+                student.activities.forEach(act => addActivityRow(act.title, act.raw, act.max));
+            } else {
+                addActivityRow("Activity 1: ", 0, 50);
+            }
+
+            calculateTotals();
+            document.getElementById('gradingModal').classList.add('active');
+        }
+
+        function addActivityRow(title = '', raw = 0, max = 50) {
+            const container = document.getElementById('activityItemsContainer');
+            const row = document.createElement('div');
+            row.className = 'activity-item-row';
+            row.innerHTML = `
+                <div class="form-group flex-2">
+                    <label>Activity Title</label>
+                    <input type="text" class="act-title-input" value="${title}" placeholder="e.g. Activity 1: Theory Comparison">
+                </div>
+                <div class="form-group flex-1">
+                    <label>Raw Score</label>
+                    <input type="number" class="act-raw-input" value="${raw}" min="0" oninput="calculateTotals()">
+                </div>
+                <div class="form-group flex-1">
+                    <label>Max Score</label>
+                    <input type="number" class="act-max-input" value="${max}" min="1" oninput="calculateTotals()">
+                </div>
+                <button type="button" class="btn-remove-row" onclick="removeActivityRow(this)"><i class="fa-solid fa-trash-can"></i></button>
+            `;
+            container.appendChild(row);
+            calculateTotals();
+        }
+
+        function removeActivityRow(btn) {
+            const row = btn.closest('.activity-item-row');
+            row.remove();
+            calculateTotals();
+        }
+
+        function calculateTotals() {
+            const rows = document.querySelectorAll('.activity-item-row');
+            let totalRaw = 0;
+            let totalMax = 0;
+
+            rows.forEach(row => {
+                const rawVal = parseFloat(row.querySelector('.act-raw-input').value) || 0;
+                const maxVal = parseFloat(row.querySelector('.act-max-input').value) || 0;
+                totalRaw += rawVal;
+                totalMax += maxVal;
+            });
+
+            const percent = totalMax > 0 ? Math.round((totalRaw / totalMax) * 100) : 0;
+            document.getElementById('summaryRaw').textContent = `${totalRaw} / ${totalMax} pts`;
+            document.getElementById('summaryPercent').textContent = `${percent}%`;
+        }
+
+        function saveGrade() {
+            if (activeStudentIndex === null) return;
+            const student = studentsData[activeStudentIndex];
+
+            const rows = document.querySelectorAll('.activity-item-row');
+            const activities = [];
+            let totalRaw = 0;
+            let totalMax = 0;
+
+            rows.forEach(row => {
+                const title = row.querySelector('.act-title-input').value.trim() || 'Untitled Activity';
+                const raw = parseFloat(row.querySelector('.act-raw-input').value) || 0;
+                const max = parseFloat(row.querySelector('.act-max-input').value) || 0;
+                activities.push({ title, raw, max });
+                totalRaw += raw;
+                totalMax += max;
+            });
+
+            student.activities = activities;
+            student.feedback = document.getElementById('instructorFeedback').value;
+            student.progress = totalMax > 0 ? Math.round((totalRaw / totalMax) * 100) : 0;
+            student.hasPending = false;
+            student.pendingCount = 0;
+
+            closeGradingModal();
+            renderStudentsTable();
+        }
+
+        function closeGradingModal() {
+            document.getElementById('gradingModal').classList.remove('active');
+            activeStudentIndex = null;
+        }
+
+        // --- VIEW GRADED MODAL FUNCTIONS ---
+        function openViewGradedModal(index) {
+            activeStudentIndex = index;
+            const student = studentsData[index];
+
+            document.getElementById('viewGradedTitle').textContent = `Graded Activities - ${student.name}`;
+
+            let totalRaw = 0;
+            let totalMax = 0;
+            const listContainer = document.getElementById('gradedItemsList');
+            listContainer.innerHTML = '';
+
+            if (student.activities && student.activities.length > 0) {
+                student.activities.forEach(act => {
+                    totalRaw += act.raw;
+                    totalMax += act.max;
+                    const item = document.createElement('div');
+                    item.className = 'graded-item-row';
+                    item.innerHTML = `
+                        <span class="graded-item-title">${act.title}</span>
+                        <span class="graded-item-score">${act.raw} / ${act.max} pts</span>
+                    `;
+                    listContainer.appendChild(item);
+                });
+            } else {
+                listContainer.innerHTML = '<p style="font-size: 0.85rem; color: var(--text-muted);">No graded activities yet.</p>';
+            }
+
+            const percent = totalMax > 0 ? Math.round((totalRaw / totalMax) * 100) : student.progress;
+            document.getElementById('viewTotalScore').textContent = `${totalRaw} / ${totalMax} pts`;
+            document.getElementById('viewTotalPercent').textContent = `${percent}%`;
+            document.getElementById('viewFeedbackBox').textContent = student.feedback || 'No comments provided.';
+
+            document.getElementById('viewGradedModal').classList.add('active');
+        }
+
+        function closeViewGradedModal() {
+            document.getElementById('viewGradedModal').classList.remove('active');
+        }
+
+        // Event Listeners Initialization
+        document.getElementById('btnAddActivityRow').addEventListener('click', () => addActivityRow());
+        document.getElementById('closeGradingModal').addEventListener('click', closeGradingModal);
+        document.getElementById('cancelGradingModal').addEventListener('click', closeGradingModal);
+        document.getElementById('saveGradeBtn').addEventListener('click', saveGrade);
+
+        document.getElementById('closeViewModal').addEventListener('click', closeViewGradedModal);
+        document.getElementById('closeViewModalBtn').addEventListener('click', closeViewGradedModal);
+        document.getElementById('btnEditGrade').addEventListener('click', () => {
+            closeViewGradedModal();
+            openGradingModal(activeStudentIndex);
+        });
+
+        // Initialize App
+        renderStudentsTable();
+    </script>
+      
+    <script>
+        const viewToggle =
+            document.getElementById("viewToggle");
+        const sidebar =
+            document.querySelector(".sidebar");
+        const mainContent =
+            document.querySelector(".main-content");
+        viewToggle.addEventListener("click", function () {
+            sidebar.classList.toggle("collapsed");
+            mainContent.classList.toggle("expanded");
+        });
+    </script>
+
+<!-- INSTRUCTOR PROFILE SETTINGS MODAL -->
+  <div class="profile-modal-overlay" id="profileModalOverlay">
+    <div class="profile-modal-card">
+      
+      <!-- Modal Header -->
+      <div class="profile-modal-header">
+        <div>
+          <h3 class="profile-modal-title">Instructor Profile Settings</h3>
+        </div>
+        <button class="profile-modal-close" id="closeProfileModal" aria-label="Close">&times;</button>
+      </div>
+
+      <!-- Modal Body Form -->
+      <form id="profileSettingsForm">
+        <div class="profile-modal-body">
+          
+          <!-- Photo Upload Section -->
+          <div class="avatar-upload-section">
+            <div class="avatar-upload-preview">
+              <img id="avatarPreview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Instructor Profile Picture">
+              <label for="avatarInput" class="avatar-edit-badge" title="Change Photo">
+                <i class="fa-solid fa-camera"></i>
+              </label>
+              <input type="file" id="avatarInput" accept="image/*" class="avatar-file-input">
+            </div>
+            <div class="avatar-upload-text">
+              <h4>Profile Photo</h4>
+            </div>
+          </div>
+
+          <!-- Read-Only Grid: Instructor ID & Full Name -->
+          <div class="form-grid-2">
+            <div class="profile-form-group">
+              <label for="instructorId">Instructor ID</label>
+              <input type="text" id="instructorId" value="INST-2024-008" disabled class="input-disabled">
+            </div>
+            <div class="profile-form-group">
+              <label for="instructorName">Full Name</label>
+              <input type="text" id="instructorName" value="Macross Arsel" disabled class="input-disabled">
+            </div>
+          </div>
+
+          <!-- Editable Fields: Email & Phone -->
+          <div class="profile-form-group">
+            <label for="instructorEmail">Email Address</label>
+            <input type="email" id="instructorEmail" value="macross.arsel@mpsu.edu.ph" required>
+          </div>
+
+          <div class="profile-form-group">
+            <label for="instructorPhone">Mobile Number</label>
+            <input type="tel" id="instructorPhone" value="+63 917 123 4567" placeholder="+63 9XX XXX XXXX" required>
+          </div>
+
+          <!-- Optional Change Password Accordion -->
+          <div class="password-section" id="passwordSection">
+            <div class="password-toggle-header" id="passwordToggleBtn">
+              <h4><i class="fa-solid fa-lock"></i> Change Password (Optional)</h4>
+              <i class="fa-solid fa-chevron-down chevron-icon"></i>
+            </div>
+            <div class="password-fields">
+              <div class="profile-form-group">
+                <label for="currentPassword">Current Password</label>
+                <input type="password" id="currentPassword" placeholder="Enter current password">
+              </div>
+              <div class="profile-form-group">
+                <label for="newPassword">New Password</label>
+                <input type="password" id="newPassword" placeholder="Enter new password (min. 6 characters)">
+              </div>
+              <div class="profile-form-group">
+                <label for="confirmPassword">Confirm New Password</label>
+                <input type="password" id="confirmPassword" placeholder="Confirm new password">
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Modal Footer Actions -->
+        <div class="profile-modal-footer">
+          <button type="button" class="btn-cancel" id="cancelProfileModal">Cancel</button>
+          <button type="submit" class="btn-save">Save Changes</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+   <!-- -->
+  <script>
+    // Sidebar Toggle
+   const viewToggle =
+            document.getElementById("viewToggle");
+        const sidebar =
+            document.querySelector(".sidebar");
+        const mainContent =
+            document.querySelector(".main-content");
+        viewToggle.addEventListener("click", function () {
+            sidebar.classList.toggle("collapsed");
+            mainContent.classList.toggle("expanded");
+        });
+    
+
+    // Modal Elements
+    const userProfileBtn = document.getElementById("userProfileBtn");
+    const profileModalOverlay = document.getElementById("profileModalOverlay");
+    const closeProfileModal = document.getElementById("closeProfileModal");
+    const cancelProfileModal = document.getElementById("cancelProfileModal");
+    const avatarInput = document.getElementById("avatarInput");
+    const avatarPreview = document.getElementById("avatarPreview");
+    const headerAvatar = document.getElementById("headerAvatar");
+    const profileForm = document.getElementById("profileSettingsForm");
+
+    // Password Accordion Elements
+    const passwordSection = document.getElementById("passwordSection");
+    const passwordToggleBtn = document.getElementById("passwordToggleBtn");
+    const currentPasswordInput = document.getElementById("currentPassword");
+    const newPasswordInput = document.getElementById("newPassword");
+    const confirmPasswordInput = document.getElementById("confirmPassword");
+
+    // Toast Notification Helper
+    function showToast(message, type = "success") {
+      const toastContainer = document.getElementById("toastContainer");
+      const toast = document.createElement("div");
+      toast.className = `toast toast-${type}`;
+      
+      const iconClass = type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
+      toast.innerHTML = `<i class="fa-solid ${iconClass}"></i> <span>${message}</span>`;
+      
+      toastContainer.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.add("show");
+      }, 10);
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // Toggle Change Password Accordion
+    if (passwordToggleBtn) {
+      passwordToggleBtn.addEventListener("click", () => {
+        passwordSection.classList.toggle("open");
+      });
+    }
+
+    // Open Profile Modal
+    if (userProfileBtn) {
+      userProfileBtn.addEventListener("click", () => {
+        profileModalOverlay.classList.add("active");
+      });
+    }
+
+    // Reset Form Fields
+    function resetPasswordFields() {
+      passwordSection.classList.remove("open");
+      currentPasswordInput.value = "";
+      newPasswordInput.value = "";
+      confirmPasswordInput.value = "";
+    }
+
+    // Close Modal Handler
+    const closeModal = () => {
+      profileModalOverlay.classList.remove("active");
+      resetPasswordFields();
+    };
+
+    if (closeProfileModal) closeProfileModal.addEventListener("click", closeModal);
+    if (cancelProfileModal) cancelProfileModal.addEventListener("click", closeModal);
+
+    // Close Modal on backdrop click
+    profileModalOverlay.addEventListener("click", (e) => {
+      if (e.target === profileModalOverlay) closeModal();
+    });
+
+    // Avatar Image Preview
+    avatarInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        if (file.size > 2 * 1024 * 1024) {
+          showToast("Image size exceeds 2MB limit", "error");
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          avatarPreview.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Form Submission & Interactive Password Validation
+    profileForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("instructorEmail").value.trim();
+      const phone = document.getElementById("instructorPhone").value.trim();
+
+      if (!email || !phone) {
+        showToast("Please fill in all contact information", "error");
+        return;
+      }
+
+      const currentPass = currentPasswordInput.value.trim();
+      const newPass = newPasswordInput.value.trim();
+      const confirmPass = confirmPasswordInput.value.trim();
+
+      // Password Validation Logic
+      const isPasswordTouched = currentPass || newPass || confirmPass;
+
+      if (isPasswordTouched) {
+        // Automatically open section if error occurs
+        if (!passwordSection.classList.contains("open")) {
+          passwordSection.classList.add("open");
+        }
+
+        if (!currentPass) {
+          showToast("Please enter your current password", "error");
+          currentPasswordInput.focus();
+          return;
+        }
+
+        if (!newPass) {
+          showToast("Please enter a new password", "error");
+          newPasswordInput.focus();
+          return;
+        }
+
+        if (newPass.length < 6) {
+          showToast("New password must be at least 6 characters long", "error");
+          newPasswordInput.focus();
+          return;
+        }
+
+        if (newPass !== confirmPass) {
+          showToast("New passwords do not match", "error");
+          confirmPasswordInput.focus();
+          return;
+        }
+      }
+
+      // Sync avatar picture to header
+      headerAvatar.src = avatarPreview.src;
+
+      showToast("Profile settings saved successfully!", "success");
+      closeModal();
+    });
+  </script>
+</body>
+</html>

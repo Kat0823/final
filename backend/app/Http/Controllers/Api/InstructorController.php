@@ -3,77 +3,476 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Submission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 
 class InstructorController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | VIEW SUBMISSIONS
+    |--------------------------------------------------------------------------
+    */
+
     public function submissions(Request $request): JsonResponse
     {
         $instructor = $request->user();
 
+        /*
+        |--------------------------------------------------------------------------
+        | CHECK ROLE
+        |--------------------------------------------------------------------------
+        */
+
         if ($instructor->role !== 'instructor') {
+
             return response()->json([
+
                 'success' => false,
-                'message' => 'Only instructors can view submissions.',
+
+                'message' =>
+                    'Only instructors can view submissions.',
+
             ], 403);
         }
 
-        $submissions = \App\Models\Submission::with([
+
+        /*
+        |--------------------------------------------------------------------------
+        | GET SUBMISSIONS
+        |--------------------------------------------------------------------------
+        |
+        | Only submissions belonging to courses handled
+        | by the logged-in instructor are returned.
+        |
+        */
+
+        $submissions = Submission::with([
+
             'learner',
+
             'module.course',
-            'grade'
+
+            'grade',
+
         ])
-        ->whereHas('module.course', function ($query) use ($instructor) {
-            $query->where('instructor_id', $instructor->id);
-        })
+        ->whereHas(
+            'module.course',
+            function ($query) use ($instructor) {
+
+                $query->where(
+                    'instructor_id',
+                    $instructor->id
+                );
+
+            }
+        )
         ->latest('submitted_at')
-        ->get()
-        ->map(function ($submission) {
+        ->get();
 
-            return [
-                'id' => $submission->id,
 
-                'learner' => [
-                    'id' => $submission->learner->id,
-                    'name' => $submission->learner->name,
-                    'school_id' => $submission->learner->school_id,
-                ],
+        /*
+        |--------------------------------------------------------------------------
+        | FORMAT DATA FOR FRONTEND
+        |--------------------------------------------------------------------------
+        */
 
-                'course' => [
-                    'id' => $submission->module->course->id,
-                    'name' => $submission->module->course->name,
-                    'code' => $submission->module->course->code,
-                ],
+        $submissions = $submissions->map(
+            function ($submission) {
 
-                'module' => [
-                    'id' => $submission->module->id,
-                    'name' => $submission->module->name,
-                ],
+                /*
+                |--------------------------------------------------------------------------
+                | CALCULATE PERCENTAGE
+                |--------------------------------------------------------------------------
+                */
 
-                'file_name' => $submission->file_name,
+                $percentage = null;
 
-                'path' => $submission->path,
+                if ($submission->grade) {
 
-                'comment' => $submission->comment,
+                    $maxScore =
+                        (float) $submission
+                            ->grade
+                            ->max_score;
 
-                'submitted_at' => $submission->submitted_at,
+                    $score =
+                        (float) $submission
+                            ->grade
+                            ->score;
 
-                'status' => $submission->status,
 
-                'grade' => $submission->grade
-                    ? [
-                        'score' => $submission->grade->score,
-                        'max_score' => $submission->grade->max_score,
-                        'feedback' => $submission->grade->feedback,
-                    ]
-                    : null,
-            ];
-        });
+                    if ($maxScore > 0) {
+
+                        $percentage = round(
+                            ($score / $maxScore) * 100,
+                            2
+                        );
+
+                    }
+                    else {
+
+                        $percentage = 0;
+
+                    }
+
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | RETURN FRONTEND DATA
+                |--------------------------------------------------------------------------
+                */
+
+                return [
+
+                    'id' =>
+                        $submission->id,
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | LEARNER
+                    |--------------------------------------------------------------------------
+                    */
+
+                    'learner' => [
+
+                        'id' =>
+                            $submission
+                                ->learner
+                                ->id,
+
+                        'school_id' =>
+                            $submission
+                                ->learner
+                                ->school_id,
+
+                        'name' =>
+                            $submission
+                                ->learner
+                                ->name,
+
+                    ],
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | COURSE
+                    |--------------------------------------------------------------------------
+                    */
+
+                    'course' => [
+
+                        'id' =>
+                            $submission
+                                ->module
+                                ->course
+                                ->id,
+
+                        'name' =>
+                            $submission
+                                ->module
+                                ->course
+                                ->name,
+
+                        'code' =>
+                            $submission
+                                ->module
+                                ->course
+                                ->code,
+
+                    ],
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | MODULE
+                    |--------------------------------------------------------------------------
+                    |
+                    | Database column:
+                    | modules.title
+                    |
+                    | Frontend field:
+                    | module.name
+                    |
+                    */
+
+                    'module' => [
+
+                        'id' =>
+                            $submission
+                                ->module
+                                ->id,
+
+                        'name' =>
+                            $submission
+                                ->module
+                                ->title,
+
+                    ],
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | SUBMISSION FILE
+                    |--------------------------------------------------------------------------
+                    */
+
+                    'file_name' =>
+                        $submission->file_name,
+
+                    'file_path' =>
+                        $submission->file_path,
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | LEARNER COMMENT
+                    |--------------------------------------------------------------------------
+                    */
+
+                    'comment' =>
+                        $submission->comment,
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | SUBMISSION DATE
+                    |--------------------------------------------------------------------------
+                    */
+
+                    'submitted_at' =>
+                        $submission->submitted_at,
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | STATUS
+                    |--------------------------------------------------------------------------
+                    */
+
+                    'status' =>
+                        $submission->status,
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | GRADE
+                    |--------------------------------------------------------------------------
+                    */
+
+                    'grade' =>
+                        $submission->grade
+
+                            ? [
+
+                                'score' =>
+                                    $submission
+                                        ->grade
+                                        ->score,
+
+                                'max_score' =>
+                                    $submission
+                                        ->grade
+                                        ->max_score,
+
+                                'percentage' =>
+                                    $percentage,
+
+                                'feedback' =>
+                                    $submission
+                                        ->grade
+                                        ->feedback,
+
+                            ]
+
+                            : null,
+
+                ];
+
+            }
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RETURN RESPONSE
+        |--------------------------------------------------------------------------
+        */
 
         return response()->json([
+
             'success' => true,
-            'submissions' => $submissions,
+
+            'submissions' =>
+                $submissions,
+
         ]);
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | VIEW SUBMISSION FILE
+    |--------------------------------------------------------------------------
+    */
+
+    public function file(
+        Request $request,
+        $submissionId
+    ): Response {
+
+        $instructor = $request->user();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CHECK ROLE
+        |--------------------------------------------------------------------------
+        */
+
+        if ($instructor->role !== 'instructor') {
+
+            abort(
+                403,
+                'Only instructors can access submission files.'
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FIND SUBMISSION
+        |--------------------------------------------------------------------------
+        */
+
+        $submission =
+            Submission::with(
+                'module.course'
+            )
+            ->find($submissionId);
+
+
+        if (!$submission) {
+
+            abort(
+                404,
+                'Submission not found.'
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CHECK OWNERSHIP
+        |--------------------------------------------------------------------------
+        |
+        | The instructor can only access submissions
+        | belonging to their own courses.
+        |
+        */
+
+        if (
+            !$submission->module ||
+            !$submission->module->course ||
+            $submission
+                ->module
+                ->course
+                ->instructor_id !==
+                $instructor->id
+        ) {
+
+            abort(
+                403,
+                'You are not authorized to access this submission.'
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CHECK FILE
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            !$submission->file_path ||
+            !Storage::disk('local')->exists(
+                $submission->file_path
+            )
+        ) {
+
+            abort(
+                404,
+                'Submission file not found.'
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | GET FILE PATH
+        |--------------------------------------------------------------------------
+        */
+
+        $filePath =
+            Storage::disk('local')->path(
+                $submission->file_path
+            );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | GET MIME TYPE
+        |--------------------------------------------------------------------------
+        */
+
+        $mimeType =
+            Storage::disk('local')->mimeType(
+                $submission->file_path
+            )
+            ?? 'application/octet-stream';
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | GET ORIGINAL FILE NAME
+        |--------------------------------------------------------------------------
+        */
+
+        $fileName =
+            $submission->file_name
+            ?: basename(
+                $submission->file_path
+            );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RETURN FILE
+        |--------------------------------------------------------------------------
+        */
+
+        return response()->file(
+
+            $filePath,
+
+            [
+
+                'Content-Type' =>
+                    $mimeType,
+
+                'Content-Disposition' =>
+                    'inline; filename="' .
+                    addslashes($fileName) .
+                    '"',
+
+            ]
+
+        );
     }
 }

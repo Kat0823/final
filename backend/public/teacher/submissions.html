@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MPSU ETEEAP LMS - Instructor Submissions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../teacher/CSS/submission.css" />
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo-box">
+        <img src="../images/logo.png" alt="MSPU logo">
+      </div> 
+
+      <div class="header-titles">
+        <div class="main-title">MPSU ETEEAP LMS</div>
+        <div class="sub-title">Mountain Province State University</div>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="user-profile" id="userProfileBtn">
+        <div class="avatar-ring">
+          <img id="headerAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Macross Arsel Avatar" />
+        </div>
+        <div class="user-info">
+          <span class="user-name">Macross Arsel <i class="fa-solid fa-caret-down"></i></span>
+          <span class="user-role">Instructor</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Body Layout -->
+  <div class="app-body">
+
+    <!-- Deep Maroon Sidebar -->
+    <aside class="sidebar">
+      <div class="view-header">
+        <span class="view-label">View</span>
+        <button type="button" class="view-toggle-btn" id="viewToggle" title="Toggle Sidebar">
+            <i class="fa-regular fa-rectangle-list"></i>
+        </button>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="dashboard.html" class="nav-item">
+          <i class="fa-solid fa-users"></i>
+          <span>Learners Progress</span>
+        </a>
+
+        <a href="class.html" class="nav-item">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>Classes</span>
+        </a>
+
+        <!-- Active Menu Item: Submissions -->
+        <a href="submissions.html" class="nav-item active">
+          <i class="fa-regular fa-folder"></i>
+          <span>Submission</span>
+        </a>
+
+        <a href="notification.html" class="nav-item">
+          <i class="fa-regular fa-bell"></i>
+          <span>Notification</span>
+        </a>
+
+        <!-- Logout Item Pushed To Bottom -->
+        <a href="logout.html" class="nav-item logout-bottom">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Content Area -->
+    <main class="main-content">
+      <h1 class="page-title">Submissions</h1>
+
+      <!-- Top Search Control -->
+      <div class="search-container">
+        <div class="search-wrapper">
+          <div class="search-icon-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </div>
+          <div class="dropdown-input-wrapper">
+            <span class="dropdown-label">dropdown</span>
+            <div class="input-with-arrow">
+              <input type="text" id="searchInput" placeholder="Search submission..." />
+              <i class="fa-solid fa-chevron-down arrow-icon"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Bordered Card Container -->
+      <div class="table-card">
+        <table class="submissions-table">
+          <thead>
+            <tr>
+              <th>Student ID</th>
+              <th>Learner Name</th>
+              <th>Class Code</th>
+              <th>Module / Activity</th>
+              <th>Date Submitted</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="submissionsTbody">
+            <!-- Dynamic Submissions Rows Render Here -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- INSTRUCTOR PROFILE SETTINGS MODAL -->
+  <div class="profile-modal-overlay" id="profileModalOverlay">
+    <div class="profile-modal-card">
+      
+      <!-- Modal Header -->
+      <div class="profile-modal-header">
+        <div>
+          <h3 class="profile-modal-title">Instructor Profile Settings</h3>
+        </div>
+        <button class="profile-modal-close" id="closeProfileModal" aria-label="Close">&times;</button>
+      </div>
+
+      <!-- Modal Body Form -->
+      <form id="profileSettingsForm">
+        <div class="profile-modal-body">
+          
+          <!-- Photo Upload Section -->
+          <div class="avatar-upload-section">
+            <div class="avatar-upload-preview">
+              <img id="avatarPreview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Instructor Profile Picture">
+              <label for="avatarInput" class="avatar-edit-badge" title="Change Photo">
+                <i class="fa-solid fa-camera"></i>
+              </label>
+              <input type="file" id="avatarInput" accept="image/*" class="avatar-file-input">
+            </div>
+            <div class="avatar-upload-text">
+              <h4>Profile Photo</h4>
+            </div>
+          </div>
+
+          <!-- Read-Only Grid: Instructor ID & Full Name -->
+          <div class="form-grid-2">
+            <div class="profile-form-group">
+              <label for="instructorId">Instructor ID</label>
+              <input type="text" id="instructorId" value="INST-2024-008" disabled class="input-disabled">
+            </div>
+            <div class="profile-form-group">
+              <label for="instructorName">Full Name</label>
+              <input type="text" id="instructorName" value="Macross Arsel" disabled class="input-disabled">
+            </div>
+          </div>
+
+          <!-- Editable Fields: Email & Phone -->
+          <div class="profile-form-group">
+            <label for="instructorEmail">Email Address</label>
+            <input type="email" id="instructorEmail" value="macross.arsel@mpsu.edu.ph" required>
+          </div>
+
+          <div class="profile-form-group">
+            <label for="instructorPhone">Mobile Number</label>
+            <input type="tel" id="instructorPhone" value="+63 917 123 4567" placeholder="+63 9XX XXX XXXX" required>
+          </div>
+
+          <!-- Optional Change Password Accordion -->
+          <div class="password-section" id="passwordSection">
+            <div class="password-toggle-header" id="passwordToggleBtn">
+              <h4><i class="fa-solid fa-lock"></i> Change Password (Optional)</h4>
+              <i class="fa-solid fa-chevron-down chevron-icon"></i>
+            </div>
+            <div class="password-fields">
+              <div class="profile-form-group">
+                <label for="currentPassword">Current Password</label>
+                <input type="password" id="currentPassword" placeholder="Enter current password">
+              </div>
+              <div class="profile-form-group">
+                <label for="newPassword">New Password</label>
+                <input type="password" id="newPassword" placeholder="Enter new password (min. 6 characters)">
+              </div>
+              <div class="profile-form-group">
+                <label for="confirmPassword">Confirm New Password</label>
+                <input type="password" id="confirmPassword" placeholder="Confirm new password">
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Modal Footer Actions -->
+        <div class="profile-modal-footer">
+          <button type="button" class="btn-cancel" id="cancelProfileModal">Cancel</button>
+          <button type="submit" class="btn-save">Save Changes</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- GRADING / VIEW MODAL -->
+  <div class="grading-modal-overlay" id="gradingModalOverlay">
+    <div class="grading-modal-card">
+      <div class="grading-modal-header">
+        <h3 id="gradingModalTitle">Grade Submission</h3>
+        <button type="button" class="grading-modal-close" id="closeGradingModal">&times;</button>
+      </div>
+      <form id="gradingForm">
+        <div class="grading-modal-body">
+          <input type="hidden" id="gradingSubmissionId" />
+          
+          <div class="grading-info-group">
+            <strong>Learner:</strong> <span id="modalLearnerName">--</span>
+          </div>
+          <div class="grading-info-group">
+            <strong>Module:</strong> <span id="modalModuleName">--</span>
+          </div>
+          <div class="grading-info-group">
+            <strong>Submitted File:</strong> 
+            <a id="modalFileLink" href="#" target="_blank" class="grading-file-link">--</a>
+          </div>
+
+          <div class="grading-form-row">
+            <div class="grading-form-group">
+              <label for="modalScore">Score:</label>
+              <input type="number" id="modalScore" min="0" max="100" required />
+            </div>
+            <div class="grading-form-group">
+              <label for="modalMaxScore">Maximum:</label>
+              <input type="number" id="modalMaxScore" value="100" disabled />
+            </div>
+          </div>
+
+          <div class="grading-form-group">
+            <label for="modalFeedback">Feedback:</label>
+            <textarea id="modalFeedback" rows="4" placeholder="Enter feedback here..."></textarea>
+          </div>
+        </div>
+
+        <div class="grading-modal-footer">
+          <button type="button" class="btn-cancel" id="cancelGradingModal">Cancel</button>
+          <button type="submit" class="btn-save" id="saveGradeBtn">Save Grade</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    // Sidebar Toggle
+    const viewToggle = document.getElementById("viewToggle");
+    const sidebar = document.querySelector(".sidebar");
+    const mainContent = document.querySelector(".main-content");
+    
+    if (viewToggle) {
+      viewToggle.addEventListener("click", function () {
+        sidebar.classList.toggle("collapsed");
+        mainContent.classList.toggle("expanded");
+      });
+    }
+
+    // Modal Elements - Profile
+    const userProfileBtn = document.getElementById("userProfileBtn");
+    const profileModalOverlay = document.getElementById("profileModalOverlay");
+    const closeProfileModal = document.getElementById("closeProfileModal");
+    const cancelProfileModal = document.getElementById("cancelProfileModal");
+    const avatarInput = document.getElementById("avatarInput");
+    const avatarPreview = document.getElementById("avatarPreview");
+    const headerAvatar = document.getElementById("headerAvatar");
+    const profileForm = document.getElementById("profileSettingsForm");
+
+    // Password Accordion Elements
+    const passwordSection = document.getElementById("passwordSection");
+    const passwordToggleBtn = document.getElementById("passwordToggleBtn");
+    const currentPasswordInput = document.getElementById("currentPassword");
+    const newPasswordInput = document.getElementById("newPassword");
+    const confirmPasswordInput = document.getElementById("confirmPassword");
+
+    // Grading Modal Elements
+    const gradingModalOverlay = document.getElementById("gradingModalOverlay");
+    const closeGradingModal = document.getElementById("closeGradingModal");
+    const cancelGradingModal = document.getElementById("cancelGradingModal");
+    const gradingForm = document.getElementById("gradingForm");
+    const gradingSubmissionId = document.getElementById("gradingSubmissionId");
+    const modalLearnerName = document.getElementById("modalLearnerName");
+    const modalModuleName = document.getElementById("modalModuleName");
+    const modalFileLink = document.getElementById("modalFileLink");
+    const modalScore = document.getElementById("modalScore");
+    const modalFeedback = document.getElementById("modalFeedback");
+    const saveGradeBtn = document.getElementById("saveGradeBtn");
+    const gradingModalTitle = document.getElementById("gradingModalTitle");
+
+    // Table Data State
+    let allSubmissions = [];
+
+    // Toast Notification Helper
+    function showToast(message, type = "success") {
+      const toastContainer = document.getElementById("toastContainer");
+      if (!toastContainer) return;
+
+      const toast = document.createElement("div");
+      toast.className = `toast toast-${type}`;
+      
+      const iconClass = type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
+      toast.innerHTML = `<i class="fa-solid ${iconClass}"></i> <span>${message}</span>`;
+      
+      toastContainer.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.add("show");
+      }, 10);
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // Toggle Change Password Accordion
+    if (passwordToggleBtn) {
+      passwordToggleBtn.addEventListener("click", () => {
+        passwordSection.classList.toggle("open");
+      });
+    }
+
+    // Open Profile Modal
+    if (userProfileBtn) {
+      userProfileBtn.addEventListener("click", () => {
+        profileModalOverlay.classList.add("active");
+      });
+    }
+
+    // Reset Password Fields
+    function resetPasswordFields() {
+      if (passwordSection) passwordSection.classList.remove("open");
+      if (currentPasswordInput) currentPasswordInput.value = "";
+      if (newPasswordInput) newPasswordInput.value = "";
+      if (confirmPasswordInput) confirmPasswordInput.value = "";
+    }
+
+    // Close Profile Modal
+    const closeModal = () => {
+      profileModalOverlay.classList.remove("active");
+      resetPasswordFields();
+    };
+
+    if (closeProfileModal) closeProfileModal.addEventListener("click", closeModal);
+    if (cancelProfileModal) cancelProfileModal.addEventListener("click", closeModal);
+
+    if (profileModalOverlay) {
+      profileModalOverlay.addEventListener("click", (e) => {
+        if (e.target === profileModalOverlay) closeModal();
+      });
+    }
+
+    // Avatar Image Preview
+    if (avatarInput) {
+      avatarInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          if (file.size > 2 * 1024 * 1024) {
+            showToast("Image size exceeds 2MB limit", "error");
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            avatarPreview.src = event.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    // Profile Form Submit
+    if (profileForm) {
+      profileForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("instructorEmail").value.trim();
+        const phone = document.getElementById("instructorPhone").value.trim();
+
+        if (!email || !phone) {
+          showToast("Please fill in all contact information", "error");
+          return;
+        }
+
+        const currentPass = currentPasswordInput.value.trim();
+        const newPass = newPasswordInput.value.trim();
+        const confirmPass = confirmPasswordInput.value.trim();
+
+        const isPasswordTouched = currentPass || newPass || confirmPass;
+
+        if (isPasswordTouched) {
+          if (!passwordSection.classList.contains("open")) {
+            passwordSection.classList.add("open");
+          }
+
+          if (!currentPass) {
+            showToast("Please enter your current password", "error");
+            currentPasswordInput.focus();
+            return;
+          }
+
+          if (!newPass) {
+            showToast("Please enter a new password", "error");
+            newPasswordInput.focus();
+            return;
+          }
+
+          if (newPass.length < 6) {
+            showToast("New password must be at least 6 characters long", "error");
+            newPasswordInput.focus();
+            return;
+          }
+
+          if (newPass !== confirmPass) {
+            showToast("New passwords do not match", "error");
+            confirmPasswordInput.focus();
+            return;
+          }
+        }
+
+        headerAvatar.src = avatarPreview.src;
+        showToast("Profile settings saved successfully!", "success");
+        closeModal();
+      });
+    }
+
+        // ------------------------------------------------------------------
+    // LARAVEL BACKEND INTEGRATION FOR SUBMISSIONS
+    // ------------------------------------------------------------------
+
+    const API_BASE_URL = "http://localhost:8000/api";
+
+    // Get login token
+    const authToken = sessionStorage.getItem("authToken");
+
+    // Store all submissions here
+    let allSubmissions = [];
+
+    // ---------------------------------------------------------------
+    // FETCH SUBMISSIONS
+    // ---------------------------------------------------------------
+
+    async function fetchSubmissions() {
+
+      const tbody =
+        document.getElementById("submissionsTbody");
+
+      if (!authToken) {
+
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7"
+                style="text-align:center; padding:30px; color:#b42318;">
+              You are not logged in. Please log in again.
+            </td>
+          </tr>
+        `;
+
+        return;
+      }
+
+      try {
+
+        const response = await fetch(
+          `${API_BASE_URL}/instructor/submissions`,
+          {
+            method: "GET",
+
+            headers: {
+              "Accept": "application/json",
+              "Authorization": `Bearer ${authToken}`
+            }
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+
+          throw new Error(
+            data.message ||
+            "Failed to load submissions."
+          );
+        }
+
+        // IMPORTANT:
+        // Our Laravel API returns "submissions"
+        allSubmissions =
+          Array.isArray(data.submissions)
+            ? data.submissions
+            : [];
+
+        renderSubmissionsTable(allSubmissions);
+
+      } catch (error) {
+
+        console.error(
+          "Error loading submissions:",
+          error
+        );
+
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7"
+                style="text-align:center; padding:30px; color:#b42318;">
+              Error loading submissions.
+            </td>
+          </tr>
+        `;
+
+        showToast(
+          error.message ||
+          "Error loading submissions.",
+          "error"
+        );
+      }
+    }
+
+
+    // ---------------------------------------------------------------
+    // FORMAT DATE
+    // ---------------------------------------------------------------
+
+    function formatDate(dateValue) {
+
+      if (!dateValue) {
+        return "N/A";
+      }
+
+      const date = new Date(dateValue);
+
+      if (Number.isNaN(date.getTime())) {
+        return dateValue;
+      }
+
+      return date.toLocaleDateString(
+        "en-US",
+        {
+          month: "short",
+          day: "numeric",
+          year: "numeric"
+        }
+      );
+    }
+
+
+    // ---------------------------------------------------------------
+    // RENDER SUBMISSIONS TABLE
+    // ---------------------------------------------------------------
+
+    function renderSubmissionsTable(submissions) {
+
+      const tbody =
+        document.getElementById("submissionsTbody");
+
+      tbody.innerHTML = "";
+
+      if (
+        !submissions ||
+        submissions.length === 0
+      ) {
+
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7"
+                style="text-align:center; padding:30px;">
+              No submissions found.
+            </td>
+          </tr>
+        `;
+
+        return;
+      }
+
+
+      submissions.forEach((item) => {
+
+        const learner =
+          item.learner || {};
+
+        const course =
+          item.course || {};
+
+        const module =
+          item.module || {};
+
+        const grade =
+          item.grade || null;
+
+
+        const studentId =
+          learner.student_id || "N/A";
+
+        const learnerName =
+          learner.name || "Unknown";
+
+        const classCode =
+          course.code || "N/A";
+
+        const moduleName =
+          module.name || "N/A";
+
+        const dateSubmitted =
+          formatDate(item.submitted_at);
+
+
+        let statusBadge = "";
+        let actionButton = "";
+
+
+        // -----------------------------------------------------------
+        // GRADED
+        // -----------------------------------------------------------
+
+        if (grade) {
+
+          const percentage =
+            grade.percentage ?? 0;
+
+          statusBadge = `
+            <span class="status-badge status-graded">
+              Graded (${percentage}%)
+            </span>
+          `;
+
+          actionButton = `
+            <button
+              type="button"
+              class="action-btn view-btn"
+              onclick="openGradingModal(${item.id})">
+
+              View
+
+            </button>
+          `;
+        }
+
+
+        // -----------------------------------------------------------
+        // NOT YET GRADED
+        // -----------------------------------------------------------
+
+        else {
+
+          statusBadge = `
+            <span class="status-badge status-pending">
+              Needs Grading
+            </span>
+          `;
+
+          actionButton = `
+            <button
+              type="button"
+              class="action-btn grade-btn"
+              onclick="openGradingModal(${item.id})">
+
+              Grade
+
+            </button>
+          `;
+        }
+
+
+        const tr =
+          document.createElement("tr");
+
+
+        tr.innerHTML = `
+
+          <td>
+            ${studentId}
+          </td>
+
+          <td class="font-medium">
+            ${learnerName}
+          </td>
+
+          <td>
+            ${classCode}
+          </td>
+
+          <td>
+            ${moduleName}
+          </td>
+
+          <td>
+            ${dateSubmitted}
+          </td>
+
+          <td>
+            ${statusBadge}
+          </td>
+
+          <td>
+            ${actionButton}
+          </td>
+
+        `;
+
+
+        tbody.appendChild(tr);
+
+      });
+
+    }
+
+
+    // ---------------------------------------------------------------
+    // OPEN GRADING / VIEW MODAL
+    // ---------------------------------------------------------------
+
+    window.openGradingModal =
+      function(submissionId) {
+
+        const item =
+          allSubmissions.find(
+            submission =>
+              Number(submission.id) ===
+              Number(submissionId)
+          );
+
+        if (!item) {
+
+          showToast(
+            "Submission not found.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        const learner =
+          item.learner || {};
+
+        const module =
+          item.module || {};
+
+        const grade =
+          item.grade || null;
+
+
+        // Submission ID
+        gradingSubmissionId.value =
+          item.id;
+
+
+        // Learner
+        modalLearnerName.textContent =
+          learner.name || "N/A";
+
+
+        // Module
+        modalModuleName.textContent =
+          module.name || "N/A";
+
+
+        // File
+        const fileName =
+          item.file_name || "Submitted File";
+
+        modalFileLink.textContent =
+          fileName;
+
+
+        /*
+         * We do NOT directly put the API URL in href
+         * because the file endpoint requires Authorization.
+         *
+         * The View File button will be handled below.
+         */
+
+        modalFileLink.href = "#";
+
+
+        modalFileLink.onclick =
+          function(event) {
+
+            event.preventDefault();
+
+            openSubmissionFile(
+              item.id
+            );
+          };
+
+
+        // -----------------------------------------------------------
+        // IF ALREADY GRADED
+        // -----------------------------------------------------------
+
+        if (grade) {
+
+          gradingModalTitle.textContent =
+            "View Submission";
+
+
+          modalScore.value =
+            grade.score ?? "";
+
+
+          modalFeedback.value =
+            grade.feedback ?? "";
+
+
+          modalScore.disabled =
+            true;
+
+          modalFeedback.disabled =
+            true;
+
+
+          saveGradeBtn.style.display =
+            "none";
+        }
+
+
+        // -----------------------------------------------------------
+        // IF NOT GRADED
+        // -----------------------------------------------------------
+
+        else {
+
+          gradingModalTitle.textContent =
+            "Grade Submission";
+
+
+          modalScore.value =
+            "";
+
+
+          modalFeedback.value =
+            "";
+
+
+          modalScore.disabled =
+            false;
+
+          modalFeedback.disabled =
+            false;
+
+
+          saveGradeBtn.style.display =
+            "inline-block";
+        }
+
+
+        gradingModalOverlay.classList.add(
+          "active"
+        );
+      };
+
+
+    // ---------------------------------------------------------------
+    // OPEN SUBMITTED FILE
+    // ---------------------------------------------------------------
+
+    async function openSubmissionFile(
+      submissionId
+    ) {
+
+      if (!authToken) {
+
+        showToast(
+          "You are not logged in.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      try {
+
+        const response =
+          await fetch(
+            `${API_BASE_URL}/instructor/submissions/${submissionId}/file`,
+            {
+              method: "GET",
+
+              headers: {
+                "Authorization":
+                  `Bearer ${authToken}`
+              }
+            }
+          );
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            "Unable to open submission file."
+          );
+        }
+
+
+        const blob =
+          await response.blob();
+
+
+        const fileUrl =
+          URL.createObjectURL(blob);
+
+
+        window.open(
+          fileUrl,
+          "_blank"
+        );
+
+
+        // Clean up URL later
+        setTimeout(
+          () => {
+            URL.revokeObjectURL(
+              fileUrl
+            );
+          },
+          60000
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "File error:",
+          error
+        );
+
+        showToast(
+          error.message ||
+          "Unable to open file.",
+          "error"
+        );
+      }
+    }
+
+
+    // ---------------------------------------------------------------
+    // CLOSE GRADING MODAL
+    // ---------------------------------------------------------------
+
+    const closeGradingModalHandler =
+      () => {
+
+        gradingModalOverlay.classList.remove(
+          "active"
+        );
+
+        gradingForm.reset();
+
+        modalScore.disabled =
+          false;
+
+        modalFeedback.disabled =
+          false;
+
+        saveGradeBtn.style.display =
+          "inline-block";
+      };
+
+
+    if (closeGradingModal) {
+
+      closeGradingModal.addEventListener(
+        "click",
+        closeGradingModalHandler
+      );
+
+    }
+
+
+    if (cancelGradingModal) {
+
+      cancelGradingModal.addEventListener(
+        "click",
+        closeGradingModalHandler
+      );
+
+    }
+
+
+    if (gradingModalOverlay) {
+
+      gradingModalOverlay.addEventListener(
+        "click",
+        (event) => {
+
+          if (
+            event.target ===
+            gradingModalOverlay
+          ) {
+
+            closeGradingModalHandler();
+
+          }
+
+        }
+      );
+
+    }
+
+
+    // ---------------------------------------------------------------
+    // SAVE GRADE
+    // ---------------------------------------------------------------
+
+    if (gradingForm) {
+
+      gradingForm.addEventListener(
+        "submit",
+        async (event) => {
+
+          event.preventDefault();
+
+
+          const submissionId =
+            gradingSubmissionId.value;
+
+
+          const score =
+            Number(
+              modalScore.value
+            );
+
+
+          const maxScore =
+            Number(
+              document.getElementById(
+                "modalMaxScore"
+              ).value
+            );
+
+
+          const feedback =
+            modalFeedback.value.trim();
+
+
+          // Validate score
+          if (
+            !Number.isFinite(score) ||
+            score < 0
+          ) {
+
+            showToast(
+              "Please enter a valid score.",
+              "error"
+            );
+
+            return;
+          }
+
+
+          if (
+            !Number.isFinite(maxScore) ||
+            maxScore <= 0
+          ) {
+
+            showToast(
+              "Maximum score must be greater than 0.",
+              "error"
+            );
+
+            return;
+          }
+
+
+          if (
+            score > maxScore
+          ) {
+
+            showToast(
+              "Score cannot be greater than maximum score.",
+              "error"
+            );
+
+            return;
+          }
+
+
+          try {
+
+            saveGradeBtn.disabled =
+              true;
+
+            saveGradeBtn.textContent =
+              "Saving...";
+
+
+            const response =
+              await fetch(
+                `${API_BASE_URL}/instructor/submissions/${submissionId}/grade`,
+                {
+                  method: "POST",
+
+                  headers: {
+                    "Content-Type":
+                      "application/json",
+
+                    "Accept":
+                      "application/json",
+
+                    "Authorization":
+                      `Bearer ${authToken}`
+                  },
+
+                  body: JSON.stringify({
+
+                    score:
+                      score,
+
+                    max_score:
+                      maxScore,
+
+                    feedback:
+                      feedback || null
+
+                  })
+                }
+              );
+
+
+            const data =
+              await response.json();
+
+
+            if (
+              !response.ok ||
+              !data.success
+            ) {
+
+              throw new Error(
+                data.message ||
+                "Failed to save grade."
+              );
+            }
+
+
+            showToast(
+              "Grade submitted successfully!",
+              "success"
+            );
+
+
+            closeGradingModalHandler();
+
+
+            // Reload table
+            await fetchSubmissions();
+
+
+          } catch (error) {
+
+            console.error(
+              "Grade error:",
+              error
+            );
+
+            showToast(
+              error.message ||
+              "Failed to save grade.",
+              "error"
+            );
+
+          } finally {
+
+            saveGradeBtn.disabled =
+              false;
+
+            saveGradeBtn.textContent =
+              "Save Grade";
+          }
+
+        }
+      );
+
+    }
+
+
+    // ---------------------------------------------------------------
+    // SEARCH SUBMISSIONS
+    // ---------------------------------------------------------------
+
+    const searchInput =
+      document.getElementById(
+        "searchInput"
+      );
+
+
+    if (searchInput) {
+
+      searchInput.addEventListener(
+        "input",
+        (event) => {
+
+          const query =
+            event.target.value
+              .toLowerCase()
+              .trim();
+
+
+          if (!query) {
+
+            renderSubmissionsTable(
+              allSubmissions
+            );
+
+            return;
+          }
+
+
+          const filtered =
+            allSubmissions.filter(
+              (item) => {
+
+                const learner =
+                  item.learner || {};
+
+                const course =
+                  item.course || {};
+
+                const module =
+                  item.module || {};
+
+
+                const searchableText = [
+
+                  learner.student_id,
+
+                  learner.name,
+
+                  course.code,
+
+                  course.name,
+
+                  module.name,
+
+                  item.file_name,
+
+                  item.status
+
+                ]
+                .filter(Boolean)
+                .join(" ")
+                .toLowerCase();
+
+
+                return searchableText.includes(
+                  query
+                );
+
+              }
+            );
+
+
+          renderSubmissionsTable(
+            filtered
+          );
+
+        }
+      );
+
+    }
+
+
+    // ---------------------------------------------------------------
+    // LOAD DATA
+    // ---------------------------------------------------------------
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      () => {
+
+        fetchSubmissions();
+
+      }
+    );
+  </script>
+
+</body>
+</html>

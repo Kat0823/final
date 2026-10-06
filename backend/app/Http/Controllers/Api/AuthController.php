@@ -12,17 +12,15 @@ class AuthController extends Controller
 {
     public function login(Request $request): JsonResponse
     {
-        // Validate login inputs
         $validated = $request->validate([
             'school_id' => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
 
-        // Find the account using the school ID
         $user = User::where('school_id', $validated['school_id'])
+            ->where('role', 'learner')
             ->first();
 
-        // Check whether the account and password are valid
         if (!$user || !Hash::check($validated['password'], $user->password)) {
             return response()->json([
                 'success' => false,
@@ -30,16 +28,13 @@ class AuthController extends Controller
             ], 401);
         }
 
-        // Create an authentication token
         $token = $user->createToken('siknayan-login')->plainTextToken;
 
-        // Return login information
         return response()->json([
             'success' => true,
             'message' => 'Login successful.',
             'token' => $token,
             'first_login' => !$user->password_setup_complete,
-
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
@@ -51,5 +46,46 @@ class AuthController extends Controller
             ],
         ]);
     }
-}
 
+    public function instructorLogin(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'instructor_id' => ['required', 'string'],
+            'password' => ['required', 'string'],
+        ]);
+
+        $instructor = User::where('school_id', $validated['instructor_id'])
+            ->where('role', 'instructor')
+            ->first();
+
+        if (
+            !$instructor ||
+            !Hash::check($validated['password'], $instructor->password)
+        ) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid Instructor ID or password.',
+            ], 401);
+        }
+
+        $token = $instructor->createToken(
+            'siknayan-instructor-login'
+        )->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Instructor login successful.',
+            'token' => $token,
+            'first_login' => !$instructor->password_setup_complete,
+            'user' => [
+                'id' => $instructor->id,
+                'name' => $instructor->name,
+                'email' => $instructor->email,
+                'school_id' => $instructor->school_id,
+                'program' => $instructor->program,
+                'contact' => $instructor->contact,
+                'role' => $instructor->role,
+            ],
+        ]);
+    }
+}

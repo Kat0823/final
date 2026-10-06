@@ -11,7 +11,7 @@ class Submission extends Model
     protected $fillable = [
         'module_id',
         'learner_id',
-        'path',
+        'file_path',
         'file_name',
         'comment',
         'submitted_at',
@@ -32,7 +32,10 @@ class Submission extends Model
 
     public function learner(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'learner_id');
+        return $this->belongsTo(
+            User::class,
+            'learner_id'
+        );
     }
 
     public function grade(): HasOne

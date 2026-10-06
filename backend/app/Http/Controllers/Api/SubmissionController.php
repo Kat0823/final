@@ -3,45 +3,128 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Submission;
 use App\Models\Module;
-use Illuminate\Http\Request;
+use App\Models\Notification;
+use App\Models\Submission;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
 
 class SubmissionController extends Controller
 {
-    public function store(Request $request): JsonResponse
-    {
-        $request->validate([
-            'module_id' => 'required|exists:modules,id',
-            'file' => 'required|file|max:10240',
-            'comment' => 'nullable|string',
+    public function store(
+        Request $request
+    ): JsonResponse {
+
+        $validated = $request->validate([
+
+            'module_id' => [
+                'required',
+                'integer',
+                'exists:modules,id'
+            ],
+
+            'file' => [
+                'required',
+                'file',
+                'mimes:pdf,doc,docx',
+                'max:10240'
+            ],
+
+            'comment' => [
+                'nullable',
+                'string',
+                'max:2000'
+            ],
+
         ]);
+
+
+        /*
+         * Get the currently logged-in learner.
+         */
 
         $learner = $request->user();
 
+
+        /*
+         * Only learners can submit activities.
+         */
+
         if ($learner->role !== 'learner') {
+
             return response()->json([
+
                 'success' => false,
-                'message' => 'Only learners can submit files.',
+
+                'message' =>
+                    'Only learners can submit activities.',
+
             ], 403);
+
         }
 
-        $module = Module::with('course')->findOrFail(
-            $request->module_id
+
+        /*
+         * Find the module and its course.
+         * Also load the course instructor.
+         */
+
+        $module = Module::with([
+            'course',
+            'course.instructor'
+        ])->find(
+            $validated['module_id']
         );
 
+
+        /*
+         * Make sure the module exists.
+         */
+
+        if (!$module) {
+
+            return response()->json([
+
+                'success' => false,
+
+                'message' =>
+                    'Module not found.',
+
+            ], 404);
+
+        }
+
+
+        /*
+         * Check whether the learner
+         * is enrolled in the course.
+         */
+
         $enrolled = $learner->courses()
-            ->where('courses.id', $module->course_id)
+            ->where(
+                'courses.id',
+                $module->course_id
+            )
             ->exists();
 
+
         if (!$enrolled) {
+
             return response()->json([
+
                 'success' => false,
-                'message' => 'You are not enrolled in this course.',
+
+                'message' =>
+                    'You are not enrolled in this course.',
+
             ], 403);
+
         }
+
+
+        /*
+         * Prevent duplicate submissions.
+         */
 
         $existingSubmission = Submission::where(
             'module_id',
@@ -53,107 +136,149 @@ class SubmissionController extends Controller
         )
         ->first();
 
+
         if ($existingSubmission) {
+
             return response()->json([
+
                 'success' => false,
-                'message' => 'You have already submitted this module.',
+
+                'message' =>
+                    'You have already submitted this activity.',
+
+                'submission_id' =>
+                    $existingSubmission->id,
+
             ], 409);
+
         }
 
-        $file = $request->file('file');
 
-        $path = $file->store(
-            'submissions/' . $learner->school_id,
-            'public'
-        );
+        /*
+         * Store the uploaded file.
+         */
+
+        $path = $request
+            ->file('file')
+            ->store(
+                'submissions/' .
+                $learner->school_id,
+                'local'
+            );
+
+
+        /*
+         * Create the submission.
+         */
 
         $submission = Submission::create([
-            'module_id' => $module->id,
-            'learner_id' => $learner->id,
-            'file_path' => $path,
-            'file_name' => $file->getClientOriginalName(),
-            'comment' => $request->comment,
-            'submitted_at' => now(),
-            'status' => 'submitted',
+
+            'module_id' =>
+                $module->id,
+
+            'learner_id' =>
+                $learner->id,
+
+            'file_path' =>
+                $path,
+
+            'file_name' =>
+                $request
+                    ->file('file')
+                    ->getClientOriginalName(),
+
+            'comment' =>
+                $validated['comment'] ?? null,
+
+            'submitted_at' =>
+                now(),
+
+            'status' =>
+                'submitted',
+
         ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Submission uploaded successfully.',
-            'submission' => $submission,
-        ], 201);
-    }
 
-    public function instructorIndex(Request $request): JsonResponse
-    {
-        $instructor = $request->user();
+        /*
+         * =====================================================
+         * CREATE INSTRUCTOR NOTIFICATION
+         * =====================================================
+         */
 
-        if ($instructor->role !== 'instructor') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Only instructors can view submissions.',
-            ], 403);
+        $instructor =
+            $module->course->instructor;
+
+
+        /*
+         * Only create the notification if
+         * the course has an assigned instructor.
+         */
+
+        if ($instructor) {
+
+            Notification::create([
+
+                'user_id' =>
+                    $instructor->id,
+
+                'title' =>
+                    'New Submission',
+
+                'message' =>
+                    $learner->name .
+                    ' submitted "' .
+                    $module->title .
+                    '" for ' .
+                    $module->course->name .
+                    '.',
+
+                'type' =>
+                    'submission',
+
+                'is_read' =>
+                    false,
+
+            ]);
+
         }
 
-        $submissions = Submission::with([
-            'learner',
-            'module.course',
-            'grade',
-        ])
-        ->whereHas('module.course', function ($query) use ($instructor) {
-            $query->where('instructor_id', $instructor->id);
-        })
-        ->latest('submitted_at')
-        ->get()
-        ->map(function ($submission) {
 
-            $grade = $submission->grade;
-
-            $percentage = null;
-
-            if ($grade && $grade->max_score > 0) {
-                $percentage =
-                    ($grade->score / $grade->max_score) * 100;
-            }
-
-            return [
-                'id' => $submission->id,
-
-                'student' => [
-                    'id' => $submission->learner->id,
-                    'student_id' => $submission->learner->school_id,
-                    'name' => $submission->learner->name,
-                ],
-
-                'course' => [
-                    'id' => $submission->module->course->id,
-                    'name' => $submission->module->course->name,
-                    'code' => $submission->module->course->code,
-                ],
-
-                'module' => [
-                    'id' => $submission->module->id,
-                    'name' => $submission->module->name,
-                ],
-
-                'file_name' => $submission->file_name,
-                'file_path' => $submission->file_path,
-                'comment' => $submission->comment,
-                'submitted_at' => $submission->submitted_at,
-                'status' => $submission->status,
-
-                'grade' => $grade ? [
-                    'score' => $grade->score,
-                    'max_score' => $grade->max_score,
-                    'percentage' => round($percentage, 2),
-                    'feedback' => $grade->feedback,
-                ] : null,
-            ];
-        });
+        /*
+         * Return successful response.
+         */
 
         return response()->json([
+
             'success' => true,
-            'submissions' => $submissions,
-        ]);
+
+            'message' =>
+                'Activity submitted successfully.',
+
+            'submission' => [
+
+                'id' =>
+                    $submission->id,
+
+                'module_id' =>
+                    $submission->module_id,
+
+                'file_name' =>
+                    $submission->file_name,
+
+                'file_path' =>
+                    $submission->file_path,
+
+                'comment' =>
+                    $submission->comment,
+
+                'submitted_at' =>
+                    $submission->submitted_at,
+
+                'status' =>
+                    $submission->status,
+
+            ],
+
+        ], 201);
     }
 }

@@ -36,10 +36,7 @@ class GradeController extends Controller
 
                 $percentage = null;
 
-                if (
-                    $grade &&
-                    $grade->max_score > 0
-                ) {
+                if ($grade && $grade->max_score > 0) {
                     $percentage =
                         ($grade->score / $grade->max_score) * 100;
                 }
@@ -49,7 +46,7 @@ class GradeController extends Controller
 
                     'module' => [
                         'id' => $submission->module->id,
-                        'name' => $submission->module->name,
+                        'name' => $submission->module->title,
                     ],
 
                     'course' => [
@@ -58,30 +55,23 @@ class GradeController extends Controller
                         'code' => $submission->module->course->code,
                     ],
 
-                    'file_name' =>
-                        $submission->file_name,
+                    'file_name' => $submission->file_name,
 
-                    'submitted_at' =>
-                        $submission->submitted_at,
+                    'submitted_at' => $submission->submitted_at,
 
-                    'score' =>
-                        $grade->score,
+                    'score' => $grade->score,
 
-                    'max_score' =>
-                        $grade->max_score,
+                    'max_score' => $grade->max_score,
 
-                    'percentage' =>
-                        round($percentage, 2),
+                    'percentage' => round($percentage, 2),
 
-                    'feedback' =>
-                        $grade->feedback,
+                    'feedback' => $grade->feedback,
 
                     'instructor' => $grade->instructor
                         ? $grade->instructor->name
                         : 'Instructor',
 
-                    'graded_at' =>
-                        $grade->created_at,
+                    'graded_at' => $grade->graded_at,
                 ];
             });
 
@@ -166,8 +156,10 @@ class GradeController extends Controller
         */
 
         if (
+            !$submission->module ||
+            !$submission->module->course ||
             $submission->module->course->instructor_id
-            !== $instructor->id
+                !== $instructor->id
         ) {
             return response()->json([
                 'success' => false,
@@ -197,11 +189,29 @@ class GradeController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $grade = DB::transaction(function () use (
+        $result = DB::transaction(function () use (
             $validated,
             $submission,
             $instructor
         ) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | Check whether this submission already has a grade
+            |--------------------------------------------------------------------------
+            */
+
+            $existingGrade = Grade::where(
+                'submission_id',
+                $submission->id
+            )->first();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Create or update grade
+            |--------------------------------------------------------------------------
+            */
 
             $grade = Grade::updateOrCreate(
                 [
@@ -212,6 +222,7 @@ class GradeController extends Controller
                     'score' => $validated['score'],
                     'max_score' => $validated['max_score'],
                     'feedback' => $validated['feedback'] ?? null,
+                    'graded_at' => now(),
                 ]
             );
 
@@ -229,31 +240,37 @@ class GradeController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | Create notification for learner
+            | Create notification only for a new grade
             |--------------------------------------------------------------------------
             */
 
-            Notification::create([
-                'user_id' => $submission->learner_id,
+            if (!$existingGrade) {
 
-                'title' => 'Activity Graded',
+                Notification::create([
+                    'user_id' => $submission->learner_id,
 
-                'message' =>
-                    'Your activity "' .
-                    $submission->module->name .
-                    '" has been graded. Score: ' .
-                    $validated['score'] .
-                    '/' .
-                    $validated['max_score'] .
-                    '.',
+                    'title' => 'Activity Graded',
 
-                'type' => 'grade',
+                    'message' =>
+                        'Your activity "' .
+                        $submission->module->title .
+                        '" has been graded. Score: ' .
+                        $validated['score'] .
+                        '/' .
+                        $validated['max_score'] .
+                        '.',
 
-                'is_read' => false,
-            ]);
+                    'type' => 'grade',
+
+                    'is_read' => false,
+                ]);
+            }
 
 
-            return $grade;
+            return [
+                'grade' => $grade,
+                'new_grade' => !$existingGrade,
+            ];
         });
 
 
@@ -261,9 +278,11 @@ class GradeController extends Controller
             'success' => true,
 
             'message' =>
-                'Submission graded successfully.',
+                $result['new_grade']
+                    ? 'Submission graded successfully.'
+                    : 'Grade updated successfully.',
 
-            'grade' => $grade,
+            'grade' => $result['grade'],
         ]);
     }
 }
