@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Data Backup | Siknayan</title>
+
+    <link
+        rel="stylesheet"
+        href="css/system-admin.css"
+    >
+
+    <!-- Lucide Icons -->
+    <script
+        src="https://unpkg.com/lucide@latest"
+    ></script>
+
+</head>
+
+
+<body>
+
+    <!-- =====================================================
+         TOPBAR
+    ====================================================== -->
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <img
+                src="../images/logo.png"
+                alt="MPSU Logo"
+                class="brand-logo"
+            >
+
+            <div class="brand-text">
+
+                <h1>
+                    MPSU ETEEAP LMS
+                </h1>
+
+                <p>
+                    Mountain Province State University
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="topbar-right">
+
+            <button
+                class="icon-button notification-button"
+                type="button"
+                title="Notifications"
+                aria-label="Notifications"
+            >
+
+                <i data-lucide="bell"></i>
+
+                <span class="notification-dot"></span>
+
+            </button>
+
+
+            <div class="profile">
+
+                <img
+                    src="../images/macross.jpg"
+                    alt="System Administrator"
+                    class="profile-avatar"
+                >
+
+                <div class="profile-info">
+
+                    <strong>
+                        System Administrator
+                    </strong>
+
+                    <span>
+                        Administrator
+                    </span>
+
+                </div>
+
+                <i
+                    data-lucide="chevron-down"
+                    class="profile-chevron"
+                ></i>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         APPLICATION LAYOUT
+    ====================================================== -->
+
+    <div class="app-layout">
+
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
+
+        <aside
+            class="sidebar"
+            id="sidebar"
+        >
+
+            <div class="sidebar-top">
+
+                <span class="sidebar-view-text">
+                    View
+                </span>
+
+                <button
+                    class="sidebar-toggle"
+                    id="sidebarToggle"
+                    type="button"
+                    aria-label="Toggle sidebar"
+                    title="Toggle Sidebar"
+                >
+
+                    <i data-lucide="panel-left"></i>
+
+                </button>
+
+            </div>
+
+
+            <!-- Sidebar Profile -->
+
+            <div class="sidebar-profile">
+
+                <img
+                    src="../images/macross.jpg"
+                    alt="System Administrator"
+                    class="sidebar-avatar"
+                >
+
+                <span class="sidebar-profile-name">
+                    System Administrator
+                </span>
+
+            </div>
+
+
+            <!-- Navigation -->
+
+            <nav class="sidebar-nav">
+
+
+                <!-- Dashboard -->
+
+                <a
+                    href="dashboard.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="layout-dashboard"></i>
+
+                    <span class="nav-label">
+                        Dashboard
+                    </span>
+
+                </a>
+
+
+                <!-- Academic Administrators -->
+
+                <a
+                    href="administrators.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="users"></i>
+
+                    <span class="nav-label">
+                        Academic Administrators
+                    </span>
+
+                </a>
+
+
+                <!-- Data Backup -->
+
+                <a
+                    href="backup.html"
+                    class="nav-item active"
+                >
+
+                    <i data-lucide="database-backup"></i>
+
+                    <span class="nav-label">
+                        Data Backup
+                    </span>
+
+                </a>
+
+
+                <!-- Audit Logs -->
+
+                <a
+                    href="audit-logs.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="file-clock"></i>
+
+                    <span class="nav-label">
+                        Audit Logs
+                    </span>
+
+                </a>
+
+            </nav>
+
+
+            <!-- Logout -->
+
+            <div class="sidebar-bottom">
+
+                <a
+                    href="../index.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="log-out"></i>
+
+                    <span class="nav-label">
+                        Logout
+                    </span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =================================================
+             MAIN CONTENT
+        ================================================== -->
+
+        <main class="main-content">
+
+
+            <!-- =================================================
+                 PAGE HEADING
+            ================================================== -->
+
+            <section class="page-heading">
+
+                <div>
+
+                    <h2>
+                        Data Backup
+                    </h2>
+
+                    <p>
+                        Manage database backups, retention,
+                        and recovery readiness.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 BACKUP CONFIGURATION
+            ================================================== -->
+
+            <section class="panel backup-config-panel">
+
+
+                <!-- Configuration Header -->
+
+                <div class="backup-config-header">
+
+                    <div>
+
+                        <h3>
+                            Backup Configuration
+                        </h3>
+
+                        <p>
+                            Configure how the Siknayan MySQL
+                            database backup service should operate.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="backup-config-body">
+
+
+                    <!-- =================================================
+                         BACKUP SCOPE
+                    ================================================== -->
+
+                    <div class="backup-config-group">
+
+                        <div class="backup-config-group-header">
+
+                            <div>
+
+                                <span class="backup-config-section-label">
+                                    Backup
+                                </span>
+
+                                <h4>
+                                    Backup Scope
+                                </h4>
+
+                                <p>
+                                    Define the database and backup
+                                    type managed by the system.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="backup-config-grid">
+
+
+                            <!-- Backup Scope -->
+
+                            <div class="backup-config-field">
+
+                                <label
+                                    class="backup-config-label"
+                                >
+                                    Backup Scope
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="backup-config-input"
+                                    value="Database"
+                                    readonly
+                                >
+
+                                <span class="backup-config-description">
+                                    The initial implementation covers
+                                    the Siknayan MySQL database.
+                                </span>
+
+                            </div>
+
+
+                            <!-- Backup Type -->
+
+                            <div class="backup-config-field">
+
+                                <label
+                                    class="backup-config-label"
+                                >
+                                    Backup Type
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="backup-config-input"
+                                    value="Full Database Backup"
+                                    readonly
+                                >
+
+                                <span class="backup-config-description">
+                                    Full logical database backup using
+                                    the backend MySQL backup service.
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         SCHEDULE & RETENTION
+                    ================================================== -->
+
+                    <div class="backup-config-group">
+
+                        <div class="backup-config-group-header">
+
+                            <div>
+
+                                <span class="backup-config-section-label">
+                                    Schedule &amp; Retention
+                                </span>
+
+                                <h4>
+                                    Backup Schedule
+                                </h4>
+
+                                <p>
+                                    Control when backups run and how
+                                    long completed backups are retained.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="backup-config-grid">
+
+
+                            <!-- Backup Schedule -->
+
+                            <div class="backup-config-field">
+
+                                <label
+                                    class="backup-config-label"
+                                    for="backupSchedule"
+                                >
+                                    Backup Schedule
+                                </label>
+
+                                <select
+                                    id="backupSchedule"
+                                    class="backup-config-select"
+                                >
+
+                                    <option value="manual">
+                                        Manual
+                                    </option>
+
+                                    <option value="daily">
+                                        Daily
+                                    </option>
+
+                                    <option value="weekly">
+                                        Weekly
+                                    </option>
+
+                                </select>
+
+                                <span class="backup-config-description">
+                                    Determines when the backend backup
+                                    service should create backups.
+                                </span>
+
+                            </div>
+
+
+                            <!-- Retention Period -->
+
+                            <div class="backup-config-field">
+
+                                <label
+                                    class="backup-config-label"
+                                    for="retentionPeriod"
+                                >
+                                    Retention Period
+                                </label>
+
+                                <select
+                                    id="retentionPeriod"
+                                    class="backup-config-select"
+                                >
+
+                                    <option value="7">
+                                        7 Days
+                                    </option>
+
+                                    <option
+                                        value="30"
+                                        selected
+                                    >
+                                        30 Days
+                                    </option>
+
+                                    <option value="60">
+                                        60 Days
+                                    </option>
+
+                                    <option value="90">
+                                        90 Days
+                                    </option>
+
+                                </select>
+
+                                <span class="backup-config-description">
+                                    Determines how long completed
+                                    backup files should be retained.
+                                </span>
+
+                            </div>
+
+
+                            <!-- Schedule Details -->
+
+                            <div
+                                class="backup-schedule-details"
+                                id="backupScheduleDetails"
+                            >
+
+
+                                <!-- Backup Day -->
+
+                                <div
+                                    class="backup-schedule-detail-field"
+                                    id="backupDayField"
+                                    hidden
+                                >
+
+                                    <label
+                                        class="backup-config-label"
+                                        for="backupDay"
+                                    >
+                                        Backup Day
+                                    </label>
+
+                                    <select
+                                        id="backupDay"
+                                        class="backup-config-select"
+                                    >
+
+                                        <option value="sunday">
+                                            Sunday
+                                        </option>
+
+                                        <option value="monday">
+                                            Monday
+                                        </option>
+
+                                        <option value="tuesday">
+                                            Tuesday
+                                        </option>
+
+                                        <option value="wednesday">
+                                            Wednesday
+                                        </option>
+
+                                        <option value="thursday">
+                                            Thursday
+                                        </option>
+
+                                        <option value="friday">
+                                            Friday
+                                        </option>
+
+                                        <option value="saturday">
+                                            Saturday
+                                        </option>
+
+                                    </select>
+
+                                    <span class="backup-config-description">
+                                        Day of the week when the weekly
+                                        backup should run.
+                                    </span>
+
+                                </div>
+
+
+                                <!-- Backup Time -->
+
+                                <div
+                                    class="backup-schedule-detail-field"
+                                    id="backupTimeField"
+                                    hidden
+                                >
+
+                                    <label
+                                        class="backup-config-label"
+                                        for="backupTime"
+                                    >
+                                        Backup Time
+                                    </label>
+
+                                    <input
+                                        type="time"
+                                        id="backupTime"
+                                        class="backup-config-input"
+                                        value="02:00"
+                                    >
+
+                                    <span class="backup-config-description">
+                                        Server-local time when the backup
+                                        should begin.
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         STORAGE & PROTECTION
+                    ================================================== -->
+
+                    <div class="backup-config-group">
+
+                        <div class="backup-config-group-header">
+
+                            <div>
+
+                                <span class="backup-config-section-label">
+                                    Storage &amp; Protection
+                                </span>
+
+                                <h4>
+                                    Backup Protection
+                                </h4>
+
+                                <p>
+                                    Define where backups are stored and
+                                    how completed backups are protected.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="backup-protection-layout">
+
+
+                            <!-- Backup Destination -->
+
+                            <div class="backup-config-field backup-destination-field">
+
+                                <label
+                                    class="backup-config-label"
+                                >
+                                    Backup Destination
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="backup-config-input"
+                                    value="Server Backup Storage"
+                                    readonly
+                                >
+
+                                <span class="backup-config-description">
+                                    The actual storage location will be
+                                    configured by the backend deployment.
+                                </span>
+
+                            </div>
+
+
+                            <!-- Protection Options -->
+
+                            <div class="backup-protection-grid">
+
+
+                                <!-- Encryption -->
+
+                                <div class="backup-toggle-card">
+
+                                    <div class="backup-toggle-text">
+
+                                        <strong>
+                                            Enable Backup Encryption
+                                        </strong>
+
+                                        <span>
+                                            Protect backup files at rest.
+                                        </span>
+
+                                    </div>
+
+
+                                    <label class="backup-switch">
+
+                                        <input
+                                            type="checkbox"
+                                            id="backupEncryption"
+                                            checked
+                                        >
+
+                                        <span
+                                            class="backup-switch-slider"
+                                        ></span>
+
+                                    </label>
+
+                                </div>
+
+
+                                <!-- Verification -->
+
+                                <div class="backup-toggle-card">
+
+                                    <div class="backup-toggle-text">
+
+                                        <strong>
+                                            Verify Completed Backups
+                                        </strong>
+
+                                        <span>
+                                            Confirm that generated backups
+                                            are valid and accessible.
+                                        </span>
+
+                                    </div>
+
+
+                                    <label class="backup-switch">
+
+                                        <input
+                                            type="checkbox"
+                                            id="backupVerification"
+                                            checked
+                                        >
+
+                                        <span
+                                            class="backup-switch-slider"
+                                        ></span>
+
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Save Settings -->
+
+                    <div class="backup-config-footer">
+
+                        <button
+                            type="button"
+                            class="primary-button"
+                            id="saveBackupSettings"
+                        >
+
+                            <i data-lucide="save"></i>
+
+                            <span>
+                                Save Settings
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 BACKUP STATUS
+            ================================================== -->
+
+            <section class="panel backup-status-panel">
+
+
+                <div class="backup-status-header">
+
+                    <div>
+
+                        <span class="backup-config-section-label">
+                            Monitoring
+                        </span>
+
+                        <h3>
+                            Backup Status
+                        </h3>
+
+                        <p>
+                            Current backup service and database
+                            protection status.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Primary Status -->
+
+                <div class="backup-status-grid">
+
+
+                    <div class="backup-status-item">
+
+                        <span>
+                            Last Successful Backup
+                        </span>
+
+                        <strong>
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="backup-status-item">
+
+                        <span>
+                            Backup Status
+                        </span>
+
+                        <strong>
+                            Not Connected
+                        </strong>
+
+                    </div>
+
+
+                    <div class="backup-status-item">
+
+                        <span>
+                            Last Backup Size
+                        </span>
+
+                        <strong>
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="backup-status-item">
+
+                        <span>
+                            Next Scheduled Backup
+                        </span>
+
+                        <strong>
+                            —
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Status Details -->
+
+                <div class="backup-status-details">
+
+
+                    <div>
+
+                        <span>
+                            Storage Destination
+                        </span>
+
+                        <strong>
+                            Server Backup Storage
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Last Verification
+                        </span>
+
+                        <strong>
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="primary-button"
+                        id="backupNowButton"
+                    >
+
+                        <i data-lucide="database-backup"></i>
+
+                        <span>
+                            Back Up Now
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 BACKUP HISTORY
+            ================================================== -->
+
+            <section class="panel backup-history-panel">
+
+
+                <div class="backup-history-header">
+
+                    <div>
+
+                        <span class="backup-config-section-label">
+                            Records
+                        </span>
+
+                        <h3>
+                            Backup History
+                        </h3>
+
+                        <p>
+                            Completed backup operations and their
+                            verification status.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="backup-table-wrapper">
+
+                    <table class="backup-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Date &amp; Time
+                                </th>
+
+                                <th>
+                                    Type
+                                </th>
+
+                                <th>
+                                    Size
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Verification
+                                </th>
+
+                                <th>
+                                    Actions
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="backupHistoryBody">
+
+                            <tr>
+
+                                <td
+                                    colspan="6"
+                                    class="backup-empty-state"
+                                >
+
+                                    <div class="backup-empty-content">
+
+                                        <i
+                                            data-lucide="database-backup"
+                                        ></i>
+
+                                        <strong>
+                                            No backup records yet
+                                        </strong>
+
+                                        <span>
+                                            Backup history will appear here
+                                            after the backend backup service
+                                            is connected.
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 RECOVERY READINESS
+            ================================================== -->
+
+            <section class="panel recovery-readiness-panel">
+
+                <div class="recovery-readiness">
+
+                    <div class="recovery-readiness-icon">
+
+                        <i data-lucide="shield-check"></i>
+
+                    </div>
+
+
+                    <div class="recovery-readiness-content">
+
+                        <span class="backup-config-section-label">
+                            Recovery
+                        </span>
+
+                        <strong>
+                            Recovery Readiness
+                        </strong>
+
+                        <p>
+                            A backup is only useful if it can be restored
+                            successfully. In production, completed MySQL
+                            backups should be verified and restoration
+                            procedures should be tested periodically.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+        </main>
+
+    </div>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script>
+
+        /* =====================================================
+           SIDEBAR
+        ===================================================== */
+
+        const sidebar =
+            document.getElementById(
+                "sidebar"
+            );
+
+
+        const sidebarToggle =
+            document.getElementById(
+                "sidebarToggle"
+            );
+
+
+        const SIDEBAR_STORAGE_KEY =
+            "siknayan_system_admin_sidebar_collapsed";
+
+
+        function applySidebarState() {
+
+            if (!sidebar) {
+                return;
+            }
+
+
+            const collapsed =
+                localStorage.getItem(
+                    SIDEBAR_STORAGE_KEY
+                ) === "true";
+
+
+            sidebar.classList.toggle(
+                "collapsed",
+                collapsed
+            );
+
+        }
+
+
+        applySidebarState();
+
+
+        if (
+            sidebar &&
+            sidebarToggle
+        ) {
+
+            sidebarToggle.addEventListener(
+                "click",
+                () => {
+
+                    const collapsed =
+                        sidebar.classList.toggle(
+                            "collapsed"
+                        );
+
+
+                    localStorage.setItem(
+                        SIDEBAR_STORAGE_KEY,
+                        String(collapsed)
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           BACKUP ELEMENTS
+        ===================================================== */
+
+        const saveBackupSettings =
+            document.getElementById(
+                "saveBackupSettings"
+            );
+
+
+        const backupNowButton =
+            document.getElementById(
+                "backupNowButton"
+            );
+
+
+        const backupSchedule =
+            document.getElementById(
+                "backupSchedule"
+            );
+
+
+        const backupScheduleDetails =
+            document.getElementById(
+                "backupScheduleDetails"
+            );
+
+
+        const backupDayField =
+            document.getElementById(
+                "backupDayField"
+            );
+
+
+        const backupTimeField =
+            document.getElementById(
+                "backupTimeField"
+            );
+
+
+        /* =====================================================
+           BACKUP NOTIFICATION
+        ===================================================== */
+
+        function showBackupNotification(
+            message
+        ) {
+
+            const existing =
+                document.getElementById(
+                    "backupNotification"
+                );
+
+
+            if (existing) {
+                existing.remove();
+            }
+
+
+            const notification =
+                document.createElement(
+                    "div"
+                );
+
+
+            notification.id =
+                "backupNotification";
+
+
+            notification.textContent =
+                message;
+
+
+            notification.style.position =
+                "fixed";
+
+            notification.style.right =
+                "24px";
+
+            notification.style.bottom =
+                "24px";
+
+            notification.style.zIndex =
+                "3000";
+
+            notification.style.padding =
+                "13px 16px";
+
+            notification.style.borderRadius =
+                "7px";
+
+            notification.style.background =
+                "#08683c";
+
+            notification.style.color =
+                "#ffffff";
+
+            notification.style.fontSize =
+                "13px";
+
+            notification.style.fontWeight =
+                "600";
+
+            notification.style.boxShadow =
+                "0 5px 18px rgba(0, 0, 0, 0.15)";
+
+
+            document.body.appendChild(
+                notification
+            );
+
+
+            setTimeout(
+                () => {
+
+                    if (notification) {
+                        notification.remove();
+                    }
+
+                },
+                3000
+            );
+
+        }
+
+
+        /* =====================================================
+           UPDATE SCHEDULE FIELDS
+        ===================================================== */
+
+        function updateScheduleFields() {
+
+            if (
+                !backupSchedule ||
+                !backupScheduleDetails ||
+                !backupDayField ||
+                !backupTimeField
+            ) {
+
+                return;
+
+            }
+
+
+            const schedule =
+                backupSchedule.value;
+
+
+            /* MANUAL */
+
+            if (
+                schedule === "manual"
+            ) {
+
+                backupScheduleDetails.classList.remove(
+                    "visible"
+                );
+
+
+                backupDayField.hidden =
+                    true;
+
+
+                backupTimeField.hidden =
+                    true;
+
+
+                return;
+
+            }
+
+
+            /* DAILY */
+
+            if (
+                schedule === "daily"
+            ) {
+
+                backupScheduleDetails.classList.add(
+                    "visible"
+                );
+
+
+                backupDayField.hidden =
+                    true;
+
+
+                backupTimeField.hidden =
+                    false;
+
+
+                return;
+
+            }
+
+
+            /* WEEKLY */
+
+            if (
+                schedule === "weekly"
+            ) {
+
+                backupScheduleDetails.classList.add(
+                    "visible"
+                );
+
+
+                backupDayField.hidden =
+                    false;
+
+
+                backupTimeField.hidden =
+                    false;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           SCHEDULE CHANGE
+        ===================================================== */
+
+        if (backupSchedule) {
+
+            backupSchedule.addEventListener(
+                "change",
+                updateScheduleFields
+            );
+
+        }
+
+
+        /* =====================================================
+           SAVE SETTINGS
+        ===================================================== */
+
+        if (saveBackupSettings) {
+
+            saveBackupSettings.addEventListener(
+                "click",
+                () => {
+
+                    showBackupNotification(
+                        "Backup settings are ready for backend integration."
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           BACK UP NOW
+        ===================================================== */
+
+        if (backupNowButton) {
+
+            backupNowButton.addEventListener(
+                "click",
+                () => {
+
+                    showBackupNotification(
+                        "MySQL backup service is not connected yet."
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           INITIALIZE SCHEDULE
+        ===================================================== */
+
+        updateScheduleFields();
+
+
+        /* =====================================================
+           LUCIDE ICONS
+        ===================================================== */
+
+        if (
+            typeof lucide !== "undefined"
+        ) {
+
+            lucide.createIcons();
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

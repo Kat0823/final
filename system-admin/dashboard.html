@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Siknayan | System Administrator</title>
+
+    <link rel="stylesheet" href="css/system-admin.css">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+    <!-- =========================
+         TOP BAR
+    ========================== -->
+    <header class="topbar">
+
+        <div class="brand">
+
+            <img
+                src="../images/logo.png"
+                alt="MPSU Logo"
+                class="brand-logo"
+            >
+
+            <div class="brand-text">
+                <h1>MPSU ETEEAP LMS</h1>
+                <p>Mountain Province State University</p>
+            </div>
+
+        </div>
+
+
+        <div class="topbar-right">
+
+            <button
+                class="icon-button notification-button"
+                type="button"
+                aria-label="Notifications"
+            >
+                <i data-lucide="bell"></i>
+                <span class="notification-dot"></span>
+            </button>
+
+
+            <div class="profile">
+
+                <img
+                    src="../images/macross.jpg"
+                    alt="System Administrator"
+                    class="profile-avatar"
+                >
+
+                <div class="profile-info">
+                    <strong>System Administrator</strong>
+                    <span>Administrator</span>
+                </div>
+
+                <i
+                    data-lucide="chevron-down"
+                    class="profile-chevron"
+                ></i>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         APPLICATION LAYOUT
+    ========================== -->
+    <div class="app-layout">
+
+
+        <!-- =========================
+             SIDEBAR
+        ========================== -->
+        <aside class="sidebar" id="sidebar">
+
+            <div class="sidebar-top">
+
+                <span class="sidebar-view-text">
+                    View
+                </span>
+
+                <button
+                    class="sidebar-toggle"
+                    id="sidebarToggle"
+                    type="button"
+                    aria-label="Toggle sidebar"
+                >
+                    <i data-lucide="panel-left"></i>
+                </button>
+
+            </div>
+
+
+            <div class="sidebar-profile">
+
+                <img
+                    src="../images/macross.jpg"
+                    alt="System Administrator"
+                    class="sidebar-avatar"
+                >
+
+                <div class="sidebar-profile-info">
+
+                    <span class="sidebar-profile-name">
+                        System Administrator
+                    </span>
+
+                    <span class="sidebar-profile-role">
+                        Administrator
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <nav class="sidebar-nav">
+
+                <a
+                    href="dashboard.html"
+                    class="nav-item active"
+                >
+                    <i data-lucide="layout-dashboard"></i>
+                    <span class="nav-label">
+                        Dashboard
+                    </span>
+                </a>
+
+
+                <a
+                    href="administrators.html"
+                    class="nav-item"
+                >
+                    <i data-lucide="users"></i>
+                    <span class="nav-label">
+                        Academic Administrators
+                    </span>
+                </a>
+
+
+                <a
+                    href="backup.html"
+                    class="nav-item"
+                >
+                    <i data-lucide="database-backup"></i>
+                    <span class="nav-label">
+                        Data Backup
+                    </span>
+                </a>
+
+
+                <a
+                    href="audit-logs.html"
+                    class="nav-item"
+                >
+                    <i data-lucide="file-clock"></i>
+                    <span class="nav-label">
+                        Audit Logs
+                    </span>
+                </a>
+
+            </nav>
+
+
+            <div class="sidebar-bottom">
+
+                <a
+                    href="../index.html"
+                    class="nav-item"
+                >
+                    <i data-lucide="log-out"></i>
+                    <span class="nav-label">
+                        Logout
+                    </span>
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =========================
+             MAIN CONTENT
+        ========================== -->
+        <main class="main-content">
+
+            <section class="page-header">
+
+                <div>
+                    <h2>Dashboard</h2>
+                    <p>
+                        System administration overview
+                    </p>
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 OVERVIEW CARDS
+            ========================== -->
+            <section class="dashboard-cards">
+
+
+                <article class="dashboard-card">
+
+                    <div class="card-icon">
+                        <i data-lucide="users"></i>
+                    </div>
+
+                    <div class="card-content">
+                        <span class="card-label">
+                            Academic Administrators
+                        </span>
+
+                        <strong class="card-value">
+                            0
+                        </strong>
+                    </div>
+
+                </article>
+
+
+                <article class="dashboard-card">
+
+                    <div class="card-icon">
+                        <i data-lucide="database-backup"></i>
+                    </div>
+
+                    <div class="card-content">
+                        <span class="card-label">
+                            Last Backup
+                        </span>
+
+                        <strong class="card-value">
+                            —
+                        </strong>
+                    </div>
+
+                </article>
+
+
+                <article class="dashboard-card">
+
+                    <div class="card-icon">
+                        <i data-lucide="file-clock"></i>
+                    </div>
+
+                    <div class="card-content">
+                        <span class="card-label">
+                            Audit Events Today
+                        </span>
+
+                        <strong class="card-value">
+                            0
+                        </strong>
+                    </div>
+
+                </article>
+
+
+            </section>
+
+
+            <!-- =========================
+                 RECENT SYSTEM ACTIVITY
+            ========================== -->
+            <section class="dashboard-section">
+
+                <div class="section-header">
+
+                    <div>
+                        <h3>Recent System Activity</h3>
+                        <p>
+                            Latest administrative activities
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="activity-table-wrapper">
+
+                    <table class="activity-table">
+
+                        <thead>
+                            <tr>
+                                <th>Date &amp; Time</th>
+                                <th>Administrator</th>
+                                <th>Action</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr class="empty-row">
+
+                                <td colspan="4">
+
+                                    <div class="empty-state">
+
+                                        <i data-lucide="inbox"></i>
+
+                                        <strong>
+                                            No recent activity
+                                        </strong>
+
+                                        <span>
+                                            System activity will appear here.
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 QUICK ACTIONS
+            ========================== -->
+            <section class="dashboard-section">
+
+                <div class="section-header">
+
+                    <div>
+                        <h3>Quick Actions</h3>
+                        <p>
+                            Common system administration tasks
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="quick-actions">
+
+                    <a
+                        href="administrators.html"
+                        class="quick-action"
+                    >
+                        <div class="quick-action-icon">
+                            <i data-lucide="user-plus"></i>
+                        </div>
+
+                        <div>
+                            <strong>
+                                Create Academic Administrator
+                            </strong>
+
+                            <span>
+                                Create a new administrator account
+                            </span>
+                        </div>
+                    </a>
+
+
+                    <a
+                        href="backup.html"
+                        class="quick-action"
+                    >
+                        <div class="quick-action-icon">
+                            <i data-lucide="database-backup"></i>
+                        </div>
+
+                        <div>
+                            <strong>
+                                Backup Data
+                            </strong>
+
+                            <span>
+                                Create a system data backup
+                            </span>
+                        </div>
+                    </a>
+
+
+                    <a
+                        href="audit-logs.html"
+                        class="quick-action"
+                    >
+                        <div class="quick-action-icon">
+                            <i data-lucide="file-clock"></i>
+                        </div>
+
+                        <div>
+                            <strong>
+                                View Audit Logs
+                            </strong>
+
+                            <span>
+                                Review system activity logs
+                            </span>
+                        </div>
+                    </a>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+    <script src="js/shared.js"></script>
+
+</body>
+</html>
