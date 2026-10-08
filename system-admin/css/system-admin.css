@@ -3295,3 +3295,456 @@ select:focus-visible {
     }
 
 }
+
+
+/* =========================================================
+   AUDIT LOGS PAGE
+========================================================= */
+
+.audit-filter-panel {
+    margin-bottom: 20px;
+}
+
+
+/* =========================================================
+   AUDIT PANEL HEADER
+========================================================= */
+
+.audit-panel-header {
+    padding: 20px 22px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.audit-panel-header h3 {
+    margin: 0;
+
+    color: var(--text);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.audit-panel-header p {
+    margin-top: 5px;
+
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   AUDIT FILTER BODY
+========================================================= */
+
+.audit-filter-body {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 16px;
+
+    padding: 20px 22px 22px;
+}
+
+.audit-filter-field {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+
+    min-width: 0;
+}
+
+.audit-filter-field label {
+    color: var(--text);
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   FILTER INPUTS
+========================================================= */
+
+.audit-filter-field input,
+.audit-filter-field select {
+    width: 100%;
+
+    height: 40px;
+
+    padding: 0 11px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 6px;
+
+    background: var(--white);
+
+    color: var(--text);
+
+    font-family: inherit;
+    font-size: 13px;
+
+    outline: none;
+}
+
+.audit-filter-field input:focus,
+.audit-filter-field select:focus {
+    border-color: var(--green);
+
+    box-shadow:
+        0 0 0 2px
+        rgba(8, 104, 60, 0.08);
+}
+
+.audit-filter-field select {
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.audit-search-field {
+    grid-column: span 2;
+}
+
+.audit-search-wrapper {
+    position: relative;
+
+    width: 100%;
+}
+
+.audit-search-wrapper svg {
+    position: absolute;
+
+    left: 11px;
+    top: 50%;
+
+    width: 17px;
+    height: 17px;
+
+    color: var(--muted);
+
+    transform: translateY(-50%);
+
+    pointer-events: none;
+}
+
+.audit-search-wrapper input {
+    padding-left: 36px;
+}
+
+
+/* =========================================================
+   FILTER ACTIONS
+========================================================= */
+
+.audit-filter-actions {
+    grid-column: span 2;
+
+    display: flex;
+
+    align-items: flex-end;
+    justify-content: flex-end;
+
+    gap: 8px;
+}
+
+
+/* =========================================================
+   SECONDARY BUTTON
+========================================================= */
+
+.secondary-button {
+    min-height: 40px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 0 14px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 6px;
+
+    background: var(--white);
+
+    color: #444;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.secondary-button:hover {
+    background: #f5f8f6;
+
+    border-color: #c8d2cc;
+}
+
+.secondary-button svg {
+    width: 17px;
+    height: 17px;
+}
+
+
+/* =========================================================
+   AUDIT LOG PANEL
+========================================================= */
+
+.audit-log-panel {
+    margin-bottom: 20px;
+}
+
+
+/* =========================================================
+   AUDIT LOG HEADER
+========================================================= */
+
+.audit-log-header {
+    display: flex;
+
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 20px 22px 18px;
+}
+
+.audit-log-header h3 {
+    margin: 0;
+
+    color: var(--text);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.audit-log-header p {
+    margin-top: 5px;
+
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.audit-section-label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--green);
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 0.06em;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   AUDIT TABLE
+========================================================= */
+
+.audit-table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+.audit-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 760px;
+}
+
+.audit-table th {
+    padding: 12px 14px;
+
+    text-align: left;
+
+    border-top: 1px solid var(--border-light);
+    border-bottom: 1px solid var(--border);
+
+    background: #f7faf8;
+
+    color: var(--muted);
+
+    font-size: 12px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+.audit-table td {
+    padding: 14px;
+
+    border-bottom: 1px solid var(--border-light);
+
+    color: var(--text);
+
+    font-size: 13px;
+
+    vertical-align: middle;
+}
+
+.audit-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =========================================================
+   AUDIT EMPTY STATE
+========================================================= */
+
+.audit-empty-state {
+    padding: 50px 20px !important;
+
+    text-align: center !important;
+}
+
+.audit-empty-content {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+.audit-empty-content svg {
+    width: 34px;
+    height: 34px;
+
+    margin-bottom: 3px;
+
+    color: var(--muted);
+}
+
+.audit-empty-content strong {
+    color: var(--text);
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.audit-empty-content span {
+    max-width: 450px;
+
+    color: var(--muted);
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   AUDIT TABLE FOOTER
+========================================================= */
+
+.audit-table-footer {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    min-height: 48px;
+
+    padding: 0 22px;
+
+    border-top: 1px solid var(--border-light);
+}
+
+.audit-table-footer span {
+    color: var(--muted);
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   AUDIT LOG RESPONSIVE
+========================================================= */
+
+@media (max-width: 1000px) {
+
+    .audit-filter-body {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .audit-search-field,
+    .audit-filter-actions {
+        grid-column: span 2;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .audit-filter-body {
+        grid-template-columns: 1fr;
+
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .audit-search-field,
+    .audit-filter-actions {
+        grid-column: span 1;
+    }
+
+    .audit-filter-actions {
+        align-items: stretch;
+
+        justify-content: stretch;
+
+        flex-direction: column;
+    }
+
+    .audit-filter-actions .secondary-button,
+    .audit-filter-actions .primary-button {
+        width: 100%;
+    }
+
+    .audit-log-header {
+        align-items: stretch;
+
+        flex-direction: column;
+
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .audit-log-header .secondary-button {
+        width: 100%;
+    }
+
+    .audit-table-footer {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+}

@@ -1,9 +1,7 @@
 /* =========================================================
    SIKNAYAN - SYSTEM ADMINISTRATOR
-
    ACADEMIC ADMINISTRATORS PAGE
 ========================================================= */
-
 
 /* =========================================================
    STORAGE
@@ -11,6 +9,9 @@
 
 const ADMIN_STORAGE_KEY =
     "siknayan_system_admin_academic_administrators";
+
+const AUDIT_LOG_STORAGE_KEY =
+    "siknayan_system_admin_audit_logs";
 
 
 /* =========================================================
@@ -239,15 +240,13 @@ const deleteAdministratorEmail =
    STATE
 ========================================================= */
 
-let pendingDeleteAdministrator =
-    null;
+let pendingDeleteAdministrator = null;
 
-let removeExistingPhoto =
-    false;
+let removeExistingPhoto = false;
 
 
 /* =========================================================
-   STORAGE HELPERS
+   ADMINISTRATOR STORAGE
 ========================================================= */
 
 function getAdministrators() {
@@ -303,19 +302,173 @@ function saveAdministrators(
 
 
 /* =========================================================
+   AUDIT LOGGING
+========================================================= */
+
+function getAuditLogs() {
+
+    try {
+
+        const stored =
+            localStorage.getItem(
+                AUDIT_LOG_STORAGE_KEY
+            );
+
+        if (!stored) {
+
+            return [];
+
+        }
+
+        const logs =
+            JSON.parse(stored);
+
+        return Array.isArray(logs)
+
+            ? logs
+
+            : [];
+
+    } catch (error) {
+
+        console.error(
+            "Unable to read audit logs:",
+            error
+        );
+
+        return [];
+
+    }
+
+}
+
+
+function saveAuditLogs(
+    logs
+) {
+
+    localStorage.setItem(
+        AUDIT_LOG_STORAGE_KEY,
+        JSON.stringify(
+            logs
+        )
+    );
+
+}
+
+
+function recordAuditLog({
+
+    actorName =
+        "System Administrator",
+
+    actorRole =
+        "System Administrator",
+
+    action,
+
+    module,
+
+    targetType = null,
+
+    targetId = null,
+
+    outcome =
+        "SUCCESS",
+
+    details
+
+}) {
+
+    const logs =
+        getAuditLogs();
+
+
+    logs.push({
+
+        id:
+
+            "LOG-" +
+
+            Date.now() +
+
+            "-" +
+
+            Math.random()
+
+                .toString(36)
+
+                .substring(
+                    2,
+                    8
+                )
+
+                .toUpperCase(),
+
+
+        timestamp:
+
+            new Date().toISOString(),
+
+
+        actorName,
+
+
+        actorRole,
+
+
+        action,
+
+
+        module,
+
+
+        targetType,
+
+
+        targetId,
+
+
+        outcome,
+
+
+        details
+
+    });
+
+
+    saveAuditLogs(
+        logs
+    );
+
+}
+
+
+/* =========================================================
    HELPERS
 ========================================================= */
 
 function generateId() {
 
     return (
+
         "ADM-" +
+
         Date.now() +
+
         "-" +
+
         Math.random()
+
             .toString(36)
-            .substring(2, 8)
+
+            .substring(
+                2,
+                8
+            )
+
             .toUpperCase()
+
     );
 
 }
@@ -327,27 +480,41 @@ function generateUsername(
 ) {
 
     const first =
+
         firstName
+
             .trim()
+
             .toLowerCase()
+
             .replace(
                 /[^a-z0-9]/g,
                 ""
             );
+
 
     const last =
+
         lastName
+
             .trim()
+
             .toLowerCase()
+
             .replace(
                 /[^a-z0-9]/g,
                 ""
             );
 
+
     return (
+
         first +
+
         "." +
+
         last
+
     );
 
 }
@@ -363,28 +530,44 @@ function formatDate(
 
     }
 
+
     const date =
+
         new Date(
             dateValue
         );
 
+
     if (
+
         Number.isNaN(
             date.getTime()
         )
+
     ) {
 
         return "—";
 
     }
 
+
     return date.toLocaleDateString(
+
         "en-US",
+
         {
-            month: "short",
-            day: "numeric",
-            year: "numeric"
+
+            month:
+                "short",
+
+            day:
+                "numeric",
+
+            year:
+                "numeric"
+
         }
+
     );
 
 }
@@ -400,29 +583,48 @@ function getInitials(
 
     }
 
+
     const parts =
+
         name
+
             .trim()
-            .split(/\s+/)
-            .filter(Boolean);
+
+            .split(
+                /\s+/
+            )
+
+            .filter(
+                Boolean
+            );
 
 
     if (
+
         parts.length === 1
+
     ) {
 
         return parts[0]
-            .substring(0, 2)
+
+            .substring(
+                0,
+                2
+            )
+
             .toUpperCase();
 
     }
 
 
     return (
+
         parts[0].charAt(0) +
+
         parts[
             parts.length - 1
         ].charAt(0)
+
     ).toUpperCase();
 
 }
@@ -476,6 +678,7 @@ function getPhotoPreviewContainer() {
 
 
     let container =
+
         document.getElementById(
             "administratorPhotoPreview"
         );
@@ -489,30 +692,41 @@ function getPhotoPreviewContainer() {
 
 
     container =
+
         document.createElement(
             "div"
         );
 
 
     container.id =
+
         "administratorPhotoPreview";
 
 
     container.style.display =
+
         "flex";
 
+
     container.style.alignItems =
+
         "center";
 
+
     container.style.gap =
+
         "12px";
 
+
     container.style.marginTop =
+
         "10px";
 
 
     photoInput.parentElement.appendChild(
+
         container
+
     );
 
 
@@ -522,11 +736,15 @@ function getPhotoPreviewContainer() {
 
 
 function renderPhotoPreview(
+
     photoData = null,
+
     isEditing = false
+
 ) {
 
     const container =
+
         getPhotoPreviewContainer();
 
 
@@ -537,123 +755,168 @@ function renderPhotoPreview(
     }
 
 
-    container.innerHTML =
-        "";
+    container.innerHTML = "";
 
 
     if (photoData) {
 
         const image =
+
             document.createElement(
                 "img"
             );
 
 
         image.src =
+
             photoData;
 
+
         image.alt =
+
             "Profile photo preview";
 
 
         image.style.width =
+
             "52px";
+
 
         image.style.height =
+
             "52px";
 
+
         image.style.objectFit =
+
             "cover";
 
+
         image.style.borderRadius =
+
             "50%";
 
+
         image.style.border =
+
             "2px solid var(--green)";
 
 
         container.appendChild(
+
             image
+
         );
 
 
         const info =
+
             document.createElement(
                 "div"
             );
 
 
         info.style.display =
+
             "flex";
 
+
         info.style.flexDirection =
+
             "column";
 
+
         info.style.gap =
+
             "4px";
 
 
         const label =
+
             document.createElement(
                 "span"
             );
 
 
         label.textContent =
+
             isEditing
+
                 ? "Current profile photo"
+
                 : "Selected profile photo";
 
 
         label.style.fontSize =
+
             "12px";
 
+
         label.style.fontWeight =
+
             "600";
 
+
         label.style.color =
+
             "var(--text)";
 
 
         info.appendChild(
+
             label
+
         );
 
 
         if (isEditing) {
 
             const removeButton =
+
                 document.createElement(
                     "button"
                 );
 
 
             removeButton.type =
+
                 "button";
 
+
             removeButton.textContent =
+
                 "Remove Photo";
 
 
             removeButton.className =
+
                 "secondary-button";
 
 
             removeButton.style.height =
+
                 "32px";
 
+
             removeButton.style.width =
+
                 "fit-content";
 
+
             removeButton.style.padding =
+
                 "0 10px";
 
+
             removeButton.style.fontSize =
+
                 "11px";
 
 
             removeButton.addEventListener(
+
                 "click",
+
                 () => {
 
                     removeExistingPhoto =
@@ -669,23 +932,31 @@ function renderPhotoPreview(
 
 
                     renderPhotoPreview(
+
                         null,
+
                         true
+
                     );
 
                 }
+
             );
 
 
             info.appendChild(
+
                 removeButton
+
             );
 
         }
 
 
         container.appendChild(
+
             info
+
         );
 
 
@@ -695,26 +966,35 @@ function renderPhotoPreview(
 
 
     const fallback =
+
         document.createElement(
             "span"
         );
 
 
     fallback.textContent =
+
         isEditing
+
             ? "No profile photo"
+
             : "No profile photo selected.";
 
 
     fallback.style.color =
+
         "var(--muted)";
 
+
     fallback.style.fontSize =
+
         "12px";
 
 
     container.appendChild(
+
         fallback
+
     );
 
 }
@@ -727,9 +1007,13 @@ function renderPhotoPreview(
 function getSelectedPhotoFile() {
 
     if (
+
         !photoInput ||
+
         !photoInput.files ||
+
         photoInput.files.length === 0
+
     ) {
 
         return null;
@@ -754,20 +1038,28 @@ function validatePhotoFile(
 
 
     const allowedTypes = [
+
         "image/jpeg",
+
         "image/png"
+
     ];
 
 
     if (
+
         !allowedTypes.includes(
             file.type
         )
+
     ) {
 
         alert(
+
             "Profile photo must be a JPG or PNG image."
+
         );
+
 
         return false;
 
@@ -775,16 +1067,22 @@ function validatePhotoFile(
 
 
     const maxSize =
+
         2 * 1024 * 1024;
 
 
     if (
+
         file.size > maxSize
+
     ) {
 
         alert(
+
             "Profile photo must be 2 MB or smaller."
+
         );
+
 
         return false;
 
@@ -801,64 +1099,90 @@ function readPhotoAsDataUrl(
 ) {
 
     return new Promise(
+
         (
+
             resolve,
+
             reject
+
         ) => {
 
             const reader =
+
                 new FileReader();
 
 
             reader.onload =
+
                 () => {
 
                     resolve(
+
                         reader.result
+
                     );
 
                 };
 
 
             reader.onerror =
+
                 () => {
 
                     reject(
+
                         new Error(
+
                             "Unable to read profile photo."
+
                         )
+
                     );
 
                 };
 
 
             reader.readAsDataURL(
+
                 file
+
             );
 
         }
+
     );
 
 }
 
 
 function getPhotoDataForSave(
+
     currentPhoto = null
+
 ) {
 
     return new Promise(
+
         async (
+
             resolve,
+
             reject
+
         ) => {
 
             try {
 
                 if (
+
                     removeExistingPhoto
+
                 ) {
 
-                    resolve(null);
+                    resolve(
+                        null
+                    );
 
                     return;
 
@@ -866,13 +1190,16 @@ function getPhotoDataForSave(
 
 
                 const file =
+
                     getSelectedPhotoFile();
 
 
                 if (!file) {
 
                     resolve(
+
                         currentPhoto
+
                     );
 
                     return;
@@ -881,15 +1208,21 @@ function getPhotoDataForSave(
 
 
                 if (
+
                     !validatePhotoFile(
                         file
                     )
+
                 ) {
 
                     reject(
+
                         new Error(
+
                             "Invalid profile photo."
+
                         )
+
                     );
 
                     return;
@@ -898,13 +1231,16 @@ function getPhotoDataForSave(
 
 
                 const dataUrl =
+
                     await readPhotoAsDataUrl(
                         file
                     );
 
 
                 resolve(
+
                     dataUrl
+
                 );
 
             } catch (error) {
@@ -914,6 +1250,7 @@ function getPhotoDataForSave(
             }
 
         }
+
     );
 
 }
@@ -924,13 +1261,19 @@ function getPhotoDataForSave(
 ========================================================= */
 
 function showNotification(
+
     message,
+
     type = "success"
+
 ) {
 
     const existing =
+
         document.getElementById(
+
             "systemAdminNotification"
+
         );
 
 
@@ -942,116 +1285,186 @@ function showNotification(
 
 
     const notification =
+
         document.createElement(
+
             "div"
+
         );
 
 
     notification.id =
+
         "systemAdminNotification";
 
 
     notification.setAttribute(
+
         "role",
+
         "status"
+
     );
 
 
     const isSuccess =
+
         type === "success";
 
 
     notification.innerHTML = `
 
         <div
+
             style="
+
                 width: 36px;
+
                 height: 36px;
+
                 display: grid;
+
                 place-items: center;
+
                 flex-shrink: 0;
+
                 border-radius: 50%;
+
                 background: ${
+
                     isSuccess
+
                         ? "#e9f7ef"
+
                         : "#f8eaea"
+
                 };
+
                 color: ${
+
                     isSuccess
+
                         ? "#27734c"
+
                         : "#8a2f2f"
+
                 };
+
             "
+
         >
 
             <i
+
                 data-lucide="${
+
                     isSuccess
+
                         ? "circle-check"
+
                         : "circle-alert"
+
                 }"
+
             ></i>
 
         </div>
 
         <span
+
             style="
+
                 font-size: 14px;
+
                 font-weight: 600;
+
                 color: #222;
+
             "
+
         >
+
             ${escapeHtml(message)}
+
         </span>
 
     `;
 
 
     notification.style.position =
+
         "fixed";
 
+
     notification.style.top =
+
         "104px";
 
+
     notification.style.right =
+
         "28px";
 
+
     notification.style.zIndex =
+
         "3000";
 
+
     notification.style.display =
+
         "flex";
 
+
     notification.style.alignItems =
+
         "center";
 
+
     notification.style.gap =
+
         "12px";
 
+
     notification.style.minWidth =
+
         "280px";
 
+
     notification.style.maxWidth =
+
         "420px";
 
+
     notification.style.padding =
+
         "14px 16px";
 
+
     notification.style.background =
+
         "#ffffff";
 
+
     notification.style.border =
+
         "1px solid #d8d8d8";
 
+
     notification.style.borderRadius =
+
         "8px";
 
+
     notification.style.boxShadow =
+
         "0 8px 24px rgba(0, 0, 0, 0.12)";
 
 
     document.body.appendChild(
+
         notification
+
     );
 
 
@@ -1059,11 +1472,15 @@ function showNotification(
 
 
     setTimeout(
+
         () => {
 
             if (
+
                 notification &&
+
                 notification.parentElement
+
             ) {
 
                 notification.remove();
@@ -1071,7 +1488,9 @@ function showNotification(
             }
 
         },
+
         3000
+
     );
 
 }
@@ -1082,7 +1501,9 @@ function showNotification(
 ========================================================= */
 
 function updateAdministratorCount(
+
     count
+
 ) {
 
     if (!administratorCount) {
@@ -1093,10 +1514,15 @@ function updateAdministratorCount(
 
 
     administratorCount.textContent =
+
         `Showing ${count} administrator${
+
             count === 1
+
                 ? ""
+
                 : "s"
+
         }`;
 
 }
@@ -1107,8 +1533,11 @@ function updateAdministratorCount(
 ========================================================= */
 
 function renderAdministrators(
+
     administrators =
+
         getAdministrators()
+
 ) {
 
     if (!tableBody) {
@@ -1118,12 +1547,13 @@ function renderAdministrators(
     }
 
 
-    tableBody.innerHTML =
-        "";
+    tableBody.innerHTML = "";
 
 
     if (
+
         administrators.length === 0
+
     ) {
 
         tableBody.innerHTML = `
@@ -1136,17 +1566,26 @@ function renderAdministrators(
 
                         <i data-lucide="users"></i>
 
+
                         <strong>
+
                             No academic administrators
+
                         </strong>
+
 
                         <span>
 
                             ${
+
                                 searchInput &&
+
                                 searchInput.value.trim()
+
                                     ? "No administrators match your search."
+
                                     : "Create an administrator account to get started."
+
                             }
 
                         </span>
@@ -1161,11 +1600,14 @@ function renderAdministrators(
 
 
         updateAdministratorCount(
+
             0
+
         );
 
 
         refreshIcons();
+
 
         return;
 
@@ -1173,106 +1615,161 @@ function renderAdministrators(
 
 
     administrators.forEach(
+
         administrator => {
 
             const row =
+
                 document.createElement(
+
                     "tr"
+
                 );
 
 
             row.innerHTML = `
 
                 <td>
+
                     ${escapeHtml(
+
                         administrator.name
+
                     )}
+
                 </td>
 
+
                 <td>
+
                     ${escapeHtml(
+
                         administrator.username
+
                     )}
+
                 </td>
 
+
                 <td>
+
                     ${escapeHtml(
+
                         administrator.email
+
                     )}
+
                 </td>
+
 
                 <td>
 
                     <span
+
                         class="status-badge ${
+
                             administrator.status
+
                         }"
+
                     >
 
                         ${
+
                             administrator.status ===
+
                             "active"
+
                                 ? "Active"
+
                                 : "Inactive"
+
                         }
 
                     </span>
 
                 </td>
 
+
                 <td>
 
                     <div class="action-buttons">
 
+
                         <button
+
                             type="button"
+
                             class="table-action"
+
                             title="View"
+
                             data-action="view"
+
                             data-id="${administrator.id}"
+
                         >
 
                             <i data-lucide="eye"></i>
 
                             <span>
+
                                 View
+
                             </span>
 
                         </button>
 
 
                         <button
+
                             type="button"
+
                             class="table-action"
+
                             title="Edit"
+
                             data-action="edit"
+
                             data-id="${administrator.id}"
+
                         >
 
                             <i data-lucide="pencil"></i>
 
                             <span>
+
                                 Edit
+
                             </span>
 
                         </button>
 
 
                         <button
+
                             type="button"
+
                             class="table-action delete"
+
                             title="Delete"
+
                             data-action="delete"
+
                             data-id="${administrator.id}"
+
                         >
 
                             <i data-lucide="trash-2"></i>
 
                             <span>
+
                                 Delete
+
                             </span>
 
                         </button>
+
 
                     </div>
 
@@ -1282,15 +1779,20 @@ function renderAdministrators(
 
 
             tableBody.appendChild(
+
                 row
+
             );
 
         }
+
     );
 
 
     updateAdministratorCount(
+
         administrators.length
+
     );
 
 
@@ -1306,8 +1808,11 @@ function renderAdministrators(
 function openCreateModal() {
 
     if (
+
         !modalOverlay ||
+
         !form
+
     ) {
 
         return;
@@ -1323,78 +1828,96 @@ function openCreateModal() {
     form.reset();
 
 
-    idInput.value =
-        "";
+    idInput.value = "";
 
 
     removeExistingPhoto =
+
         false;
 
 
     if (photoInput) {
 
-        photoInput.value =
-            "";
+        photoInput.value = "";
 
     }
 
 
     renderPhotoPreview(
+
         null,
+
         false
+
     );
 
 
     statusInput.value =
+
         "active";
 
 
     modalTitle.textContent =
+
         "Create Academic Administrator";
 
 
     modalDescription.textContent =
+
         "Enter the account details below.";
 
 
     passwordInput.required =
+
         true;
 
+
     confirmPasswordInput.required =
+
         true;
 
 
     passwordHint.textContent =
+
         "Minimum of 8 characters.";
 
 
     if (
+
         saveAdministratorButtonText
+
     ) {
 
         saveAdministratorButtonText.textContent =
+
             "Create Account";
 
     }
 
 
     if (
+
         saveAdministratorButton
+
     ) {
 
         saveAdministratorButton
-            .querySelector(
-                "i"
-            )
+
+            .querySelector("i")
+
             ?.setAttribute(
+
                 "data-lucide",
+
                 "user-plus"
+
             );
 
     }
 
 
     modalOverlay.hidden =
+
         false;
 
 
@@ -1411,13 +1934,19 @@ function openCreateModal() {
 ========================================================= */
 
 function openEditModal(
+
     administrator
+
 ) {
 
     if (
+
         !modalOverlay ||
+
         !form ||
+
         !administrator
+
     ) {
 
         return;
@@ -1434,112 +1963,149 @@ function openEditModal(
 
 
     idInput.value =
+
         administrator.id;
 
 
     const nameParts =
+
         administrator.name
+
             .trim()
+
             .split(/\s+/);
 
 
     const firstName =
+
         nameParts.length > 1
+
             ? nameParts
+
                 .slice(0, -1)
+
                 .join(" ")
+
             : nameParts[0] || "";
 
 
     const lastName =
+
         nameParts.length > 1
+
             ? nameParts[
+
                 nameParts.length - 1
-              ]
+
+            ]
+
             : "";
 
 
     firstNameInput.value =
+
         firstName;
 
 
     lastNameInput.value =
+
         lastName;
 
 
     emailInput.value =
+
         administrator.email;
 
 
     statusInput.value =
+
         administrator.status;
 
 
     removeExistingPhoto =
+
         false;
 
 
     if (photoInput) {
 
-        photoInput.value =
-            "";
+        photoInput.value = "";
 
     }
 
 
     renderPhotoPreview(
+
         administrator.profilePhoto ||
+
             null,
+
         true
+
     );
 
 
     modalTitle.textContent =
+
         "Edit Academic Administrator";
 
 
     modalDescription.textContent =
+
         "Update the account details below.";
 
 
     passwordInput.required =
+
         false;
 
+
     confirmPasswordInput.required =
+
         false;
 
 
     passwordHint.textContent =
+
         "Leave password fields blank to keep the current password.";
 
 
     if (
+
         saveAdministratorButtonText
+
     ) {
 
         saveAdministratorButtonText.textContent =
+
             "Save Changes";
 
     }
 
 
     if (
+
         saveAdministratorButton
+
     ) {
 
         saveAdministratorButton
-            .querySelector(
-                "i"
-            )
+
+            .querySelector("i")
+
             ?.setAttribute(
+
                 "data-lucide",
+
                 "save"
+
             );
 
     }
 
 
     modalOverlay.hidden =
+
         false;
 
 
@@ -1565,6 +2131,7 @@ function closeModal() {
 
 
     modalOverlay.hidden =
+
         true;
 
 
@@ -1575,32 +2142,37 @@ function closeModal() {
     }
 
 
-    idInput.value =
-        "";
+    idInput.value = "";
 
 
     removeExistingPhoto =
+
         false;
 
 
     if (photoInput) {
 
-        photoInput.value =
-            "";
+        photoInput.value = "";
 
     }
 
 
     renderPhotoPreview(
+
         null,
+
         false
+
     );
 
 
     passwordInput.required =
+
         false;
 
+
     confirmPasswordInput.required =
+
         false;
 
 }
@@ -1611,35 +2183,54 @@ function closeModal() {
 ========================================================= */
 
 function validateForm(
+
     isEditing = false
+
 ) {
 
     const firstName =
+
         firstNameInput.value.trim();
 
+
     const lastName =
+
         lastNameInput.value.trim();
 
+
     const email =
+
         emailInput.value
+
             .trim()
+
             .toLowerCase();
 
+
     const password =
+
         passwordInput.value;
 
+
     const confirmPassword =
+
         confirmPasswordInput.value;
 
 
     if (
+
         !firstName ||
+
         !lastName
+
     ) {
 
         alert(
+
             "Please enter the administrator's first and last name."
+
         );
+
 
         return false;
 
@@ -1647,18 +2238,26 @@ function validateForm(
 
 
     const emailPattern =
+
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 
     if (
+
         !emailPattern.test(
+
             email
+
         )
+
     ) {
 
         alert(
+
             "Please enter a valid email address."
+
         );
+
 
         return false;
 
@@ -1666,14 +2265,20 @@ function validateForm(
 
 
     const selectedPhoto =
+
         getSelectedPhotoFile();
 
 
     if (
+
         selectedPhoto &&
+
         !validatePhotoFile(
+
             selectedPhoto
+
         )
+
     ) {
 
         return false;
@@ -1682,18 +2287,27 @@ function validateForm(
 
 
     if (
+
         !isEditing ||
+
         password.length > 0 ||
+
         confirmPassword.length > 0
+
     ) {
 
         if (
+
             password.length < 8
+
         ) {
 
             alert(
+
                 "Password must be at least 8 characters."
+
             );
+
 
             return false;
 
@@ -1701,13 +2315,19 @@ function validateForm(
 
 
         if (
+
             password !==
+
             confirmPassword
+
         ) {
 
             alert(
+
                 "Passwords do not match."
+
             );
+
 
             return false;
 
@@ -1728,7 +2348,9 @@ function validateForm(
 async function createAdministrator() {
 
     if (
+
         !validateForm(false)
+
     ) {
 
         return;
@@ -1737,38 +2359,57 @@ async function createAdministrator() {
 
 
     const firstName =
+
         firstNameInput.value.trim();
 
+
     const lastName =
+
         lastNameInput.value.trim();
 
+
     const email =
+
         emailInput.value
+
             .trim()
+
             .toLowerCase();
 
+
     const status =
+
         statusInput.value;
 
 
     const administrators =
+
         getAdministrators();
 
 
     const emailExists =
+
         administrators.some(
+
             administrator =>
+
                 administrator.email
+
                     .toLowerCase() ===
+
                 email
+
         );
 
 
     if (emailExists) {
 
         alert(
+
             "An administrator with this email address already exists."
+
         );
+
 
         return;
 
@@ -1776,30 +2417,44 @@ async function createAdministrator() {
 
 
     const baseUsername =
+
         generateUsername(
+
             firstName,
+
             lastName
+
         );
 
 
     let username =
+
         baseUsername;
 
 
     let usernameNumber =
+
         2;
 
 
     while (
+
         administrators.some(
+
             administrator =>
+
                 administrator.username ===
+
                 username
+
         )
+
     ) {
 
         username =
+
             `${baseUsername}${usernameNumber}`;
+
 
         usernameNumber++;
 
@@ -1807,64 +2462,140 @@ async function createAdministrator() {
 
 
     let profilePhoto =
+
         null;
 
 
     try {
 
         profilePhoto =
+
             await getPhotoDataForSave(
+
                 null
+
             );
 
     } catch (error) {
 
         alert(
+
             "The profile photo could not be processed."
+
         );
 
+
         console.error(
+
             error
+
         );
+
 
         return;
 
     }
 
 
+    const now =
+
+        new Date().toISOString();
+
+
     const newAdministrator = {
 
         id:
+
             generateId(),
 
+
         name:
+
             `${firstName} ${lastName}`,
+
 
         username,
 
+
         email,
+
 
         status,
 
+
         profilePhoto,
 
+
         createdAt:
-            new Date().toISOString(),
+
+            now,
+
 
         updatedAt:
-            new Date().toISOString()
+
+            now
 
     };
 
 
     administrators.push(
+
         newAdministrator
+
     );
 
 
     saveAdministrators(
+
         administrators
+
     );
+
+
+    /* AUDIT LOG */
+
+    recordAuditLog({
+
+        actorName:
+
+            "System Administrator",
+
+
+        actorRole:
+
+            "System Administrator",
+
+
+        action:
+
+            "create",
+
+
+        module:
+
+            "Academic Administrators",
+
+
+        targetType:
+
+            "Academic Administrator",
+
+
+        targetId:
+
+            newAdministrator.id,
+
+
+        outcome:
+
+            "SUCCESS",
+
+
+        details:
+
+            `Created Academic Administrator account: ${firstName} ${lastName} (${username}).`
+
+    });
 
 
     closeModal();
@@ -1874,7 +2605,9 @@ async function createAdministrator() {
 
 
     showNotification(
+
         "Academic Administrator created successfully."
+
     );
 
 }
@@ -1887,7 +2620,9 @@ async function createAdministrator() {
 async function updateAdministrator() {
 
     if (
+
         !validateForm(true)
+
     ) {
 
         return;
@@ -1896,41 +2631,60 @@ async function updateAdministrator() {
 
 
     const administratorId =
+
         idInput.value;
 
 
     const firstName =
+
         firstNameInput.value.trim();
 
+
     const lastName =
+
         lastNameInput.value.trim();
 
+
     const email =
+
         emailInput.value
+
             .trim()
+
             .toLowerCase();
 
+
     const status =
+
         statusInput.value;
 
 
     const administrators =
+
         getAdministrators();
 
 
     const administrator =
+
         administrators.find(
+
             item =>
+
                 item.id ===
+
                 administratorId
+
         );
 
 
     if (!administrator) {
 
         alert(
+
             "Administrator account could not be found."
+
         );
+
 
         return;
 
@@ -1938,21 +2692,32 @@ async function updateAdministrator() {
 
 
     const emailExists =
+
         administrators.some(
+
             item =>
+
                 item.id !==
+
                     administratorId &&
+
                 item.email
+
                     .toLowerCase() ===
-                    email
+
+                email
+
         );
 
 
     if (emailExists) {
 
         alert(
+
             "An administrator with this email address already exists."
+
         );
+
 
         return;
 
@@ -1965,20 +2730,30 @@ async function updateAdministrator() {
     try {
 
         profilePhoto =
+
             await getPhotoDataForSave(
+
                 administrator.profilePhoto ||
+
                     null
+
             );
 
     } catch (error) {
 
         alert(
+
             "The profile photo could not be processed."
+
         );
 
+
         console.error(
+
             error
+
         );
+
 
         return;
 
@@ -1986,28 +2761,81 @@ async function updateAdministrator() {
 
 
     administrator.name =
+
         `${firstName} ${lastName}`;
 
 
     administrator.email =
+
         email;
 
 
     administrator.status =
+
         status;
 
 
     administrator.profilePhoto =
+
         profilePhoto;
 
 
     administrator.updatedAt =
+
         new Date().toISOString();
 
 
     saveAdministrators(
+
         administrators
+
     );
+
+
+    /* AUDIT LOG */
+
+    recordAuditLog({
+
+        actorName:
+
+            "System Administrator",
+
+
+        actorRole:
+
+            "System Administrator",
+
+
+        action:
+
+            "update",
+
+
+        module:
+
+            "Academic Administrators",
+
+
+        targetType:
+
+            "Academic Administrator",
+
+
+        targetId:
+
+            administrator.id,
+
+
+        outcome:
+
+            "SUCCESS",
+
+
+        details:
+
+            `Updated Academic Administrator account: ${firstName} ${lastName} (${administrator.username}).`
+
+    });
 
 
     closeModal();
@@ -2017,7 +2845,9 @@ async function updateAdministrator() {
 
 
     showNotification(
+
         "Academic Administrator updated successfully."
+
     );
 
 }
@@ -2028,12 +2858,17 @@ async function updateAdministrator() {
 ========================================================= */
 
 function viewAdministrator(
+
     administrator
+
 ) {
 
     if (
+
         !viewModalOverlay ||
+
         !administrator
+
     ) {
 
         return;
@@ -2043,26 +2878,38 @@ function viewAdministrator(
 
     closeModal();
 
+
     closeDeleteModal();
 
 
     const status =
+
         administrator.status ===
+
         "active"
+
             ? "Active"
+
             : "Inactive";
 
 
     const created =
+
         formatDate(
+
             administrator.createdAt
+
         );
 
 
     const updated =
+
         formatDate(
+
             administrator.updatedAt ||
+
             administrator.createdAt
+
         );
 
 
@@ -2071,40 +2918,61 @@ function viewAdministrator(
     ===================================================== */
 
     if (
+
         viewAdministratorPhoto &&
+
         viewAdministratorInitials
+
     ) {
 
         if (
+
             administrator.profilePhoto
+
         ) {
 
             viewAdministratorPhoto.src =
+
                 administrator.profilePhoto;
 
+
             viewAdministratorPhoto.alt =
+
                 `${administrator.name} profile photo`;
 
+
             viewAdministratorPhoto.hidden =
+
                 false;
 
+
             viewAdministratorInitials.hidden =
+
                 true;
 
         } else {
 
             viewAdministratorPhoto.src =
+
                 "";
 
+
             viewAdministratorPhoto.hidden =
+
                 true;
 
+
             viewAdministratorInitials.hidden =
+
                 false;
 
+
             viewAdministratorInitials.textContent =
+
                 getInitials(
+
                     administrator.name
+
                 );
 
         }
@@ -2113,98 +2981,132 @@ function viewAdministrator(
 
 
     if (
+
         viewAdministratorAvatar
+
     ) {
 
         viewAdministratorAvatar.style.overflow =
+
             "hidden";
 
     }
 
 
     if (
+
         viewAdministratorPhoto
+
     ) {
 
         viewAdministratorPhoto.style.width =
+
             "100%";
+
 
         viewAdministratorPhoto.style.height =
+
             "100%";
 
+
         viewAdministratorPhoto.style.objectFit =
+
             "cover";
 
+
         viewAdministratorPhoto.style.borderRadius =
+
             "50%";
 
     }
 
 
     if (
+
         viewAdministratorName
+
     ) {
 
         viewAdministratorName.textContent =
+
             administrator.name ||
+
             "—";
 
     }
 
 
     if (
+
         viewAdministratorStatus
+
     ) {
 
         viewAdministratorStatus.textContent =
+
             status;
 
     }
 
 
     if (
+
         viewAdministratorUsername
+
     ) {
 
         viewAdministratorUsername.textContent =
+
             administrator.username ||
+
             "—";
 
     }
 
 
     if (
+
         viewAdministratorEmail
+
     ) {
 
         viewAdministratorEmail.textContent =
+
             administrator.email ||
+
             "—";
 
     }
 
 
     if (
+
         viewAdministratorCreated
+
     ) {
 
         viewAdministratorCreated.textContent =
+
             created;
 
     }
 
 
     if (
+
         viewAdministratorUpdated
+
     ) {
 
         viewAdministratorUpdated.textContent =
+
             updated;
 
     }
 
 
     viewModalOverlay.hidden =
+
         false;
 
 
@@ -2220,7 +3122,9 @@ function viewAdministrator(
 function closeViewModal() {
 
     if (
+
         !viewModalOverlay
+
     ) {
 
         return;
@@ -2229,6 +3133,7 @@ function closeViewModal() {
 
 
     viewModalOverlay.hidden =
+
         true;
 
 }
@@ -2239,12 +3144,17 @@ function closeViewModal() {
 ========================================================= */
 
 function openDeleteModal(
+
     administrator
+
 ) {
 
     if (
+
         !deleteModalOverlay ||
+
         !administrator
+
     ) {
 
         return;
@@ -2254,36 +3164,47 @@ function openDeleteModal(
 
     closeModal();
 
+
     closeViewModal();
 
 
     pendingDeleteAdministrator =
+
         administrator;
 
 
     if (
+
         deleteAdministratorName
+
     ) {
 
         deleteAdministratorName.textContent =
+
             administrator.name ||
+
             "—";
 
     }
 
 
     if (
+
         deleteAdministratorEmail
+
     ) {
 
         deleteAdministratorEmail.textContent =
+
             administrator.email ||
+
             "—";
 
     }
 
 
     deleteModalOverlay.hidden =
+
         false;
 
 
@@ -2299,7 +3220,9 @@ function openDeleteModal(
 function closeDeleteModal() {
 
     if (
+
         !deleteModalOverlay
+
     ) {
 
         return;
@@ -2308,10 +3231,12 @@ function closeDeleteModal() {
 
 
     deleteModalOverlay.hidden =
+
         true;
 
 
     pendingDeleteAdministrator =
+
         null;
 
 }
@@ -2324,7 +3249,9 @@ function closeDeleteModal() {
 function confirmDeleteAdministrator() {
 
     if (
+
         !pendingDeleteAdministrator
+
     ) {
 
         return;
@@ -2333,24 +3260,79 @@ function confirmDeleteAdministrator() {
 
 
     const administrator =
+
         pendingDeleteAdministrator;
 
 
     const administrators =
+
         getAdministrators();
 
 
     const updatedAdministrators =
+
         administrators.filter(
+
             item =>
+
                 item.id !==
+
                 administrator.id
+
         );
 
 
     saveAdministrators(
+
         updatedAdministrators
+
     );
+
+
+    /* AUDIT LOG */
+
+    recordAuditLog({
+
+        actorName:
+
+            "System Administrator",
+
+
+        actorRole:
+
+            "System Administrator",
+
+
+        action:
+
+            "delete",
+
+
+        module:
+
+            "Academic Administrators",
+
+
+        targetType:
+
+            "Academic Administrator",
+
+
+        targetId:
+
+            administrator.id,
+
+
+        outcome:
+
+            "SUCCESS",
+
+
+        details:
+
+            `Deleted Academic Administrator account: ${administrator.name} (${administrator.email}).`
+
+    });
 
 
     closeDeleteModal();
@@ -2360,7 +3342,9 @@ function confirmDeleteAdministrator() {
 
 
     showNotification(
+
         "Academic Administrator deleted successfully."
+
     );
 
 }
@@ -2373,22 +3357,31 @@ function confirmDeleteAdministrator() {
 function renderCurrentSearch() {
 
     const administrators =
+
         getAdministrators();
 
 
     const searchTerm =
+
         searchInput
+
             ? searchInput.value
+
                 .trim()
+
                 .toLowerCase()
+
             : "";
 
 
     if (!searchTerm) {
 
         renderAdministrators(
+
             administrators
+
         );
+
 
         return;
 
@@ -2396,49 +3389,76 @@ function renderCurrentSearch() {
 
 
     const filtered =
+
         administrators.filter(
+
             administrator => {
 
                 return (
 
                     administrator.name
+
                         .toLowerCase()
+
                         .includes(
+
                             searchTerm
+
                         )
 
+
                     ||
+
 
                     administrator.username
+
                         .toLowerCase()
+
                         .includes(
+
                             searchTerm
+
                         )
 
+
                     ||
+
 
                     administrator.email
+
                         .toLowerCase()
+
                         .includes(
+
                             searchTerm
+
                         )
+
 
                     ||
 
+
                     administrator.status
+
                         .toLowerCase()
+
                         .includes(
+
                             searchTerm
+
                         )
 
                 );
 
             }
+
         );
 
 
     renderAdministrators(
+
         filtered
+
     );
 
 }
@@ -2448,26 +3468,33 @@ function renderCurrentSearch() {
    EVENT LISTENERS
 ========================================================= */
 
-
 /* CREATE */
 
 if (createButton) {
 
     createButton.addEventListener(
+
         "click",
+
         openCreateModal
+
     );
 
 }
 
 
-/* CREATE / EDIT MODAL CLOSE */
+/* =========================================================
+   CREATE / EDIT MODAL CLOSE
+========================================================= */
 
 if (closeModalButton) {
 
     closeModalButton.addEventListener(
+
         "click",
+
         closeModal
+
     );
 
 }
@@ -2476,22 +3503,30 @@ if (closeModalButton) {
 if (cancelButton) {
 
     cancelButton.addEventListener(
+
         "click",
+
         closeModal
+
     );
 
 }
 
 
-/* PHOTO INPUT */
+/* =========================================================
+   PHOTO INPUT
+========================================================= */
 
 if (photoInput) {
 
     photoInput.addEventListener(
+
         "change",
+
         () => {
 
             const file =
+
                 getSelectedPhotoFile();
 
 
@@ -2503,13 +3538,19 @@ if (photoInput) {
 
 
             if (
+
                 !validatePhotoFile(
+
                     file
+
                 )
+
             ) {
 
                 photoInput.value =
+
                     "";
+
 
                 return;
 
@@ -2517,49 +3558,66 @@ if (photoInput) {
 
 
             removeExistingPhoto =
+
                 false;
 
 
             const reader =
+
                 new FileReader();
 
 
             reader.onload =
+
                 event => {
 
                     renderPhotoPreview(
+
                         event.target.result,
+
                         Boolean(
+
                             idInput.value
+
                         )
+
                     );
 
                 };
 
 
             reader.readAsDataURL(
+
                 file
+
             );
 
         }
+
     );
 
 }
 
 
-/* FORM SUBMIT */
+/* =========================================================
+   FORM SUBMIT
+========================================================= */
 
 if (form) {
 
     form.addEventListener(
+
         "submit",
+
         event => {
 
             event.preventDefault();
 
 
             if (
+
                 idInput.value
+
             ) {
 
                 updateAdministrator();
@@ -2571,22 +3629,30 @@ if (form) {
             }
 
         }
+
     );
 
 }
 
 
-/* TABLE ACTIONS */
+/* =========================================================
+   TABLE ACTIONS
+========================================================= */
 
 if (tableBody) {
 
     tableBody.addEventListener(
+
         "click",
+
         event => {
 
             const button =
+
                 event.target.closest(
+
                     "[data-action]"
+
                 );
 
 
@@ -2598,18 +3664,25 @@ if (tableBody) {
 
 
             const action =
+
                 button.dataset.action;
 
 
             const administratorId =
+
                 button.dataset.id;
 
 
             const administrator =
+
                 getAdministrators().find(
+
                     item =>
+
                         item.id ===
+
                         administratorId
+
                 );
 
 
@@ -2621,92 +3694,129 @@ if (tableBody) {
 
 
             if (
+
                 action === "view"
+
             ) {
 
                 viewAdministrator(
+
                     administrator
+
                 );
 
             }
 
 
             if (
+
                 action === "edit"
+
             ) {
 
                 openEditModal(
+
                     administrator
+
                 );
 
             }
 
 
             if (
+
                 action === "delete"
+
             ) {
 
                 openDeleteModal(
+
                     administrator
+
                 );
 
             }
 
         }
+
     );
 
 }
 
 
-/* SEARCH */
+/* =========================================================
+   SEARCH
+========================================================= */
 
 if (searchInput) {
 
     searchInput.addEventListener(
+
         "input",
+
         renderCurrentSearch
+
     );
 
 }
 
 
-/* VIEW MODAL CLOSE */
+/* =========================================================
+   VIEW MODAL CLOSE
+========================================================= */
 
 if (
+
     closeViewModalButton
+
 ) {
 
     closeViewModalButton.addEventListener(
+
         "click",
+
         closeViewModal
+
     );
 
 }
 
 
 if (
+
     closeViewAdministratorButton
+
 ) {
 
     closeViewAdministratorButton.addEventListener(
+
         "click",
+
         closeViewModal
+
     );
 
 }
 
 
-/* VIEW MODAL OVERLAY */
+/* =========================================================
+   VIEW MODAL OVERLAY
+========================================================= */
 
 if (viewModalOverlay) {
 
     viewModalOverlay.addEventListener(
+
         "click",
+
         event => {
 
             if (
+
                 event.target ===
+
                 viewModalOverlay
+
             ) {
 
                 closeViewModal();
@@ -2714,62 +3824,89 @@ if (viewModalOverlay) {
             }
 
         }
+
     );
 
 }
 
 
-/* DELETE MODAL CLOSE */
+/* =========================================================
+   DELETE MODAL CLOSE
+========================================================= */
 
 if (
+
     closeDeleteModalButton
+
 ) {
 
     closeDeleteModalButton.addEventListener(
+
         "click",
+
         closeDeleteModal
+
     );
 
 }
 
 
 if (
+
     cancelDeleteButton
+
 ) {
 
     cancelDeleteButton.addEventListener(
+
         "click",
+
         closeDeleteModal
+
     );
 
 }
 
 
-/* DELETE CONFIRM */
+/* =========================================================
+   DELETE CONFIRM
+========================================================= */
 
 if (
+
     confirmDeleteButton
+
 ) {
 
     confirmDeleteButton.addEventListener(
+
         "click",
+
         confirmDeleteAdministrator
+
     );
 
 }
 
 
-/* DELETE MODAL OVERLAY */
+/* =========================================================
+   DELETE MODAL OVERLAY
+========================================================= */
 
 if (deleteModalOverlay) {
 
     deleteModalOverlay.addEventListener(
+
         "click",
+
         event => {
 
             if (
+
                 event.target ===
+
                 deleteModalOverlay
+
             ) {
 
                 closeDeleteModal();
@@ -2777,22 +3914,30 @@ if (deleteModalOverlay) {
             }
 
         }
+
     );
 
 }
 
 
-/* CREATE / EDIT MODAL OVERLAY */
+/* =========================================================
+   CREATE / EDIT MODAL OVERLAY
+========================================================= */
 
 if (modalOverlay) {
 
     modalOverlay.addEventListener(
+
         "click",
+
         event => {
 
             if (
+
                 event.target ===
+
                 modalOverlay
+
             ) {
 
                 closeModal();
@@ -2800,20 +3945,28 @@ if (modalOverlay) {
             }
 
         }
+
     );
 
 }
 
 
-/* ESCAPE KEY */
+/* =========================================================
+   ESCAPE KEY
+========================================================= */
 
 document.addEventListener(
+
     "keydown",
+
     event => {
 
         if (
+
             event.key !==
+
             "Escape"
+
         ) {
 
             return;
@@ -2822,32 +3975,43 @@ document.addEventListener(
 
 
         if (
+
             modalOverlay &&
+
             !modalOverlay.hidden
+
         ) {
 
             closeModal();
 
+
             return;
 
         }
 
 
         if (
+
             viewModalOverlay &&
+
             !viewModalOverlay.hidden
+
         ) {
 
             closeViewModal();
 
+
             return;
 
         }
 
 
         if (
+
             deleteModalOverlay &&
+
             !deleteModalOverlay.hidden
+
         ) {
 
             closeDeleteModal();
@@ -2855,6 +4019,7 @@ document.addEventListener(
         }
 
     }
+
 );
 
 
