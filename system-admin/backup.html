@@ -72,18 +72,18 @@
             </button>
 
 
-            <div class="profile">
+            <a class="profile" href="profile.html" aria-label="Open My Profile" title="My Profile">
 
                 <img
                     src="../images/macross.jpg"
-                    alt="System Administrator"
+                    alt="Arcana"
                     class="profile-avatar"
                 >
 
                 <div class="profile-info">
 
                     <strong>
-                        System Administrator
+                        Arcana
                     </strong>
 
                     <span>
@@ -93,11 +93,11 @@
                 </div>
 
                 <i
-                    data-lucide="chevron-down"
+                    data-lucide="chevron-right"
                     class="profile-chevron"
                 ></i>
 
-            </div>
+            </a>
 
         </div>
 
@@ -147,13 +147,21 @@
 
                 <img
                     src="../images/macross.jpg"
-                    alt="System Administrator"
+                    alt="Arcana"
                     class="sidebar-avatar"
                 >
 
-                <span class="sidebar-profile-name">
-                    System Administrator
-                </span>
+                <div class="sidebar-profile-info">
+
+                    <span class="sidebar-profile-name">
+                        Arcana
+                    </span>
+
+                    <span class="sidebar-profile-role">
+                        Administrator
+                    </span>
+
+                </div>
 
             </div>
 
@@ -226,7 +234,23 @@
 
                 </a>
 
-            </nav>
+            
+
+                <!-- My Profile -->
+
+                <a
+                    href="profile.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="user-round"></i>
+
+                    <span class="nav-label">
+                        My Profile
+                    </span>
+
+                </a>
+</nav>
 
 
             <!-- Logout -->
@@ -262,7 +286,7 @@
                  PAGE HEADING
             ================================================== -->
 
-            <section class="page-heading">
+            <section class="page-header">
 
                 <div>
 
@@ -359,7 +383,7 @@
                                 >
 
                                 <span class="backup-config-description">
-                                    The initial implementation covers
+                                    The implementation covers
                                     the Siknayan MySQL database.
                                 </span>
 
@@ -1064,76 +1088,19 @@
          JAVASCRIPT
     ====================================================== -->
 
+    <script src="js/shared.js"></script>
     <script>
 
         /* =====================================================
-           SIDEBAR
+        STORAGE KEYS
         ===================================================== */
 
-        const sidebar =
-            document.getElementById(
-                "sidebar"
-            );
+        const BACKUP_SETTINGS_STORAGE_KEY =
+            "siknayan_system_admin_backup_settings";
 
+        const AUDIT_LOG_STORAGE_KEY =
+            "siknayan_system_admin_audit_logs";
 
-        const sidebarToggle =
-            document.getElementById(
-                "sidebarToggle"
-            );
-
-
-        const SIDEBAR_STORAGE_KEY =
-            "siknayan_system_admin_sidebar_collapsed";
-
-
-        function applySidebarState() {
-
-            if (!sidebar) {
-                return;
-            }
-
-
-            const collapsed =
-                localStorage.getItem(
-                    SIDEBAR_STORAGE_KEY
-                ) === "true";
-
-
-            sidebar.classList.toggle(
-                "collapsed",
-                collapsed
-            );
-
-        }
-
-
-        applySidebarState();
-
-
-        if (
-            sidebar &&
-            sidebarToggle
-        ) {
-
-            sidebarToggle.addEventListener(
-                "click",
-                () => {
-
-                    const collapsed =
-                        sidebar.classList.toggle(
-                            "collapsed"
-                        );
-
-
-                    localStorage.setItem(
-                        SIDEBAR_STORAGE_KEY,
-                        String(collapsed)
-                    );
-
-                }
-            );
-
-        }
 
 
         /* =====================================================
@@ -1155,6 +1122,36 @@
         const backupSchedule =
             document.getElementById(
                 "backupSchedule"
+            );
+
+
+        const retentionPeriod =
+            document.getElementById(
+                "retentionPeriod"
+            );
+
+
+        const backupDay =
+            document.getElementById(
+                "backupDay"
+            );
+
+
+        const backupTime =
+            document.getElementById(
+                "backupTime"
+            );
+
+
+        const backupEncryption =
+            document.getElementById(
+                "backupEncryption"
+            );
+
+
+        const backupVerification =
+            document.getElementById(
+                "backupVerification"
             );
 
 
@@ -1191,7 +1188,9 @@
 
 
             if (existing) {
+
                 existing.remove();
+
             }
 
 
@@ -1252,11 +1251,395 @@
                 () => {
 
                     if (notification) {
+
                         notification.remove();
+
                     }
 
                 },
                 3000
+            );
+
+        }
+
+
+        /* =====================================================
+           AUDIT LOG HELPERS
+        ===================================================== */
+
+        function getAuditLogs() {
+
+            try {
+
+                const stored =
+                    localStorage.getItem(
+                        AUDIT_LOG_STORAGE_KEY
+                    );
+
+
+                if (!stored) {
+
+                    return [];
+
+                }
+
+
+                const logs =
+                    JSON.parse(stored);
+
+
+                return Array.isArray(logs)
+
+                    ? logs
+
+                    : [];
+
+            } catch (error) {
+
+                console.error(
+                    "Unable to read audit logs:",
+                    error
+                );
+
+
+                return [];
+
+            }
+
+        }
+
+
+        function saveAuditLogs(
+            logs
+        ) {
+
+            localStorage.setItem(
+                AUDIT_LOG_STORAGE_KEY,
+                JSON.stringify(
+                    logs
+                )
+            );
+
+        }
+
+
+        function recordAuditLog({
+
+            actorName =
+                "Arcana",
+
+            actorRole =
+                "System Administrator",
+
+            action,
+
+            module,
+
+            targetType = null,
+
+            targetId = null,
+
+            outcome =
+                "SUCCESS",
+
+            details
+
+        }) {
+
+            const logs =
+                getAuditLogs();
+
+
+            logs.push({
+
+                id:
+
+                    "LOG-" +
+
+                    Date.now() +
+
+                    "-" +
+
+                    Math.random()
+
+                        .toString(36)
+
+                        .substring(
+                            2,
+                            8
+                        )
+
+                        .toUpperCase(),
+
+
+                timestamp:
+
+                    new Date().toISOString(),
+
+
+                actorName,
+
+
+                actorRole,
+
+
+                action,
+
+
+                module,
+
+
+                targetType,
+
+
+                targetId,
+
+
+                outcome,
+
+
+                details
+
+            });
+
+
+            saveAuditLogs(
+                logs
+            );
+
+        }
+
+
+        /* =====================================================
+           BACKUP SETTINGS
+        ===================================================== */
+
+        function getBackupSettings() {
+
+            return {
+
+                schedule:
+                    backupSchedule?.value ||
+                    "manual",
+
+                retentionPeriod:
+                    retentionPeriod?.value ||
+                    "30",
+
+                backupDay:
+                    backupDay?.value ||
+                    "sunday",
+
+                backupTime:
+                    backupTime?.value ||
+                    "02:00",
+
+                encryption:
+                    Boolean(
+                        backupEncryption?.checked
+                    ),
+
+                verification:
+                    Boolean(
+                        backupVerification?.checked
+                    )
+
+            };
+
+        }
+
+
+        function saveBackupSettingsData(
+            settings
+        ) {
+
+            localStorage.setItem(
+
+                BACKUP_SETTINGS_STORAGE_KEY,
+
+                JSON.stringify(
+                    settings
+                )
+
+            );
+
+        }
+
+
+        function loadBackupSettings() {
+
+            try {
+
+                const stored =
+                    localStorage.getItem(
+                        BACKUP_SETTINGS_STORAGE_KEY
+                    );
+
+
+                if (!stored) {
+
+                    return;
+
+                }
+
+
+                const settings =
+                    JSON.parse(
+                        stored
+                    );
+
+
+                if (
+                    backupSchedule &&
+                    settings.schedule
+                ) {
+
+                    backupSchedule.value =
+                        settings.schedule;
+
+                }
+
+
+                if (
+                    retentionPeriod &&
+                    settings.retentionPeriod
+                ) {
+
+                    retentionPeriod.value =
+                        settings.retentionPeriod;
+
+                }
+
+
+                if (
+                    backupDay &&
+                    settings.backupDay
+                ) {
+
+                    backupDay.value =
+                        settings.backupDay;
+
+                }
+
+
+                if (
+                    backupTime &&
+                    settings.backupTime
+                ) {
+
+                    backupTime.value =
+                        settings.backupTime;
+
+                }
+
+
+                if (
+                    backupEncryption &&
+                    typeof settings.encryption ===
+                        "boolean"
+                ) {
+
+                    backupEncryption.checked =
+                        settings.encryption;
+
+                }
+
+
+                if (
+                    backupVerification &&
+                    typeof settings.verification ===
+                        "boolean"
+                ) {
+
+                    backupVerification.checked =
+                        settings.verification;
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Unable to load backup settings:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           BACKUP SETTINGS SUMMARY
+        ===================================================== */
+
+        function getScheduleDescription(
+            settings
+        ) {
+
+            if (
+                settings.schedule ===
+                "manual"
+            ) {
+
+                return "Manual";
+
+            }
+
+
+            if (
+                settings.schedule ===
+                "daily"
+            ) {
+
+                return (
+                    "Daily at " +
+                    settings.backupTime
+                );
+
+            }
+
+
+            const dayLabels = {
+
+                sunday:
+                    "Sunday",
+
+                monday:
+                    "Monday",
+
+                tuesday:
+                    "Tuesday",
+
+                wednesday:
+                    "Wednesday",
+
+                thursday:
+                    "Thursday",
+
+                friday:
+                    "Friday",
+
+                saturday:
+                    "Saturday"
+
+            };
+
+
+            return (
+
+                "Weekly on " +
+
+                (
+                    dayLabels[
+                        settings.backupDay
+                    ] ||
+                    settings.backupDay
+                ) +
+
+                " at " +
+
+                settings.backupTime
+
             );
 
         }
@@ -1269,10 +1652,15 @@
         function updateScheduleFields() {
 
             if (
+
                 !backupSchedule ||
+
                 !backupScheduleDetails ||
+
                 !backupDayField ||
+
                 !backupTimeField
+
             ) {
 
                 return;
@@ -1379,8 +1767,43 @@
                 "click",
                 () => {
 
+                    const settings =
+                        getBackupSettings();
+
+
+                    saveBackupSettingsData(
+                        settings
+                    );
+
+
+                    recordAuditLog({
+
+                        actorName:
+                            "Arcana",
+
+                        actorRole:
+                            "System Administrator",
+
+                        action:
+                            "update",
+
+                        module:
+                            "Data Backup",
+
+                        targetType:
+                            "Backup Configuration",
+
+                        outcome:
+                            "SUCCESS",
+
+                        details:
+                            `Updated backup configuration: Schedule=${getScheduleDescription(settings)}, Retention=${settings.retentionPeriod} days, Encryption=${settings.encryption ? "Enabled" : "Disabled"}, Verification=${settings.verification ? "Enabled" : "Disabled"}.`
+
+                    });
+
+
                     showBackupNotification(
-                        "Backup settings are ready for backend integration."
+                        "Backup settings saved successfully."
                     );
 
                 }
@@ -1399,6 +1822,32 @@
                 "click",
                 () => {
 
+                    recordAuditLog({
+
+                        actorName:
+                            "Arcana",
+
+                        actorRole:
+                            "System Administrator",
+
+                        action:
+                            "backup",
+
+                        module:
+                            "Data Backup",
+
+                        targetType:
+                            "Database Backup",
+
+                        outcome:
+                            "NOT_CONNECTED",
+
+                        details:
+                            "Manual full database backup requested, but the MySQL backup service is not connected."
+
+                    });
+
+
                     showBackupNotification(
                         "MySQL backup service is not connected yet."
                     );
@@ -1410,8 +1859,10 @@
 
 
         /* =====================================================
-           INITIALIZE SCHEDULE
+           INITIALIZE
         ===================================================== */
+
+        loadBackupSettings();
 
         updateScheduleFields();
 

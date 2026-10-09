@@ -360,7 +360,7 @@ function saveAuditLogs(
 function recordAuditLog({
 
     actorName =
-        "System Administrator",
+        "Arcana",
 
     actorRole =
         "System Administrator",
@@ -2558,7 +2558,7 @@ async function createAdministrator() {
 
         actorName:
 
-            "System Administrator",
+            "Arcana",
 
 
         actorRole:
@@ -2798,7 +2798,7 @@ async function updateAdministrator() {
 
         actorName:
 
-            "System Administrator",
+            "Arcana",
 
 
         actorRole:
@@ -3295,7 +3295,7 @@ function confirmDeleteAdministrator() {
 
         actorName:
 
-            "System Administrator",
+            "Arcana",
 
 
         actorRole:

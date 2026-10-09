@@ -44,6 +44,20 @@ const applyFiltersButton =
 const exportButton =
     document.getElementById("exportAuditLog");
 
+const auditPageSizeSelect =
+    document.getElementById("auditPageSize");
+
+const auditPreviousPageButton =
+    document.getElementById("auditPreviousPage");
+
+const auditNextPageButton =
+    document.getElementById("auditNextPage");
+
+const auditPageIndicator =
+    document.getElementById("auditPageIndicator");
+
+let auditCurrentPage = 1;
+
 /* =========================================================
    STORAGE HELPERS
 ========================================================= */
@@ -518,14 +532,37 @@ function renderEmptyState(
    RENDER LOGS
 ========================================================= */
 
-function renderAuditLogs(
-    logs,
-    totalCount
-) {
+function renderAuditLogs(logs) {
 
     if (!auditLogBody) {
         return;
     }
+
+    const pageSize = Math.max(
+        1,
+        Number(auditPageSizeSelect?.value || 10)
+    );
+
+    const filteredCount = logs.length;
+
+    const totalPages = Math.max(
+        1,
+        Math.ceil(filteredCount / pageSize)
+    );
+
+    auditCurrentPage = Math.min(
+        auditCurrentPage,
+        totalPages
+    );
+
+    const startIndex = filteredCount > 0
+        ? (auditCurrentPage - 1) * pageSize
+        : 0;
+
+    const pageLogs = logs.slice(
+        startIndex,
+        startIndex + pageSize
+    );
 
     if (!logs.length) {
 
@@ -556,7 +593,7 @@ function renderAuditLogs(
             )?.children.length || 4;
 
         auditLogBody.innerHTML =
-            logs
+            pageLogs
                 .map(
                     log => {
 
@@ -695,8 +732,45 @@ function renderAuditLogs(
 
     if (auditRecordCount) {
 
+    if (filteredCount === 0) {
+
         auditRecordCount.textContent =
-            `Showing ${logs.length} of ${totalCount} records`;
+            "Showing 0 of 0 records";
+
+    } else {
+
+            const firstRecord = startIndex + 1;
+
+            const lastRecord = Math.min(
+                startIndex + pageSize,
+                filteredCount
+            );
+
+            auditRecordCount.textContent =
+                `Showing ${firstRecord}–${lastRecord} of ${filteredCount} records`;
+
+        }
+
+    }
+
+    if (auditPageIndicator) {
+
+        auditPageIndicator.textContent =
+            `Page ${auditCurrentPage} of ${totalPages}`;
+
+    }
+
+    if (auditPreviousPageButton) {
+
+        auditPreviousPageButton.disabled =
+            filteredCount === 0 || auditCurrentPage <= 1;
+
+    }
+
+    if (auditNextPageButton) {
+
+        auditNextPageButton.disabled =
+            filteredCount === 0 || auditCurrentPage >= totalPages;
 
     }
 }
@@ -705,7 +779,11 @@ function renderAuditLogs(
    REFRESH DISPLAY
 ========================================================= */
 
-function refreshAuditLogs() {
+function refreshAuditLogs(resetPage = true) {
+
+    if (resetPage) {
+        auditCurrentPage = 1;
+    }
 
     const allLogs =
         sortAuditLogs(
@@ -721,10 +799,7 @@ function refreshAuditLogs() {
             allLogs
         );
 
-    renderAuditLogs(
-        filteredLogs,
-        allLogs.length
-    );
+    renderAuditLogs(filteredLogs);
 }
 
 /* =========================================================
@@ -1083,6 +1158,58 @@ if (exportButton) {
         exportAuditLogs
     );
 }
+
+
+/* =========================================================
+   PAGINATION EVENTS
+========================================================= */
+
+if (auditPageSizeSelect) {
+
+    auditPageSizeSelect.addEventListener(
+        "change",
+        () => {
+            auditCurrentPage = 1;
+            refreshAuditLogs(false);
+        }
+    );
+
+}
+
+if (auditPreviousPageButton) {
+
+    auditPreviousPageButton.addEventListener(
+        "click",
+        () => {
+
+            if (auditCurrentPage > 1) {
+
+                auditCurrentPage--;
+
+                refreshAuditLogs(false);
+
+            }
+
+        }
+    );
+
+}
+
+if (auditNextPageButton) {
+
+    auditNextPageButton.addEventListener(
+        "click",
+        () => {
+
+            auditCurrentPage++;
+
+            refreshAuditLogs(false);
+
+        }
+    );
+
+}
+
 
 /* =========================================================
    INITIALIZE

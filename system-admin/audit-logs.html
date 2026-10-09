@@ -74,18 +74,18 @@
             </button>
 
 
-            <div class="profile">
+            <a class="profile" href="profile.html" aria-label="Open My Profile" title="My Profile">
 
                 <img
                     src="../images/macross.jpg"
-                    alt="System Administrator"
+                    alt="Arcana"
                     class="profile-avatar"
                 >
 
                 <div class="profile-info">
 
                     <strong>
-                        System Administrator
+                        Arcana
                     </strong>
 
                     <span>
@@ -95,11 +95,11 @@
                 </div>
 
                 <i
-                    data-lucide="chevron-down"
+                    data-lucide="chevron-right"
                     class="profile-chevron"
                 ></i>
 
-            </div>
+            </a>
 
         </div>
 
@@ -151,14 +151,14 @@
 
                 <img
                     src="../images/macross.jpg"
-                    alt="System Administrator"
+                    alt="Arcana"
                     class="sidebar-avatar"
                 >
 
                 <div class="sidebar-profile-info">
 
                     <span class="sidebar-profile-name">
-                        System Administrator
+                        Arcana
                     </span>
 
                     <span class="sidebar-profile-role">
@@ -239,7 +239,23 @@
 
                 </a>
 
-            </nav>
+            
+
+                <!-- My Profile -->
+
+                <a
+                    href="profile.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="user-round"></i>
+
+                    <span class="nav-label">
+                        My Profile
+                    </span>
+
+                </a>
+</nav>
 
 
 
@@ -626,6 +642,44 @@
                     <span id="auditRecordCount">
                         Showing 0 of 0 records
                     </span>
+
+                    <div class="audit-pagination"
+                        aria-label="Audit log pagination">
+
+                        <label for="auditPageSize">Rows per page</label>
+
+                        <select id="auditPageSize" class="audit-page-size">
+                            <option value="10" selected>10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+
+                        <button
+                            type="button"
+                            class="audit-page-button"
+                            id="auditPreviousPage"
+                            aria-label="Previous page"
+                            disabled
+                        >
+                            <i data-lucide="chevron-left"></i>
+                        </button>
+
+                        <span id="auditPageIndicator"
+                            class="audit-page-indicator">
+                            Page 1 of 1
+                        </span>
+
+                        <button
+                            type="button"
+                            class="audit-page-button"
+                            id="auditNextPage"
+                            aria-label="Next page"
+                            disabled
+                        >
+                            <i data-lucide="chevron-right"></i>
+                        </button>
+
+                    </div>
 
                 </div>
 
