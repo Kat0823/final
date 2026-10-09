@@ -776,6 +776,12 @@
             return;
         }
 
+        if (!/^\d{2}-\d{5}$/.test(studentId)) {
+            alert("Student ID must use the format 00-00000 (two digits, a hyphen, and five digits).");
+            studentIdInput.focus();
+            return;
+        }
+
         if (!fullName) {
             alert(
                 "Please enter the learner's full name."
@@ -1006,12 +1012,13 @@
             const accountStatus =
                 account
                     ? (
-                        account.status ===
-                            "inactive"
+                        account.status === "inactive"
                             ? "inactive"
                             : "active"
                     )
-                    : "not-set-up";
+                    : learner.backendAccount
+                        ? "active"
+                        : "not-set-up";
 
             const searchableText = [
                 learner.id,
@@ -1019,7 +1026,7 @@
                 learner.program,
                 account
                     ? account.email
-                    : ""
+                    : (learner.email || "")
             ]
                 .join(" ")
                 .toLowerCase();
@@ -1051,6 +1058,15 @@
             row.className =
                 "learner-account-row";
 
+            const rowNumberCell =
+                document.createElement("td");
+
+            rowNumberCell.className =
+                "row-number";
+
+            rowNumberCell.textContent =
+                String(visibleRows);
+
             const studentIdCell =
                 document.createElement("td");
 
@@ -1058,7 +1074,7 @@
                 "student-id";
 
             studentIdCell.textContent =
-                learner.id;
+                learner.schoolId || learner.id;
 
             const learnerCell =
                 document.createElement("td");
@@ -1081,10 +1097,9 @@
                 "learner-account-email";
 
             emailCell.textContent =
-                account &&
-                account.email
-                    ? account.email
-                    : "—";
+                (account && account.email) ||
+                learner.email ||
+                "—";
 
             const programCell =
                 document.createElement("td");
@@ -1196,6 +1211,10 @@
                         ),
                     true
                 )
+            );
+
+            row.appendChild(
+                rowNumberCell
             );
 
             row.appendChild(
@@ -1418,7 +1437,7 @@
         confirmDeleteButton.disabled = true;
     }
 
-    function confirmDeleteAccount() {
+    async function confirmDeleteAccount() {
         if (
             !deleteLearnerId ||
             !confirmDeleteCheckbox.checked
@@ -1457,6 +1476,49 @@
             closeDeleteAccountModal();
             renderTable();
             return;
+        }
+
+        if (learner.backendAccount) {
+            const token = getImportApiToken();
+
+            if (!token) {
+                alert("Cannot delete this learner from the server: please sign in again.");
+                return;
+            }
+
+            const apiBase =
+                typeof LEARNER_API_BASE_URL !== "undefined"
+                    ? LEARNER_API_BASE_URL
+                    : "http://127.0.0.1:8000/api";
+
+            try {
+                const response = await fetch(
+                    `${apiBase}/admin/learners/${encodeURIComponent(learnerId)}`,
+                    {
+                        method: "DELETE",
+                        headers: {
+                            "Accept": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        }
+                    }
+                );
+
+                let payload = null;
+                try {
+                    payload = await response.json();
+                } catch {
+                    payload = null;
+                }
+
+                if (!response.ok || payload?.success === false) {
+                    throw new Error(
+                        payload?.message || `Server deletion failed (${response.status}).`
+                    );
+                }
+            } catch (error) {
+                alert(`Learner was not removed from the interface because server deletion failed: ${error.message}`);
+                return;
+            }
         }
 
         const linkedAccount =
@@ -1689,10 +1751,760 @@
         }
     );
 
+    /* Refresh this table when the import handler syncs backend learners. */
+    window.addEventListener("siknayan:learners-refreshed", () => {
+        renderTable();
+        refreshIcons();
+    });
+
     /* ---------------- INITIAL RENDER ---------------- */
 
     initializeProgramOptions();
     renderTable();
     refreshIcons();
+
+
+    /* ---------------- EXCEL LEARNER IMPORT ---------------- */
+
+    const importLearnersExcelButton =
+        document.getElementById("importLearnersExcelBtn");
+    const learnersExcelFile =
+        document.getElementById("learnersExcelFile");
+    const downloadLearnerCredentialsAgainButton =
+        document.getElementById("downloadLearnerCredentialsAgainBtn");
+    const learnerExcelImportStatus =
+        document.getElementById("learnerExcelImportStatus");
+    const learnerCredentialDownloadDialog =
+        document.getElementById("learnerCredentialDownloadDialog");
+    const exportLearnerCredentialsExcelButton =
+        document.getElementById("exportLearnerCredentialsExcelBtn");
+    const exportLearnerCredentialsPdfButton =
+        document.getElementById("exportLearnerCredentialsPdfBtn");
+    const closeLearnerCredentialDownloadDialogButton =
+        document.getElementById("closeLearnerCredentialDownloadDialogBtn");
+
+    let latestImportedLearners = [];
+    if (downloadLearnerCredentialsAgainButton) {
+        downloadLearnerCredentialsAgainButton.disabled = true;
+    }
+
+    function getImportApiToken() {
+        return (
+            window.SIKNAYAN_API_TOKEN ||
+            localStorage.getItem("siknayan_api_token") ||
+            localStorage.getItem("token") ||
+            localStorage.getItem("access_token") ||
+            ""
+        );
+    }
+
+    function setExcelImportStatus(message, isError = false) {
+        if (!learnerExcelImportStatus) return;
+
+        learnerExcelImportStatus.textContent = message;
+        learnerExcelImportStatus.style.color =
+            isError ? "#b42318" : "inherit";
+    }
+
+    function getCredentialRows() {
+        return latestImportedLearners.map(learner => ({
+            "Student Name": learner.name ?? "",
+            "School ID": learner.school_id ?? "",
+            "Email": learner.email ?? "",
+            "Program": learner.program ?? "",
+            "Temporary Password": learner.temporary_password ?? ""
+        }));
+    }
+
+    function closeLearnerCredentialDownloadDialog() {
+        if (learnerCredentialDownloadDialog) {
+            learnerCredentialDownloadDialog.hidden = true;
+        }
+        // Credentials remain in page memory until a new import or page reload.
+    }
+
+    function openLearnerCredentialDownloadDialog() {
+        if (
+            !learnerCredentialDownloadDialog ||
+            !latestImportedLearners.length
+        ) {
+            return;
+        }
+
+        learnerCredentialDownloadDialog.hidden = false;
+        refreshIcons();
+        closeLearnerCredentialDownloadDialogButton?.focus();
+    }
+
+    function downloadImportedCredentialsExcel() {
+        if (!latestImportedLearners.length) {
+            setExcelImportStatus("No imported credentials are available to export.", true);
+            return;
+        }
+
+        if (!window.XLSX) {
+            setExcelImportStatus(
+                "The Excel export library did not load. Check your internet connection and reload the page.",
+                true
+            );
+            return;
+        }
+
+        const worksheet = window.XLSX.utils.json_to_sheet(getCredentialRows());
+        worksheet["!cols"] = [
+            { wch: 28 },
+            { wch: 18 },
+            { wch: 32 },
+            { wch: 24 },
+            { wch: 24 }
+        ];
+
+        const workbook = window.XLSX.utils.book_new();
+        window.XLSX.utils.book_append_sheet(workbook, worksheet, "Learner Credentials");
+        window.XLSX.writeFile(workbook, "siknayan-learner-credentials.xlsx");
+
+        closeLearnerCredentialDownloadDialog();
+        setExcelImportStatus(
+            "Excel credentials file downloaded. Store it securely and share temporary passwords privately."
+        );
+    }
+
+    function downloadImportedCredentialsPdf() {
+        if (!latestImportedLearners.length) {
+            setExcelImportStatus("No imported credentials are available to export.", true);
+            return;
+        }
+
+        if (!window.jspdf?.jsPDF) {
+            setExcelImportStatus(
+                "The PDF export library did not load. Check your internet connection and reload the page.",
+                true
+            );
+            return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+        const rows = getCredentialRows();
+        const headers = Object.keys(rows[0]);
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const margin = 10;
+        const widths = [48, 28, 55, 40, 85];
+        const rowPadding = 3;
+        let y = 29;
+
+        function drawHeader() {
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(8);
+            let x = margin;
+
+            headers.forEach((header, index) => {
+                pdf.rect(x, y, widths[index], 9);
+                pdf.text(header, x + 2, y + 5.8);
+                x += widths[index];
+            });
+
+            y += 9;
+            pdf.setFont("helvetica", "normal");
+        }
+
+        function drawTitle() {
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(14);
+            pdf.text("Learner Temporary Credentials", margin, 14);
+            pdf.setFont("helvetica", "normal");
+            pdf.setFontSize(8);
+            pdf.text(
+                "Confidential - distribute credentials securely.",
+                margin,
+                20
+            );
+        }
+
+        drawTitle();
+        drawHeader();
+        pdf.setFontSize(7.5);
+
+        rows.forEach(row => {
+            const cells = headers.map((header, index) =>
+                pdf.splitTextToSize(String(row[header] ?? ""), widths[index] - 4)
+            );
+            const lineCount = Math.max(...cells.map(lines => lines.length));
+            const rowHeight = Math.max(9, lineCount * 3.5 + rowPadding * 2);
+
+            if (y + rowHeight > 195) {
+                pdf.addPage();
+                y = 14;
+                drawHeader();
+                pdf.setFontSize(7.5);
+            }
+
+            let x = margin;
+
+            cells.forEach((lines, index) => {
+                pdf.rect(x, y, widths[index], rowHeight);
+                pdf.text(lines, x + 2, y + rowPadding + 2.5);
+                x += widths[index];
+            });
+
+            y += rowHeight;
+        });
+
+        pdf.save("siknayan-learner-credentials.pdf");
+        closeLearnerCredentialDownloadDialog();
+        setExcelImportStatus(
+            "PDF credentials file downloaded. Store it securely and share temporary passwords privately."
+        );
+    }
+
+    downloadLearnerCredentialsAgainButton?.addEventListener("click", () => {
+        if (!latestImportedLearners.length) {
+            setExcelImportStatus(
+                "No credentials are available in this page session. Import learners again to generate new credentials.",
+                true
+            );
+            return;
+        }
+        openLearnerCredentialDownloadDialog();
+    });
+
+    importLearnersExcelButton?.addEventListener("click", () => {
+        if (learnersExcelFile) learnersExcelFile.click();
+    });
+
+    exportLearnerCredentialsExcelButton?.addEventListener(
+        "click",
+        downloadImportedCredentialsExcel
+    );
+
+    exportLearnerCredentialsPdfButton?.addEventListener(
+        "click",
+        downloadImportedCredentialsPdf
+    );
+
+    closeLearnerCredentialDownloadDialogButton?.addEventListener(
+        "click",
+        closeLearnerCredentialDownloadDialog
+    );
+
+    learnerCredentialDownloadDialog?.addEventListener("click", event => {
+        if (event.target === learnerCredentialDownloadDialog) {
+            closeLearnerCredentialDownloadDialog();
+        }
+    });
+
+    document.addEventListener("keydown", event => {
+        if (
+            event.key === "Escape" &&
+            learnerCredentialDownloadDialog &&
+            !learnerCredentialDownloadDialog.hidden
+        ) {
+            closeLearnerCredentialDownloadDialog();
+        }
+    });
+
+    learnersExcelFile?.addEventListener("change", async () => {
+        const file = learnersExcelFile.files?.[0];
+        if (!file) return;
+
+        closeLearnerCredentialDownloadDialog();
+        latestImportedLearners = [];
+        if (downloadLearnerCredentialsAgainButton) {
+            downloadLearnerCredentialsAgainButton.disabled = true;
+        }
+
+        if (!file.name.toLowerCase().endsWith(".xlsx")) {
+            setExcelImportStatus(
+                "Please select an Excel .xlsx file.",
+                true
+            );
+            learnersExcelFile.value = "";
+            return;
+        }
+
+        const token = getImportApiToken();
+
+        if (!token) {
+            setExcelImportStatus(
+                "No API token found. Please sign in again, then retry the import.",
+                true
+            );
+            learnersExcelFile.value = "";
+            return;
+        }
+
+        if (!window.XLSX) {
+            setExcelImportStatus(
+                "The Excel library did not load. Check your connection and reload the page.",
+                true
+            );
+            learnersExcelFile.value = "";
+            return;
+        }
+
+        let importFile = file;
+        try {
+            const sourceWorkbook = window.XLSX.read(
+                await file.arrayBuffer(),
+                { type: "array" }
+            );
+            const sheetNames = sourceWorkbook.SheetNames || [];
+            if (!sheetNames.length) {
+                throw new Error("The workbook does not contain any worksheets.");
+            }
+
+            let selectedNames = [sheetNames[0]];
+
+            if (sheetNames.length > 1) {
+                selectedNames = await new Promise(resolve => {
+                    const overlay = document.createElement("div");
+                    overlay.setAttribute("role", "dialog");
+                    overlay.setAttribute("aria-modal", "true");
+                    overlay.setAttribute("aria-labelledby", "learnerSheetSelectorTitle");
+                    Object.assign(overlay.style, {
+                        position: "fixed",
+                        inset: "0",
+                        zIndex: "10000",
+                        background: "rgba(0,0,0,.55)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: "20px"
+                    });
+
+                    const panel = document.createElement("div");
+                    Object.assign(panel.style, {
+                        background: "var(--card-bg, #fff)",
+                        color: "var(--text-color, #222)",
+                        width: "min(560px, 100%)",
+                        maxHeight: "85vh",
+                        overflowY: "auto",
+                        padding: "24px",
+                        borderRadius: "12px",
+                        boxShadow: "0 12px 40px rgba(0,0,0,.25)"
+                    });
+
+                    const title = document.createElement("h2");
+                    title.id = "learnerSheetSelectorTitle";
+                    title.textContent = "Choose worksheets to import";
+
+                    const help = document.createElement("p");
+                    help.textContent =
+                        "Select the worksheets containing learner records. " +
+                        "The original workbook will not be changed.";
+
+                    const selectAllLabel = document.createElement("label");
+                    Object.assign(selectAllLabel.style, {
+                        display: "flex",
+                        gap: "10px",
+                        alignItems: "center",
+                        padding: "10px 0",
+                        fontWeight: "600"
+                    });
+
+                    const selectAll = document.createElement("input");
+                    selectAll.type = "checkbox";
+                    selectAllLabel.append(selectAll, document.createTextNode("Select All Worksheets"));
+
+                    const list = document.createElement("div");
+                    Object.assign(list.style, {
+                        borderTop: "1px solid #ddd",
+                        borderBottom: "1px solid #ddd",
+                        margin: "8px 0 18px",
+                        padding: "8px 0"
+                    });
+
+                    const sheetCheckboxes = sheetNames.map(name => {
+                        const label = document.createElement("label");
+                        Object.assign(label.style, {
+                            display: "flex",
+                            gap: "10px",
+                            alignItems: "center",
+                            padding: "9px 0",
+                            overflowWrap: "anywhere"
+                        });
+
+                        const checkbox = document.createElement("input");
+                        checkbox.type = "checkbox";
+                        checkbox.checked = true;
+                        checkbox.value = name;
+                        checkbox.dataset.learnerSheet = "true";
+
+                        label.append(checkbox, document.createTextNode(name));
+                        list.append(label);
+                        return checkbox;
+                    });
+
+                    const actions = document.createElement("div");
+                    Object.assign(actions.style, {
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: "10px",
+                        justifyContent: "flex-end"
+                    });
+
+                    const makeButton = (label, primary = false) => {
+                        const button = document.createElement("button");
+                        button.type = "button";
+                        button.textContent = label;
+                        Object.assign(button.style, {
+                            padding: "10px 14px",
+                            borderRadius: "6px",
+                            border: "1px solid #aaa",
+                            cursor: "pointer",
+                            background: primary ? "#2457a7" : "transparent",
+                            color: primary ? "#fff" : "inherit"
+                        });
+                        actions.append(button);
+                        return button;
+                    };
+
+                    const cancelButton = makeButton("Cancel");
+                    const selectedButton = makeButton("Import Selected Sheets", true);
+                    const allButton = makeButton("Import All Workbook Sheets");
+
+                    const finish = value => {
+                        document.removeEventListener("keydown", onKeydown);
+                        overlay.remove();
+                        resolve(value);
+                    };
+
+                    const syncSelectAll = () => {
+                        const checkedCount = sheetCheckboxes.filter(box => box.checked).length;
+                        selectAll.checked = checkedCount === sheetCheckboxes.length;
+                        selectAll.indeterminate =
+                            checkedCount > 0 && checkedCount < sheetCheckboxes.length;
+                        selectedButton.disabled = checkedCount === 0;
+                    };
+
+                    const onKeydown = event => {
+                        if (event.key === "Escape") finish(null);
+                    };
+
+                    selectAll.addEventListener("change", () => {
+                        sheetCheckboxes.forEach(box => {
+                            box.checked = selectAll.checked;
+                        });
+                        syncSelectAll();
+                    });
+
+                    sheetCheckboxes.forEach(box =>
+                        box.addEventListener("change", syncSelectAll)
+                    );
+
+                    cancelButton.addEventListener("click", () => finish(null));
+                    selectedButton.addEventListener("click", () => {
+                        finish(sheetCheckboxes.filter(box => box.checked).map(box => box.value));
+                    });
+                    allButton.addEventListener("click", () => finish([...sheetNames]));
+                    overlay.addEventListener("click", event => {
+                        if (event.target === overlay) finish(null);
+                    });
+
+                    panel.append(title, help, selectAllLabel, list, actions);
+                    overlay.append(panel);
+                    document.body.append(overlay);
+                    document.addEventListener("keydown", onKeydown);
+                    syncSelectAll();
+                    sheetCheckboxes[0]?.focus();
+                });
+
+                if (selectedNames === null) {
+                    setExcelImportStatus("Learner import cancelled.");
+                    learnersExcelFile.value = "";
+                    return;
+                }
+            }
+
+            if (!selectedNames.length) {
+                throw new Error("Select at least one worksheet to import.");
+            }
+
+            // Combine selected worksheets into one temporary upload sheet.
+            // Header names are matched case-insensitively, so column order
+            // can differ between worksheets.
+            const normalizeHeader = value =>
+                String(value ?? "").trim().replace(/\s+/g, " ").toLowerCase();
+
+            const sheetRows = selectedNames.map(name => {
+                const sheet = sourceWorkbook.Sheets[name];
+                if (!sheet) {
+                    throw new Error(`Could not read worksheet "${name}".`);
+                }
+
+                const rows = window.XLSX.utils.sheet_to_json(sheet, {
+                    header: 1,
+                    defval: "",
+                    raw: false
+                });
+
+                return { name, rows };
+            });
+
+            const headersByKey = new Map();
+
+            sheetRows.forEach(({ rows }) => {
+                const headers = rows[0] || [];
+                headers.forEach(header => {
+                    const key = normalizeHeader(header);
+                    if (key && !headersByKey.has(key)) {
+                        headersByKey.set(key, String(header).trim());
+                    }
+                });
+            });
+
+            const combinedHeaders = [...headersByKey.values()];
+            if (!combinedHeaders.length) {
+                throw new Error("The selected worksheets do not contain a header row.");
+            }
+
+            const combinedRows = [combinedHeaders];
+
+            sheetRows.forEach(({ name, rows }) => {
+                if (rows.length < 2) return;
+
+                const sourceHeaders = rows[0] || [];
+                const sourceIndexByKey = new Map();
+
+                sourceHeaders.forEach((header, index) => {
+                    const key = normalizeHeader(header);
+                    if (key && !sourceIndexByKey.has(key)) {
+                        sourceIndexByKey.set(key, index);
+                    }
+                });
+
+                const sourceHasName = sourceIndexByKey.has("student name");
+                const sourceHasSchoolId = sourceIndexByKey.has("school id");
+
+                if (!sourceHasName || !sourceHasSchoolId) {
+                    throw new Error(
+                        `Worksheet "${name}" must have "Student Name" and "School ID" headers.`
+                    );
+                }
+
+                rows.slice(1).forEach(row => {
+                    if (!row || row.every(value => String(value ?? "").trim() === "")) {
+                        return;
+                    }
+
+                    combinedRows.push(combinedHeaders.map(header => {
+                        const sourceIndex = sourceIndexByKey.get(normalizeHeader(header));
+                        return sourceIndex === undefined ? "" : (row[sourceIndex] ?? "");
+                    }));
+                });
+            });
+
+            if (combinedRows.length < 2) {
+                throw new Error("The selected worksheets contain no learner records.");
+            }
+
+            const selectedWorkbook = window.XLSX.utils.book_new();
+            const combinedSheet = window.XLSX.utils.aoa_to_sheet(combinedRows);
+            window.XLSX.utils.book_append_sheet(selectedWorkbook, combinedSheet, "Learners");
+
+            const selectedData = window.XLSX.write(selectedWorkbook, {
+                bookType: "xlsx",
+                type: "array"
+            });
+
+            importFile = new File(
+                [new Blob([selectedData], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                })],
+                `${file.name.replace(/\.xlsx$/i, "")}-selected-sheets.xlsx`,
+                { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }
+            );
+        } catch (error) {
+            console.error("Could not prepare selected worksheet:", error);
+            setExcelImportStatus(error.message || "Could not read the selected worksheet.", true);
+            learnersExcelFile.value = "";
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", importFile);
+
+        importLearnersExcelButton.disabled = true;
+        importLearnersExcelButton.textContent = "Importing...";
+        setExcelImportStatus("Uploading and validating the selected worksheet...");
+
+        try {
+            const apiBase =
+                typeof LEARNER_API_BASE_URL !== "undefined"
+                    ? LEARNER_API_BASE_URL
+                    : "http://127.0.0.1:8000/api";
+
+            const response = await fetch(
+                `${apiBase}/admin/learners/import`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: formData
+                }
+            );
+
+            let payload = null;
+            try {
+                payload = await response.json();
+            } catch {
+                payload = null;
+            }
+
+            if (!response.ok || !payload?.success) {
+                const details = Array.isArray(payload?.errors)
+                    ? payload.errors.map(error =>
+                        `Row ${error.row ?? "?"}: ${error.message}`
+                    ).join("\n")
+                    : "";
+
+                throw new Error(
+                    [payload?.message || `Import failed (${response.status}).`, details]
+                        .filter(Boolean)
+                        .join("\n")
+                );
+            }
+
+            latestImportedLearners = Array.isArray(payload.learners)
+                ? payload.learners
+                : [];
+
+            // Make credentials available before refreshing the display list.
+            // This prevents a refresh failure from stranding valid credentials.
+            const credentialsAreComplete =
+                latestImportedLearners.length > 0 &&
+                latestImportedLearners.every(learner =>
+                    String(learner?.temporary_password ?? "").trim().length > 0
+                );
+
+            if (credentialsAreComplete) {
+                if (downloadLearnerCredentialsAgainButton) {
+                    downloadLearnerCredentialsAgainButton.disabled = false;
+                }
+
+                setExcelImportStatus(
+                    `${payload.imported_count ?? latestImportedLearners.length} learner account(s) imported successfully. Temporary credentials are ready to download.`
+                );
+                openLearnerCredentialDownloadDialog();
+            } else {
+                latestImportedLearners = [];
+
+                if (downloadLearnerCredentialsAgainButton) {
+                    downloadLearnerCredentialsAgainButton.disabled = true;
+                }
+
+                setExcelImportStatus(
+                    "The import response did not include complete temporary credentials. No credential download is available.",
+                    true
+                );
+            }
+
+            /*
+             * Refresh the display list from Laravel.
+             * Temporary passwords are deliberately excluded from storage.
+             */
+            const learnersResponse = await fetch(
+                `${apiBase}/admin/learners`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Accept": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
+                }
+            );
+
+            if (!learnersResponse.ok) {
+                throw new Error(
+                    "Import succeeded, but refreshing the Learners table failed. Reload the page and check the backend connection."
+                );
+            }
+
+            const learnersPayload = await learnersResponse.json();
+
+            if (!Array.isArray(learnersPayload?.learners)) {
+                throw new Error(
+                    "Import succeeded, but the backend returned an unexpected learner list."
+                );
+            }
+
+            const learnerStorageKey =
+                "siknayan_academic_admin_learners";
+
+            let storedState = {
+                version: "v5",
+                learners: [],
+                modules: {}
+            };
+
+            try {
+                const storedValue = localStorage.getItem(learnerStorageKey);
+                if (storedValue) {
+                    const parsed = JSON.parse(storedValue);
+                    if (Array.isArray(parsed?.learners)) {
+                        storedState = {
+                            version: parsed.version || "v5",
+                            learners: parsed.learners,
+                            modules: parsed.modules || {}
+                        };
+                    } else if (Array.isArray(parsed)) {
+                        storedState.learners = parsed;
+                    }
+                }
+            } catch (storageError) {
+                console.warn("Could not read previous learner display data.", storageError);
+            }
+
+            const backendLearners = learnersPayload.learners.map(learner => ({
+                id: String(learner.id),
+                name: learner.name || "Unnamed Learner",
+                email: learner.email || "",
+                schoolId: learner.school_id || "",
+                program: learner.program || "",
+                modulesAssigned: Number(learner.modules_assigned || 0),
+                progress: learner.progress ?? null,
+                status: learner.status || "Active",
+                lastActivity: learner.last_activity || "Never",
+                backendAccount: true
+            }));
+
+            const backendIds = new Set(
+                backendLearners.map(learner => String(learner.id))
+            );
+
+            const localOnlyLearners = storedState.learners.filter(
+                learner => !backendIds.has(String(learner.id))
+            );
+
+            localStorage.setItem(
+                learnerStorageKey,
+                JSON.stringify({
+                    version: storedState.version || "v5",
+                    learners: [...backendLearners, ...localOnlyLearners],
+                    modules: storedState.modules || {}
+                })
+            );
+
+            window.dispatchEvent(
+                new Event("siknayan:learners-refreshed")
+            );
+
+        } catch (error) {
+            console.error("Excel learner import failed:", error);
+            setExcelImportStatus(
+                error.message || "Unable to import the spreadsheet.",
+                true
+            );
+        } finally {
+            importLearnersExcelButton.disabled = false;
+            importLearnersExcelButton.innerHTML =
+                '<i data-lucide="file-spreadsheet"></i> Import Learners from Excel';
+            learnersExcelFile.value = "";
+            refreshIcons();
+        }
+    });
+
 
 })();

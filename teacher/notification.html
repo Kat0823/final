@@ -9,7 +9,7 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <!-- External CSS -->
-  <link rel="stylesheet" href="../teacher/CSS/class.css" />
+  <link rel="stylesheet" href="../teacher/CSS/notification.css" />
 </head>
 <body>
 
@@ -84,9 +84,7 @@
       </nav>
     </aside>
 
-    <!-- ==========================================================================
-       INSTRUCTOR NOTIFICATIONS MAIN CONTENT
-       ========================================================================== -->
+    <!-- Main Content Area -->
     <main class="main-content">
       <div class="notifications-header-wrapper">
         <h1 class="page-title">Notifications</h1>
@@ -295,28 +293,31 @@
             <input type="tel" id="instructorPhone" value="+63 917 123 4567" placeholder="+63 9XX XXX XXXX" required>
           </div>
 
-          <!-- Change Password Accordion -->
+          <!-- Optional Change Password Accordion -->
           <div class="password-section" id="passwordSection">
             <div class="password-toggle-header" id="passwordToggleBtn">
-              <h4><i class="fa-solid fa-lock"></i> Change Password </h4>
+              <h4><i class="fa-solid fa-lock"></i> Change Password (Optional)</h4>
               <i class="fa-solid fa-chevron-down chevron-icon"></i>
             </div>
             
-            <div class="password-fields">
-              <div class="profile-form-group">
-                <label for="currentPassword">Current Password</label>
-                <input type="password" id="currentPassword" placeholder="Enter current password">
-              </div>
-              <div class="profile-form-group">
-                <label for="newPassword">New Password</label>
-                <input type="password" id="newPassword" placeholder="Enter new password (min. 6 characters)">
-              </div>
-              <div class="profile-form-group">
-                <label for="confirmPassword">Confirm New Password</label>
-                <input type="password" id="confirmPassword" placeholder="Confirm new password">
+            <div class="password-fields-container">
+              <div class="password-fields-wrapper">
+                <div class="profile-form-group">
+                  <label for="currentPassword">Current Password</label>
+                  <input type="password" id="currentPassword" placeholder="Enter current password">
+                </div>
+                <div class="profile-form-group">
+                  <label for="newPassword">New Password</label>
+                  <input type="password" id="newPassword" placeholder="Enter new password (min. 6 characters)">
+                </div>
+                <div class="profile-form-group">
+                  <label for="confirmPassword">Confirm New Password</label>
+                  <input type="password" id="confirmPassword" placeholder="Confirm new password">
+                </div>
               </div>
             </div>
           </div>
+
         </div>
 
         <!-- Modal Footer Actions -->
@@ -339,6 +340,29 @@
       sidebar.classList.toggle("collapsed");
       mainContent.classList.toggle("expanded");
     });
+  }
+
+  // Toast Notification Helper
+  function showToast(message, type = "success") {
+    let toastContainer = document.getElementById("toastContainer");
+    if (!toastContainer) {
+      toastContainer = document.createElement("div");
+      toastContainer.id = "toastContainer";
+      toastContainer.className = "toast-container";
+      document.body.appendChild(toastContainer);
+    }
+    
+    const toast = document.createElement("div");
+    toast.className = `toast toast-${type}`;
+    const iconClass = type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
+    toast.innerHTML = `<i class="fa-solid ${iconClass}"></i> <span>${message}</span>`;
+    
+    toastContainer.appendChild(toast);
+    setTimeout(() => toast.classList.add("show"), 10);
+    setTimeout(() => {
+      toast.classList.remove("show");
+      setTimeout(() => toast.remove(), 300);
+    }, 3500);
   }
 
   // Mark All Read Button Handler
@@ -380,7 +404,19 @@
     });
   });
 
-  // Modal Elements
+  // Search Filter Handler
+  const searchInput = document.getElementById("searchInput");
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      notifItems.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(query) ? "flex" : "none";
+      });
+    });
+  }
+
+  // Profile Modal Elements
   const userProfileBtn = document.getElementById("userProfileBtn");
   const profileModalOverlay = document.getElementById("profileModalOverlay");
   const closeProfileModal = document.getElementById("closeProfileModal");
@@ -390,35 +426,12 @@
   const headerAvatar = document.getElementById("headerAvatar");
   const profileForm = document.getElementById("profileSettingsForm");
 
-  // Password Accordion
+  // Password Accordion Elements
   const passwordSection = document.getElementById("passwordSection");
   const passwordToggleBtn = document.getElementById("passwordToggleBtn");
   const currentPasswordInput = document.getElementById("currentPassword");
   const newPasswordInput = document.getElementById("newPassword");
   const confirmPasswordInput = document.getElementById("confirmPassword");
-
-  // Toast Helper
-  function showToast(message, type = "success") {
-    let toastContainer = document.getElementById("toastContainer");
-    if (!toastContainer) {
-      toastContainer = document.createElement("div");
-      toastContainer.id = "toastContainer";
-      toastContainer.className = "toast-container";
-      document.body.appendChild(toastContainer);
-    }
-    
-    const toast = document.createElement("div");
-    toast.className = `toast toast-${type}`;
-    const iconClass = type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
-    toast.innerHTML = `<i class="fa-solid ${iconClass}"></i> <span>${message}</span>`;
-    
-    toastContainer.appendChild(toast);
-    setTimeout(() => toast.classList.add("show"), 10);
-    setTimeout(() => {
-      toast.classList.remove("show");
-      setTimeout(() => toast.remove(), 300);
-    }, 3500);
-  }
 
   // Password Accordion Toggle
   if (passwordToggleBtn && passwordSection) {
@@ -428,15 +441,14 @@
     });
   }
 
-  // Modal Open
+  // Open Profile Modal
   if (userProfileBtn && profileModalOverlay) {
     userProfileBtn.addEventListener("click", () => {
       profileModalOverlay.classList.add("active");
-      document.body.style.overflow = "hidden";
     });
   }
 
-  // Reset Password Fields
+  // Reset Form Fields
   function resetPasswordFields() {
     if (passwordSection) passwordSection.classList.remove("open");
     if (currentPasswordInput) currentPasswordInput.value = "";
@@ -444,10 +456,9 @@
     if (confirmPasswordInput) confirmPasswordInput.value = "";
   }
 
-  // Modal Close
+  // Close Modal Handler
   const closeModal = () => {
     if (profileModalOverlay) profileModalOverlay.classList.remove("active");
-    document.body.style.overflow = "";
     resetPasswordFields();
   };
 
@@ -477,26 +488,51 @@
     });
   }
 
-  // Profile Save
+  // Profile Save Validation
   if (profileForm) {
     profileForm.addEventListener("submit", (e) => {
       e.preventDefault();
+
+      const email = document.getElementById("instructorEmail").value.trim();
+      const phone = document.getElementById("instructorPhone").value.trim();
+
+      if (!email || !phone) {
+        showToast("Please fill in all contact information", "error");
+        return;
+      }
 
       const currentPass = currentPasswordInput ? currentPasswordInput.value.trim() : "";
       const newPass = newPasswordInput ? newPasswordInput.value.trim() : "";
       const confirmPass = confirmPasswordInput ? confirmPasswordInput.value.trim() : "";
 
-      if (currentPass || newPass || confirmPass) {
+      const isPasswordTouched = currentPass || newPass || confirmPass;
+
+      if (isPasswordTouched) {
+        if (!passwordSection.classList.contains("open")) {
+          passwordSection.classList.add("open");
+        }
+
         if (!currentPass) {
           showToast("Please enter your current password", "error");
+          if (currentPasswordInput) currentPasswordInput.focus();
           return;
         }
-        if (!newPass || newPass.length < 6) {
-          showToast("New password must be at least 6 characters", "error");
+
+        if (!newPass) {
+          showToast("Please enter a new password", "error");
+          if (newPasswordInput) newPasswordInput.focus();
           return;
         }
+
+        if (newPass.length < 6) {
+          showToast("New password must be at least 6 characters long", "error");
+          if (newPasswordInput) newPasswordInput.focus();
+          return;
+        }
+
         if (newPass !== confirmPass) {
           showToast("New passwords do not match", "error");
+          if (confirmPasswordInput) confirmPasswordInput.focus();
           return;
         }
       }

@@ -1893,8 +1893,9 @@
             );
 
         const file =
-            module.fileObject ||
-            null;
+            module.fileObject instanceof Blob
+                ? module.fileObject
+                : null;
 
         const objectUrl =
             file
@@ -2327,6 +2328,7 @@
         }
     );
 
+
     /* =====================================================
        MODULE MENU EVENT
     ===================================================== */
@@ -2365,7 +2367,8 @@
             }
         }
     );
-
+    
+    
     /* =====================================================
        SEARCH
     ===================================================== */
@@ -2504,4 +2507,11 @@
     ensureCourseSidebarStyles();
     renderAll();
 
-})();
+
+    
+}
+
+)
+(
+    
+);

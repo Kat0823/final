@@ -355,9 +355,91 @@
 
                 </button>
 
+                <button
+                    type="button"
+                    id="importLearnersExcelBtn"
+                    class="primary-action-button"
+                >
+                    <i data-lucide="file-spreadsheet"></i>
+                    Import Learners from Excel
+                </button>
+
+                <button disabled
+                            type="button"
+                            id="downloadLearnerCredentialsAgainBtn"
+                            class="primary-action-button"
+                            style="margin-top: 18px;"
+                        >
+                            Download Credentials Again
+                        </button>
+
+<input
+                    type="file"
+                    id="learnersExcelFile"
+                    accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    hidden
+                >
+
+                <div
+                    id="learnerCredentialDownloadDialog"
+                    class="learner-credential-download-overlay"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="learnerCredentialDownloadTitle"
+                    hidden
+                    style="position: fixed; inset: 0; z-index: 2000; background: rgba(16,24,40,.55); padding: 24px; box-sizing: border-box;"
+                >
+                    <div style="max-width: 520px; margin: 10vh auto 0; padding: 24px; background: #fff; color: #1d2939; border-radius: 12px; box-shadow: 0 12px 36px rgba(0,0,0,.2);">
+                        <h2 id="learnerCredentialDownloadTitle" style="margin-top: 0;">
+                            Learners Imported Successfully
+                        </h2>
+
+                        <p>
+                            Choose the format for downloading the temporary
+                            login credentials. Keep this file secure and
+                            distribute passwords privately.
+                        </p>
+
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;">
+                            <button
+                                type="button"
+                                id="exportLearnerCredentialsExcelBtn"
+                                class="primary-action-button"
+                            >
+                                <i data-lucide="file-spreadsheet"></i>
+                                Download Excel (.xlsx)
+                            </button>
+
+                            <button
+                                type="button"
+                                id="exportLearnerCredentialsPdfBtn"
+                                class="primary-action-button"
+                            >
+                                <i data-lucide="file-text"></i>
+                                Download PDF (.pdf)
+                            </button>
+                        </div>
+
+
+
+                        <button
+                            type="button"
+                            id="closeLearnerCredentialDownloadDialogBtn"
+                            style="margin-top: 18px; padding: 8px 12px; cursor: pointer;"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+
             </section>
 
-
+            <div
+                id="learnerExcelImportStatus"
+                role="status"
+                aria-live="polite"
+                style="margin: 12px 0; white-space: pre-wrap;"
+            ></div>
 
             <!-- =================================================
                  CONTROLS
@@ -423,6 +505,10 @@
                         <thead>
 
                             <tr>
+
+                                <th>
+                                    No.
+                                </th>
 
                                 <th>
                                     Student ID
@@ -965,6 +1051,8 @@
 
     <script src="../js/program-data.js"></script>
 
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="../js/learners.js"></script>
 
     <script src="../js/accounts-learners.js"></script>

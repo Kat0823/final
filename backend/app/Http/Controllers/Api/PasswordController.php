@@ -12,7 +12,7 @@ class PasswordController extends Controller
     // Student password setup
     public function setup(Request $request): JsonResponse
     {
-        if ($request->user()->role !== 'student') {
+        if ($request->user()->role !== 'learner') {
             return response()->json([
                 'success' => false,
                 'message' => 'This endpoint is for students only.',

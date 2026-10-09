@@ -35,6 +35,130 @@
         "siknayan_academic_admin_learners";
 
 
+        /* =====================================================
+   LARAVEL API
+   ===================================================== */
+
+const API_BASE_URL =
+    "http://127.0.0.1:8000/api";
+
+const API_TOKEN_STORAGE_KEY =
+    "siknayan_api_token";
+
+
+function getApiToken() {
+
+    return (
+        window.SIKNAYAN_API_TOKEN ||
+        localStorage.getItem(
+            API_TOKEN_STORAGE_KEY
+        ) ||
+        localStorage.getItem("token") ||
+        localStorage.getItem("access_token") ||
+        ""
+    );
+}
+
+
+async function apiRequest(
+    path,
+    options = {}
+) {
+
+    const token =
+        getApiToken();
+
+    if (!token) {
+
+        throw new Error(
+            "No API token found. Please save a fresh Laravel token as siknayan_api_token."
+        );
+    }
+
+
+    const response =
+        await fetch(
+            `${API_BASE_URL}${path}`,
+            {
+                ...options,
+
+                headers: {
+                    "Accept":
+                        "application/json",
+
+                    "Content-Type":
+                        "application/json",
+
+                    ...(options.headers || {}),
+
+                    "Authorization":
+                        `Bearer ${token}`
+                }
+            }
+        );
+
+
+    let payload = null;
+
+    try {
+
+        payload =
+            await response.json();
+
+    } catch {
+
+        payload = null;
+
+    }
+
+
+    if (!response.ok) {
+
+        const message =
+            payload?.message ||
+            `API request failed (${response.status}).`;
+
+
+        if (
+            response.status ===
+            401
+        ) {
+
+            throw new Error(
+                "Your API session is not authenticated. Please save a fresh Laravel token as siknayan_api_token."
+            );
+        }
+
+
+        if (
+            response.status ===
+                422 &&
+            payload?.errors
+        ) {
+
+            const firstError =
+                Object.values(
+                    payload.errors
+                )
+                    .flat()[0];
+
+            throw new Error(
+                firstError ||
+                message
+            );
+        }
+
+
+        throw new Error(
+            message
+        );
+    }
+
+
+    return payload;
+}
+
+
     /* =====================================================
        CENTRALIZED PROGRAM / COURSE DATA
        -----------------------------------------------------
@@ -429,115 +553,242 @@
     );
 
 
-    function initializeClassesPage() {
+  async function initializeClassesPage() {
 
-        const classesPage =
-            document.querySelector(
-                ".classes-page"
-            );
+    const classesPage =
+        document.querySelector(
+            ".classes-page"
+        );
 
-        if (!classesPage) {
-            return;
-        }
-
-
-        migrateAndLoadData();
-
-        bindPageControls();
-
-        populateProgramFilter();
-
-        updateCourseFilter();
-
-        renderClasses();
-
-        handleEditQuery();
-
-        refreshIcons();
+    if (!classesPage) {
+        return;
     }
 
+    try {
 
-    /* =====================================================
-       LOAD / SAVE
-       ===================================================== */
+        await migrateAndLoadData();
 
-    function migrateAndLoadData() {
+    } catch (error) {
 
-        instructors =
-            loadInstructors();
+        console.error(
+            "Classes API initialization failed:",
+            error
+        );
 
-        learners =
-            loadLearners();
+        window.alert(
+            error.message ||
+            "Unable to load classes from the backend."
+        );
 
-        classes =
-            loadClasses();
+        return;
     }
 
+    bindPageControls();
 
-    function loadInstructors() {
+    populateProgramFilter();
 
-        try {
+    updateCourseFilter();
 
-            const stored =
-                localStorage.getItem(
-                    INSTRUCTORS_STORAGE_KEY
-                );
+    renderClasses();
 
+    handleEditQuery();
 
-            if (!stored) {
+    refreshIcons();
+}
+/* =====================================================
+   DELETE CLASS
+   ===================================================== */
 
-                const fresh =
-                    cloneArray(
-                        DEFAULT_INSTRUCTORS
-                    );
+function openDeleteClassModal(
+    classItem
+) {
 
-                saveInstructors(
-                    fresh
-                );
-
-                return fresh;
-            }
+    return;
+}
 
 
-            const parsed =
-                JSON.parse(
-                    stored
-                );
+/* =====================================================
+   LOAD FROM LARAVEL API
+   ===================================================== */
+
+async function migrateAndLoadData() {
+
+    const [
+        instructorPayload,
+        learnerPayload,
+        classPayload
+    ] = await Promise.all([
+
+        apiRequest(
+            "/admin/instructors"
+        ),
+
+        apiRequest(
+            "/admin/learners"
+        ),
+
+        apiRequest(
+            "/admin/classes"
+        )
+
+    ]);
 
 
-            if (
-                !Array.isArray(
-                    parsed
-                )
-            ) {
-
-                const fresh =
-                    cloneArray(
-                        DEFAULT_INSTRUCTORS
-                    );
-
-                saveInstructors(
-                    fresh
-                );
-
-                return fresh;
-            }
+    instructors =
+        Array.isArray(
+            instructorPayload?.instructors
+        )
+            ? instructorPayload.instructors
+            : [];
 
 
-            return parsed;
+    learners =
+        Array.isArray(
+            learnerPayload?.learners
+        )
+            ? learnerPayload.learners
+            : [];
 
-        } catch (error) {
 
-            console.error(
-                "Unable to load instructors:",
-                error
-            );
+    classes =
+        Array.isArray(
+            classPayload?.classes
+        )
+            ? classPayload.classes.map(
+                normalizeApiClass
+            )
+            : [];
+}
 
-            return cloneArray(
-                DEFAULT_INSTRUCTORS
-            );
-        }
-    }
+
+function normalizeApiClass(
+    classItem
+) {
+
+    const apiLearners =
+        Array.isArray(
+            classItem.learners
+        )
+            ? classItem.learners
+            : [];
+
+
+    const instructor =
+        classItem.instructor ||
+        null;
+
+
+    return {
+
+        id:
+            classItem.id,
+
+
+        /*
+         * Laravel Course currently has
+         * one "code" field.
+         *
+         * The existing frontend has
+         * classCode + courseCode.
+         *
+         * Map both to the backend code
+         * without changing the UI.
+         */
+
+        classCode:
+            classItem.code || "",
+
+
+        program:
+            classItem.program || "",
+
+
+        courseCode:
+            classItem.code || "",
+
+
+        courseName:
+            classItem.name || "",
+
+
+        instructorId:
+            classItem.instructor_id ?? "",
+
+
+        instructorName:
+            instructor?.name ||
+            "Unassigned",
+
+
+        learnerIds:
+            apiLearners.map(
+                learner =>
+                    learner.id
+            ),
+
+
+        moduleIds: [],
+
+
+        learners:
+            Number(
+                classItem.learners_count ??
+                apiLearners.length ??
+                0
+            ),
+
+
+        modules:
+            Number(
+                classItem.modules_count ??
+                0
+            ),
+
+
+        description:
+            classItem.description ||
+            "",
+
+
+        status:
+            classItem.is_active
+                ? "active"
+                : "inactive"
+
+    };
+}
+
+
+/*
+ * These are retained so older code
+ * doesn't break, but Laravel is now
+ * the source of truth.
+ */
+
+function saveInstructors(
+    data
+) {
+
+    return data;
+}
+
+
+function saveClasses(
+    data
+) {
+
+    return data;
+}
+
+
+function cloneArray(
+    data
+) {
+
+    return JSON.parse(
+        JSON.stringify(data)
+    );
+}
 
 
     function saveInstructors(
@@ -2425,335 +2676,178 @@
     }
 
 
-    /* =====================================================
-       SAVE CLASS
-       ===================================================== */
+  async function saveClassFromForm(
+    overlay,
+    isEdit,
+    existingClass
+) {
+    const program =
+        overlay.querySelector(
+            "#dynamicClassProgram"
+        ).value;
 
-    function saveClassFromForm(
-        overlay,
-        isEdit,
-        existingClass
-    ) {
+    const courseCode =
+        overlay.querySelector(
+            "#dynamicClassCourse"
+        ).value;
 
-        const program =
-            overlay.querySelector(
-                "#dynamicClassProgram"
-            ).value;
+    const classCode =
+        overlay.querySelector(
+            "#dynamicClassCode"
+        ).value
+            .trim()
+            .toUpperCase();
 
+    const instructorId =
+        overlay.querySelector(
+            "#dynamicClassInstructor"
+        ).value;
 
-        const courseCode =
-            overlay.querySelector(
-                "#dynamicClassCourse"
-            ).value;
-
-
-        const classCode =
-            overlay.querySelector(
-                "#dynamicClassCode"
-            ).value
-                .trim()
-                .toUpperCase();
-
-
-        const instructorId =
-            overlay.querySelector(
-                "#dynamicClassInstructor"
-            ).value;
-
-
-        const statusElement =
-            overlay.querySelector(
-                "#dynamicClassStatus"
-            );
-
-
-        const status =
-            statusElement
-                ? statusElement.value
-                : "active";
-
-
-        clearClassFormErrors(
-            overlay
+    const statusElement =
+        overlay.querySelector(
+            "#dynamicClassStatus"
         );
 
+    const status =
+        statusElement
+            ? statusElement.value
+            : "active";
 
-        let valid =
-            true;
+    clearClassFormErrors(overlay);
 
+    let valid = true;
 
-        if (!program) {
+    if (!program) {
+        showFormError(
+            overlay,
+            "#dynamicClassProgramError"
+        );
+        valid = false;
+    }
 
-            showFormError(
-                overlay,
-                "#dynamicClassProgramError"
-            );
+    if (!courseCode) {
+        showFormError(
+            overlay,
+            "#dynamicClassCourseError"
+        );
+        valid = false;
+    }
 
-            valid = false;
-        }
+    if (!classCode) {
+        showFormError(
+            overlay,
+            "#dynamicClassCodeError"
+        );
+        valid = false;
+    }
 
+    if (!instructorId) {
+        showFormError(
+            overlay,
+            "#dynamicClassInstructorError"
+        );
+        valid = false;
+    }
 
-        if (!courseCode) {
+    if (!valid) {
+        return;
+    }
 
-            showFormError(
-                overlay,
-                "#dynamicClassCourseError"
-            );
+    const selectedCourse = findCourse(
+        program,
+        courseCode
+    );
 
-            valid = false;
-        }
+    if (!selectedCourse) {
+        showFormError(
+            overlay,
+            "#dynamicClassCourseError",
+            "The selected course is invalid for the selected program."
+        );
+        return;
+    }
 
+    const courseName =
+        getCourseName(selectedCourse);
 
-        if (!classCode) {
+    const payload = {
+        name: courseName,
+        code: classCode,
+        program: program,
+        description:
+            existingClass?.description || "",
+        instructor_id:
+            Number(instructorId),
+        is_active:
+            status === "active"
+    };
 
-            showFormError(
-                overlay,
-                "#dynamicClassCodeError"
-            );
-
-            valid = false;
-        }
-
-
-        if (!instructorId) {
-
-            showFormError(
-                overlay,
-                "#dynamicClassInstructorError"
-            );
-
-            valid = false;
-        }
-
-
-        if (!valid) {
-            return;
-        }
-
-
-        /*
-         * Course comes from the centralized
-         * Module Library data source.
-         */
-
-        const course =
-            findCourse(
-                program,
-                courseCode
-            );
-
-
-        if (!course) {
-
-            showFormError(
-                overlay,
-                "#dynamicClassCourseError",
-                "The selected course is invalid for the selected program."
-            );
-
-            return;
-        }
-
-
-        const normalizedCourseCode =
-            getCourseCode(
-                course
-            );
-
-
-        const normalizedCourseName =
-            getCourseName(
-                course
-            );
-
-
-        /*
-         * Prevent duplicate class codes.
-         */
-
-        const duplicate =
-            classes.some(
-                classItem => {
-
-                    const sameId =
-                        isEdit &&
-                        existingClass &&
-                        classItem.id ===
-                            existingClass.id;
-
-
-                    if (sameId) {
-                        return false;
-                    }
-
-
-                    return (
-                        String(
-                            classItem.classCode ||
-                            ""
-                        )
-                            .trim()
-                            .toLowerCase() ===
-                        classCode.toLowerCase()
-                    );
-                }
-            );
-
-
-        if (duplicate) {
-
-            showFormError(
-                overlay,
-                "#dynamicClassDuplicateError"
-            );
-
-            return;
-        }
-
-
-        const instructor =
-            instructors.find(
-                item =>
-                    item.id ===
-                    instructorId
-            );
-
-
-        /* =================================================
-           UPDATE EXISTING CLASS
-           ================================================= */
+    try {
+        let result;
 
         if (isEdit) {
-
-            existingClass.program =
-                program;
-
-
-            existingClass.courseCode =
-                normalizedCourseCode;
-
-
-            existingClass.courseName =
-                normalizedCourseName;
-
-
-            existingClass.classCode =
-                classCode;
-
-
-            existingClass.instructorId =
-                instructorId;
-
-
-            existingClass.instructorName =
-                instructor
-                    ? instructor.name
-                    : "Unassigned";
-
-
-            existingClass.status =
-                normalizeStatus(
-                    status
-                );
-
-
-            /*
-             * Preserve learner relationship.
-             */
-
-            if (
-                !Array.isArray(
-                    existingClass.learnerIds
-                )
-            ) {
-
-                existingClass.learnerIds =
-                    [];
-            }
-
-
-            /*
-             * Preserve module relationship.
-             *
-             * Editing a class must NOT remove
-             * modules already assigned to it.
-             */
-
-            if (
-                !Array.isArray(
-                    existingClass.moduleIds
-                )
-            ) {
-
-                existingClass.moduleIds =
-                    [];
-            }
-
-
-            existingClass.learners =
-                existingClass.learnerIds.length;
-
-        }
-
-
-        /* =================================================
-           CREATE NEW CLASS
-           ================================================= */
-
-        else {
-
-            const newClass = {
-
-                id:
-                    `class-${Date.now()}`,
-
-                classCode,
-
-                program,
-
-                courseCode:
-                    normalizedCourseCode,
-
-                courseName:
-                    normalizedCourseName,
-
-                instructorId,
-
-                instructorName:
-                    instructor
-                        ? instructor.name
-                        : "Unassigned",
-
-                learnerIds: [],
-
-                moduleIds: [],
-
-                learners: 0,
-
-                status:
-                    normalizeStatus(
-                        status
-                    )
-            };
-
-
-            classes.push(
-                newClass
+            result = await apiRequest(
+                `/admin/classes/${encodeURIComponent(
+                    existingClass.id
+                )}`,
+                {
+                    method: "PUT",
+                    body: JSON.stringify(payload)
+                }
+            );
+        } else {
+            result = await apiRequest(
+                "/admin/classes",
+                {
+                    method: "POST",
+                    body: JSON.stringify(payload)
+                }
             );
         }
 
+        if (!result || !result.class) {
+            throw new Error(
+                "The backend did not return the saved class."
+            );
+        }
 
-        saveClasses(
-            classes
-        );
+        const savedClass =
+            normalizeApiClass(result.class);
 
+        if (isEdit) {
+            const index =
+                classes.findIndex(
+                    item =>
+                        String(item.id) ===
+                        String(existingClass.id)
+                );
+
+            if (index !== -1) {
+                classes[index] =
+                    savedClass;
+            }
+        } else {
+            classes.push(savedClass);
+        }
 
         closeDynamicModal();
-
         renderClasses();
-
         refreshIcons();
+
+    } catch (error) {
+        console.error(
+            "Unable to save class:",
+            error
+        );
+
+        showFormError(
+            overlay,
+            "#dynamicClassDuplicateError",
+            error.message
+        );
     }
+}
+
 
 
     /* =====================================================

@@ -1,3 +1,92 @@
+const CLASS_DETAILS_API_BASE_URL =
+    "http://127.0.0.1:8000/api";
+
+const CLASS_DETAILS_API_TOKEN_KEY =
+    "siknayan_api_token";
+
+
+function getClassDetailsApiToken() {
+
+    return (
+        window.SIKNAYAN_API_TOKEN ||
+        localStorage.getItem(
+            CLASS_DETAILS_API_TOKEN_KEY
+        ) ||
+        localStorage.getItem("token") ||
+        localStorage.getItem("access_token") ||
+        ""
+    );
+
+}
+
+
+async function classDetailsApiRequest(
+    path,
+    options = {}
+) {
+
+    const token =
+        getClassDetailsApiToken();
+
+    if (!token) {
+
+        throw new Error(
+            "No API token found. Please save a fresh Laravel token as siknayan_api_token."
+        );
+
+    }
+
+
+    const response =
+        await fetch(
+            `${CLASS_DETAILS_API_BASE_URL}${path}`,
+            {
+                ...options,
+
+                headers: {
+                    "Accept":
+                        "application/json",
+
+                    "Content-Type":
+                        "application/json",
+
+                    ...(options.headers || {}),
+
+                    "Authorization":
+                        `Bearer ${token}`
+                }
+            }
+        );
+
+
+    let payload = null;
+
+    try {
+
+        payload =
+            await response.json();
+
+    } catch {
+
+        payload = null;
+
+    }
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            payload?.message ||
+            `API request failed (${response.status}).`
+        );
+
+    }
+
+
+    return payload;
+
+}
+
 const CLASSES_STORAGE_KEY =
     "siknayan_academic_admin_classes";
 
@@ -20,12 +109,13 @@ document.addEventListener(
 );
 
 
-function initializeClassDetails() {
+async function initializeClassDetails() {
 
     const classId =
         new URLSearchParams(
             window.location.search
         ).get("id");
+
 
     if (!classId) {
 
@@ -75,8 +165,224 @@ function initializeClassDetails() {
             : [];
 
 
-    allLearners =
-        loadLearners();
+    /*
+     * Laravel is the source of truth for class
+     * enrollment. Load the current learner roster
+     * every time Class Details opens.
+     */
+
+    try {
+
+        const result =
+            await classDetailsApiRequest(
+                `/admin/classes/${encodeURIComponent(
+                    classId
+                )}/learners`
+            );
+
+
+        const apiLearners =
+            Array.isArray(
+                result?.learners
+            )
+                ? result.learners
+                : [];
+
+
+        currentClass.learnerIds =
+            apiLearners.map(
+                learner =>
+                    learner.id
+            );
+
+
+        currentClass.learners =
+            apiLearners.length;
+
+
+        /*
+         * Merge the Laravel learner records into the
+         * existing frontend learner collection so the
+         * roster has the correct names, IDs, programs,
+         * and statuses even if localStorage is stale.
+         */
+
+        const localLearners =
+            loadLearners();
+
+
+        const learnerMap =
+            new Map(
+                localLearners.map(
+                    learner => [
+                        String(
+                            learner.id
+                        ),
+                        learner
+                    ]
+                )
+            );
+
+
+        apiLearners.forEach(
+            learner => {
+
+                const id =
+                    String(
+                        learner.id
+                    );
+
+
+                const existing =
+                    learnerMap.get(id) ||
+                    {};
+
+
+                learnerMap.set(
+                    id,
+                    {
+                        ...existing,
+
+                        id:
+                            learner.id,
+
+                        name:
+                            learner.name ||
+                            existing.name ||
+                            "Unnamed Learner",
+
+                        email:
+                            learner.email ||
+                            existing.email ||
+                            "",
+
+                        school_id:
+                            learner.school_id ||
+                            existing.school_id ||
+                            "",
+
+                        schoolId:
+                            learner.school_id ||
+                            existing.schoolId ||
+                            "",
+
+                        program:
+                            learner.program ||
+                            existing.program ||
+                            "",
+
+                        status:
+                            learner.status ||
+                            existing.status ||
+                            "Active"
+                    }
+                );
+
+            }
+        );
+
+
+        allLearners =
+            Array.from(
+                learnerMap.values()
+            );
+
+    } catch (error) {
+
+        console.error(
+            "Unable to load class enrollment from Laravel:",
+            error
+        );
+
+
+        /*
+         * Keep the existing local data as a fallback
+         * if the API is temporarily unavailable.
+         */
+
+        allLearners =
+            loadLearners();
+
+    }
+
+
+    /*
+     * Laravel is the source of truth for class modules.
+     * Load the current module assignments every time
+     * Class Details opens.
+     */
+    try {
+
+        const moduleResult =
+            await classDetailsApiRequest(
+                `/admin/classes/${encodeURIComponent(
+                    classId
+                )}/modules`
+            );
+
+        const apiModules =
+            Array.isArray(
+                moduleResult?.modules
+            )
+                ? moduleResult.modules
+                : [];
+
+        currentClass.moduleIds =
+            apiModules
+                .map(
+                    module =>
+                        String(
+                            module?.library_key ||
+                            ""
+                        ).trim()
+                )
+                .filter(Boolean);
+
+        /*
+         * Keep localStorage aligned with Laravel so
+         * other frontend class screens continue to
+         * see the current assignment state.
+         */
+        const storedClasses =
+            loadClasses();
+
+        const classIndex =
+            storedClasses.findIndex(
+                classItem =>
+                    String(classItem.id) ===
+                    String(currentClass.id)
+            );
+
+        if (classIndex !== -1) {
+
+            storedClasses[classIndex] = {
+                ...storedClasses[classIndex],
+                moduleIds:
+                    currentClass.moduleIds
+            };
+
+            saveClasses(storedClasses);
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Unable to load class modules from Laravel:",
+            error
+        );
+
+        /*
+         * Keep localStorage moduleIds as the fallback
+         * if the API is temporarily unavailable.
+         */
+
+        currentClass.moduleIds =
+            Array.isArray(
+                currentClass.moduleIds
+            )
+                ? currentClass.moduleIds
+                : [];
+    }
 
 
     filteredLearners =
@@ -3158,8 +3464,7 @@ function updateManageModuleSelectionState(
 }
 
 
-function saveManagedModules(selectedIds) {
-
+async function saveManagedModules(selectedIds) {
     if (!currentClass) {
         alert(
             "Unable to save module assignments because no class is selected."
@@ -3167,131 +3472,170 @@ function saveManagedModules(selectedIds) {
         return;
     }
 
-
-    const newModuleIds =
-        Array.from(
-            selectedIds
-        ).map(
+    const selectedModuleIds =
+        Array.from(selectedIds).map(
             id => String(id)
         );
+    console.log(
+    "[Manage Modules] selectedIds at save:",
+    Array.from(selectedIds)
+);
 
+    const availableModules =
+        getModuleLibraryModules();
 
-    const classes =
-        loadClasses();
-
-
-    const index =
-        classes.findIndex(
-            classItem =>
-                String(
-                    classItem.id
-                ) ===
-                String(
-                    currentClass.id
+    const selectedModules =
+        selectedModuleIds
+            .map(moduleId =>
+                availableModules.find(
+                    module =>
+                        String(module?.id || "") ===
+                        String(moduleId)
                 )
-        );
+            )
+            .filter(Boolean);
 
+    const modulesPayload =
+    selectedModules.map(
+        (module, index) => ({
+            library_key:
+                String(module.id),
 
-    if (
-        index ===
-        -1
-    ) {
-        alert(
-            "Unable to save module assignments because the class could not be found."
-        );
-        return;
-    }
+            title:
+                String(
+                    module.title ||
+                    "Untitled Module"
+                ),
 
+            description:
+                null,
 
-    /*
-     * Keep the old assignment list so we can
-     * synchronize learner module assignments later.
-     */
+            material_path:
+                module.fileName ||
+                null,
+
+            module_order:
+                index + 1,
+
+            is_published:
+                module.status === "active"
+        })
+    );
+console.log(
+    "[Manage Modules] modulesPayload:",
+    modulesPayload
+);
+    
     const previousModuleIds =
         Array.isArray(
-            classes[index].moduleIds
+            currentClass.moduleIds
         )
             ? [
-                ...classes[index].moduleIds
+                ...currentClass.moduleIds
             ]
             : [];
 
+    try {
+        const result =
+            await classDetailsApiRequest(
+                `/admin/classes/${encodeURIComponent(
+                    currentClass.id
+                )}/modules/sync`,
+                {
+                    method: "PUT",
 
-    /*
-     * Save the new module assignment list
-     * directly to the class record.
-     */
-    classes[index] = {
-        ...classes[index],
+                    body:
+                        JSON.stringify({
+                            modules:
+                                modulesPayload
+                        })
+                }
+            );
 
-        moduleIds:
-            newModuleIds
-    };
+        if (
+            !result ||
+            result.success !== true
+        ) {
+            throw new Error(
+                result?.message ||
+                "Unable to synchronize module assignments."
+            );
+        }
 
+        /*
+         * Keep the frontend assignment list
+         * using the module-library IDs.
+         *
+         * These are the same values stored
+         * in Laravel as library_key.
+         */
+        const newModuleIds =
+            selectedModuleIds;
 
-    /*
-     * Persist the updated class list.
-     */
-    const saved =
-        saveClasses(
-            classes
+        const classes =
+            loadClasses();
+
+        const index =
+            classes.findIndex(
+                classItem =>
+                    String(
+                        classItem.id
+                    ) ===
+                    String(
+                        currentClass.id
+                    )
+            );
+
+        if (index !== -1) {
+            classes[index] = {
+                ...classes[index],
+                moduleIds:
+                    newModuleIds
+            };
+
+            saveClasses(classes);
+        }
+
+        currentClass = {
+            ...currentClass,
+            moduleIds:
+                newModuleIds
+        };
+
+        renderAssignedModules();
+        setupModuleSidebar();
+        initializeIcons();
+
+        console.log(
+            "Module assignments synchronized:",
+            {
+                classId:
+                    currentClass.id,
+
+                previousModuleIds,
+
+                newModuleIds,
+
+                modules:
+                    result.modules || []
+            }
         );
 
-
-    if (!saved) {
         alert(
+            "Module assignments saved successfully."
+        );
+
+    } catch (error) {
+        console.error(
+            "Unable to synchronize module assignments:",
+            error
+        );
+
+        alert(
+            error?.message ||
             "Unable to save module assignments."
         );
-        return;
     }
-
-
-    /*
-     * Update the page's current class object
-     * immediately.
-     */
-    currentClass = {
-        ...currentClass,
-
-        moduleIds:
-            newModuleIds
-    };
-
-
-    /*
-     * Re-render the Assigned Modules section.
-     *
-     * This should immediately change:
-     * 3 Modules -> 2 Modules
-     */
-    renderAssignedModules();
-
-
-    /*
-     * Refresh the sidebar so its checkboxes
-     * reflect the newly saved state.
-     */
-    setupModuleSidebar();
-
-
-    initializeIcons();
-
-
-    /*
-     * Debug confirmation.
-     * We can remove this after testing.
-     */
-    console.log(
-        "Module assignments saved:",
-        {
-            classId:
-                currentClass.id,
-
-            previousModuleIds,
-
-            newModuleIds
-        }
-    );
 }   
 
 
@@ -4014,7 +4358,7 @@ function updateManageLearnerSelectionState(
 }
 
 
-function saveManagedLearners(
+async function saveManagedLearners(
     overlay,
     selectedIds
 ) {
@@ -4027,26 +4371,7 @@ function saveManagedLearners(
         );
 
 
-    const classes =
-        loadClasses();
-
-
-    const index =
-        classes.findIndex(
-            classItem =>
-                String(
-                    classItem.id
-                ) ===
-                String(
-                    currentClass.id
-                )
-        );
-
-
-    if (
-        index ===
-        -1
-    ) {
+    if (!currentClass) {
 
         alert(
             "Unable to save learner assignments because the class could not be found."
@@ -4057,85 +4382,219 @@ function saveManagedLearners(
     }
 
 
-    const previousLearnerIds =
-        Array.isArray(
-            classes[index].learnerIds
-        )
-            ? [
-                ...classes[index].learnerIds
-            ]
-            : [];
+    try {
+
+        /*
+         * Load the current Laravel enrollment state first.
+         * This lets us determine exactly which learners were
+         * added and which were removed.
+         */
+
+        const result =
+            await classDetailsApiRequest(
+                `/admin/classes/${encodeURIComponent(
+                    currentClass.id
+                )}/learners`
+            );
 
 
-    classes[index] = {
-
-        ...classes[index],
-
-        learnerIds:
-            newLearnerIds,
-
-        learners:
-            newLearnerIds.length
-
-    };
+        const apiLearners =
+            Array.isArray(
+                result?.learners
+            )
+                ? result.learners
+                : [];
 
 
-    if (
-        !saveClasses(
-            classes
-        )
-    ) {
+        const previousLearnerIds =
+            apiLearners.map(
+                learner =>
+                    String(
+                        learner.id
+                    )
+            );
+
+
+        const previousSet =
+            new Set(
+                previousLearnerIds
+            );
+
+
+        const newSet =
+            new Set(
+                newLearnerIds
+            );
+
+
+        const learnersToAdd =
+            newLearnerIds.filter(
+                id =>
+                    !previousSet.has(id)
+            );
+
+
+        const learnersToRemove =
+            previousLearnerIds.filter(
+                id =>
+                    !newSet.has(id)
+            );
+
+
+        /*
+         * Enroll newly selected learners.
+         */
+
+        for (
+            const learnerId
+            of learnersToAdd
+        ) {
+
+            await classDetailsApiRequest(
+                `/admin/classes/${encodeURIComponent(
+                    currentClass.id
+                )}/learners`,
+                {
+                    method:
+                        "POST",
+
+                    body:
+                        JSON.stringify({
+                            learner_id:
+                                Number(
+                                    learnerId
+                                )
+                        })
+                }
+            );
+
+        }
+
+
+        /*
+         * Remove learners that were unchecked.
+         */
+
+        for (
+            const learnerId
+            of learnersToRemove
+        ) {
+
+            await classDetailsApiRequest(
+                `/admin/classes/${encodeURIComponent(
+                    currentClass.id
+                )}/learners/${encodeURIComponent(
+                    learnerId
+                )}`,
+                {
+                    method:
+                        "DELETE"
+                }
+            );
+
+        }
+
+
+        /*
+         * Update the in-memory representation so the
+         * existing UI immediately reflects the backend.
+         */
+
+        currentClass.learnerIds =
+            newLearnerIds;
+
+
+        currentClass.learners =
+            newLearnerIds.length;
+
+
+        /*
+         * Keep the old local representation synchronized
+         * for legacy parts of the frontend, but Laravel
+         * remains the source of truth.
+         */
+
+        const classes =
+            loadClasses();
+
+
+        const index =
+            classes.findIndex(
+                classItem =>
+                    String(
+                        classItem.id
+                    ) ===
+                    String(
+                        currentClass.id
+                    )
+            );
+
+
+        if (
+            index !==
+            -1
+        ) {
+
+            classes[index] = {
+
+                ...classes[index],
+
+                learnerIds:
+                    newLearnerIds,
+
+                learners:
+                    newLearnerIds.length
+
+            };
+
+
+            saveClasses(
+                classes
+            );
+
+        }
+
+
+        synchronizeClassModulesToLearners(
+            currentClass,
+            currentClass.moduleIds || []
+        );
+
+
+        closeManageLearnersModal(
+            overlay
+        );
+
+
+        allLearners =
+            loadLearners();
+
+
+        filteredLearners =
+            getClassLearners();
+
+
+        renderLearnerRoster();
+
+        renderAssignedModules();
+
+        initializeIcons();
+
+    } catch (error) {
+
+        console.error(
+            "Unable to save learner assignments:",
+            error
+        );
+
 
         alert(
+            error.message ||
             "Unable to save learner assignments."
         );
 
-        return;
-
     }
 
-
-    currentClass.learnerIds =
-        newLearnerIds;
-
-
-    currentClass.learners =
-        newLearnerIds.length;
-
-
-    /*
-     * Synchronize modules for learners who
-     * were added or removed from this class.
-     *
-     * The synchronization function protects
-     * modules that are still assigned through
-     * another class.
-     */
-
-    synchronizeClassModulesToLearners(
-        currentClass,
-        currentClass.moduleIds || []
-    );
-
-
-    closeManageLearnersModal(
-        overlay
-    );
-
-
-    allLearners =
-        loadLearners();
-
-
-    filteredLearners =
-        getClassLearners();
-
-
-    renderLearnerRoster();
-
-    renderAssignedModules();
-
-    initializeIcons();
 }
 
 

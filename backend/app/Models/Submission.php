@@ -11,7 +11,7 @@ class Submission extends Model
     protected $fillable = [
         'module_id',
         'learner_id',
-        'path',
+        'file_path',
         'file_name',
         'comment',
         'submitted_at',

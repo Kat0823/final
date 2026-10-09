@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Grade;
 use App\Models\Notification;
 use App\Models\Submission;
+use App\Models\Progress;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -225,7 +226,27 @@ class GradeController extends Controller
             $submission->update([
                 'status' => 'graded',
             ]);
+/*
+|--------------------------------------------------------------------------
+| Mark learner module progress as completed
+|--------------------------------------------------------------------------
+*/
 
+$progress = Progress::firstOrNew([
+    'learner_id' => $submission->learner_id,
+    'module_id' => $submission->module_id,
+]);
+
+$progress->status = 'completed';
+$progress->completion_percentage = 100;
+
+if (!$progress->started_at) {
+    $progress->started_at =
+        $submission->submitted_at ?? now();
+}
+
+$progress->completed_at = now();
+$progress->save();
 
             /*
             |--------------------------------------------------------------------------

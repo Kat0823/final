@@ -35,7 +35,74 @@
         "siknayan_academic_admin_instructor_accounts";
 
 
+const INSTRUCTOR_API_BASE_URL =
+    "http://127.0.0.1:8000/api";
 
+const INSTRUCTOR_API_TOKEN_KEY =
+    "siknayan_api_token";
+
+function getInstructorApiToken() {
+    return (
+        window.SIKNAYAN_API_TOKEN ||
+        localStorage.getItem(INSTRUCTOR_API_TOKEN_KEY) ||
+        localStorage.getItem("token") ||
+        localStorage.getItem("access_token") ||
+        ""
+    );
+}
+
+async function instructorApiRequest(
+    path,
+    options = {}
+) {
+    const token =
+        getInstructorApiToken();
+
+    if (!token) {
+        throw new Error(
+            "No API token found. Please save a fresh Laravel token as siknayan_api_token."
+        );
+    }
+
+    const response =
+        await fetch(
+            `${INSTRUCTOR_API_BASE_URL}${path}`,
+            {
+                ...options,
+
+                headers: {
+                    Accept:
+                        "application/json",
+
+                    "Content-Type":
+                        "application/json",
+
+                    ...(options.headers || {}),
+
+                    Authorization:
+                        `Bearer ${token}`
+                }
+            }
+        );
+
+    let payload = null;
+
+    try {
+        payload =
+            await response.json();
+    } catch {
+        payload = null;
+    }
+
+    if (!response.ok) {
+        throw new Error(
+            payload?.message ||
+            `API request failed (${response.status}).`
+        );
+    }
+
+    return payload;
+}
     /* =====================================================
        ELEMENTS
     ===================================================== */
@@ -176,13 +243,11 @@
         document.getElementById(
             "regenerateResetInstructorPassword"
         );
-
+        
     const confirmResetPasswordButton =
-        document.getElementById(
-            "confirmResetInstructorPassword"
-        );
-
-
+    document.getElementById(
+        "confirmResetInstructorPassword"
+    );
 
     /* =====================================================
        DELETE MODAL
@@ -284,47 +349,146 @@
 
     }
 
-
-
     function createInstructorId() {
 
         const instructors =
             loadInstructors();
 
-        let number =
-            1;
+        let highestNumber = 0;
 
-        let id =
-            "";
+        instructors.forEach(
+            instructor => {
 
-
-        do {
-
-            id =
-                `INS-${String(
-                    number
-                ).padStart(
-                    3,
-                    "0"
-                )}`;
-
-            number++;
-
-        } while (
-            instructors.some(
-                instructor =>
+                const match =
                     String(
-                        instructor.id
-                    ).toLowerCase() ===
-                    id.toLowerCase()
-            )
+                        instructor.id || ""
+                    ).match(
+                        /^INS-(\d+)$/
+                    );
+
+                if (!match) {
+                    return;
+                }
+
+                highestNumber =
+                    Math.max(
+                        highestNumber,
+                        Number(match[1])
+                    );
+
+            }
         );
 
-
-        return id;
+        return `INS-${String(
+            highestNumber + 1
+        ).padStart(3, "0")}`;
 
     }
 
+
+    async function syncInstructorsFromApi() {
+
+        const payload =
+            await instructorApiRequest(
+                "/admin/instructors"
+            );
+
+        const apiInstructors =
+            Array.isArray(payload?.instructors)
+                ? payload.instructors
+                : [];
+
+        const instructors =
+            apiInstructors.map(
+                instructor => ({
+
+                    id:
+                        instructor.school_id ||
+                        instructor.id,
+
+                    backendId:
+                        instructor.id,
+
+                    name:
+                        instructor.name ||
+                        "Unnamed Instructor",
+
+                    email:
+                        instructor.email ||
+                        "",
+
+                    schoolId:
+                        instructor.school_id ||
+                        "",
+
+                    program:
+                        instructor.program ||
+                        "",
+
+                    contact:
+                        instructor.contact ||
+                        "",
+
+                    status:
+                        "active",
+
+                    passwordSetupComplete:
+                        Boolean(
+                            instructor.password_setup_complete
+                        )
+
+                })
+            );
+
+        saveInstructors(
+            instructors
+        );
+
+
+        /*
+         * Build the account view from the
+         * Laravel instructor records.
+         *
+         * Do NOT store passwords.
+         */
+        const accounts =
+            apiInstructors.map(
+                instructor => ({
+
+                    id:
+                        `instructor-account-${instructor.id}`,
+
+                    instructorId:
+                        instructor.school_id ||
+                        instructor.id,
+
+                    backendId:
+                        instructor.id,
+
+                    email:
+                        instructor.email ||
+                        "",
+
+                    lastLogin:
+                        "Never",
+
+                    status:
+                        "active",
+
+                    backendManaged:
+                        true
+
+                })
+            );
+
+        saveAccounts(
+            accounts
+        );
+
+        return instructors;
+
+    }
+    
 
 
     function generateTemporaryPassword() {
@@ -1170,59 +1334,78 @@
        SAVE ACCOUNT
     ===================================================== */
 
-    function saveAccount(
+       async function saveAccount(
         event
     ) {
 
         event.preventDefault();
 
-
         const instructorId =
             instructorIdInput.value
                 .trim();
 
-
         const instructorName =
             instructorNameInput.value
                 .trim();
-
 
         const email =
             emailInput.value
                 .trim()
                 .toLowerCase();
 
-
         const password =
             passwordInput.value
                 .trim();
-
 
         const status =
             accountStatusInput.value ||
             "active";
 
+        const isEditing =
+            Boolean(editingId);
 
+
+        /*
+         * Instructor ID, name, and email are always required.
+         * Password is required only when creating a new
+         * instructor account. Laravel handles hashing.
+         */
         if (
             !instructorId ||
             !instructorName ||
             !email ||
-            !password
+            (!isEditing && !password)
         ) {
 
             alert(
                 "Please complete all required fields."
             );
 
+            return;
+
+        }
+
+
+        if (
+            !isEditing &&
+            password.length < 8
+        ) {
+
+            alert(
+                "Password must be at least 8 characters."
+            );
 
             return;
 
         }
 
 
+        /*
+         * Prevent duplicate email addresses in the
+         * currently synchronized instructor records.
+         */
         const accounts =
             getAccounts();
-
 
         const duplicateEmail =
             accounts.some(
@@ -1245,221 +1428,178 @@
                 "That email address is already being used by another instructor account."
             );
 
-
             return;
 
         }
 
 
+        try {
 
-        /* =================================================
-           EDIT EXISTING ACCOUNT
-        ================================================== */
-
-        if (
-            editingId
-        ) {
-
-            const accountIndex =
-                accounts.findIndex(
-                    account =>
-                        account.id ===
-                        editingId
-                );
-
+            /* =================================================
+               EDIT EXISTING INSTRUCTOR
+            ================================================== */
 
             if (
-                accountIndex ===
-                -1
+                isEditing
             ) {
+
+                const account =
+                    accounts.find(
+                        item =>
+                            item.id ===
+                            editingId
+                    );
+
+
+                const backendId =
+                    account?.backendId;
+
+
+                if (
+                    !backendId
+                ) {
+
+                    throw new Error(
+                        "This instructor is not linked to a Laravel account. Refresh the page and try again."
+                    );
+
+                }
+
+
+                const requestData = {
+                    name:
+                        instructorName,
+
+                    email:
+                        email
+                };
+
+
+                /*
+                 * Only send a password when the administrator
+                 * actually entered one during editing.
+                 */
+                if (
+                    password
+                ) {
+
+                    if (
+                        password.length < 8
+                    ) {
+
+                        alert(
+                            "Password must be at least 8 characters."
+                        );
+
+                        return;
+
+                    }
+
+                    requestData.password =
+                        password;
+
+                }
+
+
+                const payload =
+                    await instructorApiRequest(
+                        `/admin/instructors/${backendId}`,
+                        {
+                            method:
+                                "PUT",
+
+                            body:
+                                JSON.stringify(
+                                    requestData
+                                )
+                        }
+                    );
+
+
+                /*
+                 * Re-sync from Laravel so the UI reflects
+                 * the actual database state.
+                 */
+                await syncInstructorsFromApi();
+
+                closeAccountModal();
+
+                renderTable();
+
+                refreshPageIcons();
+
+                alert(
+                    payload?.message ||
+                    "Instructor updated successfully."
+                );
 
                 return;
 
             }
 
 
-            accounts[
-                accountIndex
-            ] = {
+            /* =================================================
+               CREATE NEW INSTRUCTOR
+            ================================================== */
 
-                ...accounts[
-                    accountIndex
-                ],
+            const payload =
+                await instructorApiRequest(
+                    "/admin/instructors",
+                    {
+                        method:
+                            "POST",
 
-                email:
-                    email,
+                        body:
+                            JSON.stringify({
+                                name:
+                                    instructorName,
 
-                password:
-                    password,
+                                email:
+                                    email,
 
-                status:
-                    status
+                                school_id:
+                                    instructorId,
 
-            };
+                                password:
+                                    password
+                            })
+                    }
+                );
 
 
-            saveAccounts(
-                accounts
-            );
-
+            /*
+             * Laravel is now the source of truth.
+             * Do not store the submitted password.
+             */
+            await syncInstructorsFromApi();
 
             closeAccountModal();
 
-
             renderTable();
+
+            refreshPageIcons();
 
 
             alert(
-                "Instructor account updated."
+                payload?.message ||
+                `Instructor account created for ${instructorName}.`
             );
 
-
-            return;
-
-        }
-
-
-
-        /* =================================================
-           CREATE / ATTACH ACCOUNT TO INSTRUCTOR
-        ================================================== */
-
-        const instructors =
-            loadInstructors();
-
-
-        const existingInstructor =
-            instructors.find(
-                instructor =>
-                    String(
-                        instructor.id
-                    ).toLowerCase() ===
-                    instructorId.toLowerCase()
-            );
-
-
-        if (
-            existingInstructor
+        } catch (
+            error
         ) {
 
-            const sameName =
-                String(
-                    existingInstructor.name ||
-                    ""
-                )
-                    .trim()
-                    .toLowerCase() ===
-                instructorName.toLowerCase();
+            console.error(
+                "Instructor save failed:",
+                error
+            );
 
-
-            if (
-                !sameName
-            ) {
-
-                alert(
-                    "That Instructor ID already belongs to a different instructor."
-                );
-
-
-                return;
-
-            }
-
-
-            const existingAccount =
-                getAccountForInstructor(
-                    existingInstructor.id
-                );
-
-
-            if (
-                existingAccount
-            ) {
-
-                alert(
-                    "This instructor already has an account."
-                );
-
-
-                return;
-
-            }
-
-        } else {
-
-            instructors.push({
-
-                id:
-                    instructorId,
-
-                name:
-                    instructorName,
-
-                status:
-                    "active"
-
-            });
-
-
-            saveInstructors(
-                instructors
+            alert(
+                error.message ||
+                "Unable to save instructor."
             );
 
         }
-
-
-
-        /* =================================================
-           CREATE ACCOUNT
-        ================================================== */
-
-        const newAccount = {
-
-            id:
-                createAccountId(
-                    instructorId
-                ),
-
-            instructorId:
-                instructorId,
-
-            email:
-                email,
-
-            password:
-                password,
-
-            lastLogin:
-                "Never",
-
-            status:
-                status,
-
-            createdAt:
-                new Date().toISOString()
-
-        };
-
-
-        accounts.push(
-            newAccount
-        );
-
-
-        saveAccounts(
-            accounts
-        );
-
-
-        closeAccountModal();
-
-
-        renderTable();
-
-
-        alert(
-            `Instructor account created for ${instructorName}.`
-        );
 
     }
 
@@ -1634,9 +1774,9 @@
                     );
 
 
-                instructorIdCell.textContent =
+               instructorIdCell.textContent =
+                    instructor.schoolId ||
                     instructor.id;
-
 
 
                 /* -----------------------------------------
@@ -2094,135 +2234,126 @@
 
 
 
-    function confirmResetPassword() {
+ async function confirmResetPassword() {
 
-        if (
-            !resetAccountId
-        ) {
+    if (!resetAccountId) {
+        return;
+    }
 
-            return;
+    const accounts =
+        getAccounts();
 
-        }
-
-
-        const accounts =
-            getAccounts();
-
-
-        const account =
-            accounts.find(
-                item =>
-                    item.id ===
-                    resetAccountId
-            );
-
-
-        if (!account) {
-
-            return;
-
-        }
-
-
-        account.password =
-            resetPasswordValue.value;
-
-
-        saveAccounts(
-            accounts
+    const account =
+        accounts.find(
+            item =>
+                item.id ===
+                resetAccountId
         );
 
+    if (!account) {
+        alert(
+            "Instructor account not found. Please refresh the page and try again."
+        );
+        return;
+    }
 
-        const password =
-            resetPasswordValue.value;
+    const password =
+        resetPasswordValue.value.trim();
 
+    if (!password) {
+        alert(
+            "Please generate a temporary password first."
+        );
+        return;
+    }
+
+    if (password.length < 8) {
+        alert(
+            "The temporary password must be at least 8 characters."
+        );
+        return;
+    }
+
+    const backendId =
+        account.backendId;
+
+    if (!backendId) {
+        alert(
+            "This instructor is not linked to a Laravel account. Refresh the page and try again."
+        );
+        return;
+    }
+
+    confirmResetPasswordButton.disabled =
+        true;
+
+    confirmResetPasswordButton.innerHTML = `
+        <i data-lucide="loader-circle"></i>
+        <span>Resetting...</span>
+    `;
+
+    refreshPageIcons();
+
+    try {
+
+        const payload =
+            await instructorApiRequest(
+                `/admin/instructors/${backendId}`,
+                {
+                    method: "PUT",
+
+                    body: JSON.stringify({
+                        password: password
+                    })
+                }
+            );
+
+        console.log(
+            "Instructor password reset response:",
+            payload
+        );
 
         closeResetPasswordModal();
 
+        confirmResetPasswordButton.disabled =
+            false;
 
-        alert(
-            `The temporary password has been reset.\n\nNew password: ${password}`
-        );
-
-    }
-
-
-
-    /* =====================================================
-       TOGGLE ACCOUNT STATUS
-    ===================================================== */
-
-    function toggleAccountStatus(
-        accountId
-    ) {
-
-        const accounts =
-            getAccounts();
-
-
-        const account =
-            accounts.find(
-                item =>
-                    item.id ===
-                    accountId
-            );
-
-
-        if (!account) {
-
-            return;
-
-        }
-
-
-        const instructorName =
-            getInstructorName(
-                account
-            );
-
-
-        const goingInactive =
-            account.status ===
-            "active";
-
-
-        const confirmed =
-            window.confirm(
-
-                goingInactive
-
-                    ? `Deactivate the account for ${instructorName}?`
-
-                    : `Activate the account for ${instructorName}?`
-
-            );
-
-
-        if (!confirmed) {
-
-            return;
-
-        }
-
-
-        account.status =
-            goingInactive
-
-                ? "inactive"
-
-                : "active";
-
-
-        saveAccounts(
-            accounts
-        );
-
+        confirmResetPasswordButton.innerHTML = `
+            <i data-lucide="key-round"></i>
+            <span>Reset Password</span>
+        `;
 
         renderTable();
+        refreshPageIcons();
 
+        alert(
+            payload?.message ||
+            `The temporary password has been reset successfully.\n\nNew password: ${password}`
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Instructor password reset failed:",
+            error
+        );
+
+        confirmResetPasswordButton.disabled =
+            false;
+
+        confirmResetPasswordButton.innerHTML = `
+            <i data-lucide="key-round"></i>
+            <span>Reset Password</span>
+        `;
+
+        refreshPageIcons();
+
+        alert(
+            error.message ||
+            "Unable to reset the instructor password."
+        );
     }
-
-
+}
 
     /* =====================================================
        DELETE INSTRUCTOR
@@ -2399,52 +2530,106 @@
     }
 
 
+async function confirmDeleteAccount() {
 
-    function confirmDeleteAccount() {
+    if (
+        !deleteInstructorId ||
+        !confirmDeleteCheckbox.checked
+    ) {
+        return;
+    }
 
-        if (
-            !deleteInstructorId ||
-            !confirmDeleteCheckbox.checked
-        ) {
+    const instructor =
+        getInstructorById(
+            deleteInstructorId
+        );
 
-            return;
+    if (!instructor) {
 
-        }
+        closeDeleteAccountModal();
+        renderTable();
 
+        return;
+    }
 
-        const instructor =
-            getInstructorById(
-                deleteInstructorId
+    const instructorId =
+        instructor.id;
+
+    const instructorName =
+        instructor.name ||
+        "The instructor";
+
+    /*
+     * Find the Laravel instructor ID.
+     *
+     * The frontend instructor.id may be
+     * INS-001, INS-002, etc., while
+     * backendId is the actual users.id.
+     */
+    const account =
+        getAccountForInstructor(
+            instructor.id
+        );
+
+    const backendId =
+        instructor.backendId ||
+        account?.backendId;
+
+    if (!backendId) {
+
+        alert(
+            "This instructor is not linked to a Laravel account. Refresh the page and try again."
+        );
+
+        return;
+    }
+
+    /*
+     * Prevent duplicate clicks while
+     * the DELETE request is running.
+     */
+    confirmDeleteButton.disabled =
+        true;
+
+    confirmDeleteButton.innerHTML =
+        `
+        <i data-lucide="loader-circle"></i>
+
+        <span>
+            Deleting...
+        </span>
+        `;
+
+    refreshPageIcons();
+
+    try {
+
+        /*
+         * Delete the actual instructor
+         * from Laravel/MySQL.
+         */
+        const payload =
+            await instructorApiRequest(
+                `/admin/instructors/${backendId}`,
+                {
+                    method:
+                        "DELETE"
+                }
             );
 
+        /*
+         * Only synchronize local state
+         * after Laravel confirms success.
+         */
+        await syncInstructorsFromApi();
 
-        if (!instructor) {
-
-            closeDeleteAccountModal();
-
-            renderTable();
-
-            return;
-
-        }
-
-
-        const instructorId =
-            instructor.id;
-
-
-        const instructorName =
-            instructor.name ||
-            "The instructor";
-
-
-        /* -----------------------------------------
-           REMOVE INSTRUCTOR FROM CLASSES
-        ----------------------------------------- */
-
+        /*
+         * Keep the local class state
+         * compatible with the deleted
+         * instructor.
+         */
         const classes =
             loadClasses();
-
 
         const updatedClasses =
             removeInstructorFromClasses(
@@ -2452,100 +2637,78 @@
                 instructorId
             );
 
-
         saveClasses(
             updatedClasses
         );
 
-
-
-        /* -----------------------------------------
-           DELETE INSTRUCTOR RECORD
-        ----------------------------------------- */
-
-        const instructors =
-            loadInstructors();
-
-
-        const remainingInstructors =
-            instructors.filter(
-                item =>
-                    String(
-                        item.id
-                    ) !==
-                    String(
-                        instructorId
-                    )
-            );
-
-
-        saveInstructors(
-            remainingInstructors
-        );
-
-
-
-        /* -----------------------------------------
-           DELETE LINKED ACCOUNT(S)
-        ----------------------------------------- */
-
+        /*
+         * Remove any legacy local
+         * account data associated with
+         * this instructor.
+         */
         const accounts =
             getAccounts();
 
-
-        const hadAccount =
-            accounts.some(
-                account =>
-                    String(
-                        account.instructorId
-                    ) ===
-                    String(
-                        instructorId
-                    )
-            );
-
-
         const remainingAccounts =
             accounts.filter(
-                account =>
+                item =>
                     String(
-                        account.instructorId
+                        item.instructorId
                     ) !==
                     String(
                         instructorId
                     )
             );
-
 
         saveAccounts(
             remainingAccounts
         );
 
-
-
-        /* -----------------------------------------
-           FINISH
-        ----------------------------------------- */
-
         closeDeleteAccountModal();
-
 
         renderTable();
 
+        refreshPageIcons();
 
         alert(
-
-            hadAccount
-
-                ? `The instructor and account for ${instructorName} have been deleted.`
-
-                : `The instructor ${instructorName} has been deleted.`
-
+            payload?.message ||
+            `The instructor ${instructorName} has been deleted.`
         );
 
+    } catch (
+        error
+    ) {
+
+        console.error(
+            "Instructor deletion failed:",
+            error
+        );
+
+        /*
+         * Keep the instructor in the
+         * frontend because the backend
+         * deletion did not succeed.
+         */
+        confirmDeleteButton.disabled =
+            false;
+
+        confirmDeleteButton.innerHTML =
+            `
+            <i data-lucide="trash-2"></i>
+
+            <span>
+                Delete Instructor
+            </span>
+            `;
+
+        refreshPageIcons();
+
+        alert(
+            error.message ||
+            "Unable to delete instructor."
+        );
     }
-
-
+}
 
     /* =====================================================
        EVENTS
@@ -2885,13 +3048,45 @@
 
 
 
-    /* =====================================================
-       INITIALIZE
-    ===================================================== */
+/* =====================================================
+   INITIALIZE
+===================================================== */
 
-    renderTable();
+if (statusFilter) {
+    statusFilter.value = "all";
+}
 
+syncInstructorsFromApi()
+    .then(() => {
 
-    refreshPageIcons();
+        if (statusFilter) {
+            statusFilter.value = "all";
+        }
+
+        renderTable();
+        refreshPageIcons();
+
+    })
+    .catch(error => {
+
+        console.error(
+            "Instructor API initialization failed:",
+            error
+        );
+
+        if (statusFilter) {
+            statusFilter.value = "all";
+        }
+
+        renderTable();
+        refreshPageIcons();
+
+        alert(
+            error.message ||
+            "Unable to load instructors from Laravel."
+        );
+
+    });
+
 
 })();

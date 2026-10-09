@@ -32,10 +32,186 @@ const LEARNER_STORAGE_KEY =
 const LEARNER_STORAGE_VERSION =
     "v5";
 
+/* =========================================================
+   LARAVEL API
+========================================================= */
+
+const LEARNER_API_BASE_URL =
+    "http://127.0.0.1:8000/api";
+
+const LEARNER_API_TOKEN_KEY =
+    "siknayan_api_token";
+
+function getLearnerApiToken() {
+
+    return (
+        window.SIKNAYAN_API_TOKEN ||
+        localStorage.getItem(
+            LEARNER_API_TOKEN_KEY
+        ) ||
+        localStorage.getItem("token") ||
+        localStorage.getItem("access_token") ||
+        ""
+    );
+
+}
+
+
+async function fetchLearnersFromApi() {
+
+    const token =
+        getLearnerApiToken();
+
+    if (!token) {
+
+        throw new Error(
+            "No API token found. Please save a fresh Laravel token as siknayan_api_token."
+        );
+
+    }
+
+
+    const response =
+        await fetch(
+            `${LEARNER_API_BASE_URL}/admin/learners`,
+            {
+                method: "GET",
+
+                headers: {
+                    "Accept":
+                        "application/json",
+
+                    "Authorization":
+                        `Bearer ${token}`
+                }
+            }
+        );
+
+
+    let payload = null;
+
+    try {
+
+        payload =
+            await response.json();
+
+    } catch {
+
+        payload = null;
+
+    }
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            payload?.message ||
+            `Unable to load learners (${response.status}).`
+        );
+
+    }
+
+
+    return payload;
+
+}
+/* =========================================================
+   API LEARNER NORMALIZATION
+========================================================= */
+
+function normalizeApiLearner(
+    learner
+) {
+
+    return {
+
+        id:
+            String(
+                learner.id
+            ),
+
+        name:
+            learner.name ||
+            "Unnamed Learner",
+
+        email:
+            learner.email ||
+            "",
+
+        schoolId:
+            learner.school_id ||
+            "",
+
+        program:
+            learner.program ||
+            "",
+
+        modulesAssigned:
+            Number(
+                learner.modules_assigned ||
+                learner.modulesAssigned ||
+                0
+            ),
+
+        progress:
+            learner.progress ??
+            null,
+
+        status:
+            learner.status ||
+            "Active",
+
+        lastActivity:
+            learner.last_activity ||
+            learner.lastActivity ||
+            "Never",
+
+        backendAccount: true
+
+    };
+
+}
+
+
+async function syncLearnersFromApi() {
+
+    const payload =
+        await fetchLearnersFromApi();
+
+
+    const apiLearners =
+        Array.isArray(
+            payload?.learners
+        )
+            ? payload.learners
+            : [];
+
+
+    const state =
+        loadLearnerState();
+
+
+    state.learners =
+        apiLearners.map(
+            normalizeApiLearner
+        );
+
+
+    saveLearnerState(
+        state
+    );
+
+
+    return state;
+
+}
+
 
 /* =========================================================
    LEARNER DEFAULT DATA
 ========================================================= */
+
+
 
 const DEFAULT_LEARNERS = [
 
@@ -50,26 +226,6 @@ const DEFAULT_LEARNERS = [
 
         progress: 97,
 
-        status: "Active",
-
-        lastActivity: "2 hours ago"
-    },
-
-
-    {
-        id: "23-00412",
-
-        name: "Hideo Kojima",
-
-        program: "BSCRIM",
-
-        modulesAssigned: 3,
-
-        progress: 60,
-
-        status: "Active",
-
-        lastActivity: "Yesterday"
     },
 
 
@@ -999,7 +1155,9 @@ function updateLearnerModules(
         state
     );
 
+
 }
+
 
 
 /* =========================================================
@@ -1296,7 +1454,8 @@ function updateLearnerModules(
     ===================================================== */
 
     function renderLearnerRow(
-        learner
+        learner,
+        rowNumber
     ) {
 
         const id =
@@ -1355,8 +1514,12 @@ function updateLearnerModules(
                 "
             >
 
+                <td class="row-number">
+                    ${rowNumber}
+                </td>
+
                 <td class="student-id">
-                    ${escapeHtml(id)}
+                    ${escapeHtml(learner.schoolId || id)}
                 </td>
 
 
@@ -1577,7 +1740,8 @@ function updateLearnerModules(
             tableBody.innerHTML =
                 filteredLearners
                     .map(
-                        renderLearnerRow
+                        (learner, index) =>
+                            renderLearnerRow(learner, index + 1)
                     )
                     .join(
                         ""
@@ -1706,10 +1870,24 @@ function updateLearnerModules(
     /* =====================================================
        INITIALIZE
     ===================================================== */
+initializeProgramFilter();
 
-    initializeProgramFilter();
+render();
 
-    render();
+syncLearnersFromApi()
+    .then(() => {
+
+        render();
+
+    })
+    .catch(error => {
+
+        console.error(
+            "Learners API initialization failed:",
+            error
+        );
+
+    });
 
 })();
 

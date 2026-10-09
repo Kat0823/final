@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Submission;
 use App\Models\Module;
+use App\Models\Progress;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
@@ -76,6 +77,18 @@ class SubmissionController extends Controller
             'submitted_at' => now(),
             'status' => 'submitted',
         ]);
+        Progress::updateOrCreate(
+    [
+        'learner_id' => $learner->id,
+        'module_id' => $module->id,
+    ],
+    [
+        'status' => 'in_progress',
+        'completion_percentage' => 50,
+        'started_at' => now(),
+        'completed_at' => null,
+    ]
+);
 
         return response()->json([
             'success' => true,
