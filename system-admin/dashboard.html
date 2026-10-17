@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+
+        name="viewport"
+
+        content="width=device-width, initial-scale=1.0"
+
+    >
+
+    <title>
+
+        Siknayan | System Administrator
+
+    </title>
+
+    <link
+
+        rel="stylesheet"
+
+        href="css/system-admin.css"
+
+    >
+
+    <link rel="stylesheet" href="css/dashboard.css">
+
+    <!-- Lucide Icons -->
+
+    <script
+
+        src="https://unpkg.com/lucide@latest"
+
+    ></script>
+
+    
+
+</head>
+
+<body>
+
+    <!-- =====================================================
+
+         TOPBAR
+
+    ====================================================== -->
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <img
+
+                src="../images/logo.png"
+
+                alt="MPSU Logo"
+
+                class="brand-logo"
+
+            >
+
+            <div class="brand-text">
+
+                <h1>
+
+                    MPSU ETEEAP LMS
+
+                </h1>
+
+                <p>
+
+                    Mountain Province State University
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="topbar-right">
+
+            <button
+
+                class="icon-button notification-button"
+
+                type="button"
+
+                aria-label="Notifications"
+
+            >
+
+                <i data-lucide="bell"></i>
+
+                <span class="notification-dot"></span>
+
+            </button>
+
+            <a class="profile" href="profile.html" aria-label="Open My Profile" title="My Profile">
+
+                <img
+
+                    src="../images/macross.jpg"
+
+                    alt="Arcana"
+
+                    class="profile-avatar"
+
+                >
+
+                <div class="profile-info">
+
+                    <strong>
+
+                        Arcana
+
+                    </strong>
+
+                    <span>
+
+                        Administrator
+
+                    </span>
+
+                </div>
+
+                <i
+
+                    data-lucide="chevron-right"
+
+                    class="profile-chevron"
+
+                ></i>
+
+            </a>
+
+        </div>
+
+    </header>
+
+    <!-- =====================================================
+
+         APPLICATION LAYOUT
+
+    ====================================================== -->
+
+    <div class="app-layout">
+
+        <!-- =================================================
+
+             SIDEBAR
+
+        ================================================== -->
+
+        <aside
+
+            class="sidebar"
+
+            id="sidebar"
+
+        >
+
+            <div class="sidebar-top">
+
+                <span class="sidebar-view-text">
+
+                    View
+
+                </span>
+
+                <button
+
+                    class="sidebar-toggle"
+
+                    id="sidebarToggle"
+
+                    type="button"
+
+                    aria-label="Toggle sidebar"
+
+                    title="Toggle Sidebar"
+
+                >
+
+                    <i data-lucide="panel-left"></i>
+
+                </button>
+
+            </div>
+
+            <div class="sidebar-profile">
+
+                <img
+
+                    src="../images/macross.jpg"
+
+                    alt="Arcana"
+
+                    class="sidebar-avatar"
+
+                >
+
+                <div class="sidebar-profile-info">
+
+                    <span class="sidebar-profile-name">
+
+                        Arcana
+
+                    </span>
+
+                    <span class="sidebar-profile-role">
+
+                        Administrator
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <nav class="sidebar-nav">
+
+                <a
+
+                    href="dashboard.html"
+
+                    class="nav-item active"
+
+                >
+
+                    <i data-lucide="layout-dashboard"></i>
+
+                    <span class="nav-label">
+
+                        Dashboard
+
+                    </span>
+
+                </a>
+
+                <a
+
+                    href="administrators.html"
+
+                    class="nav-item"
+
+                >
+
+                    <i data-lucide="users"></i>
+
+                    <span class="nav-label">
+
+                        Academic Administrators
+
+                    </span>
+
+                </a>
+
+                <a
+
+                    href="backup.html"
+
+                    class="nav-item"
+
+                >
+
+                    <i data-lucide="database-backup"></i>
+
+                    <span class="nav-label">
+
+                        Data Backup
+
+                    </span>
+
+                </a>
+
+                <a
+
+                    href="audit-logs.html"
+
+                    class="nav-item"
+
+                >
+
+                    <i data-lucide="file-clock"></i>
+
+                    <span class="nav-label">
+
+                        Audit Logs
+
+                    </span>
+
+                </a>
+
+                <!-- My Profile -->
+
+                <a
+
+                    href="profile.html"
+
+                    class="nav-item"
+
+                >
+
+                    <i data-lucide="user-round"></i>
+
+                    <span class="nav-label">
+
+                        My Profile
+
+                    </span>
+
+                </a>
+
+</nav>
+
+            <div class="sidebar-bottom">
+
+                <a
+
+                    href="../index.html"
+
+                    class="nav-item"
+
+                >
+
+                    <i data-lucide="log-out"></i>
+
+                    <span class="nav-label">
+
+                        Logout
+
+                    </span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+        <!-- =================================================
+
+             MAIN CONTENT
+
+        ================================================== -->
+
+        <main class="main-content">
+
+            <!-- =================================================
+
+                 PAGE HEADER
+
+            ================================================== -->
+
+            <section class="page-header">
+
+                <div>
+
+                    <h2>
+
+                        Dashboard
+
+                    </h2>
+
+                    <p>
+
+                        System administration overview
+
+                    </p>
+
+                </div>
+
+            </section>
+
+            <!-- =================================================
+
+                 OVERVIEW CARDS
+
+            ================================================== -->
+
+            <section class="dashboard-cards">
+
+                <!-- Academic Administrators -->
+
+                <article class="dashboard-card">
+
+                    <div class="card-icon">
+
+                        <i data-lucide="users"></i>
+
+                    </div>
+
+                    <div class="card-content">
+
+                        <span class="card-label">
+
+                            Academic Administrators
+
+                        </span>
+
+                        <strong
+
+                            class="card-value"
+
+                            id="academicAdministratorsCount"
+
+                        >
+
+                            0
+
+                        </strong>
+
+                    </div>
+
+                </article>
+
+                <!-- Backup Status -->
+
+                <article class="dashboard-card">
+
+                    <div class="card-icon">
+
+                        <i data-lucide="database-backup"></i>
+
+                    </div>
+
+                    <div class="card-content">
+
+                        <span class="card-label">
+
+                            Backup Status
+
+                        </span>
+
+                        <strong
+
+                            class="card-value status-value"
+
+                            id="backupStatusValue"
+
+                        >
+
+                            Not Ready
+
+                        </strong>
+
+                    </div>
+
+                </article>
+
+                <!-- Audit Events Today -->
+
+                <article class="dashboard-card">
+
+                    <div class="card-icon">
+
+                        <i data-lucide="file-clock"></i>
+
+                    </div>
+
+                    <div class="card-content">
+
+                        <span class="card-label">
+
+                            Audit Events Today
+
+                        </span>
+
+                        <strong
+
+                            class="card-value"
+
+                            id="auditEventsTodayCount"
+
+                        >
+
+                            0
+
+                        </strong>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+            <!-- =================================================
+
+                 ACTIVITY + ATTENTION
+
+            ================================================== -->
+
+            <section class="dashboard-main-grid">
+
+                <!-- =================================================
+
+                     RECENT SYSTEM ACTIVITY
+
+                ================================================== -->
+
+                <div class="dashboard-panel">
+
+                    <div class="dashboard-panel-header">
+
+                        <div>
+
+                            <h3>
+
+                                Recent System Activity
+
+                            </h3>
+
+                            <p>
+
+                                Latest significant actions recorded by the system.
+
+                            </p>
+
+                        </div>
+
+                        <a
+
+                            href="audit-logs.html"
+
+                            class="dashboard-view-all"
+
+                        >
+
+                            View All
+
+                        </a>
+
+                    </div>
+
+                    <div class="dashboard-activity-wrapper">
+
+                        <table class="dashboard-activity-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+
+                                        Date &amp; Time
+
+                                    </th>
+
+                                    <th>
+
+                                        Actor
+
+                                    </th>
+
+                                    <th>
+
+                                        Activity
+
+                                    </th>
+
+                                    <th>
+
+                                        Module
+
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="recentActivityBody">
+
+                                <tr>
+
+                                    <td colspan="4">
+
+                                        <div
+
+                                            class="dashboard-activity-empty"
+
+                                        >
+
+                                            <i
+
+                                                data-lucide="inbox"
+
+                                            ></i>
+
+                                            <strong>
+
+                                                No recent activity
+
+                                            </strong>
+
+                                            <span>
+
+                                                System activity will appear here once actions are recorded.
+
+                                            </span>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+                <!-- =================================================
+
+                     ATTENTION
+
+                ================================================== -->
+
+                <div class="dashboard-panel">
+
+                    <div class="dashboard-panel-header">
+
+                        <div>
+
+                            <h3>
+
+                                Attention
+
+                            </h3>
+
+                            <p>
+
+                                Illustrative alerts for the frontend prototype, not live system events.
+
+                            </p>
+
+                        </div>
+
+                    <span class="attention-demo-badge">SAMPLE DATA</span>
+</div>
+
+                    <div class="attention-list">
+
+    <a class="attention-item warning" href="backup.html"
+       aria-label="Sample alert: Backup failed. Open Data Backup">
+        <div class="attention-icon">
+            <i data-lucide="database-backup"></i>
+        </div>
+        <div class="attention-content">
+            <strong>Backup failed</strong>
+            <span>Sample scenario: a scheduled backup did not complete and needs review.</span>
+            <span class="attention-action">Review Data Backup <i data-lucide="arrow-up-right"></i></span>
+        </div>
+    </a>
+
+    <a class="attention-item warning" href="audit-logs.html"
+       aria-label="Sample alert: Repeated failed sign-ins. Open Audit Logs">
+        <div class="attention-icon">
+            <i data-lucide="shield-alert"></i>
+        </div>
+        <div class="attention-content">
+            <strong>Repeated failed sign-ins</strong>
+            <span>Sample scenario: multiple unsuccessful sign-ins were recorded for an account.</span>
+            <span class="attention-action">Review Audit Logs <i data-lucide="arrow-up-right"></i></span>
+        </div>
+    </a>
+
+</div>
+
+                </div>
+
+            </section>
+
+            <!-- =================================================
+
+                 QUICK ACTIONS
+
+            ================================================== -->
+
+            <section class="dashboard-section">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h3>
+
+                            Quick Actions
+
+                        </h3>
+
+                        <p>
+
+                            Common system administration tasks.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="quick-actions">
+
+                    <!-- Create Administrator -->
+
+                    <a
+
+                        href="administrators.html"
+
+                        class="quick-action"
+
+                    >
+
+                        <div class="quick-action-icon">
+
+                            <i data-lucide="user-plus"></i>
+
+                        </div>
+
+                        <div>
+
+                            <strong>
+
+                                Create Academic Administrator
+
+                            </strong>
+
+                            <span>
+
+                                Create a new administrator account.
+
+                            </span>
+
+                        </div>
+
+                    </a>
+
+                    <!-- Backup -->
+
+                    <a
+
+                        href="backup.html"
+
+                        class="quick-action"
+
+                    >
+
+                        <div class="quick-action-icon">
+
+                            <i data-lucide="database-backup"></i>
+
+                        </div>
+
+                        <div>
+
+                            <strong>
+
+                                Backup Data
+
+                            </strong>
+
+                            <span>
+
+                                Manage database backups.
+
+                            </span>
+
+                        </div>
+
+                    </a>
+
+                    <!-- Audit Logs -->
+
+                    <a
+
+                        href="audit-logs.html"
+
+                        class="quick-action"
+
+                    >
+
+                        <div class="quick-action-icon">
+
+                            <i data-lucide="file-clock"></i>
+
+                        </div>
+
+                        <div>
+
+                            <strong>
+
+                                View Audit Logs
+
+                            </strong>
+
+                            <span>
+
+                                Review recorded system activity.
+
+                            </span>
+
+                        </div>
+
+                    </a>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    
+
+    <script src="js/shared.js"></script>
+    <script src="js/dashboard.js"></script>
+
+</body>
+
+</html>
