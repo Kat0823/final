@@ -1,652 +1,1516 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Class Content - MPSU ETEEAP LMS</title>
-    
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts Inter -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
-    
-    <!-- External Custom Stylesheet -->
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-:root{
-  --mpsu-green:#0a5a32;
-  --mpsu-green-dark:#064222;
-  --mpsu-green-light:#effbf4;
-  --mpsu-maroon:#5a0710;
-  --mpsu-maroon-dark:#43050b;
-  --mpsu-gold:#d69a00;
-  --bg-body:#effaf3;
-  --bg-surface:#ffffff;
-  --border-color:#dce7df;
-  --text-primary:#183126;
-  --text-secondary:#64748b;
-  --text-muted:#94a3b8;
-  --amber-bg:#fff4cc;
-  --amber-text:#8a5700;
-  --green-bg:#dcfce7;
-  --green-text:#166534;
-  --gray-bg:#eef2f5;
-  --gray-text:#475569;
-  --radius-sm:6px;
-  --radius-md:10px;
-  --radius-lg:14px;
-  --shadow-sm:0 2px 8px rgba(15,23,42,.05);
-  --shadow-md:0 8px 20px rgba(15,23,42,.08);
-}
+        :root {
+            --green: #086b3c;
+            --green-light: #f3f8f4;
+            --maroon: #650d20;
+            --gold: #ffd34e;
+            --text: #26332b;
+            --white: #ffffff;
+            --border: #dce5de;
+            --muted: #718078;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
 
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins','Inter',sans-serif;}
-html,body{width:100%;height:100%;}
-body{background:var(--bg-body);color:var(--text-primary);overflow:hidden;}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", sans-serif;
+        }
 
-/* HEADER */
-.header{
-  position:fixed;top:0;left:0;right:0;height:72px;
-  background:#0a5a32;color:#fff;display:flex;align-items:center;
-  justify-content:space-between;padding:0 26px;z-index:1000;
-  box-shadow:0 2px 8px rgba(0,0,0,.14);
-}
-.header-left{display:flex;align-items:center;gap:14px;min-width:0;}
-.logo-box{width:56px;height:56px;border-radius:50%;border:2px solid #fff;overflow:hidden;flex:0 0 56px;box-shadow:0 2px 5px rgba(0,0,0,.18);background:#fff;}
-.logo-box img{width:100%;height:100%;object-fit:contain;display:block;}
-.header-titles{min-width:0;}
-.header-titles .main-title{font-size:16px;font-weight:700;line-height:1.15;}
-.header-titles .sub-title{font-size:12px;opacity:.88;margin-top:3px;}
-.header-right{display:flex;align-items:center;gap:18px;}
-.user-profile{display:flex;align-items:center;gap:10px;color:#fff;cursor:pointer;}
-.avatar-ring{width:44px;height:44px;border:2px solid #fff;border-radius:50%;overflow:hidden;flex:0 0 44px;background:#fff;}
-.avatar-ring img{width:100%;height:100%;object-fit:cover;display:block;}
-.user-info{display:flex;flex-direction:column;line-height:1.15;}
-.user-name{font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;white-space:nowrap;}
-.user-role{font-size:11px;opacity:.82;margin-top:3px;}
+        body {
+            min-height: 100vh;
+            background: var(--green-light);
+            color: var(--text);
+            font-size: 14px;
+        }
 
-/* BODY */
-.app-body{width:100%;height:100vh;}
+        button, input, select, textarea {
+            font: inherit;
+        }
 
-/* SIDEBAR */
-.sidebar{
-  position:fixed;left:0;top:96px;width:280px;height:calc(100vh - 96px);
-  background:var(--mpsu-maroon);color:#fff;padding:26px 18px 18px;
-  display:flex;flex-direction:column;gap:24px;border-radius:0 12px 0 0;
-  overflow:hidden;z-index:900;transition:width .25s ease,padding .25s ease;
-}
-.view-header{display:flex;align-items:center;justify-content:space-between;padding:0 8px;}
-.view-label{font-size:15px;font-weight:500;}
-.view-toggle-btn{border:0;background:transparent;color:#fff;font-size:20px;cursor:pointer;padding:4px;}
-.nav-menu{display:flex;flex-direction:column;gap:14px;flex:1;min-height:0;}
-.nav-item{display:flex;align-items:center;gap:14px;color:#fff;text-decoration:none;padding:11px 14px;border-radius:7px;font-size:15px;font-weight:500;min-height:43px;transition:.2s ease;}
-.nav-item:hover{background:rgba(255,255,255,.09);}
-.nav-item.active{background:#d49a00;color:#170d00;border:1px solid #edbd27;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.2);}
-.nav-item i{width:25px;text-align:center;font-size:18px;flex:0 0 25px;}
-.logout-bottom{margin-top:auto;}
-.sidebar.collapsed{width:82px;padding-left:11px;padding-right:11px;}
-.sidebar.collapsed .view-label,.sidebar.collapsed .nav-item span{display:none;}
-.sidebar.collapsed .view-header{justify-content:center;padding:0;}
-.sidebar.collapsed .nav-item{justify-content:center;gap:0;padding-left:8px;padding-right:8px;}
-.sidebar.collapsed + main{margin-left:82px;width:calc(100% - 82px);}
+        button {
+            cursor: pointer;
+        }
 
-/* MAIN CONTENT */
-main{
-  position:relative;margin-left:280px;width:calc(100% - 280px);
-  height:100vh;overflow-y:auto;overflow-x:hidden;
-  padding:132px 44px 40px;background:var(--bg-body);
-  transition:margin-left .25s ease,width .25s ease;
-}
-main::-webkit-scrollbar{width:8px;}
-main::-webkit-scrollbar-thumb{background:#c9d8ce;border-radius:10px;}
-main::-webkit-scrollbar-track{background:transparent;}
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
 
-.breadcrumbs{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text-secondary);margin-bottom:22px;}
-.breadcrumbs a{color:#155f39;text-decoration:underline;}
-.breadcrumbs .active{color:#334155;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        /* HEADER */
+        .header {
+            height: 85px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 0 28px;
+            color: var(--white);
+            background: var(--green);
+            box-shadow: 0 2px 6px #0002;
+        }
 
-/* COURSE CARD */
-.course-card{background:#fff;border:1px solid #dce7df;border-radius:15px;padding:28px 32px;margin-bottom:32px;box-shadow:var(--shadow-sm);}
-.badges-group{display:flex;gap:10px;margin-bottom:12px;}
-.badge{display:inline-flex;align-items:center;padding:5px 12px;border-radius:999px;font-size:13px;font-weight:700;}
-.badge-green{background:#dcfce7;color:#166534;}
-.badge-amber{background:#fff0bd;color:#8a5700;}
-.course-title{font-size:28px;line-height:1.2;color:#0b4e2d;margin-bottom:6px;font-weight:700;}
-.course-description{font-size:16px;color:#64748b;line-height:1.55;margin-bottom:20px;}
-.course-metrics{display:flex;align-items:center;gap:28px;border-top:1px solid #e1e8e3;padding-top:17px;flex-wrap:wrap;}
-.metric-item{display:flex;align-items:center;gap:8px;color:#60748a;font-size:15px;}
-.metric-item strong{color:#334155;font-weight:600;}
+        .header-left,
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
 
-/* TABS */
-.tab-radio{position:absolute;opacity:0;pointer-events:none;}
-.tabs-header{display:flex;align-items:stretch;gap:8px;border-bottom:1px solid #cfded4;margin-bottom:26px;}
-.tab-btn{display:flex;align-items:center;gap:9px;padding:0 18px 14px;color:#718096;font-size:16px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap;}
-.tab-btn:hover{color:#0a5a32;}
-.tab-badge{min-width:24px;height:22px;padding:2px 7px;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;font-size:12px;font-weight:700;}
-.tab-badge-green{background:#dcfce7;color:#16803a;}.tab-badge-amber{background:#fff0bd;color:#9a6400;}.tab-badge-gray{background:#eef2f5;color:#64748b;}
-.tab-panel{display:none;}
-#tab-modules:checked~.tabs-header label[for=tab-modules],#tab-announcements:checked~.tabs-header label[for=tab-announcements],#tab-learners:checked~.tabs-header label[for=tab-learners]{color:#0a5a32;border-bottom-color:#0a5a32;}
-#tab-modules:checked~#panel-modules,#tab-announcements:checked~#panel-announcements,#tab-learners:checked~#panel-learners{display:block;}
+        .logo-box {
+            width: 55px;
+            height: 55px;
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 2px solid var(--white);
+            border-radius: 50%;
+            background: var(--white);
+        }
 
-/* MODULES */
-.modules-section{display:flex;flex-direction:column;gap:16px;}
-.module-list-header{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:16px;margin-bottom:4px!important;}
-.module-list-header h2,.panel-header h2,#panel-announcements h2{font-size:25px;color:#1e293b;font-weight:700;}
-.module-list-header p{font-size:14px;color:#64748b;margin-top:2px;}
-#modulesContainer{display:flex;flex-direction:column;gap:12px;}
-.module-card{background:#fff;border:1px solid #dce7df;border-radius:12px;box-shadow:var(--shadow-sm);overflow:hidden;}
-.module-card summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:18px 20px;}
-.module-card summary::-webkit-details-marker{display:none;}
-.module-title-group{display:flex;align-items:center;gap:14px;min-width:0;}
-.unit-badge{background:#e6f4ec;color:#0a5a32;border-radius:7px;padding:7px 9px;font-size:12px;font-weight:700;white-space:nowrap;}
-.module-title-group h3{font-size:16px;color:#1e293b;margin-bottom:4px;}
-.module-title-group p{font-size:13px;color:#64748b;line-height:1.4;}
-.module-card summary>i{color:#64748b;transition:transform .2s;}
-.module-card[open] summary>i{transform:rotate(180deg);}
-.module-body{padding:0 20px 18px;border-top:1px solid #eef2ef;}
-.module-body>div{padding-top:14px;}
-.resource-btn{border:1px solid #cbd5e1;background:#fff;color:#334155;border-radius:7px;padding:8px 12px;font-size:13px;font-weight:600;cursor:pointer;}
-.resource-btn:hover{background:#f8fafc;}
+        .logo-box img,
+        .avatar-ring img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
 
-/* ANNOUNCEMENTS */
-#panel-announcements{background:#fff;border:1px solid #dce7df;border-radius:12px;padding:22px;box-shadow:var(--shadow-sm);}
-#panel-announcements ul{margin-top:15px;padding-left:22px;color:#475569;line-height:1.8;}
-#panel-announcements li{margin-bottom:8px;}
+        .main-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
 
-/* LEARNERS TABLE */
-#panel-learners{background:#fff;border:1px solid #dce7df;border-radius:12px;box-shadow:var(--shadow-sm);overflow:hidden;}
-#panel-learners .panel-header{padding:20px 22px!important;margin-bottom:0!important;border-bottom:1px solid #e5ebe7;}
-.progress-table{width:100%;border-collapse:collapse;}
-.progress-table th{background:#f7faf8;color:#64748b;font-size:12px;text-transform:uppercase;letter-spacing:.04em;text-align:left;padding:13px 18px;border-bottom:1px solid #e2e8f0;}
-.progress-table td{padding:15px 18px;border-bottom:1px solid #eef2ef;color:#334155;font-size:14px;vertical-align:middle;}
-.progress-table tr:last-child td{border-bottom:0;}
+        .sub-title {
+            margin-top: 3px;
+            color: #ffffffd9;
+            font-size: 12px;
+        }
 
-/* BUTTONS */
-.btn-save{background:#0a5a32;color:#fff;border:0;padding:10px 16px;border-radius:7px;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap;}
-.btn-save:hover{background:#064222;}
-.btn-cancel{background:#fff;border:1px solid #cbd5e1;color:#475569;padding:9px 15px;border-radius:7px;font-weight:600;cursor:pointer;}
+        .header-right {
+            gap: 18px;
+        }
 
-/* MODALS */
-.modal-overlay,.profile-modal-overlay{position:fixed;inset:0;background:rgba(5,25,14,.48);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;z-index:2000;opacity:0;pointer-events:none;transition:opacity .2s;}
-.modal-overlay.active,.profile-modal-overlay.active{opacity:1;pointer-events:auto;}
-.modal-card,.profile-modal-card{width:min(680px,100%);max-height:90vh;background:#fff;border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,.2);display:flex;flex-direction:column;overflow:hidden;}
-.modal-header,.profile-modal-header{display:flex;justify-content:space-between;align-items:flex-start;padding:18px 22px;border-bottom:1px solid #e2e8f0;background:#fafcfb;}
-.modal-title,.profile-modal-title{font-size:18px;font-weight:700;color:#1e293b;}
-.modal-subtitle{font-size:13px;color:#64748b;margin-top:4px;}
-.modal-close-btn,.profile-modal-close{border:0;background:none;color:#64748b;font-size:21px;cursor:pointer;padding:2px 5px;}
-.modal-body,.profile-modal-body{padding:22px;overflow:auto;}
-.modal-footer,.profile-modal-footer{padding:14px 22px;border-top:1px solid #e2e8f0;background:#fafcfb;display:flex;justify-content:flex-end;gap:10px;}
-.feedback-group{display:flex;flex-direction:column;gap:7px;margin-bottom:15px;}
-.feedback-group label{font-size:13px;font-weight:600;color:#334155;}
-.feedback-group input,.feedback-group textarea,.profile-form-group input{width:100%;border:1px solid #cbd5e1;border-radius:7px;padding:10px 12px;font-size:14px;outline:none;}
-.feedback-group input:focus,.feedback-group textarea:focus,.profile-form-group input:focus{border-color:#0a5a32;box-shadow:0 0 0 3px rgba(10,90,50,.1);}
-.profile-modal-card{max-width:520px;}
-#profileSettingsForm{display:flex;flex-direction:column;min-height:0;overflow:hidden;}
-.profile-modal-body{display:flex;flex-direction:column;gap:16px;}
-.avatar-upload-section{display:flex;align-items:center;gap:16px;background:#f7faf8;border:1px solid #e2e8f0;border-radius:10px;padding:14px;}
-.avatar-upload-preview{position:relative;width:70px;height:70px;flex:0 0 70px;}.avatar-upload-preview img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid #0a5a32;}.avatar-edit-badge{position:absolute;right:-2px;bottom:-2px;width:25px;height:25px;border-radius:50%;background:#0a5a32;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;border:2px solid #fff;cursor:pointer;}.avatar-file-input{display:none;}
-.form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}.profile-form-group{display:flex;flex-direction:column;gap:6px;}.profile-form-group label{font-size:12px;font-weight:600;color:#334155;}.input-disabled{background:#f1f5f9!important;color:#64748b!important;}
-.password-section{border:1px solid #e2e8f0;border-radius:9px;overflow:hidden;}.password-toggle-header{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;background:#fafcfb;}.password-toggle-header h4{font-size:13px;color:#334155;}.password-toggle-header h4 i{color:#0a5a32;margin-right:6px;}.password-fields{display:none;padding:14px;border-top:1px solid #e2e8f0;gap:12px;flex-direction:column;}.password-section.open .password-fields{display:flex;}.password-section.open .chevron-icon{transform:rotate(180deg);}
+        .icon-btn,
+        .menu-btn {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border: none;
+            border-radius: 50%;
+            color: var(--white);
+            background: transparent;
+            font-size: 18px;
+        }
 
-/* TOAST */
-.toast-container{position:fixed;right:24px;bottom:24px;display:flex;flex-direction:column;gap:10px;z-index:3000;}.toast{background:#163b27;color:#fff;padding:12px 16px;border-radius:8px;box-shadow:0 8px 20px rgba(0,0,0,.16);font-size:13px;}.toast.error{background:#9f1239;}
+        .icon-btn:hover,
+        .menu-btn:hover {
+            background: #ffffff26;
+        }
 
-@media(max-width:900px){
-  .sidebar{width:220px;}.sidebar.collapsed{width:72px;}
-  main{margin-left:220px;width:calc(100% - 220px);padding:110px 24px 30px;}
-  .sidebar.collapsed+main{margin-left:72px;width:calc(100% - 72px);}
-  .tab-btn{padding-left:10px;padding-right:10px;font-size:14px;}
-}
-@media(max-width:700px){
-  body{overflow:auto;}
-  .header{height:68px;padding:0 14px;}.logo-box{width:48px;height:48px;flex-basis:48px;}.header-titles .main-title{font-size:14px;}.header-titles .sub-title{font-size:10px;}.user-info{display:none;}.avatar-ring{width:38px;height:38px;flex-basis:38px;}
-  .sidebar{top:68px;width:74px;height:calc(100vh - 68px);padding:20px 9px;}.sidebar .view-label,.sidebar .nav-item span{display:none;}.sidebar .view-header{justify-content:center;padding:0;}.sidebar .nav-item{justify-content:center;gap:0;padding:11px 7px;}.sidebar.collapsed{width:74px;}
-  main, .sidebar.collapsed+main{margin-left:74px;width:calc(100% - 74px);height:100vh;padding:90px 14px 24px;}
-  .course-card{padding:20px;margin-bottom:22px;}.course-title{font-size:22px;}.course-metrics{gap:14px;}.tabs-header{overflow-x:auto;}.tab-btn{font-size:13px;padding:0 10px 12px;}.module-list-header{align-items:flex-start!important;}.module-list-header h2{font-size:21px;}.form-grid-2{grid-template-columns:1fr;}
-}
+        .menu-btn {
+            display: none;
+        }
 
-</style>
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+            color: var(--white);
+            background: transparent;
+            text-align: left;
+        }
+
+        .avatar-ring {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 2px solid var(--white);
+            border-radius: 50%;
+            background: var(--white);
+        }
+
+        .user-name,
+        .user-role {
+            display: block;
+            white-space: nowrap;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .user-role {
+            margin-top: 2px;
+            color: #ffffffcc;
+            font-size: 11px;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 85px;
+            left: 0;
+            z-index: 900;
+            width: 250px;
+            height: calc(100vh - 85px);
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            overflow-y: auto;
+            color: var(--white);
+            background: var(--maroon);
+            transition: width 0.25s ease, transform 0.25s ease;
+        }
+
+        .view-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 0 8px;
+        }
+
+        .view-label {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .view-toggle-btn {
+            width: 34px;
+            height: 34px;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 6px;
+            color: var(--white);
+            background: transparent;
+            font-size: 17px;
+        }
+
+        .view-toggle-btn:hover {
+            background: #ffffff20;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-item {
+            width: 100%;
+            min-height: 46px;
+            padding: 11px 14px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid transparent;
+            border-radius: 7px;
+            color: var(--white);
+            background: transparent;
+            font-size: 13px;
+            line-height: 1.4;
+            text-align: left;
+            white-space: nowrap;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .nav-item > i {
+            width: 22px;
+            min-width: 22px;
+            height: 22px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            font-size: 17px;
+            line-height: 1;
+            text-align: center;
+        }
+
+        .nav-item > span {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .nav-item:hover {
+            background: #ffffff20;
+        }
+
+        .nav-item.active {
+            color: #1a0306;
+            background: var(--gold);
+            border-color: #eab308;
+            font-weight: 600;
+        }
+
+        .nav-item.active:hover {
+            color: #1a0306;
+            background: #ffdc68;
+        }
+
+        .logout-bottom {
+            margin-top: auto;
+        }
+
+        /* COLLAPSED SIDEBAR */
+        .sidebar.collapsed {
+            width: 80px;
+        }
+
+        .sidebar.collapsed .view-label,
+        .sidebar.collapsed .nav-item > span {
+            display: none;
+        }
+
+        .sidebar.collapsed .view-header {
+            justify-content: center;
+        }
+
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+            gap: 0;
+            padding: 11px 10px;
+        }
+
+        .sidebar.collapsed .nav-item > i {
+            width: 24px;
+            min-width: 24px;
+        }
+        /* MAIN CONTENT */
+        .main-content {
+            width: calc(100% - 250px);
+            min-height: calc(100vh - 85px);
+            margin-left: 250px;
+            padding: 30px 40px;
+            transition: margin-left .25s, width .25s;
+        }
+
+        .main-content.expanded {
+            width: calc(100% - 80px);
+            margin-left: 80px;
+        }
+
+        .page-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* BREADCRUMB */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .breadcrumb a {
+            color: var(--green);
+        }
+
+        .breadcrumb i {
+            font-size: 10px;
+        }
+
+        /* COURSE HEADER */
+        .course-header {
+            margin-bottom: 24px;
+            padding: 28px;
+            color: white;
+            background: var(--green);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .course-code {
+            display: inline-block;
+            margin-bottom: 10px;
+            padding: 5px 10px;
+            color: #1a0306;
+            background: var(--gold);
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .course-header h1 {
+            margin-bottom: 8px;
+            font-size: 25px;
+            font-weight: 700;
+        }
+
+        .course-description, .course-program {
+            color: #ffffffdf;
+            line-height: 1.7;
+        }
+
+        .course-program {
+            margin-top: 12px;
+            font-size: 12px;
+        }
+
+        /* STATISTICS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            color: var(--green);
+            background: #e7f4eb;
+            border-radius: 10px;
+            font-size: 20px;
+        }
+
+        .stat-info span {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .stat-info strong {
+            color: var(--green);
+            font-size: 24px;
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 13px 16px;
+            border: 0;
+            border-bottom: 3px solid transparent;
+            color: var(--muted);
+            background: transparent;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .tab-btn:hover {
+            color: var(--green);
+        }
+
+        .tab-btn.active {
+            color: var(--green);
+            border-bottom-color: var(--green);
+            font-weight: 600;
+        }
+
+        .tab-badge {
+            min-width: 22px;
+            padding: 2px 6px;
+            color: var(--green);
+            background: #e7f4eb;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* PANELS */
+        .content-panel {
+            margin-bottom: 24px;
+            padding: 24px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            margin-bottom: 5px;
+            color: var(--green);
+            font-size: 19px;
+            font-weight: 600;
+        }
+
+        .section-header p {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* MODULES */
+        .module-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .module-card {
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .module-card[open] {
+            border-color: #8dbba0;
+        }
+
+        .module-card summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 18px;
+            cursor: pointer;
+            list-style: none;
+        }
+
+        .module-card summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .module-card summary > i {
+            color: var(--muted);
+            transition: transform .2s;
+        }
+
+        .module-card[open] summary > i {
+            transform: rotate(180deg);
+        }
+
+        .module-title-group {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+        }
+
+        .unit-badge {
+            padding: 7px 9px;
+            flex-shrink: 0;
+            color: var(--green);
+            background: #e7f4eb;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .module-title-group h3 {
+            margin-bottom: 5px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .module-title-group p {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .module-body {
+            padding: 18px;
+            border-top: 1px solid var(--border);
+            background: #fbfdfb;
+        }
+
+        .module-description {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        .module-material {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--green);
+            font-size: 12px;
+        }
+
+        .not-available {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* LEARNER TABLE */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .learners-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .learners-table thead {
+            color: white;
+            background: var(--green);
+        }
+
+        .learners-table th,
+        .learners-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 12px;
+        }
+
+        .learners-table th {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .learners-table tbody tr:hover {
+            background: #f5faf6;
+        }
+
+        .learners-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .learner-profile-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 180px;
+        }
+
+        .learner-avatar {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            color: var(--green);
+            background: #e7f4eb;
+            border-radius: 50%;
+            font-weight: 600;
+        }
+
+        .learner-name,
+        .learner-id {
+            display: block;
+        }
+
+        .learner-name {
+            font-weight: 600;
+        }
+
+        .learner-id {
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        /* ANNOUNCEMENTS */
+        .announcement-box {
+            padding: 40px 20px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .announcement-box > i {
+            margin-bottom: 14px;
+            color: #aab8af;
+            font-size: 38px;
+        }
+
+        .announcement-box h3 {
+            margin-bottom: 8px;
+            color: var(--text);
+            font-size: 17px;
+        }
+
+        .announcement-box p {
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        /* EMPTY STATES */
+        .empty-state {
+            padding: 35px 20px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .empty-state > i {
+            margin-bottom: 12px;
+            color: #aab8af;
+            font-size: 32px;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 8px;
+            color: var(--text);
+            font-size: 15px;
+        }
+
+        .empty-state p {
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        /* TOASTS */
+        .toast-container {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            max-width: 360px;
+            padding: 14px 18px;
+            color: white;
+            background: var(--green);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            animation: toastIn .2s ease-out;
+        }
+
+        .toast-error {
+            background: #b42332;
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* PROFILE MODAL */
+        .profile-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, .5);
+        }
+
+        .profile-modal-overlay.active {
+            display: flex;
+        }
+
+        .profile-modal-card {
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 35px #0003;
+        }
+
+        .profile-modal-header,
+        .profile-modal-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .profile-modal-title {
+            color: var(--green);
+            font-size: 18px;
+        }
+
+        .profile-modal-close {
+            width: 36px;
+            height: 36px;
+            border: 0;
+            border-radius: 50%;
+            background: #f1f5f2;
+            font-size: 24px;
+        }
+
+        .profile-modal-body {
+            padding: 24px;
+        }
+
+        .profile-modal-footer {
+            justify-content: flex-end;
+            border-top: 1px solid var(--border);
+            border-bottom: 0;
+        }
+
+        .profile-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            margin-bottom: 16px;
+        }
+
+        .profile-form-group label {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .profile-form-group input {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .profile-form-group input:focus {
+            border-color: var(--green);
+        }
+
+        .input-disabled {
+            background: #f1f5f2;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .avatar-upload-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .avatar-upload-preview {
+            position: relative;
+            width: 76px;
+            height: 76px;
+            flex-shrink: 0;
+        }
+
+        .avatar-upload-preview img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .avatar-edit-badge {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            display: grid;
+            width: 27px;
+            height: 27px;
+            place-items: center;
+            color: white;
+            background: var(--green);
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .avatar-file-input {
+            display: none;
+        }
+
+        .avatar-upload-text h4 {
+            margin-bottom: 5px;
+        }
+
+        .avatar-upload-text p {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .password-section {
+            margin-top: 20px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .password-toggle-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 15px;
+            cursor: pointer;
+        }
+
+        .password-toggle-header h4 {
+            font-size: 13px;
+        }
+
+        .password-fields {
+            display: none;
+            padding: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .password-section.open .password-fields {
+            display: block;
+        }
+
+        .password-section.open .chevron-icon {
+            transform: rotate(180deg);
+        }
+
+        .chevron-icon {
+            transition: transform .2s;
+        }
+
+        .btn-cancel,
+        .btn-save {
+            padding: 10px 18px;
+            border: 0;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .btn-cancel {
+            color: var(--text);
+            background: #e8eee9;
+        }
+
+        .btn-save {
+            color: white;
+            background: var(--green);
+        }
+
+        .btn-save:hover {
+            background: #075630;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .main-content {
+                padding: 28px 24px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 900px) {
+            .header {
+                height: 75px;
+                padding: 0 14px;
+                gap: 10px;
+            }
+
+            .logo-box {
+                width: 46px;
+                height: 46px;
+            }
+
+            .main-title {
+                font-size: 13px;
+            }
+
+            .sub-title {
+                font-size: 10px;
+            }
+
+            .header-right {
+                gap: 8px;
+            }
+
+            .sidebar {
+                top: 75px;
+                width: 250px;
+                height: calc(100vh - 75px);
+                transform: translateX(-100%);
+                border-radius: 0;
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .sidebar.collapsed {
+                width: 250px;
+                padding: 24px 16px;
+            }
+
+            .sidebar.collapsed .view-label,
+            .sidebar.collapsed .nav-item span {
+                display: initial;
+            }
+
+            .sidebar.collapsed .view-header {
+                justify-content: space-between;
+                padding: 0 8px;
+            }
+
+            .sidebar.collapsed .nav-item {
+                justify-content: flex-start;
+                gap: 14px;
+                padding: 10px 12px;
+            }
+
+            .main-content,
+            .main-content.expanded {
+                width: 100%;
+                margin-left: 0;
+                padding: 24px 16px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                padding: 0 10px;
+            }
+
+            .header-left {
+                gap: 8px;
+            }
+
+            .main-title {
+                font-size: 11px;
+            }
+
+            .sub-title {
+                font-size: 9px;
+            }
+
+            .header-right {
+                gap: 2px;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .icon-btn {
+                width: 34px;
+                height: 34px;
+                font-size: 16px;
+            }
+
+            .stats-grid,
+            .form-grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .course-header {
+                padding: 20px;
+            }
+
+            .course-header h1 {
+                font-size: 21px;
+            }
+
+            .content-panel {
+                padding: 16px;
+            }
+
+            .tab-btn {
+                padding: 11px 8px;
+                font-size: 12px;
+            }
+
+            .profile-modal-body {
+                padding: 18px;
+            }
+
+            .profile-modal-header,
+            .profile-modal-footer {
+                padding: 16px 18px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-   
-  <!-- Top Header Navigation -->
-  <header class="header">
-    <div class="header-left">
-      <div class="logo-box">
-        <img src="../images/mpsu-logo.png" alt="MPSU logo">
-      </div>
+     <!-- HEADER -->
+    <header class="header">
+        <div class="header-left">
 
-      <div class="header-titles">
-        <div class="main-title">MPSU ETEEAP LMS</div>
-        <div class="sub-title">Mountain Province State University</div>
-      </div>
-    </div>
+            <button
+                class="menu-btn"
+                id="menuToggle"
+                type="button"
+                title="Open menu"
+                aria-label="Open menu"
+                aria-expanded="false">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+            </button>
 
-   <div class="header-right">
-      
-      <div class="user-profile" id="userProfileBtn" style="cursor: pointer;">
-        <div class="avatar-ring">
-          <img id="headerAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Macross Arsel Avatar" />
+            <div class="logo-box">
+                <img src="../images/logo.png" alt="MPSU Logo">
+            </div>
+
+            <div>
+                <div class="main-title">MPSU ETEEAP LMS</div>
+                <div class="sub-title">Mountain Province State University</div>
+            </div>
+
         </div>
-        <div class="user-info">
-          <span class="user-name">Macross Arsel <i class="fa-solid fa-caret-down"></i></span>
-          <span class="user-role">Instructor</span>
+
+        <div class="header-right">
+
+            <button
+                class="icon-btn"
+                type="button"
+                title="Notifications"
+                aria-label="Notifications"
+                id="notificationsBtn">
+                <i class="fa-solid fa-bell" aria-hidden="true"></i>
+            </button>
+
+            <button
+                class="user-profile"
+                id="userProfileBtn"
+                type="button"
+                aria-label="Open instructor profile">
+
+                <div class="avatar-ring">
+                    <img
+                        id="headerAvatar"
+                        src="../images/logo.png"
+                        alt="Instructor profile">
+                </div>
+
+                <div class="user-info">
+                    <span class="user-name" id="headerInstructorName">Instructor</span>
+                    <span class="user-role">Instructor</span>
+                </div>
+
+            </button>
         </div>
-      </div>
-    </div>
-  </header>
+    </header>
 
+    <!-- SIDEBAR -->
+     <aside class="sidebar" id="sidebar">
+        <div class="view-header">
+            <span class="view-label">Instructor Menu</span>
 
-   <!-- Main Body Layout -->
-  <div class="app-body">
+            <button
+                class="view-toggle-btn"
+                id="sidebarToggle"
+                type="button"
+                title="Collapse sidebar"
+                aria-label="Collapse sidebar"
+                aria-expanded="true">
+                <i class="fa-solid fa-angles-left" aria-hidden="true"></i>
+            </button>
+        </div>
 
-    <!-- Deep Maroon Sidebar -->
-    <aside class="sidebar">
-      <div class="view-header">
-        <span class="view-label">View</span>
-        <button type="button" class="view-toggle-btn" id="viewToggle" title="Toggle Sidebar">
-            <i class="fa-regular fa-rectangle-list"></i>
-        </button>
-    </div>
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-item">
+                <i class="fa-solid fa-house"></i>
+                <span>Learner Progress</span>
+            </a>
 
-        <a href="dashboard.html" class="nav-item">
-          <i class="fa-solid fa-users"></i>
-          <span>Learners Progress</span>
-        </a>
+            <a href="class.html" class="nav-item active" aria-current="page">
+                <i class="fa-solid fa-book"></i>
+                <span>Classes</span>
+            </a>
 
-        <!-- Active Menu Item: Classes -->
-        <a href="class.html" class="nav-item active">
-          <i class="fa-solid fa-layer-group"></i>
-          <span>Classes</span>
-        </a>
+            <a href="submissions.html" class="nav-item">
+                <i class="fa-regular fa-folder"></i>
+                <span>Submissions</span>
+            </a>
 
-        <a href="submissions.html" class="nav-item">
-          <i class="fa-regular fa-folder"></i>
-          <span>Submission</span>
-        </a>
+            <a href="notification.html" class="nav-item">
+                <i class="fa-solid fa-bell"></i>
+                <span>Notifications</span>
+            </a>
 
-        <a href="notification.html" class="nav-item">
-          <i class="fa-regular fa-bell"></i>
-          <span>Notification</span>
-        </a>
-
-        <!-- Logout Item Pushed To Bottom -->
-        <a href="logout.html" class="nav-item logout-bottom">
-          <i class="fa-solid fa-arrow-right-from-bracket"></i>
-          <span>Logout</span>
-        </a>
+            <a href="../index.html" class="nav-item logout-bottom" id="logoutNav">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </a>
+        </nav>
     </aside>
 
-        <!-- MAIN CONTENT CANVAS -->
-        <main>
-            <!-- Breadcrumb Navigation -->
-            <nav class="breadcrumbs">
-                <a href="#instructor">Instructor</a>
-                <span>/</span>
-                <a href="class.html">Classes</a>
-                <span>/</span>
-                <span class="active" id="breadcrumbCourse">Loading class...</span>
-            </nav>
+    <!-- MAIN CONTENT -->
+    <main class="main-content" id="mainContent">
+        <div class="page-container">
 
-            <!-- COURSE BANNER CARD -->
-            <div class="course-card">
-                <div class="course-header">
-                    <div class="course-details">
-                        <div class="badges-group">
-                            <span class="badge badge-green" id="courseCode">Loading...</span>
-                            <span class="badge badge-amber" id="courseTerm">Instructor Class</span>
-                        </div>
-                        <h2 class="course-title" id="courseTitle">Loading class...</h2>
-                        <p class="course-description" id="courseDescription">Loading course information...</p>
-                        
-                        <div class="course-metrics">
-                            <div class="metric-item">
-                                <i class="fa-solid fa-user-graduate" style="color: var(--mpsu-green, #0c4827);"></i>
-                                <span><strong id="studentCount">0</strong> Enrolled Students</span>
-                            </div>
-                            <div class="metric-item">
-                                <i class="fa-solid fa-clock-rotate-left" style="color: #dc2626;"></i>
-                                <span id="pendingCountText"><strong>0</strong> Pending Reviews</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="breadcrumb">
+                <a href="class.html">
+                    <i class="fa-solid fa-book"></i> Classes
+                </a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <span id="breadcrumbCourse">Loading class...</span>
             </div>
 
-            <!-- HIDDEN RADIO INPUTS TO CONTROL TABS VIA PURE CSS -->
-            <input type="radio" id="tab-modules" name="main-tabs" class="tab-radio" checked>
-            <input type="radio" id="tab-announcements" name="main-tabs" class="tab-radio">
-            <input type="radio" id="tab-learners" name="main-tabs" class="tab-radio">
+            <!-- COURSE INFORMATION -->
+            <section class="course-header">
+                <span class="course-code" id="courseCode">Loading...</span>
+                <h1 id="courseTitle">Loading class...</h1>
+                <p class="course-description" id="courseDescription">
+                    Loading course description...
+                </p>
+                <p class="course-program" id="courseProgram">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    Loading program...
+                </p>
+            </section>
 
-            <!-- NAVIGATION TABS HEADER (LABELS LINKED TO RADIOS) -->
-            <div class="tabs-header">
-                <label for="tab-modules" class="tab-btn">
-                    <i class="fa-solid fa-book"></i>
-                    <span>Modules & Syllabus</span>
-                    <span class="tab-badge tab-badge-green" id="modulesBadge">0</span>
-                </label>
+            <!-- STATISTICS -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span>Enrolled Learners</span>
+                        <strong id="studentCount">0</strong>
+                    </div>
+                </div>
 
-                <label for="tab-announcements" class="tab-btn">
-                    <i class="fa-solid fa-bullhorn"></i>
-                    <span>Announcements</span>
-                    <span class="tab-badge tab-badge-amber" id="announcementsBadge">—</span>
-                </label>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span>Total Modules</span>
+                        <strong id="moduleCount">0</strong>
+                    </div>
+                </div>
 
-                <label for="tab-learners" class="tab-btn">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span>Pending Reviews</span>
+                        <strong id="pendingCount">—</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TABS -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="modulesPanel" type="button">
+                    <i class="fa-solid fa-book-open"></i>
+                    Modules
+                    <span class="tab-badge" id="modulesBadge">0</span>
+                </button>
+
+                <button class="tab-btn" data-tab="learnersPanel" type="button">
                     <i class="fa-solid fa-users"></i>
-                    <span>Learners Progress</span>
-                    <span class="tab-badge tab-badge-gray" id="learnersBadge">0</span>
-                </label>
-            </div>
+                    Learners
+                    <span class="tab-badge" id="learnersBadge">0</span>
+                </button>
 
-            <!-- TAB 1: MODULES CONTENT -->
-            <div class="tab-panel" id="panel-modules">
-                <div class="modules-section">
-                    <div class="module-list-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-                        <div>
-                            <h2>Modules</h2>
-                            <p id="moduleCountText">Loading modules...</p>
-                        </div>
-                       
-                    </div>
-
-                    <div id="modulesContainer">
-                        <div class="module-card">
-                            <summary>
-                                <div class="module-title-group">
-                                    <span class="unit-badge">...</span>
-                                    <div>
-                                        <h3>Loading modules...</h3>
-                                        <p>Please wait.</p>
-                                    </div>
-                                </div>
-                            </summary>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 2: ANNOUNCEMENTS CONTENT -->
-            <div class="tab-panel" id="panel-announcements">
-                <h2>Announcements</h2>
-                <ul>
-                    <li><strong>Welcome to the Course!</strong> — Please review the syllabus.</li>
-                    <li><strong>Live Q&A Session Scheduled</strong> — Join us Thursday at 3:00 PM PST.</li>
-                    <li><strong>Module 2 Assignment Released</strong> — Practice exercises are now live.</li>
-                </ul>
-            </div>
-
-            <!-- TAB 3: LEARNERS PROGRESS CONTENT -->
-            <div class="tab-panel" id="panel-learners">
-                <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h2>Learners Progress</h2>
-                    <span id="learnersSummary" style="font-size: 0.85rem; color: var(--text-secondary);">0 enrolled students</span>
-                </div>
-                
-                <table class="progress-table">
-                    <thead>
-                        <tr>
-                            <th>Learner</th>
-                            <th>Overall Progress</th>
-                            <th style="text-align: right;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="learnersTableBody">
-                        <!-- Populated dynamically via JS or rendered statically -->
-                    </tbody>
-                </table>
-            </div>
-
-        </main>
-    </div>
-
-    <!-- MODAL: ADD / EDIT MODULE -->
-    <div class="modal-overlay" id="moduleModal">
-        <div class="modal-card">
-            <div class="modal-header">
-                <div>
-                    <h3 id="moduleModalTitle" class="modal-title">Add Module</h3>
-                    <p class="modal-subtitle">Create or update a module for this class.</p>
-                </div>
-                <button class="modal-close-btn" id="closeModuleModal">
-                    <i class="fa-solid fa-xmark"></i>
+                <button class="tab-btn" data-tab="announcementsPanel" type="button">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    Announcements
                 </button>
             </div>
 
-            <div class="modal-body">
-                <div class="feedback-group">
-                    <label for="moduleTitleInput">Module Title</label>
-                    <input
-                        type="text"
-                        id="moduleTitleInput"
-                        placeholder="Enter module title"
-                    >
-                </div>
-
-                <div class="feedback-group">
-                    <label for="moduleDescriptionInput">Description</label>
-                    <textarea
-                        id="moduleDescriptionInput"
-                        rows="4"
-                        placeholder="Enter module description"
-                    ></textarea>
-                </div>
-
-                <div class="feedback-group">
-                    <label>
-                        <input
-                            type="checkbox"
-                            id="modulePublishedInput"
-                        >
-                        Publish module
-                    </label>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn-cancel" id="cancelModuleModal">
-                    Cancel
-                </button>
-
-                <button class="btn-save" id="saveModuleBtn">
-                    <i class="fa-solid fa-floppy-disk"></i>
-                    Save Module
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL 1: GRADE COMPILED SUBMISSION MODAL -->
-    <div class="modal-overlay" id="gradingModal">
-        <div class="modal-card">
-            <div class="modal-header">
-                <div>
-                    <h3 id="modalStudentName" class="modal-title">Grade Submission - Alex Johnson</h3>
-                    <p class="modal-subtitle">Compiled Module Activities & Manual Score Assignment</p>
-                </div>
-                <button class="modal-close-btn" id="closeGradingModal"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-
-            <div class="modal-body">
-                <!-- Submitted File Box -->
-                <div class="file-preview-card">
-                    <div class="file-info">
-                        <div class="file-icon"><i class="fa-solid fa-file-zipper"></i></div>
+            <!-- MODULES -->
+            <section class="tab-panel active" id="modulesPanel">
+                <div class="content-panel">
+                    <div class="section-header">
                         <div>
-                            <div class="file-name" id="modalFileName">AlexJohnson_Module1_Compiled.pdf</div>
-                            <div class="file-meta" id="modalFileMeta">PDF Document • 5.8 MB • Submitted Oct 24, 2026 at 11:42 AM</div>
+                            <h2>Modules &amp; Syllabus</h2>
+                            <p id="moduleSummary">Loading modules...</p>
                         </div>
                     </div>
-                    <button class="btn-download-file"><i class="fa-solid fa-download"></i> View Document</button>
+
+                    <div id="modulesContainer" class="module-list">
+                        <div class="empty-state">
+                            <i class="fa-solid fa-spinner fa-spin"></i>
+                            <h3>Loading modules</h3>
+                            <p>Please wait while the class information is loaded.</p>
+                        </div>
+                    </div>
                 </div>
+            </section>
 
-                <!-- Dynamic Activity Grading Form -->
-                <div class="grading-section">
-                    <div class="grading-section-header">
-                        <h4><i class="fa-solid fa-list-check" style="color: var(--mpsu-green);"></i> Compiled Activities Breakdown</h4>
-                        <button type="button" class="btn-add-activity" id="btnAddActivityRow">
-                            <i class="fa-solid fa-plus"></i> Add Activity Item
-                        </button>
-                    </div>
-
-                    <p class="help-text">Manually input each activity title contained in the student's compiled submission along with its raw score.</p>
-
-                    <div class="activity-items-list" id="activityItemsContainer">
-                        <!-- Dynamic activity input rows added here -->
-                    </div>
-
-                    <!-- Auto-Calculated Score Summary -->
-                    <div class="summary-box">
+            <!-- LEARNERS -->
+            <section class="tab-panel" id="learnersPanel">
+                <div class="content-panel">
+                    <div class="section-header">
                         <div>
-                            <span class="summary-label">Total Raw Score</span>
-                            <div class="summary-val" id="summaryRaw">0 / 0 pts</div>
-                        </div>
-                        <div style="text-align: right;">
-                            <span class="summary-label">Computed Grade</span>
-                            <div class="summary-val" id="summaryPercent" style="color: var(--mpsu-green);">0%</div>
+                            <h2>Enrolled Learners</h2>
+                            <p id="learnerSummary">Loading learners...</p>
                         </div>
                     </div>
 
-                    <!-- Feedback Textarea -->
-                    <div class="feedback-group">
-                        <label for="instructorFeedback"><i class="fa-solid fa-comment-dots"></i> Instructor Feedback & Comments</label>
-                        <textarea id="instructorFeedback" rows="3" placeholder="Provide constructive feedback for the student..."></textarea>
+                    <div class="table-wrapper">
+                        <table class="learners-table">
+                            <thead>
+                                <tr>
+                                    <th>Learner</th>
+                                    <th>Email</th>
+                                    <th>Program</th>
+                                    <th>Contact</th>
+                                </tr>
+                            </thead>
+                            <tbody id="learnersTableBody">
+                                <tr>
+                                    <td colspan="4">
+                                        <div class="empty-state">
+                                            <i class="fa-solid fa-spinner fa-spin"></i>
+                                            <h3>Loading learners</h3>
+                                            <p>Please wait.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
+            </section>
+
+            <!-- ANNOUNCEMENTS -->
+            <section class="tab-panel" id="announcementsPanel">
+                <div class="content-panel">
+                    <div class="announcement-box">
+                        <i class="fa-solid fa-bullhorn"></i>
+                        <h3>No announcements available</h3>
+                        <p>Announcements for this class will appear here when available.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- TOAST MESSAGES -->
+    <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+    <!-- PROFILE MODAL -->
+    <div class="profile-modal-overlay" id="profileModalOverlay">
+        <div class="profile-modal-card">
+            <div class="profile-modal-header">
+                <h3 class="profile-modal-title">Instructor Profile Settings</h3>
+                <button class="profile-modal-close" id="closeProfileModal"
+                        type="button" aria-label="Close profile">&times;</button>
             </div>
 
-            <div class="modal-footer">
-                <button class="btn-cancel" id="cancelGradingModal">Cancel</button>
-                <button class="btn-save" id="saveGradeBtn"><i class="fa-solid fa-floppy-disk"></i> Save & Publish Grade</button>
-            </div>
+            <form id="profileSettingsForm">
+                <div class="profile-modal-body">
+                    <div class="avatar-upload-section">
+                        <div class="avatar-upload-preview">
+                            <img id="avatarPreview" src="../images/mpsu-logo.png"
+                                 alt="Instructor profile picture">
+
+                            <label for="avatarInput" class="avatar-edit-badge"
+                                   title="Change profile photo">
+                                <i class="fa-solid fa-camera"></i>
+                            </label>
+
+                            <input type="file" id="avatarInput"
+                                   accept="image/*" class="avatar-file-input">
+                        </div>
+
+                        <div class="avatar-upload-text">
+                            <h4>Profile Photo</h4>
+                            <p>This photo is displayed in the current browser session.</p>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="profile-form-group">
+                            <label for="instructorId">Instructor ID</label>
+                            <input type="text" id="instructorId" disabled
+                                   class="input-disabled">
+                        </div>
+
+                        <div class="profile-form-group">
+                            <label for="instructorName">Full Name</label>
+                            <input type="text" id="instructorName" required>
+                        </div>
+                    </div>
+
+                    <div class="profile-form-group">
+                        <label for="instructorEmail">Email Address</label>
+                        <input type="email" id="instructorEmail" required>
+                    </div>
+
+                    <div class="profile-form-group">
+                        <label for="instructorPhone">Mobile Number</label>
+                        <input type="tel" id="instructorPhone"
+                               placeholder="+63 9XX XXX XXXX">
+                    </div>
+
+                    <div class="password-section" id="passwordSection">
+                        <div class="password-toggle-header" id="passwordToggleBtn">
+                            <h4>
+                                <i class="fa-solid fa-lock"></i>
+                                Change Password (Optional)
+                            </h4>
+                            <i class="fa-solid fa-chevron-down chevron-icon"></i>
+                        </div>
+
+                        <div class="password-fields">
+                            <div class="profile-form-group">
+                                <label for="currentPassword">Current Password</label>
+                                <input type="password" id="currentPassword"
+                                       autocomplete="current-password">
+                            </div>
+
+                            <div class="profile-form-group">
+                                <label for="newPassword">New Password</label>
+                                <input type="password" id="newPassword"
+                                       placeholder="Minimum 8 characters"
+                                       autocomplete="new-password">
+                            </div>
+
+                            <div class="profile-form-group">
+                                <label for="confirmPassword">Confirm New Password</label>
+                                <input type="password" id="confirmPassword"
+                                       autocomplete="new-password">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-modal-footer">
+                    <button type="button" class="btn-cancel"
+                            id="cancelProfileModal">Cancel</button>
+                    <button type="submit" class="btn-save">Save Changes</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <!-- MODAL 2: VIEW GRADED MODAL -->
-    <div class="modal-overlay" id="viewGradedModal">
-        <div class="modal-card">
-            <div class="modal-header">
-                <div>
-                    <h3 id="viewGradedTitle" class="modal-title">Graded Activities - Maria Garcia</h3>
-                    <p class="modal-subtitle">Summary of Evaluated Module Activities</p>
-                </div>
-                <button class="modal-close-btn" id="closeViewModal"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-
-            <div class="modal-body">
-                <div class="summary-box" style="margin-bottom: 1.25rem;">
-                    <div>
-                        <span class="summary-label">Final Raw Score</span>
-                        <div class="summary-val" id="viewTotalScore">100 / 100 pts</div>
-                    </div>
-                    <div style="text-align: right;">
-                        <span class="summary-label">Overall Grade</span>
-                        <div class="summary-val" id="viewTotalPercent" style="color: var(--mpsu-green);">100%</div>
-                    </div>
-                </div>
-
-                <h4>Itemized Activity Scores</h4>
-                <div id="gradedItemsList" class="graded-items-list">
-                    <!-- Populated dynamically -->
-                </div>
-
-                <div class="feedback-group" style="margin-top: 1rem;">
-                    <label>Instructor Feedback</label>
-                    <div id="viewFeedbackBox" class="feedback-display-box">No feedback provided.</div>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn-cancel" id="btnEditGrade"><i class="fa-solid fa-pen"></i> Edit Scores</button>
-                <button class="btn-save" id="closeViewModalBtn">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- COMBINED CLASS PAGE JAVASCRIPT -->
     <script>
+        /* API CONFIGURATION */
         const API_BASE_URL = "http://127.0.0.1:8000/api";
-        const authToken =
-            sessionStorage.getItem("token") ||
-            sessionStorage.getItem("authToken");
-
+        const $ = id => document.getElementById(id);
         const params = new URLSearchParams(window.location.search);
         const courseId = params.get("course_id");
 
         let courseData = null;
-        let activeModuleId = null;
-        let learnersData = [];
+        let selectedAvatar = null;
 
-        const $ = (id) => document.getElementById(id);
+        function getAuthToken() {
+            return sessionStorage.getItem("token") ||
+                   sessionStorage.getItem("authToken");
+        }
 
+        function getAuthHeaders(json = false) {
+            const headers = { "Accept": "application/json" };
+            const token = getAuthToken();
+
+            if (token) headers["Authorization"] = `Bearer ${token}`;
+            if (json) headers["Content-Type"] = "application/json";
+
+            return headers;
+        }
+
+        /* TOAST */
         function showToast(message, type = "success") {
             const container = $("toastContainer");
             if (!container) return;
 
             const toast = document.createElement("div");
-            toast.className = `toast toast-${type}`;
-
-            const icon = type === "success"
-                ? "fa-circle-check"
-                : "fa-circle-exclamation";
-
-            toast.innerHTML = `
-                <i class="fa-solid ${icon}"></i>
-                <span>${escapeHtml(message)}</span>
-            `;
-
+            toast.className = `toast ${type === "error" ? "toast-error" : ""}`;
+            toast.textContent = message;
             container.appendChild(toast);
 
-            requestAnimationFrame(() => toast.classList.add("show"));
-
-            setTimeout(() => {
-                toast.classList.remove("show");
-                setTimeout(() => toast.remove(), 300);
-            }, 3500);
+            setTimeout(() => toast.remove(), 3500);
         }
 
-        function escapeHtml(value) {
-            return String(value ?? "")
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
-        function getAuthHeaders(json = false) {
-            const headers = {
-                "Accept": "application/json"
-            };
-
-            if (authToken) {
-                headers["Authorization"] = `Bearer ${authToken}`;
-            }
-
-            if (json) {
-                headers["Content-Type"] = "application/json";
-            }
-
-            return headers;
-        }
-
+        /* AUTHENTICATION */
         function handleUnauthorized() {
             sessionStorage.removeItem("token");
             sessionStorage.removeItem("authToken");
+
             showToast("Your session has expired. Please log in again.", "error");
+
             setTimeout(() => {
                 window.location.href = "../index.html";
-            }, 900);
+            }, 1200);
         }
 
         async function apiRequest(url, options = {}) {
-            const response = await fetch(url, options);
+            let response;
+
+            try {
+                response = await fetch(url, options);
+            } catch (error) {
+                throw new Error(
+                    "Cannot connect to the server. Check that your API is running."
+                );
+            }
+
             let data = {};
 
             try {
                 data = await response.json();
-            } catch (_) {
+            } catch (error) {
                 data = {};
             }
 
@@ -656,20 +1520,47 @@ main::-webkit-scrollbar-track{background:transparent;}
             }
 
             if (!response.ok) {
-                throw new Error(data.message || "Request failed.");
+                throw new Error(data.message || data.error || "Request failed.");
             }
 
             return data;
         }
 
+        /* SAFE HTML HELPERS */
+        function escapeHtml(value) {
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function getInitials(name) {
+            return String(name || "?")
+                .trim()
+                .split(/\s+/)
+                .slice(0, 2)
+                .map(part => part.charAt(0).toUpperCase())
+                .join("") || "?";
+        }
+
+        /* COURSE LOADING */
         async function loadCourse() {
-            if (!authToken) {
+            if (!getAuthToken()) {
                 showToast("Please log in first.", "error");
+                setTimeout(() => {
+                    window.location.href = "../index.html";
+                }, 1000);
                 return;
             }
 
             if (!courseId) {
-                showToast("No course was selected.", "error");
+                renderCourseError();
+                showToast(
+                    "No course was selected. Open this page from class.html.",
+                    "error"
+                );
                 return;
             }
 
@@ -682,7 +1573,6 @@ main::-webkit-scrollbar-track{background:transparent;}
                     }
                 );
 
-                // InstructorCourseController returns the course inside data.class.
                 courseData = data.class || data.course || data;
 
                 if (!courseData || !courseData.id) {
@@ -695,6 +1585,7 @@ main::-webkit-scrollbar-track{background:transparent;}
 
             } catch (error) {
                 console.error("Error loading class:", error);
+                renderCourseError();
 
                 if (error.message !== "Unauthorized") {
                     showToast(error.message || "Unable to load class.", "error");
@@ -702,273 +1593,266 @@ main::-webkit-scrollbar-track{background:transparent;}
             }
         }
 
-        function renderCourse(course) {
-            const title = course.name || "Class";
-            const code = course.code || "Course";
-            const learners = Number(course.learner_count ?? 0);
-            const modules = Array.isArray(course.modules)
-                ? course.modules.length
-                : Number(course.module_count ?? 0);
-
-            $("courseCode").textContent = code;
-            $("courseTitle").textContent = `${code} | ${title}`;
-            $("breadcrumbCourse").textContent = `${code} | ${title}`;
+        function renderCourseError() {
+            $("courseCode").textContent = "Class unavailable";
+            $("courseTitle").textContent = "Unable to load class";
+            $("breadcrumbCourse").textContent = "Class unavailable";
             $("courseDescription").textContent =
-                course.description || "No course description.";
-            $("studentCount").textContent = learners;
-            $("moduleCountText").textContent =
-                `${modules} module${modules === 1 ? "" : "s"}`;
+                "The class information could not be loaded. Return to Classes and try again.";
+            $("courseProgram").textContent = "Program not available";
+            $("studentCount").textContent = "0";
+            $("moduleCount").textContent = "0";
+            $("pendingCount").textContent = "—";
+            $("modulesBadge").textContent = "0";
+            $("learnersBadge").textContent = "0";
+            $("moduleSummary").textContent = "Modules could not be loaded.";
+            $("learnerSummary").textContent = "Learners could not be loaded.";
 
-            // Pending reviews are not returned by InstructorCourseController.
-            $("pendingCountText").innerHTML =
-                `<strong>—</strong> Pending Reviews`;
+            $("modulesContainer").innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <h3>Unable to load modules</h3>
+                    <p>Please check your connection and try again.</p>
+                </div>`;
 
-            $("modulesBadge").textContent = modules;
-            $("learnersBadge").textContent = learners;
-            $("announcementsBadge").textContent = "—";
-            $("learnersSummary").textContent =
-                `${learners} enrolled student${learners === 1 ? "" : "s"}`;
+            $("learnersTableBody").innerHTML = `
+                <tr><td colspan="4">
+                    <div class="empty-state">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <h3>Unable to load learners</h3>
+                        <p>Please check your connection and try again.</p>
+                    </div>
+                </td></tr>`;
         }
 
+        function renderCourse(course) {
+            const name = course.name || course.title || "Untitled Course";
+            const code = course.code || "No Course Code";
+            const description = course.description || "No course description.";
+            const program = course.program || "Program not specified.";
+
+            const modules = Array.isArray(course.modules) ? course.modules : [];
+            const learners = Array.isArray(course.learners) ? course.learners : [];
+
+            const learnerCount = Number(
+                course.learner_count ?? course.learners_count ?? learners.length
+            );
+
+            const moduleCount = Number(
+                course.module_count ?? modules.length
+            );
+
+            $("courseCode").textContent = code;
+            $("courseTitle").textContent = `${code} | ${name}`;
+            $("breadcrumbCourse").textContent = `${code} | ${name}`;
+            $("courseDescription").textContent = description;
+
+            $("courseProgram").innerHTML =
+                `<i class="fa-solid fa-graduation-cap"></i> ${escapeHtml(program)}`;
+
+            $("studentCount").textContent = learnerCount;
+            $("moduleCount").textContent = moduleCount;
+            $("modulesBadge").textContent = moduleCount;
+            $("learnersBadge").textContent = learnerCount;
+
+            $("learnerSummary").textContent =
+                `${learnerCount} enrolled learner${learnerCount === 1 ? "" : "s"}`;
+
+            $("moduleSummary").textContent =
+                `${moduleCount} module${moduleCount === 1 ? "" : "s"} in this class`;
+
+            // The current class endpoint does not provide pending-review data.
+            $("pendingCount").textContent = "—";
+        }
+
+        /* MODULES */
         function renderModules(modules) {
             const container = $("modulesContainer");
-            const countText = $("moduleCountText");
-
             container.innerHTML = "";
 
-            countText.textContent =
-                `${modules.length} module${modules.length === 1 ? "" : "s"}`;
-
-            if (!modules.length) {
+            if (!Array.isArray(modules) || modules.length === 0) {
                 container.innerHTML = `
-                    <div class="module-card empty-state-card">
-                        <div class="module-body">
-                            <i class="fa-solid fa-book-open empty-icon"></i>
-                            <p>No modules have been added yet.</p>
-                        </div>
-                    </div>
-                `;
+                    <div class="empty-state">
+                        <i class="fa-solid fa-book-open"></i>
+                        <h3>No modules available</h3>
+                        <p>No modules have been added to this class yet.</p>
+                    </div>`;
+
+                $("moduleCount").textContent = "0";
+                $("modulesBadge").textContent = "0";
+                $("moduleSummary").textContent = "0 modules in this class";
                 return;
             }
+
+            $("moduleCount").textContent = modules.length;
+            $("modulesBadge").textContent = modules.length;
+            $("moduleSummary").textContent =
+                `${modules.length} module${modules.length === 1 ? "" : "s"} in this class`;
 
             modules.forEach((module, index) => {
                 const card = document.createElement("details");
                 card.className = "module-card";
-                card.open = index === 0;
+                if (index === 0) card.open = true;
 
-                const moduleTitle = module.name || module.title || "Untitled Module";
-                const description = module.description || "No description";
-                const status = module.is_published ? "Published" : "Draft";
-                const order = module.module_order || index + 1;
+                const title = module.name || module.title || "Untitled Module";
+                const description = module.description || "No description available.";
+                const order = module.module_order ?? module.order ?? index + 1;
+
+                const isPublished =
+                    module.is_published === true ||
+                    module.is_published === 1 ||
+                    module.status === "published";
+
+                const status = isPublished ? "Published" : "Draft";
+
+                const hasMaterial = Boolean(
+                    module.material_path || module.material_url || module.file_path
+                );
 
                 card.innerHTML = `
                     <summary>
                         <div class="module-title-group">
                             <span class="unit-badge">UNIT ${escapeHtml(order)}</span>
                             <div>
-                                <h3>${escapeHtml(moduleTitle)}</h3>
-                                <p>${escapeHtml(description)} • ${status}</p>
+                                <h3>${escapeHtml(title)}</h3>
+                                <p>${escapeHtml(description)} · ${status}</p>
                             </div>
                         </div>
                         <i class="fa-solid fa-chevron-down"></i>
                     </summary>
 
                     <div class="module-body">
-                        <div class="module-description">
-                            ${escapeHtml(description)}
-                        </div>
-                        <div class="module-actions">
-                            ${module.material_path ? `
-                                <span class="resource-btn btn-download">
-                                    <i class="fa-solid fa-paperclip"></i>
-                                    Material attached
-                                </span>
-                            ` : ""}
-                            <button type="button" class="resource-btn btn-download edit-module-btn">
-                                <i class="fa-solid fa-pen"></i>
-                                Edit Module
-                            </button>
-                        </div>
-                    </div>
-                `;
-
-                card.querySelector(".edit-module-btn").addEventListener("click", () => {
-                    openEditModule(
-                        module.id,
-                        moduleTitle,
-                        description,
-                        Boolean(module.is_published)
-                    );
-                });
+                        <div class="module-description">${escapeHtml(description)}</div>
+                        ${
+                            hasMaterial
+                                ? `<span class="module-material">
+                                       <i class="fa-solid fa-paperclip"></i>
+                                       Material attached
+                                   </span>`
+                                : `<span class="not-available">No material attached.</span>`
+                        }
+                    </div>`;
 
                 container.appendChild(card);
             });
         }
 
+        /* LEARNERS */
         function renderLearners(learners) {
-            learnersData = Array.isArray(learners) ? learners : [];
             const tbody = $("learnersTableBody");
-
             tbody.innerHTML = "";
 
-            if (!learnersData.length) {
+            if (!Array.isArray(learners) || learners.length === 0) {
                 tbody.innerHTML = `
-                    <tr>
-                        <td colspan="3" class="empty-table-cell">
-                            No learners are enrolled in this class yet.
-                        </td>
-                    </tr>
-                `;
+                    <tr><td colspan="4">
+                        <div class="empty-state">
+                            <i class="fa-solid fa-users"></i>
+                            <h3>No learners enrolled</h3>
+                            <p>There are currently no learners enrolled in this class.</p>
+                        </div>
+                    </td></tr>`;
+
+                $("learnersBadge").textContent = "0";
+                $("studentCount").textContent = "0";
+                $("learnerSummary").textContent = "0 enrolled learners";
                 return;
             }
 
-            learnersData.forEach((learner) => {
-                const initials = getInitials(learner.name);
+            $("learnersBadge").textContent = learners.length;
+            $("studentCount").textContent = learners.length;
+            $("learnerSummary").textContent =
+                `${learners.length} enrolled learner${learners.length === 1 ? "" : "s"}`;
+
+            learners.forEach(learner => {
                 const row = document.createElement("tr");
+                const name = learner.name || "Unknown Learner";
 
                 row.innerHTML = `
                     <td>
                         <div class="learner-profile-cell">
-                            <div class="learner-avatar">${escapeHtml(initials)}</div>
-                            <div class="learner-info">
-                                <span class="learner-name">${escapeHtml(learner.name || "Unknown Learner")}</span>
-                                <span class="learner-id">${escapeHtml(learner.school_id || "No School ID")}</span>
+                            <div class="learner-avatar">${escapeHtml(getInitials(name))}</div>
+                            <div>
+                                <span class="learner-name">${escapeHtml(name)}</span>
+                                <span class="learner-id">
+                                    ${escapeHtml(learner.school_id || learner.student_id || "No School ID")}
+                                </span>
                             </div>
                         </div>
                     </td>
-                    <td>
-                        <div class="progress-container">
-                            <div class="progress-bar-bg">
-                                <div class="progress-bar-fill" style="width:0%"></div>
-                            </div>
-                            <span class="progress-text">N/A</span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="action-buttons">
-                            <span class="action-btn btn-view-graded" title="Progress data is not included in the current class API.">
-                                <i class="fa-solid fa-circle-info"></i>
-                                No Progress Data
-                            </span>
-                        </div>
-                    </td>
-                `;
+                    <td>${escapeHtml(learner.email || "No email")}</td>
+                    <td>${escapeHtml(learner.program || "Not specified")}</td>
+                    <td>${escapeHtml(learner.contact || learner.phone || "No contact")}</td>`;
 
                 tbody.appendChild(row);
             });
         }
 
-        function getInitials(name) {
-            return String(name || "?")
-                .trim()
-                .split(/\s+/)
-                .slice(0, 2)
-                .map(part => part.charAt(0).toUpperCase())
-                .join("") || "?";
-        }
+        /* SIDEBAR */
+        function setupSidebar() {
+            const sidebar = $("sidebar");
+            const main = $("mainContent");
+            const menuBtn = $("menuBtn");
+            const sidebarToggle = $("sidebarToggle");
 
-        async function saveModule() {
-            const title = $("moduleTitleInput").value.trim();
-            const description = $("moduleDescriptionInput").value.trim();
-            const isPublished = $("modulePublishedInput").checked;
-
-            if (!title) {
-                showToast("Please enter a module title.", "error");
-                return;
-            }
-
-            if (!authToken) {
-                showToast("Please log in first.", "error");
-                return;
-            }
-
-            try {
-                const isEditing = activeModuleId !== null;
-                const url = isEditing
-                    ? `${API_BASE_URL}/instructor/modules/${activeModuleId}`
-                    : `${API_BASE_URL}/instructor/classes/${courseId}/modules`;
-
-                await apiRequest(url, {
-                    method: isEditing ? "PUT" : "POST",
-                    headers: getAuthHeaders(true),
-                    body: JSON.stringify({
-                        title,
-                        description,
-                        is_published: isPublished
-                    })
-                });
-
-                showToast(
-                    isEditing
-                        ? "Module updated successfully!"
-                        : "Module added successfully!",
-                    "success"
-                );
-
-                closeModuleModal();
-                await loadCourse();
-
-            } catch (error) {
-                console.error("Module save error:", error);
-                if (error.message !== "Unauthorized") {
-                    showToast(error.message || "Unable to save module.", "error");
+            function toggleSidebar() {
+                if (window.innerWidth <= 900) {
+                    sidebar.classList.toggle("mobile-open");
+                } else {
+                    sidebar.classList.toggle("collapsed");
+                    main.classList.toggle("expanded");
                 }
             }
+
+            menuBtn?.addEventListener("click", toggleSidebar);
+            sidebarToggle?.addEventListener("click", toggleSidebar);
+
+            document.addEventListener("click", event => {
+                if (
+                    window.innerWidth <= 900 &&
+                    sidebar.classList.contains("mobile-open") &&
+                    !sidebar.contains(event.target) &&
+                    !menuBtn?.contains(event.target)
+                ) {
+                    sidebar.classList.remove("mobile-open");
+                }
+            });
+
+            window.addEventListener("resize", () => {
+                if (window.innerWidth > 900) {
+                    sidebar.classList.remove("mobile-open");
+                } else {
+                    sidebar.classList.remove("collapsed");
+                    main.classList.remove("expanded");
+                }
+            });
         }
 
-        function openAddModule() {
-            activeModuleId = null;
-            $("moduleModalTitle").textContent = "Add Module";
-            $("moduleTitleInput").value = "";
-            $("moduleDescriptionInput").value = "";
-            $("modulePublishedInput").checked = false;
-            $("moduleModal").classList.add("active");
-            setTimeout(() => $("moduleTitleInput").focus(), 50);
-        }
-
-        function openEditModule(moduleId, title, description, isPublished) {
-            activeModuleId = moduleId;
-            $("moduleModalTitle").textContent = "Edit Module";
-            $("moduleTitleInput").value = title;
-            $("moduleDescriptionInput").value = description;
-            $("modulePublishedInput").checked = Boolean(isPublished);
-            $("moduleModal").classList.add("active");
-            setTimeout(() => $("moduleTitleInput").focus(), 50);
-        }
-
-        function closeModuleModal() {
-            $("moduleModal").classList.remove("active");
-            activeModuleId = null;
-        }
-
+        /* TABS */
         function setupTabs() {
-            document.querySelectorAll('.tab-btn').forEach((tab) => {
-                tab.addEventListener('click', () => {
-                    setTimeout(() => {
-                        const target = tab.getAttribute('for');
-                        if (target === 'tab-learners') {
-                            renderLearners(learnersData);
-                        }
-                    }, 0);
+            const buttons = document.querySelectorAll(".tab-btn");
+            const panels = document.querySelectorAll(".tab-panel");
+
+            buttons.forEach(button => {
+                button.addEventListener("click", () => {
+                    const target = button.dataset.tab;
+
+                    buttons.forEach(item => item.classList.remove("active"));
+                    panels.forEach(panel => panel.classList.remove("active"));
+
+                    button.classList.add("active");
+                    $(target)?.classList.add("active");
                 });
             });
         }
 
-        function setupSidebar() {
-            const toggle = $("viewToggle");
-            const sidebar = document.querySelector(".sidebar");
-            const main = document.querySelector("main");
-
-            if (!toggle || !sidebar || !main) return;
-
-            toggle.addEventListener("click", () => {
-                sidebar.classList.toggle("collapsed");
-                main.classList.toggle("expanded");
-            });
+        /* NOTIFICATIONS */
+        function goToNotifications() {
+            window.location.href = "notification.html";
         }
 
+        /* PROFILE */
         async function loadProfile() {
-            if (!authToken) return;
+            if (!getAuthToken()) return;
 
             try {
                 const data = await apiRequest(
@@ -979,20 +1863,86 @@ main::-webkit-scrollbar-track{background:transparent;}
                     }
                 );
 
-                const user = data.user || {};
+                const user = data.user || data.instructor || data;
 
-                $("instructorId").value = user.school_id || "";
+                $("instructorId").value =
+                    user.school_id || user.instructor_id || user.id || "";
+
                 $("instructorName").value = user.name || "";
                 $("instructorEmail").value = user.email || "";
-                $("instructorPhone").value = user.contact || "";
+                $("instructorPhone").value = user.contact || user.phone || "";
 
-                const headerName = document.querySelector(".user-name");
-                if (headerName) {
-                    headerName.innerHTML = `${escapeHtml(user.name || "Instructor")} <i class="fa-solid fa-caret-down"></i>`;
-                }
+                $("headerUserName").textContent = user.name || "Instructor";
+
             } catch (error) {
-                console.error("Profile load error:", error);
+                console.error("Profile loading error:", error);
+
+                if (error.message !== "Unauthorized") {
+                    showToast(error.message || "Unable to load profile.", "error");
+                }
             }
+        }
+
+        async function openProfileModal() {
+            $("profileModalOverlay").classList.add("active");
+            await loadProfile();
+        }
+
+        function closeProfileModal() {
+            $("profileModalOverlay").classList.remove("active");
+            $("currentPassword").value = "";
+            $("newPassword").value = "";
+            $("confirmPassword").value = "";
+            $("passwordSection").classList.remove("open");
+            $("avatarInput").value = "";
+            selectedAvatar = null;
+        }
+
+        function setupProfile() {
+            $("userProfileBtn").addEventListener("click", openProfileModal);
+
+            // The sidebar Profile link navigates to profile.html.
+            $("closeProfileModal").addEventListener("click", closeProfileModal);
+            $("cancelProfileModal").addEventListener("click", closeProfileModal);
+
+            $("profileModalOverlay").addEventListener("click", event => {
+                if (event.target === $("profileModalOverlay")) {
+                    closeProfileModal();
+                }
+            });
+
+            $("passwordToggleBtn").addEventListener("click", () => {
+                $("passwordSection").classList.toggle("open");
+            });
+
+            $("avatarInput").addEventListener("change", event => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                if (!file.type.startsWith("image/")) {
+                    showToast("Please select an image file.", "error");
+                    event.target.value = "";
+                    return;
+                }
+
+                if (file.size > 2 * 1024 * 1024) {
+                    showToast("Image size must not exceed 2MB.", "error");
+                    event.target.value = "";
+                    return;
+                }
+
+                const reader = new FileReader();
+
+                reader.onload = e => {
+                    selectedAvatar = e.target.result;
+                    $("avatarPreview").src = selectedAvatar;
+                    $("headerAvatar").src = selectedAvatar;
+                };
+
+                reader.readAsDataURL(file);
+            });
+
+            $("profileSettingsForm").addEventListener("submit", saveProfile);
         }
 
         async function saveProfile(event) {
@@ -1007,6 +1957,30 @@ main::-webkit-scrollbar-track{background:transparent;}
                 return;
             }
 
+            const currentPassword = $("currentPassword").value;
+            const newPassword = $("newPassword").value;
+            const confirmPassword = $("confirmPassword").value;
+
+            const passwordTouched =
+                currentPassword || newPassword || confirmPassword;
+
+            if (passwordTouched) {
+                if (!currentPassword || !newPassword || !confirmPassword) {
+                    showToast("Please complete all password fields.", "error");
+                    return;
+                }
+
+                if (newPassword.length < 8) {
+                    showToast("New password must be at least 8 characters.", "error");
+                    return;
+                }
+
+                if (newPassword !== confirmPassword) {
+                    showToast("New passwords do not match.", "error");
+                    return;
+                }
+            }
+
             try {
                 await apiRequest(`${API_BASE_URL}/instructor/profile`, {
                     method: "PUT",
@@ -1014,132 +1988,64 @@ main::-webkit-scrollbar-track{background:transparent;}
                     body: JSON.stringify({ name, email, contact })
                 });
 
-                const currentPassword = $("currentPassword").value.trim();
-                const newPassword = $("newPassword").value.trim();
-                const confirmPassword = $("confirmPassword").value.trim();
-
-                const passwordTouched =
-                    currentPassword || newPassword || confirmPassword;
-
                 if (passwordTouched) {
-                    if (!currentPassword || !newPassword || !confirmPassword) {
-                        showToast("Complete all password fields.", "error");
-                        return;
-                    }
-
-                    if (newPassword.length < 8) {
-                        showToast("New password must be at least 8 characters.", "error");
-                        return;
-                    }
-
-                    if (newPassword !== confirmPassword) {
-                        showToast("New passwords do not match.", "error");
-                        return;
-                    }
-
-                    await apiRequest(`${API_BASE_URL}/instructor/profile/password`, {
-                        method: "POST",
-                        headers: getAuthHeaders(true),
-                        body: JSON.stringify({
-                            current_password: currentPassword,
-                            new_password: newPassword,
-                            new_password_confirmation: confirmPassword
-                        })
-                    });
+                    await apiRequest(
+                        `${API_BASE_URL}/instructor/profile/password`,
+                        {
+                            method: "POST",
+                            headers: getAuthHeaders(true),
+                            body: JSON.stringify({
+                                current_password: currentPassword,
+                                new_password: newPassword,
+                                new_password_confirmation: confirmPassword
+                            })
+                        }
+                    );
                 }
 
-                showToast("Profile updated successfully!", "success");
+                $("headerUserName").textContent = name;
+                showToast("Profile updated successfully.", "success");
+
                 closeProfileModal();
                 await loadProfile();
 
             } catch (error) {
                 console.error("Profile save error:", error);
+
                 if (error.message !== "Unauthorized") {
                     showToast(error.message || "Unable to update profile.", "error");
                 }
             }
         }
 
-        function closeProfileModal() {
-            $("profileModalOverlay").classList.remove("active");
-            $("currentPassword").value = "";
-            $("newPassword").value = "";
-            $("confirmPassword").value = "";
-            $("passwordSection").classList.remove("open");
-        }
-
-        function setupProfile() {
-            $("userProfileBtn")?.addEventListener("click", async () => {
-                await loadProfile();
-                $("profileModalOverlay").classList.add("active");
-            });
-
-            $("closeProfileModal")?.addEventListener("click", closeProfileModal);
-            $("cancelProfileModal")?.addEventListener("click", closeProfileModal);
-
-            $("profileModalOverlay")?.addEventListener("click", (event) => {
-                if (event.target === $("profileModalOverlay")) {
-                    closeProfileModal();
-                }
-            });
-
-            $("profileSettingsForm")?.addEventListener("submit", saveProfile);
-
-            $("passwordToggleBtn")?.addEventListener("click", () => {
-                $("passwordSection").classList.toggle("open");
-            });
-
-            $("avatarInput")?.addEventListener("change", (event) => {
-                const file = event.target.files?.[0];
-                if (!file) return;
-
-                if (file.size > 2 * 1024 * 1024) {
-                    showToast("Image size exceeds 2MB.", "error");
-                    event.target.value = "";
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    $("avatarPreview").src = e.target.result;
-                    $("headerAvatar").src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-
-        function setupModalButtons() {
-            $("addModuleBtn")?.addEventListener("click", openAddModule);
-            $("saveModuleBtn")?.addEventListener("click", saveModule);
-            $("closeModuleModal")?.addEventListener("click", closeModuleModal);
-            $("cancelModuleModal")?.addEventListener("click", closeModuleModal);
-
-            $("moduleModal")?.addEventListener("click", (event) => {
-                if (event.target === $("moduleModal")) {
-                    closeModuleModal();
-                }
-            });
-        }
-
+        /* LOGOUT */
         function setupLogout() {
-            const logoutLink = document.querySelector('a[href="logout.html"]');
-            if (!logoutLink) return;
+            $("logoutNav").addEventListener("click", event => {
+                event.preventDefault();
 
-            logoutLink.addEventListener("click", () => {
+                if (!confirm("Are you sure you want to log out?")) return;
+
                 sessionStorage.removeItem("token");
                 sessionStorage.removeItem("authToken");
+
+                window.location.href = "../index.html";
             });
         }
 
+        /* INITIALIZE */
         document.addEventListener("DOMContentLoaded", async () => {
             setupSidebar();
             setupTabs();
             setupProfile();
-            setupModalButtons();
             setupLogout();
 
-            if (!authToken) {
+            if (!getAuthToken()) {
                 showToast("Please log in first.", "error");
+
+                setTimeout(() => {
+                    window.location.href = "../index.html";
+                }, 1200);
+
                 return;
             }
 
@@ -1149,96 +2055,5 @@ main::-webkit-scrollbar-track{background:transparent;}
             ]);
         });
     </script>
-
-<div id="toastContainer" class="toast-container" aria-live="polite"></div>
-
-<!-- INSTRUCTOR PROFILE SETTINGS MODAL -->
-  <div class="profile-modal-overlay" id="profileModalOverlay">
-    <div class="profile-modal-card">
-      
-      <!-- Modal Header -->
-      <div class="profile-modal-header">
-        <div>
-          <h3 class="profile-modal-title">Instructor Profile Settings</h3>
-        </div>
-        <button class="profile-modal-close" id="closeProfileModal" aria-label="Close">&times;</button>
-      </div>
-
-      <!-- Modal Body Form -->
-      <form id="profileSettingsForm">
-        <div class="profile-modal-body">
-          
-          <!-- Photo Upload Section -->
-          <div class="avatar-upload-section">
-            <div class="avatar-upload-preview">
-              <img id="avatarPreview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Instructor Profile Picture">
-              <label for="avatarInput" class="avatar-edit-badge" title="Change Photo">
-                <i class="fa-solid fa-camera"></i>
-              </label>
-              <input type="file" id="avatarInput" accept="image/*" class="avatar-file-input">
-            </div>
-            <div class="avatar-upload-text">
-              <h4>Profile Photo</h4>
-            </div>
-          </div>
-
-          <!-- Read-Only Grid: Instructor ID & Full Name -->
-          <div class="form-grid-2">
-            <div class="profile-form-group">
-              <label for="instructorId">Instructor ID</label>
-              <input type="text" id="instructorId" value="" disabled class="input-disabled">
-            </div>
-            <div class="profile-form-group">
-              <label for="instructorName">Full Name</label>
-              <input type="text" id="instructorName" value="">
-            </div>
-          </div>
-
-          <!-- Editable Fields: Email & Phone -->
-          <div class="profile-form-group">
-            <label for="instructorEmail">Email Address</label>
-            <input type="email" id="instructorEmail" value="" required>
-          </div>
-
-          <div class="profile-form-group">
-            <label for="instructorPhone">Mobile Number</label>
-            <input type="tel" id="instructorPhone" value="" placeholder="+63 9XX XXX XXXX">
-          </div>
-
-          <!-- Optional Change Password Accordion -->
-          <div class="password-section" id="passwordSection">
-            <div class="password-toggle-header" id="passwordToggleBtn">
-              <h4><i class="fa-solid fa-lock"></i> Change Password (Optional)</h4>
-              <i class="fa-solid fa-chevron-down chevron-icon"></i>
-            </div>
-            <div class="password-fields">
-              <div class="profile-form-group">
-                <label for="currentPassword">Current Password</label>
-                <input type="password" id="currentPassword" placeholder="Enter current password">
-              </div>
-              <div class="profile-form-group">
-                <label for="newPassword">New Password</label>
-                <input type="password" id="newPassword" placeholder="Enter new password (min. 8 characters)">
-              </div>
-              <div class="profile-form-group">
-                <label for="confirmPassword">Confirm New Password</label>
-                <input type="password" id="confirmPassword" placeholder="Confirm new password">
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Modal Footer Actions -->
-        <div class="profile-modal-footer">
-          <button type="button" class="btn-cancel" id="cancelProfileModal">Cancel</button>
-          <button type="submit" class="btn-save">Save Changes</button>
-        </div>
-      </form>
-
-    </div>
-  </div>
-
-   <!-- -->
 </body>
 </html>

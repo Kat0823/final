@@ -7,270 +7,76 @@ use App\Models\Course;
 use App\Models\Module;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class InstructorModuleController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Add Module
-    |--------------------------------------------------------------------------
-    */
-
     public function store(
         Request $request,
-        $courseId
+        int $courseId
     ): JsonResponse {
         $instructor = $request->user();
 
-        if ($instructor->role !== 'instructor') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Only instructors can add modules.',
-            ], 403);
-        }
-
         $course = Course::where(
-            'id',
-            $courseId
-        )
-        ->where(
             'instructor_id',
             $instructor->id
         )
-        ->where(
-            'is_active',
-            true
-        )
-        ->first();
-
-        if (!$course) {
-            return response()->json([
-                'success' => false,
-                'message' =>
-                    'Class not found or you are not authorized to add a module.',
-            ], 404);
-        }
+        ->where('is_active', true)
+        ->findOrFail($courseId);
 
         $validated = $request->validate([
-            'title' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-            'description' => [
-                'nullable',
-                'string',
-                'max:2000',
-            ],
-            'is_published' => [
-                'nullable',
-                'boolean',
-            ],
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'is_published' => ['sometimes', 'boolean'],
         ]);
 
-        $lastModuleOrder = Module::where(
-            'course_id',
-            $course->id
-        )
-        ->max('module_order');
+        $nextOrder = (
+            $course->modules()->max('module_order') ?? 0
+        ) + 1;
 
-        $nextModuleOrder =
-            $lastModuleOrder
-            ? $lastModuleOrder + 1
-            : 1;
-
-        $module = Module::create([
-            'course_id' =>
-                $course->id,
-
-            'title' =>
-                $validated['title'],
-
-            'description' =>
-                $validated['description'] ?? null,
-
-            'material_path' =>
-                null,
-
-            'module_order' =>
-                $nextModuleOrder,
-
-            'is_published' =>
-                $validated['is_published'] ?? false,
+        $module = $course->modules()->create([
+            'title' => $validated['title'],
+            'description' => $validated['description'] ?? null,
+            'module_order' => $nextOrder,
+            'is_published' => $validated['is_published'] ?? false,
         ]);
 
         return response()->json([
             'success' => true,
-
-            'message' =>
-                'Module added successfully.',
-
-            'module' => [
-                'id' =>
-                    $module->id,
-
-                'name' =>
-                    $module->title,
-
-                'description' =>
-                    $module->description,
-
-                'module_order' =>
-                    $module->module_order,
-
-                'is_published' =>
-                    (bool) $module->is_published,
-
-                'material_path' =>
-                    $module->material_path,
-            ],
+            'message' => 'Module created successfully.',
+            'module' => $module,
         ], 201);
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | Edit / Update Module
-    |--------------------------------------------------------------------------
-    */
-
     public function update(
         Request $request,
-        $moduleId
+        int $moduleId
     ): JsonResponse {
         $instructor = $request->user();
 
-        /*
-        |--------------------------------------------------------------------------
-        | Check instructor role
-        |--------------------------------------------------------------------------
-        */
-
-        if ($instructor->role !== 'instructor') {
-            return response()->json([
-                'success' => false,
-                'message' =>
-                    'Only instructors can edit modules.',
-            ], 403);
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Find module
-        |--------------------------------------------------------------------------
-        */
-
-        $module = Module::with('course')
-            ->where('id', $moduleId)
-            ->first();
-
-        if (!$module) {
-            return response()->json([
-                'success' => false,
-                'message' =>
-                    'Module not found.',
-            ], 404);
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Check course ownership
-        |--------------------------------------------------------------------------
-        |
-        | The instructor can only edit modules belonging
-        | to their own class.
-        |
-        */
-
-        if (
-            !$module->course ||
-            $module->course->instructor_id !== $instructor->id
-        ) {
-            return response()->json([
-                'success' => false,
-                'message' =>
-                    'You are not authorized to edit this module.',
-            ], 403);
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Validate request
-        |--------------------------------------------------------------------------
-        */
+        $module = Module::whereHas(
+            'course',
+            function ($query) use ($instructor) {
+                $query->where(
+                    'instructor_id',
+                    $instructor->id
+                );
+            }
+        )->findOrFail($moduleId);
 
         $validated = $request->validate([
-            'title' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-
-            'description' => [
-                'nullable',
-                'string',
-                'max:2000',
-            ],
-
-            'is_published' => [
-                'required',
-                'boolean',
-            ],
+            'title' => ['sometimes', 'required', 'string', 'max:255'],
+            'description' => ['sometimes', 'nullable', 'string'],
+            'module_order' => ['sometimes', 'integer', 'min:1'],
+            'is_published' => ['sometimes', 'boolean'],
         ]);
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Update module
-        |--------------------------------------------------------------------------
-        */
-
-        $module->update([
-            'title' =>
-                $validated['title'],
-
-            'description' =>
-                $validated['description'] ?? null,
-
-            'is_published' =>
-                $validated['is_published'],
-        ]);
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Return updated module
-        |--------------------------------------------------------------------------
-        */
+        $module->update($validated);
 
         return response()->json([
             'success' => true,
-
-            'message' =>
-                'Module updated successfully.',
-
-            'module' => [
-                'id' =>
-                    $module->id,
-
-                'name' =>
-                    $module->title,
-
-                'description' =>
-                    $module->description,
-
-                'module_order' =>
-                    $module->module_order,
-
-                'is_published' =>
-                    (bool) $module->is_published,
-
-                'material_path' =>
-                    $module->material_path,
-            ],
+            'message' => 'Module updated successfully.',
+            'module' => $module->fresh(),
         ]);
     }
 }

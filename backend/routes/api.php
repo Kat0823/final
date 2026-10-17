@@ -15,17 +15,16 @@ use App\Http\Controllers\Api\InstructorDashboardController;
 use App\Http\Controllers\Api\InstructorCourseController;
 use App\Http\Controllers\Api\InstructorNotificationController;
 use App\Http\Controllers\Api\InstructorProfileController;
-
+use App\Http\Controllers\Api\InstructorModuleController;
 
 /*
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
 |
-| Siknayan API routes
+| Siknayan LMS API routes
 |
 */
-
 
 /*
 |--------------------------------------------------------------------------
@@ -45,14 +44,13 @@ Route::post('/instructor/login', [
     'instructorLogin'
 ]);
 
-
 /*
 |--------------------------------------------------------------------------
 | Password Setup Routes
 |--------------------------------------------------------------------------
 |
-| These routes are accessible after the user's first login
-| before the password setup is completed.
+| These routes require authentication but are accessible before
+| the user completes the initial password setup.
 |
 */
 
@@ -69,19 +67,15 @@ Route::middleware('auth:sanctum')->group(function () {
         PasswordController::class,
         'instructorSetupPassword'
     ]);
-
 });
-
 
 /*
 |--------------------------------------------------------------------------
 | Authenticated Routes
 |--------------------------------------------------------------------------
 |
-| All routes below require:
-|
-| 1. Sanctum authentication
-| 2. Completed password setup
+| These routes require Sanctum authentication and completed
+| password setup.
 |
 */
 
@@ -90,38 +84,23 @@ Route::middleware([
     'password.setup',
 ])->group(function () {
 
-
     /*
     |--------------------------------------------------------------------------
     | STUDENT / LEARNER ROUTES
     |--------------------------------------------------------------------------
     */
 
-
-    /*
-    |----------------------------------------------------------------------
-    | Student Courses
-    |----------------------------------------------------------------------
-    */
-
-    // View all courses/classes of the logged-in learner
+    // View all courses assigned to the learner
     Route::get('/student/courses', [
         StudentController::class,
         'courses'
     ]);
 
-    // View a specific course/class
+    // View a specific course
     Route::get('/student/courses/{courseId}', [
         StudentController::class,
         'course'
     ]);
-
-
-    /*
-    |----------------------------------------------------------------------
-    | Student Modules
-    |----------------------------------------------------------------------
-    */
 
     // View a specific module
     Route::get('/student/modules/{moduleId}', [
@@ -129,25 +108,11 @@ Route::middleware([
         'show'
     ]);
 
-
-    /*
-    |----------------------------------------------------------------------
-    | Student Submissions
-    |----------------------------------------------------------------------
-    */
-
     // Submit an activity
     Route::post('/student/submissions', [
         SubmissionController::class,
         'store'
     ]);
-
-
-    /*
-    |----------------------------------------------------------------------
-    | Student Grades
-    |----------------------------------------------------------------------
-    */
 
     // View grades
     Route::get('/student/grades', [
@@ -155,14 +120,13 @@ Route::middleware([
         'index'
     ]);
 
-
     /*
-    |----------------------------------------------------------------------
-    | Student Notifications
-    |----------------------------------------------------------------------
+    |--------------------------------------------------------------------------
+    | STUDENT NOTIFICATIONS
+    |--------------------------------------------------------------------------
     */
 
-    // View notifications
+    // View learner notifications
     Route::get('/student/notifications', [
         NotificationController::class,
         'index'
@@ -180,28 +144,10 @@ Route::middleware([
         'markAllAsRead'
     ]);
 
-
-
     /*
     |--------------------------------------------------------------------------
-    | INSTRUCTOR ROUTES
+    | INSTRUCTOR DASHBOARD
     |--------------------------------------------------------------------------
-    */
-
-
-    /*
-    |----------------------------------------------------------------------
-    | Instructor Dashboard
-    |----------------------------------------------------------------------
-    |
-    | The dashboard displays:
-    | - Total learners
-    | - Total classes
-    | - Total modules
-    | - Pending submissions
-    | - Graded submissions
-    | - Learner progress
-    |
     */
 
     Route::get('/instructor/dashboard', [
@@ -209,26 +155,17 @@ Route::middleware([
         'index'
     ]);
 
-
     /*
-    |----------------------------------------------------------------------
-    | Instructor Classes
-    |----------------------------------------------------------------------
+    |--------------------------------------------------------------------------
+    | INSTRUCTOR CLASSES AND MODULES
+    |--------------------------------------------------------------------------
     |
-    | IMPORTANT:
-    | Instructors do NOT create classes or modules.
-    |
-    | These routes are READ-ONLY.
-    |
-    | Instructor can:
-    | - View assigned classes
-    | - Open a class
-    | - View existing modules
-    | - View enrolled learners
+    | Instructors can view their assigned classes and manage modules
+    | belonging to those classes.
     |
     */
 
-    // View all classes assigned to instructor
+    // View all classes assigned to the instructor
     Route::get('/instructor/classes', [
         InstructorCourseController::class,
         'index'
@@ -240,17 +177,22 @@ Route::middleware([
         'show'
     ]);
 
+    // Add a module to an assigned class
+    Route::post('/instructor/classes/{courseId}/modules', [
+        InstructorModuleController::class,
+        'store'
+    ]);
+
+    // Edit an existing module
+    Route::put('/instructor/modules/{moduleId}', [
+        InstructorModuleController::class,
+        'update'
+    ]);
 
     /*
-    |----------------------------------------------------------------------
-    | Instructor Submissions
-    |----------------------------------------------------------------------
-    |
-    | Instructor can:
-    | - View learner submissions
-    | - Open submitted files
-    | - Grade submissions
-    |
+    |--------------------------------------------------------------------------
+    | INSTRUCTOR SUBMISSIONS AND GRADING
+    |--------------------------------------------------------------------------
     */
 
     // View learner submissions
@@ -259,7 +201,7 @@ Route::middleware([
         'submissions'
     ]);
 
-    // View/download submitted file
+    // View or download a submitted file
     Route::get('/instructor/submissions/{submissionId}/file', [
         InstructorController::class,
         'file'
@@ -271,11 +213,10 @@ Route::middleware([
         'store'
     ]);
 
-
     /*
-    |----------------------------------------------------------------------
-    | Instructor Notifications
-    |----------------------------------------------------------------------
+    |--------------------------------------------------------------------------
+    | INSTRUCTOR NOTIFICATIONS
+    |--------------------------------------------------------------------------
     */
 
     // View instructor notifications
@@ -296,11 +237,10 @@ Route::middleware([
         'markAllAsRead'
     ]);
 
-
     /*
-    |----------------------------------------------------------------------
-    | Instructor Profile
-    |----------------------------------------------------------------------
+    |--------------------------------------------------------------------------
+    | INSTRUCTOR PROFILE
+    |--------------------------------------------------------------------------
     */
 
     // View instructor profile
@@ -320,5 +260,4 @@ Route::middleware([
         InstructorProfileController::class,
         'changePassword'
     ]);
-
 });

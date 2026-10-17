@@ -3,102 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MPSU ETEEAP LMS - CRIM-101 Intro to Criminology & Community</title>
-    
-    <!-- FontAwesome Icons -->
+    <title>MPSU ETEEAP LMS - Class Content</title>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts Inter -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
-    
-    <!-- External Custom Stylesheet -->
     <link rel="stylesheet" href="../teacher/CSS/classcontent.css">
 </head>
 <body>
-
-   
-  <!-- Top Header Navigation -->
-  <header class="header">
-    <div class="header-left">
-      <div class="logo-box">
-        <img src="../images/logo.png" alt="MSPU logo">
-      </div>
-
-      <div class="header-titles">
-        <div class="main-title">MPSU ETEEAP LMS</div>
-        <div class="sub-title">Mountain Province State University</div>
-      </div>
-    </div>
-
-   <div class="header-right">
-      
-      <div class="user-profile" id="userProfileBtn" style="cursor: pointer;">
-        <div class="avatar-ring">
-          <img id="headerAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Macross Arsel Avatar" />
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-box">
+                <img src="../images/logo.png" alt="MPSU logo">
+            </div>
+            <div class="header-titles">
+                <div class="main-title">MPSU ETEEAP LMS</div>
+                <div class="sub-title">Mountain Province State University</div>
+            </div>
         </div>
-        <div class="user-info">
-          <span class="user-name">Macross Arsel <i class="fa-solid fa-caret-down"></i></span>
-          <span class="user-role">Instructor</span>
+
+        <div class="header-right">
+            <button type="button" class="user-profile" id="userProfileBtn" aria-label="Open instructor profile">
+                <div class="avatar-ring">
+                    <img id="headerAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Instructor avatar">
+                </div>
+                <div class="user-info">
+                    <span class="user-name" id="headerInstructorName">Instructor <i class="fa-solid fa-caret-down"></i></span>
+                    <span class="user-role">Instructor</span>
+                </div>
+            </button>
         </div>
-      </div>
-    </div>
-  </header>
+    </header>
 
+    <div class="app-body">
+        <aside class="sidebar" id="sidebar">
+            <div class="view-header">
+                <span class="view-label">View</span>
+                <button type="button" class="view-toggle-btn" id="viewToggle" title="Toggle sidebar" aria-label="Toggle sidebar">
+                    <i class="fa-regular fa-rectangle-list"></i>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fa-solid fa-users"></i><span>Learners Progress</span>
+                </a>
+                <a href="class.html" class="nav-item active">
+                    <i class="fa-solid fa-layer-group"></i><span>Classes</span>
+                </a>
+                <a href="submissions.html" class="nav-item">
+                    <i class="fa-regular fa-folder"></i><span>Submissions</span>
+                </a>
+                <a href="notification.html" class="nav-item">
+                    <i class="fa-regular fa-bell"></i><span>Notifications</span>
+                </a>
+                <a href="logout.html" class="nav-item logout-bottom">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span>
+                </a>
+            </nav>
+        </aside>
 
-   <!-- Main Body Layout -->
-  <div class="app-body">
-
-    <!-- Deep Maroon Sidebar -->
-    <aside class="sidebar">
-      <div class="view-header">
-        <span class="view-label">View</span>
-        <button type="button" class="view-toggle-btn" id="viewToggle" title="Toggle Sidebar">
-            <i class="fa-regular fa-rectangle-list"></i>
-        </button>
-    </div>
-
-        <a href="dashboard.html" class="nav-item">
-          <i class="fa-solid fa-users"></i>
-          <span>Learners Progress</span>
-        </a>
-
-        <!-- Active Menu Item: Classes -->
-        <a href="class.html" class="nav-item active">
-          <i class="fa-solid fa-layer-group"></i>
-          <span>Classes</span>
-        </a>
-
-        <a href="submissions.html" class="nav-item">
-          <i class="fa-regular fa-folder"></i>
-          <span>Submission</span>
-        </a>
-
-        <a href="notification.html" class="nav-item">
-          <i class="fa-regular fa-bell"></i>
-          <span>Notification</span>
-        </a>
-
-        <!-- Logout Item Pushed To Bottom -->
-        <a href="logout.html" class="nav-item logout-bottom">
-          <i class="fa-solid fa-arrow-right-from-bracket"></i>
-          <span>Logout</span>
-        </a>
-      </nav>
-    </aside>
-
-        <!-- MAIN CONTENT CANVAS -->
-        <main>
-            <!-- Breadcrumb Navigation -->
-            <nav class="breadcrumbs">
-                <a href="#instructor">Instructor</a>
+        <main class="main-content">
+            <nav class="breadcrumbs" aria-label="Breadcrumb">
+                <a href="dashboard.html">Instructor</a>
                 <span>/</span>
                 <a href="class.html">Classes</a>
                 <span>/</span>
                 <span class="active" id="breadcrumbCourse">Loading class...</span>
             </nav>
 
-            <!-- COURSE BANNER CARD -->
-            <div class="course-card">
+            <section class="course-card">
                 <div class="course-header">
                     <div class="course-details">
                         <div class="badges-group">
@@ -107,51 +79,42 @@
                         </div>
                         <h2 class="course-title" id="courseTitle">Loading class...</h2>
                         <p class="course-description" id="courseDescription">Loading course information...</p>
-                        
                         <div class="course-metrics">
                             <div class="metric-item">
-                                <i class="fa-solid fa-user-graduate" style="color: var(--mpsu-green, #0c4827);"></i>
-                                <span><strong id="studentCount">0</strong> Enrolled Students</span>
+                                <i class="fa-solid fa-user-graduate"></i>
+                                <span><strong id="studentCount">0</strong> Enrolled Learners</span>
                             </div>
                             <div class="metric-item">
-                                <i class="fa-solid fa-clock-rotate-left" style="color: #dc2626;"></i>
-                                <span id="pendingCountText"><strong>0</strong> Pending Reviews</span>
+                                <i class="fa-solid fa-book-open"></i>
+                                <span><strong id="moduleCount">0</strong> Modules</span>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- HIDDEN RADIO INPUTS TO CONTROL TABS VIA PURE CSS -->
             <input type="radio" id="tab-modules" name="main-tabs" class="tab-radio" checked>
             <input type="radio" id="tab-announcements" name="main-tabs" class="tab-radio">
             <input type="radio" id="tab-learners" name="main-tabs" class="tab-radio">
 
-            <!-- NAVIGATION TABS HEADER (LABELS LINKED TO RADIOS) -->
             <div class="tabs-header">
                 <label for="tab-modules" class="tab-btn">
-                    <i class="fa-solid fa-book"></i>
-                    <span>Modules & Syllabus</span>
-                    <span class="tab-badge tab-badge-green">4</span>
+                    <i class="fa-solid fa-book"></i><span>Modules &amp; Syllabus</span>
+                    <span class="tab-badge tab-badge-green" id="moduleTabBadge">0</span>
                 </label>
-
                 <label for="tab-announcements" class="tab-btn">
-                    <i class="fa-solid fa-bullhorn"></i>
-                    <span>Announcements</span>
+                    <i class="fa-solid fa-bullhorn"></i><span>Announcements</span>
                     <span class="tab-badge tab-badge-amber">3</span>
                 </label>
-
                 <label for="tab-learners" class="tab-btn">
-                    <i class="fa-solid fa-users"></i>
-                    <span>Learners Progress</span>
-                    <span class="tab-badge tab-badge-gray">21</span>
+                    <i class="fa-solid fa-users"></i><span>Learners Progress</span>
+                    <span class="tab-badge tab-badge-gray" id="learnerTabBadge">0</span>
                 </label>
             </div>
 
-            <!-- TAB 1: MODULES CONTENT -->
-            <div class="tab-panel" id="panel-modules">
+            <section class="tab-panel" id="panel-modules">
                 <div class="modules-section">
-                    <div class="module-list-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                    <div class="module-list-header" style="display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1rem;">
                         <div>
                             <h2>Modules</h2>
                             <p id="moduleCountText">Loading modules...</p>
@@ -160,940 +123,514 @@
                             <i class="fa-solid fa-plus"></i> Add Module
                         </button>
                     </div>
-
                     <div id="modulesContainer">
-                        <div class="module-card">
-                            <summary>
-                                <div class="module-title-group">
-                                    <span class="unit-badge">...</span>
-                                    <div>
-                                        <h3>Loading modules...</h3>
-                                        <p>Please wait.</p>
-                                    </div>
-                                </div>
-                            </summary>
-                        </div>
+                        <div class="module-card"><div class="module-body"><p>Loading modules...</p></div></div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- TAB 2: ANNOUNCEMENTS CONTENT -->
-            <div class="tab-panel" id="panel-announcements">
+            <section class="tab-panel" id="panel-announcements">
                 <h2>Announcements</h2>
                 <ul>
                     <li><strong>Welcome to the Course!</strong> — Please review the syllabus.</li>
-                    <li><strong>Live Q&A Session Scheduled</strong> — Join us Thursday at 3:00 PM PST.</li>
-                    <li><strong>Module 2 Assignment Released</strong> — Practice exercises are now live.</li>
+                    <li><strong>Live Q&amp;A Session Scheduled</strong> — Check with your instructor for the confirmed schedule.</li>
+                    <li><strong>Module Update</strong> — Check the module list for available learning materials.</li>
                 </ul>
-            </div>
+                <p class="help-text">These are sample announcements. They are not loaded from the database yet.</p>
+            </section>
 
-            <!-- TAB 3: LEARNERS PROGRESS CONTENT -->
-            <div class="tab-panel" id="panel-learners">
-                <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <section class="tab-panel" id="panel-learners">
+                <div class="panel-header" style="display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1rem;">
                     <h2>Learners Progress</h2>
-                    <span style="font-size: 0.85rem; color: var(--text-secondary);">Showing 3 of 21 Enrolled Students</span>
+                    <span id="learnerSummary" style="font-size:.85rem;">Loading learners...</span>
                 </div>
-                
-                <table class="progress-table">
-                    <thead>
-                        <tr>
-                            <th>Learner</th>
-                            <th>Overall Progress</th>
-                            <th style="text-align: right;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="learnersTableBody">
-                        <!-- Populated dynamically via JS or rendered statically -->
-                    </tbody>
-                </table>
-            </div>
-
+                <div class="table-responsive">
+                    <table class="progress-table">
+                        <thead>
+                            <tr><th>Learner</th><th>School ID</th><th>Program</th><th>Progress</th></tr>
+                        </thead>
+                        <tbody id="learnersTableBody">
+                            <tr><td colspan="4">Loading learners...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         </main>
     </div>
 
-    <!-- MODAL: ADD / EDIT MODULE -->
-    <div class="modal-overlay" id="moduleModal">
-        <div class="modal-card">
+    <!-- Add/Edit Module Modal -->
+    <div class="modal-overlay" id="moduleModal" aria-hidden="true">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="moduleModalTitle">
             <div class="modal-header">
                 <div>
                     <h3 id="moduleModalTitle" class="modal-title">Add Module</h3>
                     <p class="modal-subtitle">Create or update a module for this class.</p>
                 </div>
-                <button class="modal-close-btn" id="closeModuleModal">
+                <button type="button" class="modal-close-btn" id="closeModuleModal" aria-label="Close">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-
             <div class="modal-body">
                 <div class="feedback-group">
                     <label for="moduleTitleInput">Module Title</label>
-                    <input
-                        type="text"
-                        id="moduleTitleInput"
-                        placeholder="Enter module title"
-                    >
+                    <input type="text" id="moduleTitleInput" placeholder="Enter module title">
                 </div>
-
                 <div class="feedback-group">
                     <label for="moduleDescriptionInput">Description</label>
-                    <textarea
-                        id="moduleDescriptionInput"
-                        rows="4"
-                        placeholder="Enter module description"
-                    ></textarea>
+                    <textarea id="moduleDescriptionInput" rows="4" placeholder="Enter module description"></textarea>
                 </div>
-
                 <div class="feedback-group">
-                    <label>
-                        <input
-                            type="checkbox"
-                            id="modulePublishedInput"
-                        >
-                        Publish module
-                    </label>
+                    <label><input type="checkbox" id="modulePublishedInput"> Publish module</label>
                 </div>
+                <p class="help-text">Saving requires the matching instructor module API routes to exist in Laravel.</p>
             </div>
-
             <div class="modal-footer">
-                <button class="btn-cancel" id="cancelModuleModal">
-                    Cancel
-                </button>
-
-                <button class="btn-save" id="saveModuleBtn">
-                    <i class="fa-solid fa-floppy-disk"></i>
-                    Save Module
-                </button>
+                <button type="button" class="btn-cancel" id="cancelModuleModal">Cancel</button>
+                <button type="button" class="btn-save" id="saveModuleBtn"><i class="fa-solid fa-floppy-disk"></i> Save Module</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL 1: GRADE COMPILED SUBMISSION MODAL -->
-    <div class="modal-overlay" id="gradingModal">
-        <div class="modal-card">
-            <div class="modal-header">
-                <div>
-                    <h3 id="modalStudentName" class="modal-title">Grade Submission - Alex Johnson</h3>
-                    <p class="modal-subtitle">Compiled Module Activities & Manual Score Assignment</p>
-                </div>
-                <button class="modal-close-btn" id="closeGradingModal"><i class="fa-solid fa-xmark"></i></button>
+    <!-- Instructor Profile Modal -->
+    <div class="profile-modal-overlay" id="profileModalOverlay" aria-hidden="true">
+        <div class="profile-modal-card" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+            <div class="profile-modal-header">
+                <h3 class="profile-modal-title" id="profileModalTitle">Instructor Profile Settings</h3>
+                <button type="button" class="profile-modal-close" id="closeProfileModal" aria-label="Close">&times;</button>
             </div>
-
-            <div class="modal-body">
-                <!-- Submitted File Box -->
-                <div class="file-preview-card">
-                    <div class="file-info">
-                        <div class="file-icon"><i class="fa-solid fa-file-zipper"></i></div>
-                        <div>
-                            <div class="file-name" id="modalFileName">AlexJohnson_Module1_Compiled.pdf</div>
-                            <div class="file-meta" id="modalFileMeta">PDF Document • 5.8 MB • Submitted Oct 24, 2026 at 11:42 AM</div>
+            <form id="profileSettingsForm">
+                <div class="profile-modal-body">
+                    <div class="avatar-upload-section">
+                        <div class="avatar-upload-preview">
+                            <img id="avatarPreview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Instructor profile picture">
+                            <label for="avatarInput" class="avatar-edit-badge" title="Change photo"><i class="fa-solid fa-camera"></i></label>
+                            <input type="file" id="avatarInput" accept="image/*" class="avatar-file-input">
+                        </div>
+                        <div class="avatar-upload-text"><h4>Profile Photo</h4></div>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="profile-form-group">
+                            <label for="instructorId">Instructor ID</label>
+                            <input type="text" id="instructorId" disabled class="input-disabled">
+                        </div>
+                        <div class="profile-form-group">
+                            <label for="instructorName">Full Name</label>
+                            <input type="text" id="instructorName" disabled class="input-disabled">
                         </div>
                     </div>
-                    <button class="btn-download-file"><i class="fa-solid fa-download"></i> View Document</button>
-                </div>
-
-                <!-- Dynamic Activity Grading Form -->
-                <div class="grading-section">
-                    <div class="grading-section-header">
-                        <h4><i class="fa-solid fa-list-check" style="color: var(--mpsu-green);"></i> Compiled Activities Breakdown</h4>
-                        <button type="button" class="btn-add-activity" id="btnAddActivityRow">
-                            <i class="fa-solid fa-plus"></i> Add Activity Item
+                    <div class="profile-form-group">
+                        <label for="instructorEmail">Email Address</label>
+                        <input type="email" id="instructorEmail" required>
+                    </div>
+                    <div class="profile-form-group">
+                        <label for="instructorPhone">Mobile Number</label>
+                        <input type="tel" id="instructorPhone" placeholder="Enter mobile number">
+                    </div>
+                    <div class="password-section" id="passwordSection">
+                        <button type="button" class="password-toggle-header" id="passwordToggleBtn">
+                            <h4><i class="fa-solid fa-lock"></i> Change Password (Optional)</h4>
+                            <i class="fa-solid fa-chevron-down chevron-icon"></i>
                         </button>
-                    </div>
-
-                    <p class="help-text">Manually input each activity title contained in the student's compiled submission along with its raw score.</p>
-
-                    <div class="activity-items-list" id="activityItemsContainer">
-                        <!-- Dynamic activity input rows added here -->
-                    </div>
-
-                    <!-- Auto-Calculated Score Summary -->
-                    <div class="summary-box">
-                        <div>
-                            <span class="summary-label">Total Raw Score</span>
-                            <div class="summary-val" id="summaryRaw">0 / 0 pts</div>
+                        <div class="password-fields">
+                            <div class="profile-form-group"><label for="currentPassword">Current Password</label><input type="password" id="currentPassword" autocomplete="current-password"></div>
+                            <div class="profile-form-group"><label for="newPassword">New Password</label><input type="password" id="newPassword" autocomplete="new-password" minlength="6"></div>
+                            <div class="profile-form-group"><label for="confirmPassword">Confirm New Password</label><input type="password" id="confirmPassword" autocomplete="new-password"></div>
                         </div>
-                        <div style="text-align: right;">
-                            <span class="summary-label">Computed Grade</span>
-                            <div class="summary-val" id="summaryPercent" style="color: var(--mpsu-green);">0%</div>
-                        </div>
-                    </div>
-
-                    <!-- Feedback Textarea -->
-                    <div class="feedback-group">
-                        <label for="instructorFeedback"><i class="fa-solid fa-comment-dots"></i> Instructor Feedback & Comments</label>
-                        <textarea id="instructorFeedback" rows="3" placeholder="Provide constructive feedback for the student..."></textarea>
                     </div>
                 </div>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn-cancel" id="cancelGradingModal">Cancel</button>
-                <button class="btn-save" id="saveGradeBtn"><i class="fa-solid fa-floppy-disk"></i> Save & Publish Grade</button>
-            </div>
+                <div class="profile-modal-footer">
+                    <button type="button" class="btn-cancel" id="cancelProfileModal">Cancel</button>
+                    <button type="submit" class="btn-save">Save Changes</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <!-- MODAL 2: VIEW GRADED MODAL -->
-    <div class="modal-overlay" id="viewGradedModal">
-        <div class="modal-card">
-            <div class="modal-header">
-                <div>
-                    <h3 id="viewGradedTitle" class="modal-title">Graded Activities - Maria Garcia</h3>
-                    <p class="modal-subtitle">Summary of Evaluated Module Activities</p>
-                </div>
-                <button class="modal-close-btn" id="closeViewModal"><i class="fa-solid fa-xmark"></i></button>
-            </div>
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
 
-            <div class="modal-body">
-                <div class="summary-box" style="margin-bottom: 1.25rem;">
-                    <div>
-                        <span class="summary-label">Final Raw Score</span>
-                        <div class="summary-val" id="viewTotalScore">100 / 100 pts</div>
-                    </div>
-                    <div style="text-align: right;">
-                        <span class="summary-label">Overall Grade</span>
-                        <div class="summary-val" id="viewTotalPercent" style="color: var(--mpsu-green);">100%</div>
-                    </div>
-                </div>
-
-                <h4>Itemized Activity Scores</h4>
-                <div id="gradedItemsList" class="graded-items-list">
-                    <!-- Populated dynamically -->
-                </div>
-
-                <div class="feedback-group" style="margin-top: 1rem;">
-                    <label>Instructor Feedback</label>
-                    <div id="viewFeedbackBox" class="feedback-display-box">No feedback provided.</div>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn-cancel" id="btnEditGrade"><i class="fa-solid fa-pen"></i> Edit Scores</button>
-                <button class="btn-save" id="closeViewModalBtn">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- JAVASCRIPT FOR INTERACTIVITY & DYNAMIC MODALS -->
     <script>
-        // ========================================
-        // COURSE DATA FROM LARAVEL
-        // ========================================
-
-        const API_BASE_URL = "http://localhost:8000";
-        const authToken = sessionStorage.getItem("authToken");
-
+        // API address. The browser page is served locally by Laravel.
+        const API_BASE_URL = "http://127.0.0.1:8000/api";
+        const authToken = sessionStorage.getItem("authToken") || sessionStorage.getItem("token");
         const params = new URLSearchParams(window.location.search);
-        const courseId = params.get("course_id");
+        const courseId = params.get("course_id") || params.get("id");
 
         let courseData = null;
         let activeModuleId = null;
+        let instructorData = null;
+        let avatarDataUrl = null;
 
-        function getAuthHeaders() {
-            return {
-                "Accept": "application/json",
-                "Authorization": `Bearer ${authToken}`
-            };
+        function getAuthHeaders(json = false) {
+            const headers = { "Accept": "application/json" };
+            if (authToken) headers.Authorization = `Bearer ${authToken}`;
+            if (json) headers["Content-Type"] = "application/json";
+            return headers;
+        }
+
+        function showToast(message, type = "success") {
+            const container = document.getElementById("toastContainer");
+            const toast = document.createElement("div");
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add("show"));
+            window.setTimeout(() => {
+                toast.classList.remove("show");
+                window.setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        async function readResponse(response) {
+            let data = {};
+            try { data = await response.json(); } catch (error) { /* response may not contain JSON */ }
+            if (!response.ok) {
+                throw new Error(data.message || `Request failed (${response.status}).`);
+            }
+            return data;
         }
 
         async function loadCourse() {
-
             if (!authToken) {
-                showToast("Please login first.", "error");
+                showToast("Please log in again. Your session token was not found.", "error");
+                document.getElementById("courseTitle").textContent = "Login required";
+                document.getElementById("courseDescription").textContent = "Please return to the login page and sign in again.";
                 return;
             }
 
             if (!courseId) {
-                showToast("No course selected.", "error");
+                showToast("No class was selected. Open this page from the Classes page.", "error");
+                document.getElementById("courseTitle").textContent = "No class selected";
+                document.getElementById("courseDescription").textContent = "Return to Classes and select a class.";
                 return;
             }
 
             try {
+                const response = await fetch(`${API_BASE_URL}/instructor/classes/${encodeURIComponent(courseId)}`, {
+                    method: "GET",
+                    headers: getAuthHeaders()
+                });
+                const data = await readResponse(response);
 
-                const response = await fetch(
-                    `${API_BASE_URL}/api/instructor/classes/${courseId}`,
-                    {
-                        method: "GET",
-                        headers: getAuthHeaders()
-                    }
-                );
+                // InstructorCourseController returns { success, instructor, class: {...} }.
+                courseData = data.class;
+                instructorData = data.instructor || null;
 
-                const data = await response.json();
+                if (!courseData) throw new Error("The API response did not contain class details.");
 
-                if (!response.ok) {
-                    throw new Error(
-                        data.message || "Failed to load class."
-                    );
+                document.getElementById("courseCode").textContent = courseData.code || "Class";
+                document.getElementById("courseTitle").textContent =
+                    `${courseData.code ? courseData.code + " | " : ""}${courseData.name || "Class"}`;
+                document.getElementById("breadcrumbCourse").textContent = courseData.name || courseData.code || "Class";
+                document.getElementById("courseDescription").textContent = courseData.description || "No course description.";
+                document.getElementById("studentCount").textContent =
+                    courseData.learner_count ?? (Array.isArray(courseData.learners) ? courseData.learners.length : 0);
+                document.getElementById("moduleCount").textContent =
+                    Array.isArray(courseData.modules) ? courseData.modules.length : 0;
+
+                if (instructorData) {
+                    document.getElementById("headerInstructorName").textContent = instructorData.name || "Instructor";
+                    document.getElementById("instructorId").value = instructorData.school_id || "";
+                    document.getElementById("instructorName").value = instructorData.name || "";
+                    document.getElementById("instructorEmail").value = instructorData.email || "";
+                    document.getElementById("instructorPhone").value = instructorData.contact || "";
                 }
 
-                courseData = data.course || data;
-
-                document.getElementById("courseCode").textContent =
-                    courseData.code || "Course";
-
-                document.getElementById("courseTitle").textContent =
-                    `${courseData.code || ""} | ${courseData.name || "Class"}`;
-
-                document.getElementById("breadcrumbCourse").textContent =
-                    `${courseData.code || ""} | ${courseData.name || "Class"}`;
-
-                document.getElementById("courseDescription").textContent =
-                    courseData.description || "No course description.";
-
-                const students =
-                    courseData.student_count ??
-                    courseData.students_count ??
-                    (Array.isArray(courseData.students)
-                        ? courseData.students.length
-                        : 0);
-
-                document.getElementById("studentCount").textContent =
-                    students;
-
-                renderModules(
-                    courseData.modules || []
-                );
-
+                renderModules(Array.isArray(courseData.modules) ? courseData.modules : []);
+                renderLearners(Array.isArray(courseData.learners) ? courseData.learners : []);
             } catch (error) {
-
                 console.error("Error loading class:", error);
-
-                showToast(
-                    error.message || "Unable to load class.",
-                    "error"
-                );
+                showToast(error.message || "Unable to load class.", "error");
+                document.getElementById("courseTitle").textContent = "Unable to load class";
+                document.getElementById("courseDescription").textContent = error.message || "Please try again.";
+                document.getElementById("moduleCountText").textContent = "Modules could not be loaded.";
+                document.getElementById("modulesContainer").replaceChildren();
+                document.getElementById("learnersTableBody").innerHTML =
+                    '<tr><td colspan="4">Learners could not be loaded.</td></tr>';
             }
         }
 
         function renderModules(modules) {
+            const container = document.getElementById("modulesContainer");
+            container.replaceChildren();
 
-            const container =
-                document.getElementById("modulesContainer");
+            const count = modules.length;
+            document.getElementById("moduleCountText").textContent = `${count} module${count === 1 ? "" : "s"}`;
+            document.getElementById("moduleCount").textContent = count;
+            document.getElementById("moduleTabBadge").textContent = count;
 
-            const countText =
-                document.getElementById("moduleCountText");
-
-            container.innerHTML = "";
-
-            countText.textContent =
-                `${modules.length} module${modules.length === 1 ? "" : "s"}`;
-
-            if (!modules.length) {
-
-                container.innerHTML = `
-                    <div class="module-card">
-                        <div class="module-body">
-                            <p>No modules have been added yet.</p>
-                        </div>
-                    </div>
-                `;
-
+            if (!count) {
+                const empty = document.createElement("div");
+                empty.className = "module-card";
+                const body = document.createElement("div");
+                body.className = "module-body";
+                const message = document.createElement("p");
+                message.textContent = "No modules have been added to this class yet.";
+                body.appendChild(message);
+                empty.appendChild(body);
+                container.appendChild(empty);
                 return;
             }
 
-            modules.forEach(function(module, index) {
+            modules.forEach((module, index) => {
+                const details = document.createElement("details");
+                details.className = "module-card";
+                details.open = index === 0;
 
-                const moduleCard =
-                    document.createElement("details");
+                const summary = document.createElement("summary");
+                const group = document.createElement("div");
+                group.className = "module-title-group";
 
-                moduleCard.className = "module-card";
-                moduleCard.open = index === 0;
+                const badge = document.createElement("span");
+                badge.className = "unit-badge";
+                badge.textContent = `UNIT ${module.module_order || index + 1}`;
 
-                moduleCard.innerHTML = `
-                    <summary>
-                        <div class="module-title-group">
-                            <span class="unit-badge">
-                                UNIT ${module.module_order || index + 1}
-                            </span>
+                const textGroup = document.createElement("div");
+                const title = document.createElement("h3");
+                title.textContent = module.name || module.title || "Untitled Module";
+                const description = document.createElement("p");
+                description.textContent =
+                    `${module.description || "No description"} • ${module.is_published ? "Published" : "Draft"}`;
 
-                            <div>
-                                <h3>${module.name || module.title || "Untitled Module"}</h3>
-                                <p>
-                                    ${module.description || "No description"}
-                                    •
-                                    ${module.is_published ? "Published" : "Draft"}
-                                </p>
-                            </div>
-                        </div>
+                textGroup.append(title, description);
+                group.append(badge, textGroup);
 
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </summary>
+                const chevron = document.createElement("i");
+                chevron.className = "fa-solid fa-chevron-down";
+                summary.append(group, chevron);
 
-                    <div class="module-body">
-                        <div style="display:flex; justify-content:flex-end; gap:.5rem;">
-                            <button
-                                type="button"
-                                class="resource-btn btn-download"
-                                onclick="openEditModule(${module.id}, '${escapeAttribute(module.name || module.title || "")}', '${escapeAttribute(module.description || "")}', ${module.is_published ? "true" : "false"})">
-                                <i class="fa-solid fa-pen"></i>
-                                Edit Module
-                            </button>
-                        </div>
-                    </div>
-                `;
+                const body = document.createElement("div");
+                body.className = "module-body";
+                const paragraph = document.createElement("p");
+                paragraph.textContent = module.description || "No additional module information.";
+                body.appendChild(paragraph);
 
-                container.appendChild(moduleCard);
+                if (module.material_path) {
+                    const materialLink = document.createElement("a");
+                    materialLink.className = "resource-btn btn-download";
+                    materialLink.href = module.material_path;
+                    materialLink.target = "_blank";
+                    materialLink.rel = "noopener noreferrer";
+                    materialLink.textContent = "Open learning material";
+                    body.appendChild(materialLink);
+                }
+
+                const actions = document.createElement("div");
+                actions.style.display = "flex";
+                actions.style.justifyContent = "flex-end";
+                actions.style.gap = ".5rem";
+                const editButton = document.createElement("button");
+                editButton.type = "button";
+                editButton.className = "resource-btn btn-download";
+                editButton.innerHTML = '<i class="fa-solid fa-pen"></i> Edit Module';
+                editButton.addEventListener("click", () => openEditModule(module));
+                actions.appendChild(editButton);
+                body.appendChild(actions);
+
+                details.append(summary, body);
+                container.appendChild(details);
             });
         }
 
-        function escapeAttribute(value) {
-            return String(value)
-                .replace(/\\/g, "\\\\")
-                .replace(/'/g, "\\'")
-                .replace(/\n/g, "\\n")
-                .replace(/\r/g, "");
+        function renderLearners(learners) {
+            const tableBody = document.getElementById("learnersTableBody");
+            tableBody.replaceChildren();
+
+            document.getElementById("learnerTabBadge").textContent = learners.length;
+            document.getElementById("learnerSummary").textContent =
+                `${learners.length} enrolled learner${learners.length === 1 ? "" : "s"}`;
+
+            if (!learners.length) {
+                const row = document.createElement("tr");
+                const cell = document.createElement("td");
+                cell.colSpan = 4;
+                cell.textContent = "No learners enrolled in this class yet.";
+                row.appendChild(cell);
+                tableBody.appendChild(row);
+                return;
+            }
+
+            learners.forEach(learner => {
+                const row = document.createElement("tr");
+                const nameCell = document.createElement("td");
+                nameCell.textContent = learner.name || "Unnamed Learner";
+                const idCell = document.createElement("td");
+                idCell.textContent = learner.school_id || "—";
+                const programCell = document.createElement("td");
+                programCell.textContent = learner.program || "—";
+                const progressCell = document.createElement("td");
+                progressCell.textContent = "Not available";
+
+                row.append(nameCell, idCell, programCell, progressCell);
+                tableBody.appendChild(row);
+            });
+        }
+
+        function openAddModule() {
+            activeModuleId = null;
+            document.getElementById("moduleModalTitle").textContent = "Add Module";
+            document.getElementById("moduleTitleInput").value = "";
+            document.getElementById("moduleDescriptionInput").value = "";
+            document.getElementById("modulePublishedInput").checked = false;
+            openModal("moduleModal");
+        }
+
+        function openEditModule(module) {
+            activeModuleId = module.id;
+            document.getElementById("moduleModalTitle").textContent = "Edit Module";
+            document.getElementById("moduleTitleInput").value = module.name || module.title || "";
+            document.getElementById("moduleDescriptionInput").value = module.description || "";
+            document.getElementById("modulePublishedInput").checked = Boolean(module.is_published);
+            openModal("moduleModal");
         }
 
         async function saveModule() {
-
-            const title =
-                document.getElementById("moduleTitleInput").value.trim();
-
-            const description =
-                document.getElementById("moduleDescriptionInput").value.trim();
-
-            const isPublished =
-                document.getElementById("modulePublishedInput").checked;
+            const title = document.getElementById("moduleTitleInput").value.trim();
+            const description = document.getElementById("moduleDescriptionInput").value.trim();
+            const isPublished = document.getElementById("modulePublishedInput").checked;
 
             if (!title) {
                 showToast("Please enter a module title.", "error");
                 return;
             }
 
+            // These routes must exist in Laravel before saving can work.
+            const url = activeModuleId
+                ? `${API_BASE_URL}/instructor/modules/${encodeURIComponent(activeModuleId)}`
+                : `${API_BASE_URL}/instructor/classes/${encodeURIComponent(courseId)}/modules`;
+
             try {
-
-                const isEditing = activeModuleId !== null;
-
-                const url = isEditing
-                    ? `${API_BASE_URL}/api/instructor/modules/${activeModuleId}`
-                    : `${API_BASE_URL}/api/instructor/classes/${courseId}/modules`;
-
                 const response = await fetch(url, {
-                    method: isEditing ? "PUT" : "POST",
-                    headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify({
-                        title: title,
-                        description: description,
-                        is_published: isPublished
-                    })
+                    method: activeModuleId ? "PUT" : "POST",
+                    headers: getAuthHeaders(true),
+                    body: JSON.stringify({ title, description, is_published: isPublished })
                 });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(
-                        data.message || "Unable to save module."
-                    );
-                }
-
-                showToast(
-                    isEditing
-                        ? "Module updated successfully!"
-                        : "Module added successfully!",
-                    "success"
-                );
-
-                closeModuleModal();
+                const data = await readResponse(response);
+                showToast(data.message || (activeModuleId ? "Module updated." : "Module added."), "success");
+                closeModal("moduleModal");
                 await loadCourse();
-
             } catch (error) {
-
                 console.error("Module save error:", error);
-
-                showToast(
-                    error.message || "Unable to save module.",
-                    "error"
-                );
+                showToast(`${error.message} Check whether the module API route exists.`, "error");
             }
         }
 
-        function openAddModule() {
-
-            activeModuleId = null;
-
-            document.getElementById("moduleModalTitle").textContent =
-                "Add Module";
-
-            document.getElementById("moduleTitleInput").value = "";
-            document.getElementById("moduleDescriptionInput").value = "";
-            document.getElementById("modulePublishedInput").checked = false;
-
-            document.getElementById("moduleModal").classList.add("active");
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.add("active");
+            modal.setAttribute("aria-hidden", "false");
         }
 
-        function openEditModule(
-            moduleId,
-            title,
-            description,
-            isPublished
-        ) {
-
-            activeModuleId = moduleId;
-
-            document.getElementById("moduleModalTitle").textContent =
-                "Edit Module";
-
-            document.getElementById("moduleTitleInput").value = title;
-            document.getElementById("moduleDescriptionInput").value =
-                description;
-            document.getElementById("modulePublishedInput").checked =
-                isPublished;
-
-            document.getElementById("moduleModal").classList.add("active");
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.remove("active");
+            modal.setAttribute("aria-hidden", "true");
         }
 
-        function closeModuleModal() {
-            document.getElementById("moduleModal").classList.remove("active");
-            activeModuleId = null;
-        }
+        document.getElementById("addModuleBtn").addEventListener("click", openAddModule);
+        document.getElementById("saveModuleBtn").addEventListener("click", saveModule);
+        document.getElementById("closeModuleModal").addEventListener("click", () => closeModal("moduleModal"));
+        document.getElementById("cancelModuleModal").addEventListener("click", () => closeModal("moduleModal"));
 
-        document.getElementById("addModuleBtn").addEventListener(
-            "click",
-            openAddModule
-        );
+        // Sidebar collapse.
+        document.getElementById("viewToggle").addEventListener("click", () => {
+            document.getElementById("sidebar").classList.toggle("collapsed");
+            document.querySelector(".main-content").classList.toggle("expanded");
+        });
 
-        document.getElementById("saveModuleBtn").addEventListener(
-            "click",
-            saveModule
-        );
+        // Instructor profile modal.
+        const profileOverlay = document.getElementById("profileModalOverlay");
+        document.getElementById("userProfileBtn").addEventListener("click", () => openModal("profileModalOverlay"));
+        document.getElementById("closeProfileModal").addEventListener("click", () => closeModal("profileModalOverlay"));
+        document.getElementById("cancelProfileModal").addEventListener("click", () => closeModal("profileModalOverlay"));
+        profileOverlay.addEventListener("click", event => {
+            if (event.target === profileOverlay) closeModal("profileModalOverlay");
+        });
 
-        document.getElementById("closeModuleModal").addEventListener(
-            "click",
-            closeModuleModal
-        );
+        document.getElementById("passwordToggleBtn").addEventListener("click", () => {
+            document.getElementById("passwordSection").classList.toggle("open");
+        });
 
-        document.getElementById("cancelModuleModal").addEventListener(
-            "click",
-            closeModuleModal
-        );
+        document.getElementById("avatarInput").addEventListener("change", event => {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+            if (!file.type.startsWith("image/")) {
+                showToast("Please choose an image file.", "error");
+                event.target.value = "";
+                return;
+            }
+            if (file.size > 2 * 1024 * 1024) {
+                showToast("Image size exceeds the 2 MB limit.", "error");
+                event.target.value = "";
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = () => {
+                avatarDataUrl = reader.result;
+                document.getElementById("avatarPreview").src = avatarDataUrl;
+            };
+            reader.readAsDataURL(file);
+        });
 
-        // Load the selected class when the page opens.
-        loadCourse();
+        document.getElementById("profileSettingsForm").addEventListener("submit", async event => {
+            event.preventDefault();
 
-        // --- GRADING MODAL FUNCTIONS ---
-        function openGradingModal(index) {
-            activeStudentIndex = index;
-            const student = studentsData[index];
+            const email = document.getElementById("instructorEmail").value.trim();
+            const contact = document.getElementById("instructorPhone").value.trim();
+            const currentPassword = document.getElementById("currentPassword").value;
+            const newPassword = document.getElementById("newPassword").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
 
-            document.getElementById('modalStudentName').textContent = `Grade Submission - ${student.name}`;
-            document.getElementById('modalFileName').textContent = student.fileName;
-            document.getElementById('modalFileMeta').textContent = student.fileMeta;
-            document.getElementById('instructorFeedback').value = student.feedback || '';
-
-            const container = document.getElementById('activityItemsContainer');
-            container.innerHTML = '';
-
-            if (student.activities && student.activities.length > 0) {
-                student.activities.forEach(act => addActivityRow(act.title, act.raw, act.max));
-            } else {
-                addActivityRow("Activity 1: ", 0, 50);
+            if (!email) {
+                showToast("Please enter an email address.", "error");
+                return;
             }
 
-            calculateTotals();
-            document.getElementById('gradingModal').classList.add('active');
-        }
+            if (currentPassword || newPassword || confirmPassword) {
+                if (!currentPassword || !newPassword || !confirmPassword) {
+                    showToast("Fill in all password fields to change your password.", "error");
+                    return;
+                }
+                if (newPassword.length < 6) {
+                    showToast("New password must be at least 6 characters.", "error");
+                    return;
+                }
+                if (newPassword !== confirmPassword) {
+                    showToast("The new passwords do not match.", "error");
+                    return;
+                }
+                showToast("Password change is not connected here yet. Please use your configured password-change page.", "error");
+                return;
+            }
 
-        function addActivityRow(title = '', raw = 0, max = 50) {
-            const container = document.getElementById('activityItemsContainer');
-            const row = document.createElement('div');
-            row.className = 'activity-item-row';
-            row.innerHTML = `
-                <div class="form-group flex-2">
-                    <label>Activity Title</label>
-                    <input type="text" class="act-title-input" value="${title}" placeholder="e.g. Activity 1: Theory Comparison">
-                </div>
-                <div class="form-group flex-1">
-                    <label>Raw Score</label>
-                    <input type="number" class="act-raw-input" value="${raw}" min="0" oninput="calculateTotals()">
-                </div>
-                <div class="form-group flex-1">
-                    <label>Max Score</label>
-                    <input type="number" class="act-max-input" value="${max}" min="1" oninput="calculateTotals()">
-                </div>
-                <button type="button" class="btn-remove-row" onclick="removeActivityRow(this)"><i class="fa-solid fa-trash-can"></i></button>
-            `;
-            container.appendChild(row);
-            calculateTotals();
-        }
-
-        function removeActivityRow(btn) {
-            const row = btn.closest('.activity-item-row');
-            row.remove();
-            calculateTotals();
-        }
-
-        function calculateTotals() {
-            const rows = document.querySelectorAll('.activity-item-row');
-            let totalRaw = 0;
-            let totalMax = 0;
-
-            rows.forEach(row => {
-                const rawVal = parseFloat(row.querySelector('.act-raw-input').value) || 0;
-                const maxVal = parseFloat(row.querySelector('.act-max-input').value) || 0;
-                totalRaw += rawVal;
-                totalMax += maxVal;
-            });
-
-            const percent = totalMax > 0 ? Math.round((totalRaw / totalMax) * 100) : 0;
-            document.getElementById('summaryRaw').textContent = `${totalRaw} / ${totalMax} pts`;
-            document.getElementById('summaryPercent').textContent = `${percent}%`;
-        }
-
-        function saveGrade() {
-            if (activeStudentIndex === null) return;
-            const student = studentsData[activeStudentIndex];
-
-            const rows = document.querySelectorAll('.activity-item-row');
-            const activities = [];
-            let totalRaw = 0;
-            let totalMax = 0;
-
-            rows.forEach(row => {
-                const title = row.querySelector('.act-title-input').value.trim() || 'Untitled Activity';
-                const raw = parseFloat(row.querySelector('.act-raw-input').value) || 0;
-                const max = parseFloat(row.querySelector('.act-max-input').value) || 0;
-                activities.push({ title, raw, max });
-                totalRaw += raw;
-                totalMax += max;
-            });
-
-            student.activities = activities;
-            student.feedback = document.getElementById('instructorFeedback').value;
-            student.progress = totalMax > 0 ? Math.round((totalRaw / totalMax) * 100) : 0;
-            student.hasPending = false;
-            student.pendingCount = 0;
-
-            closeGradingModal();
-            renderStudentsTable();
-        }
-
-        function closeGradingModal() {
-            document.getElementById('gradingModal').classList.remove('active');
-            activeStudentIndex = null;
-        }
-
-        // --- VIEW GRADED MODAL FUNCTIONS ---
-        function openViewGradedModal(index) {
-            activeStudentIndex = index;
-            const student = studentsData[index];
-
-            document.getElementById('viewGradedTitle').textContent = `Graded Activities - ${student.name}`;
-
-            let totalRaw = 0;
-            let totalMax = 0;
-            const listContainer = document.getElementById('gradedItemsList');
-            listContainer.innerHTML = '';
-
-            if (student.activities && student.activities.length > 0) {
-                student.activities.forEach(act => {
-                    totalRaw += act.raw;
-                    totalMax += act.max;
-                    const item = document.createElement('div');
-                    item.className = 'graded-item-row';
-                    item.innerHTML = `
-                        <span class="graded-item-title">${act.title}</span>
-                        <span class="graded-item-score">${act.raw} / ${act.max} pts</span>
-                    `;
-                    listContainer.appendChild(item);
+            // Use the existing profile API. Avatar preview is local only and is not uploaded.
+            try {
+                const response = await fetch(`${API_BASE_URL}/instructor/profile`, {
+                    method: "PUT",
+                    headers: getAuthHeaders(true),
+                    body: JSON.stringify({ email, contact })
                 });
-            } else {
-                listContainer.innerHTML = '<p style="font-size: 0.85rem; color: var(--text-muted);">No graded activities yet.</p>';
+                const data = await readResponse(response);
+                if (avatarDataUrl) {
+                    document.getElementById("headerAvatar").src = avatarDataUrl;
+                }
+                showToast(data.message || "Profile updated successfully.", "success");
+                closeModal("profileModalOverlay");
+                await loadCourse();
+            } catch (error) {
+                console.error("Profile update error:", error);
+                showToast(error.message || "Unable to save profile.", "error");
             }
-
-            const percent = totalMax > 0 ? Math.round((totalRaw / totalMax) * 100) : student.progress;
-            document.getElementById('viewTotalScore').textContent = `${totalRaw} / ${totalMax} pts`;
-            document.getElementById('viewTotalPercent').textContent = `${percent}%`;
-            document.getElementById('viewFeedbackBox').textContent = student.feedback || 'No comments provided.';
-
-            document.getElementById('viewGradedModal').classList.add('active');
-        }
-
-        function closeViewGradedModal() {
-            document.getElementById('viewGradedModal').classList.remove('active');
-        }
-
-        // Event Listeners Initialization
-        document.getElementById('btnAddActivityRow').addEventListener('click', () => addActivityRow());
-        document.getElementById('closeGradingModal').addEventListener('click', closeGradingModal);
-        document.getElementById('cancelGradingModal').addEventListener('click', closeGradingModal);
-        document.getElementById('saveGradeBtn').addEventListener('click', saveGrade);
-
-        document.getElementById('closeViewModal').addEventListener('click', closeViewGradedModal);
-        document.getElementById('closeViewModalBtn').addEventListener('click', closeViewGradedModal);
-        document.getElementById('btnEditGrade').addEventListener('click', () => {
-            closeViewGradedModal();
-            openGradingModal(activeStudentIndex);
         });
 
-        // Initialize App
-        renderStudentsTable();
+        // Close modals with Escape.
+        document.addEventListener("keydown", event => {
+            if (event.key === "Escape") {
+                closeModal("moduleModal");
+                closeModal("profileModalOverlay");
+            }
+        });
+
+        loadCourse();
     </script>
-      
-    <script>
-        const viewToggle =
-            document.getElementById("viewToggle");
-        const sidebar =
-            document.querySelector(".sidebar");
-        const mainContent =
-            document.querySelector(".main-content");
-        viewToggle.addEventListener("click", function () {
-            sidebar.classList.toggle("collapsed");
-            mainContent.classList.toggle("expanded");
-        });
-    </script>
-
-<!-- INSTRUCTOR PROFILE SETTINGS MODAL -->
-  <div class="profile-modal-overlay" id="profileModalOverlay">
-    <div class="profile-modal-card">
-      
-      <!-- Modal Header -->
-      <div class="profile-modal-header">
-        <div>
-          <h3 class="profile-modal-title">Instructor Profile Settings</h3>
-        </div>
-        <button class="profile-modal-close" id="closeProfileModal" aria-label="Close">&times;</button>
-      </div>
-
-      <!-- Modal Body Form -->
-      <form id="profileSettingsForm">
-        <div class="profile-modal-body">
-          
-          <!-- Photo Upload Section -->
-          <div class="avatar-upload-section">
-            <div class="avatar-upload-preview">
-              <img id="avatarPreview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Instructor Profile Picture">
-              <label for="avatarInput" class="avatar-edit-badge" title="Change Photo">
-                <i class="fa-solid fa-camera"></i>
-              </label>
-              <input type="file" id="avatarInput" accept="image/*" class="avatar-file-input">
-            </div>
-            <div class="avatar-upload-text">
-              <h4>Profile Photo</h4>
-            </div>
-          </div>
-
-          <!-- Read-Only Grid: Instructor ID & Full Name -->
-          <div class="form-grid-2">
-            <div class="profile-form-group">
-              <label for="instructorId">Instructor ID</label>
-              <input type="text" id="instructorId" value="INST-2024-008" disabled class="input-disabled">
-            </div>
-            <div class="profile-form-group">
-              <label for="instructorName">Full Name</label>
-              <input type="text" id="instructorName" value="Macross Arsel" disabled class="input-disabled">
-            </div>
-          </div>
-
-          <!-- Editable Fields: Email & Phone -->
-          <div class="profile-form-group">
-            <label for="instructorEmail">Email Address</label>
-            <input type="email" id="instructorEmail" value="macross.arsel@mpsu.edu.ph" required>
-          </div>
-
-          <div class="profile-form-group">
-            <label for="instructorPhone">Mobile Number</label>
-            <input type="tel" id="instructorPhone" value="+63 917 123 4567" placeholder="+63 9XX XXX XXXX" required>
-          </div>
-
-          <!-- Optional Change Password Accordion -->
-          <div class="password-section" id="passwordSection">
-            <div class="password-toggle-header" id="passwordToggleBtn">
-              <h4><i class="fa-solid fa-lock"></i> Change Password (Optional)</h4>
-              <i class="fa-solid fa-chevron-down chevron-icon"></i>
-            </div>
-            <div class="password-fields">
-              <div class="profile-form-group">
-                <label for="currentPassword">Current Password</label>
-                <input type="password" id="currentPassword" placeholder="Enter current password">
-              </div>
-              <div class="profile-form-group">
-                <label for="newPassword">New Password</label>
-                <input type="password" id="newPassword" placeholder="Enter new password (min. 6 characters)">
-              </div>
-              <div class="profile-form-group">
-                <label for="confirmPassword">Confirm New Password</label>
-                <input type="password" id="confirmPassword" placeholder="Confirm new password">
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Modal Footer Actions -->
-        <div class="profile-modal-footer">
-          <button type="button" class="btn-cancel" id="cancelProfileModal">Cancel</button>
-          <button type="submit" class="btn-save">Save Changes</button>
-        </div>
-      </form>
-
-    </div>
-  </div>
-
-   <!-- -->
-  <script>
-    // Sidebar Toggle
-   const viewToggle =
-            document.getElementById("viewToggle");
-        const sidebar =
-            document.querySelector(".sidebar");
-        const mainContent =
-            document.querySelector(".main-content");
-        viewToggle.addEventListener("click", function () {
-            sidebar.classList.toggle("collapsed");
-            mainContent.classList.toggle("expanded");
-        });
-    
-
-    // Modal Elements
-    const userProfileBtn = document.getElementById("userProfileBtn");
-    const profileModalOverlay = document.getElementById("profileModalOverlay");
-    const closeProfileModal = document.getElementById("closeProfileModal");
-    const cancelProfileModal = document.getElementById("cancelProfileModal");
-    const avatarInput = document.getElementById("avatarInput");
-    const avatarPreview = document.getElementById("avatarPreview");
-    const headerAvatar = document.getElementById("headerAvatar");
-    const profileForm = document.getElementById("profileSettingsForm");
-
-    // Password Accordion Elements
-    const passwordSection = document.getElementById("passwordSection");
-    const passwordToggleBtn = document.getElementById("passwordToggleBtn");
-    const currentPasswordInput = document.getElementById("currentPassword");
-    const newPasswordInput = document.getElementById("newPassword");
-    const confirmPasswordInput = document.getElementById("confirmPassword");
-
-    // Toast Notification Helper
-    function showToast(message, type = "success") {
-      const toastContainer = document.getElementById("toastContainer");
-      const toast = document.createElement("div");
-      toast.className = `toast toast-${type}`;
-      
-      const iconClass = type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
-      toast.innerHTML = `<i class="fa-solid ${iconClass}"></i> <span>${message}</span>`;
-      
-      toastContainer.appendChild(toast);
-
-      setTimeout(() => {
-        toast.classList.add("show");
-      }, 10);
-
-      setTimeout(() => {
-        toast.classList.remove("show");
-        setTimeout(() => toast.remove(), 300);
-      }, 3500);
-    }
-
-    // Toggle Change Password Accordion
-    if (passwordToggleBtn) {
-      passwordToggleBtn.addEventListener("click", () => {
-        passwordSection.classList.toggle("open");
-      });
-    }
-
-    // Open Profile Modal
-    if (userProfileBtn) {
-      userProfileBtn.addEventListener("click", () => {
-        profileModalOverlay.classList.add("active");
-      });
-    }
-
-    // Reset Form Fields
-    function resetPasswordFields() {
-      passwordSection.classList.remove("open");
-      currentPasswordInput.value = "";
-      newPasswordInput.value = "";
-      confirmPasswordInput.value = "";
-    }
-
-    // Close Modal Handler
-    const closeModal = () => {
-      profileModalOverlay.classList.remove("active");
-      resetPasswordFields();
-    };
-
-    if (closeProfileModal) closeProfileModal.addEventListener("click", closeModal);
-    if (cancelProfileModal) cancelProfileModal.addEventListener("click", closeModal);
-
-    // Close Modal on backdrop click
-    profileModalOverlay.addEventListener("click", (e) => {
-      if (e.target === profileModalOverlay) closeModal();
-    });
-
-    // Avatar Image Preview
-    avatarInput.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        if (file.size > 2 * 1024 * 1024) {
-          showToast("Image size exceeds 2MB limit", "error");
-          return;
-        }
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          avatarPreview.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-
-    // Form Submission & Interactive Password Validation
-    profileForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const email = document.getElementById("instructorEmail").value.trim();
-      const phone = document.getElementById("instructorPhone").value.trim();
-
-      if (!email || !phone) {
-        showToast("Please fill in all contact information", "error");
-        return;
-      }
-
-      const currentPass = currentPasswordInput.value.trim();
-      const newPass = newPasswordInput.value.trim();
-      const confirmPass = confirmPasswordInput.value.trim();
-
-      // Password Validation Logic
-      const isPasswordTouched = currentPass || newPass || confirmPass;
-
-      if (isPasswordTouched) {
-        // Automatically open section if error occurs
-        if (!passwordSection.classList.contains("open")) {
-          passwordSection.classList.add("open");
-        }
-
-        if (!currentPass) {
-          showToast("Please enter your current password", "error");
-          currentPasswordInput.focus();
-          return;
-        }
-
-        if (!newPass) {
-          showToast("Please enter a new password", "error");
-          newPasswordInput.focus();
-          return;
-        }
-
-        if (newPass.length < 6) {
-          showToast("New password must be at least 6 characters long", "error");
-          newPasswordInput.focus();
-          return;
-        }
-
-        if (newPass !== confirmPass) {
-          showToast("New passwords do not match", "error");
-          confirmPasswordInput.focus();
-          return;
-        }
-      }
-
-      // Sync avatar picture to header
-      headerAvatar.src = avatarPreview.src;
-
-      showToast("Profile settings saved successfully!", "success");
-      closeModal();
-    });
-  </script>
 </body>
 </html>

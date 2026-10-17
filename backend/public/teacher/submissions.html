@@ -1,1292 +1,4546 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MPSU ETEEAP LMS - Instructor Submissions</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="../teacher/CSS/submission.css" />
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Submissions - MPSU ETEEAP LMS</title>
+
+    <!-- Google Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+
+<style>
+
+/* =========================================================
+   RESET AND BASE STYLES
+========================================================= */
+
+:root {
+    --mpsu-green: #0a522d;
+    --mpsu-green-dark: #06381e;
+    --mpsu-green-light: #eaf5ed;
+    --mpsu-card-bg: #f2f9f4;
+
+    --mpsu-maroon: #5b0000;
+    --mpsu-sidebar: #500b13;
+    --mpsu-gold: #ca8a04;
+    --mpsu-gold-light: #eab308;
+
+    --border-color: #d1d5db;
+    --border-light: #e5e7eb;
+
+    --text-primary: #1e293b;
+    --text-dark: #111827;
+    --text-muted: #64748b;
+
+    --white: #ffffff;
+    --light-gray: #f8fafc;
+    --disabled-bg: #f1f5f9;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+
+html,
+body {
+    min-height: 100%;
+    background-color: var(--mpsu-green-light);
+    color: var(--text-primary);
+}
+
+
+body {
+    overflow-x: hidden;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header {
+    height: 85px;
+
+    background-color: var(--mpsu-green);
+
+    color: var(--white);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 1.5rem;
+
+    width: 100%;
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 1000;
+}
+
+
+.header-left {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.logo-box {
+    width: 60px;
+
+    height: 60px;
+
+    border-radius: 50%;
+
+    overflow: hidden;
+
+    border: 2px solid var(--white);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+}
+
+
+.logo-box img {
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+.header-titles {
+    display: flex;
+
+    flex-direction: column;
+}
+
+
+.main-title {
+    font-size: 0.95rem;
+
+    font-weight: 700;
+
+    line-height: 1.1;
+}
+
+
+.sub-title {
+    font-size: 0.75rem;
+
+    opacity: 0.85;
+
+    margin-top: 3px;
+}
+
+
+.header-right {
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+}
+
+
+.icon-btn {
+    background: transparent;
+
+    border: none;
+
+    color: var(--white);
+
+    font-size: 1.1rem;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+
+.icon-btn:hover {
+    opacity: 0.8;
+}
+
+
+.user-profile {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    cursor: pointer;
+}
+
+
+.avatar-ring {
+    width: 36px;
+
+    height: 36px;
+
+    border-radius: 50%;
+
+    overflow: hidden;
+
+    border: 2px solid var(--white);
+
+    flex-shrink: 0;
+}
+
+
+.avatar-ring img {
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+.user-info {
+    display: flex;
+
+    flex-direction: column;
+}
+
+
+.user-name {
+    font-size: 0.85rem;
+
+    font-weight: 600;
+
+    display: block;
+}
+
+
+.user-role {
+    font-size: 0.7rem;
+
+    opacity: 0.8;
+
+    display: block;
+}
+
+
+/* =========================================================
+   APP BODY
+========================================================= */
+
+.app-body {
+    width: 100%;
+
+    min-height: calc(100vh - 85px);
+
+    display: flex;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sidebar {
+    position: fixed;
+
+    top: 95px;
+
+    left: 0;
+
+    width: 250px;
+
+    height: calc(100vh - 105px);
+
+    background-color: var(--mpsu-sidebar);
+
+    color: var(--white);
+
+    display: flex;
+
+    flex-direction: column;
+
+    padding: 24px 16px;
+
+    gap: 24px;
+
+    border-radius: 0 10px 5px 0;
+
+    overflow: hidden;
+
+    z-index: 999;
+
+    transition:
+        width 0.25s ease,
+        padding 0.25s ease;
+}
+
+
+.view-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 0 8px;
+}
+
+
+.view-label {
+    font-size: 14px;
+
+    font-weight: 400;
+
+    opacity: 0.9;
+}
+
+
+.view-toggle-btn {
+    width: 32px;
+
+    height: 32px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 17px;
+
+    color: var(--white);
+
+    background: transparent;
+
+    border: none;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+
+.view-toggle-btn:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+
+    border-radius: 6px;
+}
+
+
+.nav-menu {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 16px;
+
+    flex: 1;
+}
+
+
+.nav-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    color: var(--white);
+
+    text-decoration: none;
+
+    padding: 8px 12px;
+
+    border-radius: 6px;
+
+    font-size: 14px;
+
+    font-weight: 400;
+
+    transition: background 0.2s ease;
+}
+
+
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+
+.nav-item.active {
+    background-color: var(--mpsu-gold) !important;
+
+    color: #1a0306 !important;
+
+    font-weight: 600;
+
+    border: 1px solid var(--mpsu-gold-light);
+
+    box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+
+.nav-item i {
+    font-size: 18px;
+
+    width: 24px;
+
+    text-align: center;
+
+    flex-shrink: 0;
+}
+
+
+.logout-bottom {
+    margin-top: auto;
+}
+
+
+/* =========================================================
+   COLLAPSED SIDEBAR
+========================================================= */
+
+.sidebar.collapsed {
+    width: 80px;
+
+    padding-left: 10px;
+
+    padding-right: 10px;
+}
+
+
+.sidebar.collapsed .view-label {
+    display: none;
+}
+
+
+.sidebar.collapsed .view-header {
+    justify-content: center;
+
+    padding: 0;
+}
+
+
+.sidebar.collapsed .nav-item span {
+    display: none;
+}
+
+
+.sidebar.collapsed .nav-item {
+    justify-content: center;
+
+    padding-left: 10px;
+
+    padding-right: 10px;
+
+    gap: 0;
+}
+
+
+.sidebar.collapsed .nav-item i {
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.main-content {
+    margin-left: 250px;
+
+    margin-top: 10px;
+
+    width: calc(100% - 250px);
+
+    min-height: calc(100vh - 95px);
+
+    padding: 30px 40px;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    transition:
+        margin-left 0.25s ease,
+        width 0.25s ease;
+}
+
+
+.main-content.expanded {
+    margin-left: 80px;
+
+    width: calc(100% - 80px);
+}
+
+
+.page-title {
+    font-size: 32px;
+
+    font-weight: 700;
+
+    color: #000000;
+
+    margin-bottom: 5px;
+}
+
+
+.page-subtitle {
+    font-size: 13px;
+
+    color: var(--text-muted);
+
+    margin-bottom: 15px;
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.search-container {
+    display: flex;
+
+    align-items: center;
+
+    padding: 10px 0;
+
+    margin-bottom: 10px;
+}
+
+
+.search-wrapper {
+    display: flex;
+
+    align-items: center;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 6px;
+
+    background-color: var(--white);
+
+    overflow: hidden;
+
+    box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.05);
+
+    width: 350px;
+}
+
+
+.search-icon-box {
+    padding: 10px 14px;
+
+    color: #6b7280;
+
+    font-size: 16px;
+
+    border-right: 1px solid var(--border-light);
+}
+
+
+.dropdown-input-wrapper {
+    display: flex;
+
+    flex-direction: column;
+
+    padding: 4px 12px;
+
+    width: 100%;
+}
+
+
+.dropdown-label {
+    font-size: 9px;
+
+    color: #9ca3af;
+
+    text-transform: lowercase;
+
+    line-height: 1;
+}
+
+
+.input-with-arrow {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+
+.input-with-arrow input {
+    border: none;
+
+    outline: none;
+
+    width: 100%;
+
+    font-size: 13px;
+
+    color: #374151;
+
+    background: transparent;
+}
+
+
+.arrow-icon {
+    font-size: 10px;
+
+    color: #9ca3af;
+
+    margin-left: 6px;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.table-card {
+    background-color: var(--white);
+
+    border: 1px solid #9ca3af;
+
+    border-radius: 12px;
+
+    overflow-x: auto;
+
+    overflow-y: hidden;
+
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.05);
+
+    min-height: 480px;
+}
+
+
+.submissions-table {
+    width: 100%;
+
+    min-width: 900px;
+
+    border-collapse: collapse;
+
+    text-align: left;
+}
+
+
+.submissions-table th {
+    padding: 16px 20px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    color: var(--text-dark);
+
+    border-bottom: 1px solid #111827;
+
+    white-space: nowrap;
+}
+
+
+.submissions-table td {
+    padding: 16px 20px;
+
+    font-size: 12px;
+
+    color: #374151;
+
+    border-bottom: 1px solid var(--border-light);
+
+    vertical-align: middle;
+}
+
+
+.submissions-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+
+.font-medium {
+    font-weight: 500;
+
+    color: var(--text-dark);
+}
+
+
+/* =========================================================
+   EMPTY / LOADING TABLE
+========================================================= */
+
+.empty-row {
+    text-align: center;
+
+    padding: 60px 20px !important;
+
+    color: var(--text-muted) !important;
+}
+
+
+.empty-row i {
+    display: block;
+
+    font-size: 35px;
+
+    margin-bottom: 12px;
+
+    color: #94a3b8;
+}
+
+
+/* =========================================================
+   STATUS BADGES
+========================================================= */
+
+.status-badge {
+    display: inline-block;
+
+    padding: 4px 12px;
+
+    border-radius: 9999px;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    text-align: center;
+
+    white-space: nowrap;
+}
+
+
+.status-pending {
+    background-color: #fef08a;
+
+    color: #854d0e;
+}
+
+
+.status-graded {
+    background-color: #dcfce7;
+
+    color: #166534;
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+========================================================= */
+
+.action-btn {
+    border: none;
+
+    padding: 6px 16px;
+
+    border-radius: 6px;
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+
+.grade-btn {
+    background-color: var(--mpsu-green);
+
+    color: var(--white);
+}
+
+
+.grade-btn:hover {
+    background-color: var(--mpsu-green-dark);
+}
+
+
+.view-btn {
+    background-color: #e5e7eb;
+
+    color: #374151;
+}
+
+
+.view-btn:hover {
+    background-color: #d1d5db;
+}
+
+
+/* =========================================================
+   PROFILE / GRADING MODAL OVERLAY
+========================================================= */
+
+.profile-modal-overlay,
+.grading-modal-overlay {
+    position: fixed;
+
+    top: 0;
+
+    left: 0;
+
+    width: 100vw;
+
+    height: 100vh;
+
+    background-color: rgba(10, 25, 15, 0.45);
+
+    backdrop-filter: blur(8px);
+
+    -webkit-backdrop-filter: blur(8px);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    z-index: 2000;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition: opacity 0.25s ease;
+}
+
+
+.profile-modal-overlay.active,
+.grading-modal-overlay.active {
+    opacity: 1;
+
+    pointer-events: auto;
+}
+
+
+/* =========================================================
+   MODAL CARD
+========================================================= */
+
+.profile-modal-card,
+.grading-modal-card {
+    background-color: var(--white);
+
+    width: 92%;
+
+    max-width: 520px;
+
+    max-height: 90vh;
+
+    border-radius: 14px;
+
+    border: 1px solid #e2e8f0;
+
+    box-shadow:
+        0 20px 25px -5px rgba(0, 0, 0, 0.15),
+        0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+    display: flex;
+
+    flex-direction: column;
+
+    overflow: hidden;
+
+    animation: modalSlideUp 0.25s ease-out;
+}
+
+
+.grading-modal-card {
+    max-width: 560px;
+}
+
+
+@keyframes modalSlideUp {
+
+    from {
+        transform: translateY(14px);
+
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+
+        opacity: 1;
+    }
+
+}
+
+
+/* =========================================================
+   MODAL HEADER
+========================================================= */
+
+.profile-modal-header,
+.grading-modal-header {
+    padding: 1.25rem 1.5rem;
+
+    border-bottom: 1px solid #e2e8f0;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    background-color: #fafafa;
+
+    flex-shrink: 0;
+}
+
+
+.profile-modal-title,
+.grading-modal-header h3 {
+    font-size: 1.1rem;
+
+    font-weight: 600;
+
+    color: var(--text-primary);
+}
+
+
+.profile-modal-subtitle {
+    font-size: 0.8rem;
+
+    color: var(--text-muted);
+
+    margin-top: 0.15rem;
+}
+
+
+.profile-modal-close,
+.grading-modal-close {
+    background: none;
+
+    border: none;
+
+    font-size: 1.35rem;
+
+    color: #94a3b8;
+
+    cursor: pointer;
+
+    line-height: 1;
+
+    padding: 0.2rem;
+}
+
+
+.profile-modal-close:hover,
+.grading-modal-close:hover {
+    color: var(--text-primary);
+}
+
+
+/* =========================================================
+   MODAL BODY
+========================================================= */
+
+.profile-modal-body,
+.grading-modal-body {
+    padding: 1.5rem;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 1.15rem;
+
+    overflow-y: auto;
+}
+
+
+/* =========================================================
+   PROFILE PHOTO
+========================================================= */
+
+.avatar-upload-section {
+    display: flex;
+
+    align-items: center;
+
+    gap: 1.25rem;
+
+    background-color: var(--light-gray);
+
+    padding: 1rem;
+
+    border-radius: 10px;
+
+    border: 1px solid #e2e8f0;
+}
+
+
+.avatar-upload-preview {
+    position: relative;
+
+    width: 76px;
+
+    height: 76px;
+
+    flex-shrink: 0;
+}
+
+
+.avatar-upload-preview img {
+    width: 100%;
+
+    height: 100%;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    border: 3px solid #0c4827;
+}
+
+
+.avatar-edit-badge {
+    position: absolute;
+
+    bottom: -2px;
+
+    right: -2px;
+
+    width: 28px;
+
+    height: 28px;
+
+    background-color: #0c4827;
+
+    color: var(--white);
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 0.75rem;
+
+    cursor: pointer;
+
+    border: 2px solid var(--white);
+
+    transition: background-color 0.2s ease;
+}
+
+
+.avatar-edit-badge:hover {
+    background-color: #08331b;
+}
+
+
+.avatar-file-input {
+    display: none;
+}
+
+
+.avatar-upload-text h4 {
+    font-size: 0.9rem;
+
+    color: var(--text-primary);
+
+    margin-bottom: 0.2rem;
+}
+
+
+.avatar-upload-text p {
+    font-size: 0.78rem;
+
+    color: var(--text-muted);
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.form-grid-2 {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 0.85rem;
+}
+
+
+.profile-form-group,
+.grading-form-group {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 0.35rem;
+}
+
+
+.profile-form-group label,
+.grading-form-group label {
+    font-size: 0.8rem;
+
+    font-weight: 600;
+
+    color: var(--text-primary);
+}
+
+
+.profile-form-group input,
+.grading-form-group input,
+.grading-form-group textarea {
+    padding: 0.55rem 0.75rem;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 6px;
+
+    font-size: 0.85rem;
+
+    font-family: inherit;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.profile-form-group input:focus,
+.grading-form-group input:focus,
+.grading-form-group textarea:focus {
+    outline: none;
+
+    border-color: #0c4827;
+
+    box-shadow:
+        0 0 0 3px rgba(12, 72, 39, 0.1);
+}
+
+
+.profile-form-group input:disabled {
+    background-color: var(--disabled-bg);
+
+    color: var(--text-muted);
+
+    cursor: not-allowed;
+}
+
+
+.input-disabled {
+    background-color: var(--disabled-bg) !important;
+
+    color: var(--text-muted) !important;
+
+    cursor: not-allowed;
+
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   PASSWORD ACCORDION
+========================================================= */
+
+.password-section {
+    border: 1px solid #e2e8f0;
+
+    border-radius: 8px;
+
+    background-color: var(--white);
+
+    overflow: hidden;
+
+    transition: border-color 0.2s ease;
+}
+
+
+.password-section.open {
+    border-color: #0c4827;
+}
+
+
+.password-toggle-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 0.85rem 1rem;
+
+    background-color: var(--light-gray);
+
+    cursor: pointer;
+
+    user-select: none;
+
+    transition: background-color 0.2s ease;
+}
+
+
+.password-toggle-header:hover {
+    background-color: #f1f5f9;
+}
+
+
+.password-toggle-header h4 {
+    font-size: 0.85rem;
+
+    font-weight: 600;
+
+    color: var(--text-primary);
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.5rem;
+}
+
+
+.password-toggle-header h4 i {
+    color: #0c4827;
+}
+
+
+.chevron-icon {
+    font-size: 0.8rem;
+
+    color: var(--text-muted);
+
+    transition: transform 0.25s ease;
+}
+
+
+.password-section.open .chevron-icon {
+    transform: rotate(180deg);
+}
+
+
+.password-fields {
+    display: none;
+
+    padding: 1rem;
+
+    flex-direction: column;
+
+    gap: 0.85rem;
+}
+
+
+.password-section.open .password-fields {
+    display: flex;
+}
+
+
+/* =========================================================
+   GRADING INFORMATION
+========================================================= */
+
+.grading-info-group {
+    font-size: 0.85rem;
+
+    color: #475569;
+
+    padding: 0.7rem;
+
+    background-color: var(--light-gray);
+
+    border-radius: 6px;
+
+    border: 1px solid #e2e8f0;
+}
+
+
+.grading-info-group strong {
+    color: var(--text-primary);
+
+    margin-right: 4px;
+}
+
+
+.grading-file-link {
+    color: var(--mpsu-green);
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    word-break: break-word;
+}
+
+
+.grading-file-link:hover {
+    text-decoration: underline;
+}
+
+
+.grading-form-row {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 1rem;
+}
+
+
+.grading-form-group textarea {
+    resize: vertical;
+
+    min-height: 100px;
+}
+
+
+/* =========================================================
+   MODAL FOOTERS
+========================================================= */
+
+.profile-modal-footer,
+.grading-modal-footer {
+    padding: 1rem 1.5rem;
+
+    border-top: 1px solid #e2e8f0;
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 0.75rem;
+
+    background-color: #fafafa;
+
+    flex-shrink: 0;
+}
+
+
+.btn-cancel,
+.btn-save {
+    padding: 0.5rem 1rem;
+
+    border-radius: 6px;
+
+    font-weight: 600;
+
+    font-size: 0.85rem;
+
+    cursor: pointer;
+}
+
+
+.btn-cancel {
+    background-color: var(--white);
+
+    border: 1px solid #cbd5e1;
+
+    color: #475569;
+}
+
+
+.btn-cancel:hover {
+    background-color: #f1f5f9;
+}
+
+
+.btn-save {
+    background-color: #0c4827;
+
+    color: var(--white);
+
+    border: none;
+
+    transition: background-color 0.2s ease;
+}
+
+
+.btn-save:hover {
+    background-color: #08331b;
+}
+
+
+.btn-save:disabled {
+    opacity: 0.6;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.toast-container {
+    position: fixed;
+
+    top: 100px;
+
+    right: 25px;
+
+    z-index: 3000;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+
+.toast {
+    min-width: 280px;
+
+    max-width: 400px;
+
+    padding: 12px 16px;
+
+    border-radius: 8px;
+
+    color: var(--white);
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.2);
+
+    transform: translateX(120%);
+
+    opacity: 0;
+
+    transition:
+        transform 0.3s ease,
+        opacity 0.3s ease;
+
+    font-size: 13px;
+}
+
+
+.toast.show {
+    transform: translateX(0);
+
+    opacity: 1;
+}
+
+
+.toast-success {
+    background-color: #166534;
+}
+
+
+.toast-error {
+    background-color: #b42318;
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .header {
+        padding: 0 1rem;
+    }
+
+
+    .user-info {
+        display: none;
+    }
+
+
+    .sidebar {
+        width: 80px;
+    }
+
+
+    .sidebar .view-label,
+    .sidebar .nav-item span {
+        display: none;
+    }
+
+
+    .sidebar .view-header {
+        justify-content: center;
+    }
+
+
+    .sidebar .nav-item {
+        justify-content: center;
+
+        padding-left: 10px;
+
+        padding-right: 10px;
+
+        gap: 0;
+    }
+
+
+    .main-content {
+        margin-left: 80px;
+
+        width: calc(100% - 80px);
+
+        padding: 25px 15px;
+    }
+
+
+    .main-content.expanded {
+        margin-left: 80px;
+
+        width: calc(100% - 80px);
+    }
+
+
+    .search-wrapper {
+        width: 100%;
+    }
+
+
+    .form-grid-2,
+    .grading-form-row {
+        grid-template-columns: 1fr;
+    }
+
+
+    .page-title {
+        font-size: 26px;
+    }
+
+
+    .toast-container {
+        left: 15px;
+
+        right: 15px;
+
+        top: 95px;
+    }
+
+
+    .toast {
+        min-width: auto;
+
+        width: 100%;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .header {
+        height: 75px;
+    }
+
+
+    .logo-box {
+        width: 48px;
+
+        height: 48px;
+    }
+
+
+    .main-title {
+        font-size: 0.8rem;
+    }
+
+
+    .sub-title {
+        font-size: 0.65rem;
+    }
+
+
+    .sidebar {
+        top: 85px;
+
+        height: calc(100vh - 95px);
+    }
+
+
+    .main-content {
+        margin-top: 5px;
+
+        padding: 20px 10px;
+    }
+
+
+    .page-title {
+        font-size: 24px;
+    }
+
+
+    .search-container {
+        padding: 10px 0;
+    }
+
+
+    .search-wrapper {
+        width: 100%;
+    }
+
+
+    .profile-modal-card,
+    .grading-modal-card {
+        width: 95%;
+
+        max-height: 92vh;
+    }
+
+
+    .form-grid-2,
+    .grading-form-row {
+        grid-template-columns: 1fr;
+    }
+
+
+    .profile-modal-footer,
+    .grading-modal-footer {
+        flex-direction: column;
+    }
+
+
+    .btn-cancel,
+    .btn-save {
+        width: 100%;
+    }
+
+
+    .avatar-upload-section {
+        flex-direction: column;
+
+        text-align: center;
+    }
+
+}
+
+</style>
+
 </head>
+
+
 <body>
 
-  <!-- Top Header Navigation -->
-  <header class="header">
-    <div class="header-left">
-      <div class="logo-box">
-        <img src="../images/logo.png" alt="MSPU logo">
-      </div> 
 
-      <div class="header-titles">
-        <div class="main-title">MPSU ETEEAP LMS</div>
-        <div class="sub-title">Mountain Province State University</div>
-      </div>
+<!-- =====================================================
+     HEADER
+====================================================== -->
+
+<header class="header">
+
+    <div class="header-left">
+
+        <div class="logo-box">
+
+            <img
+                src="../images/mpsu-logo.png"
+                alt="MPSU Logo">
+
+        </div>
+
+        <div class="header-titles">
+
+            <div class="main-title">
+                MPSU ETEEAP LMS
+            </div>
+
+            <div class="sub-title">
+                Mountain Province State University
+            </div>
+
+        </div>
+
     </div>
+
 
     <div class="header-right">
-      <div class="user-profile" id="userProfileBtn">
-        <div class="avatar-ring">
-          <img id="headerAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Macross Arsel Avatar" />
-        </div>
-        <div class="user-info">
-          <span class="user-name">Macross Arsel <i class="fa-solid fa-caret-down"></i></span>
-          <span class="user-role">Instructor</span>
-        </div>
-      </div>
-    </div>
-  </header>
 
-  <!-- Main Body Layout -->
-  <div class="app-body">
+        <button
+            class="icon-btn"
+            type="button"
+            title="Notifications"
+            onclick="goToNotifications()">
 
-    <!-- Deep Maroon Sidebar -->
-    <aside class="sidebar">
-      <div class="view-header">
-        <span class="view-label">View</span>
-        <button type="button" class="view-toggle-btn" id="viewToggle" title="Toggle Sidebar">
-            <i class="fa-regular fa-rectangle-list"></i>
+            <i class="fa-solid fa-bell"></i>
+
         </button>
-      </div>
 
-      <nav class="nav-menu">
-        <a href="dashboard.html" class="nav-item">
-          <i class="fa-solid fa-users"></i>
-          <span>Learners Progress</span>
-        </a>
 
-        <a href="class.html" class="nav-item">
-          <i class="fa-solid fa-layer-group"></i>
-          <span>Classes</span>
-        </a>
+        <div
+            class="user-profile"
+            onclick="openProfileModal()">
 
-        <!-- Active Menu Item: Submissions -->
-        <a href="submissions.html" class="nav-item active">
-          <i class="fa-regular fa-folder"></i>
-          <span>Submission</span>
-        </a>
+            <div class="avatar-ring">
 
-        <a href="notification.html" class="nav-item">
-          <i class="fa-regular fa-bell"></i>
-          <span>Notification</span>
-        </a>
+                <img
+                    id="headerAvatar"
+                    src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=100&q=80"
+                    alt="Profile">
 
-        <!-- Logout Item Pushed To Bottom -->
-        <a href="logout.html" class="nav-item logout-bottom">
-          <i class="fa-solid fa-arrow-right-from-bracket"></i>
-          <span>Logout</span>
-        </a>
-      </nav>
+            </div>
+
+
+            <div class="user-info">
+
+                <span
+                    class="user-name"
+                    id="headerUserName">
+                    Instructor
+                </span>
+
+                <span class="user-role">
+                    Instructor
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     APP BODY
+====================================================== -->
+
+<div class="app-body">
+
+
+    <!-- =================================================
+         SIDEBAR
+    ================================================== -->
+
+    <aside
+        class="sidebar"
+        id="sidebar">
+
+
+        <div class="view-header">
+
+            <span class="view-label">
+                Instructor Menu
+            </span>
+
+
+            <button
+                class="view-toggle-btn"
+                type="button"
+                onclick="toggleSidebar()"
+                title="Toggle Sidebar">
+
+                <i
+                    class="fa-solid fa-bars"
+                    id="sidebarToggleIcon">
+                </i>
+
+            </button>
+
+        </div>
+
+
+        <nav class="nav-menu">
+
+
+            <a
+                href="dashboard.html"
+                class="nav-item">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a
+                href="class.html"
+                class="nav-item">
+
+                <i class="fa-solid fa-book-open"></i>
+
+                <span>
+                    Classes
+                </span>
+
+            </a>
+
+
+            <a
+                href="submissions.html"
+                class="nav-item active">
+
+                <i class="fa-solid fa-file-arrow-up"></i>
+
+                <span>
+                    Submissions
+                </span>
+
+            </a>
+
+
+            <a
+                href="notification.html"
+                class="nav-item">
+
+                <i class="fa-solid fa-bell"></i>
+
+                <span>
+                    Notifications
+                </span>
+
+            </a>
+
+
+            <a
+                href="#"
+                class="nav-item"
+                onclick="openProfileModal(); return false;">
+
+                <i class="fa-solid fa-user"></i>
+
+                <span>
+                    Profile
+                </span>
+
+            </a>
+
+
+            <a
+                href="logout.html"
+                class="nav-item logout-bottom"
+                onclick="handleLogout(event)">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>
+                    Logout
+                </span>
+
+            </a>
+
+        </nav>
+
     </aside>
 
-    <!-- Content Area -->
-    <main class="main-content">
-      <h1 class="page-title">Submissions</h1>
 
-      <!-- Top Search Control -->
-      <div class="search-container">
-        <div class="search-wrapper">
-          <div class="search-icon-box">
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </div>
-          <div class="dropdown-input-wrapper">
-            <span class="dropdown-label">dropdown</span>
-            <div class="input-with-arrow">
-              <input type="text" id="searchInput" placeholder="Search submission..." />
-              <i class="fa-solid fa-chevron-down arrow-icon"></i>
+    <!-- =================================================
+         MAIN CONTENT
+    ================================================== -->
+
+    <main
+        class="main-content"
+        id="mainContent">
+
+
+        <h1 class="page-title">
+            Submissions
+        </h1>
+
+
+        <p class="page-subtitle">
+            Review learner activities and manage submitted work.
+        </p>
+
+
+        <!-- Search -->
+
+        <div class="search-container">
+
+            <div class="search-wrapper">
+
+                <div class="search-icon-box">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                </div>
+
+
+                <div class="dropdown-input-wrapper">
+
+                    <span class="dropdown-label">
+                        search
+                    </span>
+
+
+                    <div class="input-with-arrow">
+
+                        <input
+                            type="text"
+                            id="searchInput"
+                            placeholder="Search submissions..."
+                            autocomplete="off">
+
+                    </div>
+
+                </div>
+
             </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- Main Bordered Card Container -->
-      <div class="table-card">
-        <table class="submissions-table">
-          <thead>
-            <tr>
-              <th>Student ID</th>
-              <th>Learner Name</th>
-              <th>Class Code</th>
-              <th>Module / Activity</th>
-              <th>Date Submitted</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="submissionsTbody">
-            <!-- Dynamic Submissions Rows Render Here -->
-          </tbody>
-        </table>
-      </div>
+        </div>
+
+
+        <!-- =================================================
+             SUBMISSIONS TABLE
+        ================================================== -->
+
+        <div class="table-card">
+
+            <table class="submissions-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Learner ID
+                        </th>
+
+                        <th>
+                            Learner Name
+                        </th>
+
+                        <th>
+                            Class
+                        </th>
+
+                        <th>
+                            Module
+                        </th>
+
+                        <th>
+                            Submitted
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="submissionsTableBody">
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            class="empty-row">
+
+                            <i class="fa-solid fa-spinner fa-spin"></i>
+
+                            Loading submissions...
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
     </main>
 
-  </div>
+</div>
 
-  <!-- INSTRUCTOR PROFILE SETTINGS MODAL -->
-  <div class="profile-modal-overlay" id="profileModalOverlay">
+
+<!-- =====================================================
+     PROFILE MODAL
+====================================================== -->
+
+<div
+    class="profile-modal-overlay"
+    id="profileModal">
+
+
     <div class="profile-modal-card">
-      
-      <!-- Modal Header -->
-      <div class="profile-modal-header">
-        <div>
-          <h3 class="profile-modal-title">Instructor Profile Settings</h3>
-        </div>
-        <button class="profile-modal-close" id="closeProfileModal" aria-label="Close">&times;</button>
-      </div>
 
-      <!-- Modal Body Form -->
-      <form id="profileSettingsForm">
+
+        <div class="profile-modal-header">
+
+            <div>
+
+                <div class="profile-modal-title">
+                    Profile Settings
+                </div>
+
+                <div class="profile-modal-subtitle">
+                    Manage your instructor account.
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="profile-modal-close"
+                onclick="closeProfileModal()">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+
         <div class="profile-modal-body">
-          
-          <!-- Photo Upload Section -->
-          <div class="avatar-upload-section">
-            <div class="avatar-upload-preview">
-              <img id="avatarPreview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Instructor Profile Picture">
-              <label for="avatarInput" class="avatar-edit-badge" title="Change Photo">
-                <i class="fa-solid fa-camera"></i>
-              </label>
-              <input type="file" id="avatarInput" accept="image/*" class="avatar-file-input">
-            </div>
-            <div class="avatar-upload-text">
-              <h4>Profile Photo</h4>
-            </div>
-          </div>
 
-          <!-- Read-Only Grid: Instructor ID & Full Name -->
-          <div class="form-grid-2">
-            <div class="profile-form-group">
-              <label for="instructorId">Instructor ID</label>
-              <input type="text" id="instructorId" value="INST-2024-008" disabled class="input-disabled">
-            </div>
-            <div class="profile-form-group">
-              <label for="instructorName">Full Name</label>
-              <input type="text" id="instructorName" value="Macross Arsel" disabled class="input-disabled">
-            </div>
-          </div>
 
-          <!-- Editable Fields: Email & Phone -->
-          <div class="profile-form-group">
-            <label for="instructorEmail">Email Address</label>
-            <input type="email" id="instructorEmail" value="macross.arsel@mpsu.edu.ph" required>
-          </div>
+            <!-- Avatar -->
 
-          <div class="profile-form-group">
-            <label for="instructorPhone">Mobile Number</label>
-            <input type="tel" id="instructorPhone" value="+63 917 123 4567" placeholder="+63 9XX XXX XXXX" required>
-          </div>
+            <div class="avatar-upload-section">
 
-          <!-- Optional Change Password Accordion -->
-          <div class="password-section" id="passwordSection">
-            <div class="password-toggle-header" id="passwordToggleBtn">
-              <h4><i class="fa-solid fa-lock"></i> Change Password (Optional)</h4>
-              <i class="fa-solid fa-chevron-down chevron-icon"></i>
+
+                <div class="avatar-upload-preview">
+
+                    <img
+                        id="profileAvatar"
+                        src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=200&q=80"
+                        alt="Profile Photo">
+
+
+                    <label
+                        class="avatar-edit-badge"
+                        for="avatarFile">
+
+                        <i class="fa-solid fa-camera"></i>
+
+                    </label>
+
+
+                    <input
+                        type="file"
+                        id="avatarFile"
+                        class="avatar-file-input"
+                        accept="image/*">
+
+                </div>
+
+
+                <div class="avatar-upload-text">
+
+                    <h4>
+                        Profile Photo
+                    </h4>
+
+                    <p>
+                        Photo preview only.
+                    </p>
+
+                    <p>
+                        Profile photo storage is not connected to the database yet.
+                    </p>
+
+                </div>
+
             </div>
-            <div class="password-fields">
-              <div class="profile-form-group">
-                <label for="currentPassword">Current Password</label>
-                <input type="password" id="currentPassword" placeholder="Enter current password">
-              </div>
-              <div class="profile-form-group">
-                <label for="newPassword">New Password</label>
-                <input type="password" id="newPassword" placeholder="Enter new password (min. 6 characters)">
-              </div>
-              <div class="profile-form-group">
-                <label for="confirmPassword">Confirm New Password</label>
-                <input type="password" id="confirmPassword" placeholder="Confirm new password">
-              </div>
-            </div>
-          </div>
+
+
+            <!-- Profile Form -->
+
+            <form
+                id="profileForm"
+                onsubmit="saveProfile(event)">
+
+
+                <div class="form-grid-2">
+
+
+                    <div class="profile-form-group">
+
+                        <label for="profileName">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="profileName"
+                            disabled
+                            class="input-disabled">
+
+                    </div>
+
+
+                    <div class="profile-form-group">
+
+                        <label for="profileSchoolId">
+                            Instructor ID
+                        </label>
+
+                        <input
+                            type="text"
+                            id="profileSchoolId"
+                            disabled
+                            class="input-disabled">
+
+                    </div>
+
+
+                    <div class="profile-form-group">
+
+                        <label for="profileEmail">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            id="profileEmail"
+                            required>
+
+                    </div>
+
+
+                    <div class="profile-form-group">
+
+                        <label for="profileContact">
+                            Contact
+                        </label>
+
+                        <input
+                            type="text"
+                            id="profileContact">
+
+                    </div>
+
+
+                    <div class="profile-form-group">
+
+                        <label for="profileProgram">
+                            Program
+                        </label>
+
+                        <input
+                            type="text"
+                            id="profileProgram"
+                            disabled
+                            class="input-disabled">
+
+                    </div>
+
+
+                    <div class="profile-form-group">
+
+                        <label for="profileRole">
+                            Role
+                        </label>
+
+                        <input
+                            type="text"
+                            id="profileRole"
+                            value="Instructor"
+                            disabled
+                            class="input-disabled">
+
+                    </div>
+
+                </div>
+
+
+                <!-- Password -->
+
+                <div
+                    class="password-section"
+                    id="passwordSection">
+
+
+                    <div
+                        class="password-toggle-header"
+                        onclick="togglePasswordSection()">
+
+
+                        <h4>
+
+                            <i class="fa-solid fa-lock"></i>
+
+                            Change Password
+
+                        </h4>
+
+
+                        <i
+                            class="fa-solid fa-chevron-down chevron-icon">
+                        </i>
+
+                    </div>
+
+
+                    <div class="password-fields">
+
+
+                        <div class="profile-form-group">
+
+                            <label for="currentPassword">
+                                Current Password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="currentPassword"
+                                autocomplete="current-password">
+
+                        </div>
+
+
+                        <div class="profile-form-group">
+
+                            <label for="newPassword">
+                                New Password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="newPassword"
+                                minlength="8"
+                                autocomplete="new-password">
+
+                        </div>
+
+
+                        <div class="profile-form-group">
+
+                            <label for="confirmPassword">
+                                Confirm New Password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                minlength="8"
+                                autocomplete="new-password">
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="btn-save"
+                            onclick="changePassword()">
+
+                            Change Password
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-modal-footer">
+
+
+                    <button
+                        type="button"
+                        class="btn-cancel"
+                        onclick="closeProfileModal()">
+
+                        Cancel
+
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="btn-save"
+                        id="saveProfileButton">
+
+                        Save Changes
+
+                    </button>
+
+                </div>
+
+
+            </form>
 
         </div>
-
-        <!-- Modal Footer Actions -->
-        <div class="profile-modal-footer">
-          <button type="button" class="btn-cancel" id="cancelProfileModal">Cancel</button>
-          <button type="submit" class="btn-save">Save Changes</button>
-        </div>
-      </form>
 
     </div>
-  </div>
 
-  <!-- GRADING / VIEW MODAL -->
-  <div class="grading-modal-overlay" id="gradingModalOverlay">
+</div>
+
+
+<!-- =====================================================
+     GRADING MODAL
+====================================================== -->
+
+<div
+    class="grading-modal-overlay"
+    id="gradingModal">
+
+
     <div class="grading-modal-card">
-      <div class="grading-modal-header">
-        <h3 id="gradingModalTitle">Grade Submission</h3>
-        <button type="button" class="grading-modal-close" id="closeGradingModal">&times;</button>
-      </div>
-      <form id="gradingForm">
-        <div class="grading-modal-body">
-          <input type="hidden" id="gradingSubmissionId" />
-          
-          <div class="grading-info-group">
-            <strong>Learner:</strong> <span id="modalLearnerName">--</span>
-          </div>
-          <div class="grading-info-group">
-            <strong>Module:</strong> <span id="modalModuleName">--</span>
-          </div>
-          <div class="grading-info-group">
-            <strong>Submitted File:</strong> 
-            <a id="modalFileLink" href="#" target="_blank" class="grading-file-link">--</a>
-          </div>
 
-          <div class="grading-form-row">
-            <div class="grading-form-group">
-              <label for="modalScore">Score:</label>
-              <input type="number" id="modalScore" min="0" max="100" required />
-            </div>
-            <div class="grading-form-group">
-              <label for="modalMaxScore">Maximum:</label>
-              <input type="number" id="modalMaxScore" value="100" disabled />
-            </div>
-          </div>
 
-          <div class="grading-form-group">
-            <label for="modalFeedback">Feedback:</label>
-            <textarea id="modalFeedback" rows="4" placeholder="Enter feedback here..."></textarea>
-          </div>
+        <div class="grading-modal-header">
+
+            <h3 id="gradingModalTitle">
+                Grade Submission
+            </h3>
+
+
+            <button
+                type="button"
+                class="grading-modal-close"
+                onclick="closeGradingModal()">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
         </div>
+
+
+        <div class="grading-modal-body">
+
+
+            <div class="grading-info-group">
+
+                <strong>
+                    Learner:
+                </strong>
+
+                <span id="gradingLearner">
+                    —
+                </span>
+
+            </div>
+
+
+            <div class="grading-info-group">
+
+                <strong>
+                    Class:
+                </strong>
+
+                <span id="gradingCourse">
+                    —
+                </span>
+
+            </div>
+
+
+            <div class="grading-info-group">
+
+                <strong>
+                    Module:
+                </strong>
+
+                <span id="gradingModule">
+                    —
+                </span>
+
+            </div>
+
+
+            <div class="grading-info-group">
+
+                <strong>
+                    File:
+                </strong>
+
+                <a
+                    href="#"
+                    id="gradingFile"
+                    class="grading-file-link"
+                    onclick="openCurrentSubmissionFile(event)">
+
+                    —
+
+                </a>
+
+            </div>
+
+
+            <div class="grading-form-row">
+
+
+                <div class="grading-form-group">
+
+                    <label for="modalScore">
+                        Score
+                    </label>
+
+                    <input
+                        type="number"
+                        id="modalScore"
+                        min="0"
+                        step="0.01"
+                        placeholder="0">
+
+                </div>
+
+
+                <div class="grading-form-group">
+
+                    <label for="modalMaxScore">
+                        Maximum Score
+                    </label>
+
+                    <input
+                        type="number"
+                        id="modalMaxScore"
+                        min="1"
+                        step="0.01"
+                        value="100">
+
+                </div>
+
+            </div>
+
+
+            <div class="grading-form-group">
+
+                <label for="modalFeedback">
+                    Feedback
+                </label>
+
+                <textarea
+                    id="modalFeedback"
+                    placeholder="Enter feedback for the learner..."></textarea>
+
+            </div>
+
+        </div>
+
 
         <div class="grading-modal-footer">
-          <button type="button" class="btn-cancel" id="cancelGradingModal">Cancel</button>
-          <button type="submit" class="btn-save" id="saveGradeBtn">Save Grade</button>
+
+
+            <button
+                type="button"
+                class="btn-cancel"
+                onclick="closeGradingModal()">
+
+                Close
+
+            </button>
+
+
+            <button
+                type="button"
+                class="btn-save"
+                id="saveGradeButton"
+                onclick="saveGrade()">
+
+                Save Grade
+
+            </button>
+
         </div>
-      </form>
+
     </div>
-  </div>
 
-  <div class="toast-container" id="toastContainer"></div>
+</div>
 
-  <script>
-    // Sidebar Toggle
-    const viewToggle = document.getElementById("viewToggle");
-    const sidebar = document.querySelector(".sidebar");
-    const mainContent = document.querySelector(".main-content");
-    
-    if (viewToggle) {
-      viewToggle.addEventListener("click", function () {
-        sidebar.classList.toggle("collapsed");
-        mainContent.classList.toggle("expanded");
-      });
+
+<!-- =====================================================
+     TOAST
+====================================================== -->
+
+<div
+    class="toast-container"
+    id="toastContainer">
+</div>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+====================================================== -->
+
+<script>
+
+/* =========================================================
+   API CONFIGURATION
+========================================================= */
+
+const API_BASE_URL = "http://127.0.0.1:8000/api";
+
+
+const authToken =
+    sessionStorage.getItem("token") ||
+    sessionStorage.getItem("authToken");
+
+
+/* =========================================================
+   GLOBAL VARIABLES
+========================================================= */
+
+let allSubmissions = [];
+
+let currentSubmission = null;
+
+
+/* =========================================================
+   DOM ELEMENTS
+========================================================= */
+
+const sidebar =
+    document.getElementById("sidebar");
+
+const mainContent =
+    document.getElementById("mainContent");
+
+const sidebarToggleIcon =
+    document.getElementById("sidebarToggleIcon");
+
+const submissionsTableBody =
+    document.getElementById("submissionsTableBody");
+
+const searchInput =
+    document.getElementById("searchInput");
+
+const profileModal =
+    document.getElementById("profileModal");
+
+const gradingModal =
+    document.getElementById("gradingModal");
+
+const passwordSection =
+    document.getElementById("passwordSection");
+
+
+/* =========================================================
+   AUTH CHECK
+========================================================= */
+
+function checkAuthentication() {
+
+    if (!authToken) {
+
+        showToast(
+            "You are not logged in. Please log in again.",
+            "error"
+        );
+
+        setTimeout(() => {
+
+            window.location.href =
+                "../index.html";
+
+        }, 1500);
+
+        return false;
     }
 
-    // Modal Elements - Profile
-    const userProfileBtn = document.getElementById("userProfileBtn");
-    const profileModalOverlay = document.getElementById("profileModalOverlay");
-    const closeProfileModal = document.getElementById("closeProfileModal");
-    const cancelProfileModal = document.getElementById("cancelProfileModal");
-    const avatarInput = document.getElementById("avatarInput");
-    const avatarPreview = document.getElementById("avatarPreview");
-    const headerAvatar = document.getElementById("headerAvatar");
-    const profileForm = document.getElementById("profileSettingsForm");
+    return true;
+}
 
-    // Password Accordion Elements
-    const passwordSection = document.getElementById("passwordSection");
-    const passwordToggleBtn = document.getElementById("passwordToggleBtn");
-    const currentPasswordInput = document.getElementById("currentPassword");
-    const newPasswordInput = document.getElementById("newPassword");
-    const confirmPasswordInput = document.getElementById("confirmPassword");
 
-    // Grading Modal Elements
-    const gradingModalOverlay = document.getElementById("gradingModalOverlay");
-    const closeGradingModal = document.getElementById("closeGradingModal");
-    const cancelGradingModal = document.getElementById("cancelGradingModal");
-    const gradingForm = document.getElementById("gradingForm");
-    const gradingSubmissionId = document.getElementById("gradingSubmissionId");
-    const modalLearnerName = document.getElementById("modalLearnerName");
-    const modalModuleName = document.getElementById("modalModuleName");
-    const modalFileLink = document.getElementById("modalFileLink");
-    const modalScore = document.getElementById("modalScore");
-    const modalFeedback = document.getElementById("modalFeedback");
-    const saveGradeBtn = document.getElementById("saveGradeBtn");
-    const gradingModalTitle = document.getElementById("gradingModalTitle");
+/* =========================================================
+   SAFE JSON RESPONSE
+========================================================= */
 
-    // Table Data State
-    let allSubmissions = [];
+async function parseJsonResponse(response) {
 
-    // Toast Notification Helper
-    function showToast(message, type = "success") {
-      const toastContainer = document.getElementById("toastContainer");
-      if (!toastContainer) return;
+    const text = await response.text();
 
-      const toast = document.createElement("div");
-      toast.className = `toast toast-${type}`;
-      
-      const iconClass = type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
-      toast.innerHTML = `<i class="fa-solid ${iconClass}"></i> <span>${message}</span>`;
-      
-      toastContainer.appendChild(toast);
+    if (!text) {
 
-      setTimeout(() => {
-        toast.classList.add("show");
-      }, 10);
+        return {
+            success: false,
+            message: `Server returned an empty response (${response.status}).`
+        };
 
-      setTimeout(() => {
-        toast.classList.remove("show");
-        setTimeout(() => toast.remove(), 300);
-      }, 3500);
     }
 
-    // Toggle Change Password Accordion
-    if (passwordToggleBtn) {
-      passwordToggleBtn.addEventListener("click", () => {
-        passwordSection.classList.toggle("open");
-      });
+
+    try {
+
+        return JSON.parse(text);
+
+    } catch (error) {
+
+        console.error(
+            "Invalid JSON response:",
+            text
+        );
+
+        return {
+            success: false,
+            message:
+                `Server returned an invalid response (${response.status}).`
+        };
+
     }
 
-    // Open Profile Modal
-    if (userProfileBtn) {
-      userProfileBtn.addEventListener("click", () => {
-        profileModalOverlay.classList.add("active");
-      });
-    }
+}
 
-    // Reset Password Fields
-    function resetPasswordFields() {
-      if (passwordSection) passwordSection.classList.remove("open");
-      if (currentPasswordInput) currentPasswordInput.value = "";
-      if (newPasswordInput) newPasswordInput.value = "";
-      if (confirmPasswordInput) confirmPasswordInput.value = "";
-    }
 
-    // Close Profile Modal
-    const closeModal = () => {
-      profileModalOverlay.classList.remove("active");
-      resetPasswordFields();
+/* =========================================================
+   AUTH HEADERS
+========================================================= */
+
+function getAuthHeaders() {
+
+    return {
+        "Authorization":
+            `Bearer ${authToken}`,
+
+        "Accept":
+            "application/json"
     };
 
-    if (closeProfileModal) closeProfileModal.addEventListener("click", closeModal);
-    if (cancelProfileModal) cancelProfileModal.addEventListener("click", closeModal);
+}
 
-    if (profileModalOverlay) {
-      profileModalOverlay.addEventListener("click", (e) => {
-        if (e.target === profileModalOverlay) closeModal();
-      });
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+        return "";
     }
 
-    // Avatar Image Preview
-    if (avatarInput) {
-      avatarInput.addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          if (file.size > 2 * 1024 * 1024) {
-            showToast("Image size exceeds 2MB limit", "error");
-            return;
-          }
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            avatarPreview.src = event.target.result;
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-    }
 
-    // Profile Form Submit
-    if (profileForm) {
-      profileForm.addEventListener("submit", (e) => {
-        e.preventDefault();
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
-        const email = document.getElementById("instructorEmail").value.trim();
-        const phone = document.getElementById("instructorPhone").value.trim();
 
-        if (!email || !phone) {
-          showToast("Please fill in all contact information", "error");
-          return;
-        }
+/* =========================================================
+   TOAST
+========================================================= */
 
-        const currentPass = currentPasswordInput.value.trim();
-        const newPass = newPasswordInput.value.trim();
-        const confirmPass = confirmPasswordInput.value.trim();
+function showToast(
+    message,
+    type = "success"
+) {
 
-        const isPasswordTouched = currentPass || newPass || confirmPass;
-
-        if (isPasswordTouched) {
-          if (!passwordSection.classList.contains("open")) {
-            passwordSection.classList.add("open");
-          }
-
-          if (!currentPass) {
-            showToast("Please enter your current password", "error");
-            currentPasswordInput.focus();
-            return;
-          }
-
-          if (!newPass) {
-            showToast("Please enter a new password", "error");
-            newPasswordInput.focus();
-            return;
-          }
-
-          if (newPass.length < 6) {
-            showToast("New password must be at least 6 characters long", "error");
-            newPasswordInput.focus();
-            return;
-          }
-
-          if (newPass !== confirmPass) {
-            showToast("New passwords do not match", "error");
-            confirmPasswordInput.focus();
-            return;
-          }
-        }
-
-        headerAvatar.src = avatarPreview.src;
-        showToast("Profile settings saved successfully!", "success");
-        closeModal();
-      });
-    }
-
-        // ------------------------------------------------------------------
-    // LARAVEL BACKEND INTEGRATION FOR SUBMISSIONS
-    // ------------------------------------------------------------------
-
-    const API_BASE_URL = "http://localhost:8000/api";
-
-    // Get login token
-    const authToken = sessionStorage.getItem("authToken");
-
-    // Store all submissions here
-    let allSubmissions = [];
-
-    // ---------------------------------------------------------------
-    // FETCH SUBMISSIONS
-    // ---------------------------------------------------------------
-
-    async function fetchSubmissions() {
-
-      const tbody =
-        document.getElementById("submissionsTbody");
-
-      if (!authToken) {
-
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="7"
-                style="text-align:center; padding:30px; color:#b42318;">
-              You are not logged in. Please log in again.
-            </td>
-          </tr>
-        `;
-
-        return;
-      }
-
-      try {
-
-        const response = await fetch(
-          `${API_BASE_URL}/instructor/submissions`,
-          {
-            method: "GET",
-
-            headers: {
-              "Accept": "application/json",
-              "Authorization": `Bearer ${authToken}`
-            }
-          }
+    const container =
+        document.getElementById(
+            "toastContainer"
         );
 
-        const data = await response.json();
-
-        if (!response.ok || !data.success) {
 
-          throw new Error(
-            data.message ||
-            "Failed to load submissions."
-          );
-        }
+    const toast =
+        document.createElement("div");
 
-        // IMPORTANT:
-        // Our Laravel API returns "submissions"
-        allSubmissions =
-          Array.isArray(data.submissions)
-            ? data.submissions
-            : [];
 
-        renderSubmissionsTable(allSubmissions);
+    toast.className =
+        `toast toast-${type}`;
 
-      } catch (error) {
 
-        console.error(
-          "Error loading submissions:",
-          error
-        );
+    const icon =
+        type === "success"
+            ? "fa-circle-check"
+            : "fa-circle-exclamation";
 
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="7"
-                style="text-align:center; padding:30px; color:#b42318;">
-              Error loading submissions.
-            </td>
-          </tr>
-        `;
 
-        showToast(
-          error.message ||
-          "Error loading submissions.",
-          "error"
-        );
-      }
-    }
+    toast.innerHTML = `
 
+        <i class="fa-solid ${icon}"></i>
 
-    // ---------------------------------------------------------------
-    // FORMAT DATE
-    // ---------------------------------------------------------------
+        <span>
+            ${escapeHtml(message)}
+        </span>
 
-    function formatDate(dateValue) {
+    `;
 
-      if (!dateValue) {
-        return "N/A";
-      }
 
-      const date = new Date(dateValue);
+    container.appendChild(toast);
 
-      if (Number.isNaN(date.getTime())) {
-        return dateValue;
-      }
 
-      return date.toLocaleDateString(
-        "en-US",
-        {
-          month: "short",
-          day: "numeric",
-          year: "numeric"
-        }
-      );
-    }
+    setTimeout(() => {
 
+        toast.classList.add("show");
 
-    // ---------------------------------------------------------------
-    // RENDER SUBMISSIONS TABLE
-    // ---------------------------------------------------------------
+    }, 10);
 
-    function renderSubmissionsTable(submissions) {
 
-      const tbody =
-        document.getElementById("submissionsTbody");
+    setTimeout(() => {
 
-      tbody.innerHTML = "";
+        toast.classList.remove("show");
 
-      if (
-        !submissions ||
-        submissions.length === 0
-      ) {
 
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="7"
-                style="text-align:center; padding:30px;">
-              No submissions found.
-            </td>
-          </tr>
-        `;
+        setTimeout(() => {
 
-        return;
-      }
+            toast.remove();
 
+        }, 300);
 
-      submissions.forEach((item) => {
+    }, 3500);
 
-        const learner =
-          item.learner || {};
+}
 
-        const course =
-          item.course || {};
 
-        const module =
-          item.module || {};
+/* =========================================================
+   SIDEBAR
+========================================================= */
 
-        const grade =
-          item.grade || null;
+function toggleSidebar() {
 
+    sidebar.classList.toggle("collapsed");
 
-        const studentId =
-          learner.student_id || "N/A";
+    mainContent.classList.toggle("expanded");
 
-        const learnerName =
-          learner.name || "Unknown";
 
-        const classCode =
-          course.code || "N/A";
-
-        const moduleName =
-          module.name || "N/A";
-
-        const dateSubmitted =
-          formatDate(item.submitted_at);
-
-
-        let statusBadge = "";
-        let actionButton = "";
-
-
-        // -----------------------------------------------------------
-        // GRADED
-        // -----------------------------------------------------------
-
-        if (grade) {
-
-          const percentage =
-            grade.percentage ?? 0;
-
-          statusBadge = `
-            <span class="status-badge status-graded">
-              Graded (${percentage}%)
-            </span>
-          `;
-
-          actionButton = `
-            <button
-              type="button"
-              class="action-btn view-btn"
-              onclick="openGradingModal(${item.id})">
-
-              View
-
-            </button>
-          `;
-        }
-
-
-        // -----------------------------------------------------------
-        // NOT YET GRADED
-        // -----------------------------------------------------------
-
-        else {
-
-          statusBadge = `
-            <span class="status-badge status-pending">
-              Needs Grading
-            </span>
-          `;
-
-          actionButton = `
-            <button
-              type="button"
-              class="action-btn grade-btn"
-              onclick="openGradingModal(${item.id})">
-
-              Grade
-
-            </button>
-          `;
-        }
-
-
-        const tr =
-          document.createElement("tr");
-
-
-        tr.innerHTML = `
-
-          <td>
-            ${studentId}
-          </td>
-
-          <td class="font-medium">
-            ${learnerName}
-          </td>
-
-          <td>
-            ${classCode}
-          </td>
-
-          <td>
-            ${moduleName}
-          </td>
-
-          <td>
-            ${dateSubmitted}
-          </td>
-
-          <td>
-            ${statusBadge}
-          </td>
-
-          <td>
-            ${actionButton}
-          </td>
-
-        `;
-
-
-        tbody.appendChild(tr);
-
-      });
-
-    }
-
-
-    // ---------------------------------------------------------------
-    // OPEN GRADING / VIEW MODAL
-    // ---------------------------------------------------------------
-
-    window.openGradingModal =
-      function(submissionId) {
-
-        const item =
-          allSubmissions.find(
-            submission =>
-              Number(submission.id) ===
-              Number(submissionId)
-          );
-
-        if (!item) {
-
-          showToast(
-            "Submission not found.",
-            "error"
-          );
-
-          return;
-        }
-
-
-        const learner =
-          item.learner || {};
-
-        const module =
-          item.module || {};
-
-        const grade =
-          item.grade || null;
-
-
-        // Submission ID
-        gradingSubmissionId.value =
-          item.id;
-
-
-        // Learner
-        modalLearnerName.textContent =
-          learner.name || "N/A";
-
-
-        // Module
-        modalModuleName.textContent =
-          module.name || "N/A";
-
-
-        // File
-        const fileName =
-          item.file_name || "Submitted File";
-
-        modalFileLink.textContent =
-          fileName;
-
-
-        /*
-         * We do NOT directly put the API URL in href
-         * because the file endpoint requires Authorization.
-         *
-         * The View File button will be handled below.
-         */
-
-        modalFileLink.href = "#";
-
-
-        modalFileLink.onclick =
-          function(event) {
-
-            event.preventDefault();
-
-            openSubmissionFile(
-              item.id
-            );
-          };
-
-
-        // -----------------------------------------------------------
-        // IF ALREADY GRADED
-        // -----------------------------------------------------------
-
-        if (grade) {
-
-          gradingModalTitle.textContent =
-            "View Submission";
-
-
-          modalScore.value =
-            grade.score ?? "";
-
-
-          modalFeedback.value =
-            grade.feedback ?? "";
-
-
-          modalScore.disabled =
-            true;
-
-          modalFeedback.disabled =
-            true;
-
-
-          saveGradeBtn.style.display =
-            "none";
-        }
-
-
-        // -----------------------------------------------------------
-        // IF NOT GRADED
-        // -----------------------------------------------------------
-
-        else {
-
-          gradingModalTitle.textContent =
-            "Grade Submission";
-
-
-          modalScore.value =
-            "";
-
-
-          modalFeedback.value =
-            "";
-
-
-          modalScore.disabled =
-            false;
-
-          modalFeedback.disabled =
-            false;
-
-
-          saveGradeBtn.style.display =
-            "inline-block";
-        }
-
-
-        gradingModalOverlay.classList.add(
-          "active"
-        );
-      };
-
-
-    // ---------------------------------------------------------------
-    // OPEN SUBMITTED FILE
-    // ---------------------------------------------------------------
-
-    async function openSubmissionFile(
-      submissionId
+    if (
+        sidebar.classList.contains(
+            "collapsed"
+        )
     ) {
 
-      if (!authToken) {
+        sidebarToggleIcon.className =
+            "fa-solid fa-chevron-right";
 
-        showToast(
-          "You are not logged in.",
-          "error"
+    } else {
+
+        sidebarToggleIcon.className =
+            "fa-solid fa-bars";
+
+    }
+
+}
+
+
+/* =========================================================
+   NOTIFICATIONS
+========================================================= */
+
+function goToNotifications() {
+
+    window.location.href =
+        "notification.html";
+
+}
+
+
+/* =========================================================
+   LOAD SUBMISSIONS
+========================================================= */
+
+async function loadSubmissions() {
+
+    if (!checkAuthentication()) {
+        return;
+    }
+
+
+    submissionsTableBody.innerHTML = `
+
+        <tr>
+
+            <td
+                colspan="7"
+                class="empty-row">
+
+                <i class="fa-solid fa-spinner fa-spin"></i>
+
+                Loading submissions...
+
+            </td>
+
+        </tr>
+
+    `;
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/instructor/submissions`,
+                {
+                    method: "GET",
+
+                    headers:
+                        getAuthHeaders()
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            handleUnauthorized();
+
+            return;
+        }
+
+
+        const data =
+            await parseJsonResponse(
+                response
+            );
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Failed to load submissions."
+            );
+
+        }
+
+
+        allSubmissions =
+            Array.isArray(
+                data.submissions
+            )
+                ? data.submissions
+                : [];
+
+
+        renderSubmissions(
+            allSubmissions
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Load submissions error:",
+            error
+        );
+
+
+        submissionsTableBody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="empty-row">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    ${escapeHtml(
+                        error.message ||
+                        "Unable to load submissions."
+                    )}
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDER SUBMISSIONS
+========================================================= */
+
+function renderSubmissions(
+    submissions
+) {
+
+    if (
+        !submissions ||
+        submissions.length === 0
+    ) {
+
+        submissionsTableBody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="empty-row">
+
+                    <i class="fa-solid fa-folder-open"></i>
+
+                    No submissions found.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+    }
+
+
+    submissionsTableBody.innerHTML =
+        submissions.map(
+            (item) => {
+
+                const learner =
+                    item.learner || {};
+
+
+                const course =
+                    item.course || {};
+
+
+                const module =
+                    item.module || {};
+
+
+                const grade =
+                    item.grade || null;
+
+
+                /*
+                 * The users table uses school_id.
+                 * There is no student_id field.
+                 */
+
+                const learnerId =
+                    learner.school_id || "—";
+
+
+                const learnerName =
+                    learner.name || "Unknown Learner";
+
+
+                const courseName =
+                    course.name ||
+                    course.code ||
+                    "—";
+
+
+                const moduleName =
+                    module.name ||
+                    module.title ||
+                    "—";
+
+
+                const submittedAt =
+                    formatDate(
+                        item.submitted_at
+                    );
+
+
+                const isGraded =
+                    !!grade ||
+                    item.status === "graded";
+
+
+                const statusHtml =
+                    isGraded
+
+                        ? `
+                            <span class="status-badge status-graded">
+                                Graded
+                            </span>
+                          `
+
+                        : `
+                            <span class="status-badge status-pending">
+                                Needs Grading
+                            </span>
+                          `;
+
+
+                const actionHtml =
+                    isGraded
+
+                        ? `
+                            <button
+                                type="button"
+                                class="action-btn view-btn"
+                                onclick="openGradingModal(${Number(item.id)}, true)">
+
+                                <i class="fa-solid fa-eye"></i>
+                                View
+
+                            </button>
+                          `
+
+                        : `
+                            <button
+                                type="button"
+                                class="action-btn grade-btn"
+                                onclick="openGradingModal(${Number(item.id)}, false)">
+
+                                <i class="fa-solid fa-pen-to-square"></i>
+                                Grade
+
+                            </button>
+                          `;
+
+
+                return `
+
+                    <tr>
+
+                        <td>
+                            ${escapeHtml(
+                                learnerId
+                            )}
+                        </td>
+
+                        <td class="font-medium">
+                            ${escapeHtml(
+                                learnerName
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                courseName
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                moduleName
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                submittedAt
+                            )}
+                        </td>
+
+                        <td>
+                            ${statusHtml}
+                        </td>
+
+                        <td>
+                            ${actionHtml}
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+/* =========================================================
+   DATE FORMAT
+========================================================= */
+
+function formatDate(
+    dateValue
+) {
+
+    if (!dateValue) {
+        return "—";
+    }
+
+
+    const date =
+        new Date(dateValue);
+
+
+    if (Number.isNaN(
+        date.getTime()
+    )) {
+
+        return String(dateValue);
+
+    }
+
+
+    return date.toLocaleString(
+        "en-US",
+        {
+            year: "numeric",
+
+            month: "short",
+
+            day: "numeric",
+
+            hour: "numeric",
+
+            minute: "2-digit"
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+function filterSubmissions() {
+
+    const keyword =
+        searchInput.value
+            .trim()
+            .toLowerCase();
+
+
+    if (!keyword) {
+
+        renderSubmissions(
+            allSubmissions
         );
 
         return;
-      }
-
-
-      try {
-
-        const response =
-          await fetch(
-            `${API_BASE_URL}/instructor/submissions/${submissionId}/file`,
-            {
-              method: "GET",
-
-              headers: {
-                "Authorization":
-                  `Bearer ${authToken}`
-              }
-            }
-          );
-
-
-        if (!response.ok) {
-
-          throw new Error(
-            "Unable to open submission file."
-          );
-        }
-
-
-        const blob =
-          await response.blob();
-
-
-        const fileUrl =
-          URL.createObjectURL(blob);
-
-
-        window.open(
-          fileUrl,
-          "_blank"
-        );
-
-
-        // Clean up URL later
-        setTimeout(
-          () => {
-            URL.revokeObjectURL(
-              fileUrl
-            );
-          },
-          60000
-        );
-
-
-      } catch (error) {
-
-        console.error(
-          "File error:",
-          error
-        );
-
-        showToast(
-          error.message ||
-          "Unable to open file.",
-          "error"
-        );
-      }
     }
 
 
-    // ---------------------------------------------------------------
-    // CLOSE GRADING MODAL
-    // ---------------------------------------------------------------
-
-    const closeGradingModalHandler =
-      () => {
-
-        gradingModalOverlay.classList.remove(
-          "active"
-        );
-
-        gradingForm.reset();
-
-        modalScore.disabled =
-          false;
-
-        modalFeedback.disabled =
-          false;
-
-        saveGradeBtn.style.display =
-          "inline-block";
-      };
-
-
-    if (closeGradingModal) {
-
-      closeGradingModal.addEventListener(
-        "click",
-        closeGradingModalHandler
-      );
-
-    }
-
-
-    if (cancelGradingModal) {
-
-      cancelGradingModal.addEventListener(
-        "click",
-        closeGradingModalHandler
-      );
-
-    }
-
-
-    if (gradingModalOverlay) {
-
-      gradingModalOverlay.addEventListener(
-        "click",
-        (event) => {
-
-          if (
-            event.target ===
-            gradingModalOverlay
-          ) {
-
-            closeGradingModalHandler();
-
-          }
-
-        }
-      );
-
-    }
-
-
-    // ---------------------------------------------------------------
-    // SAVE GRADE
-    // ---------------------------------------------------------------
-
-    if (gradingForm) {
-
-      gradingForm.addEventListener(
-        "submit",
-        async (event) => {
-
-          event.preventDefault();
-
-
-          const submissionId =
-            gradingSubmissionId.value;
-
-
-          const score =
-            Number(
-              modalScore.value
-            );
-
-
-          const maxScore =
-            Number(
-              document.getElementById(
-                "modalMaxScore"
-              ).value
-            );
-
-
-          const feedback =
-            modalFeedback.value.trim();
-
-
-          // Validate score
-          if (
-            !Number.isFinite(score) ||
-            score < 0
-          ) {
-
-            showToast(
-              "Please enter a valid score.",
-              "error"
-            );
-
-            return;
-          }
-
-
-          if (
-            !Number.isFinite(maxScore) ||
-            maxScore <= 0
-          ) {
-
-            showToast(
-              "Maximum score must be greater than 0.",
-              "error"
-            );
-
-            return;
-          }
-
-
-          if (
-            score > maxScore
-          ) {
-
-            showToast(
-              "Score cannot be greater than maximum score.",
-              "error"
-            );
-
-            return;
-          }
-
-
-          try {
-
-            saveGradeBtn.disabled =
-              true;
-
-            saveGradeBtn.textContent =
-              "Saving...";
-
-
-            const response =
-              await fetch(
-                `${API_BASE_URL}/instructor/submissions/${submissionId}/grade`,
-                {
-                  method: "POST",
-
-                  headers: {
-                    "Content-Type":
-                      "application/json",
-
-                    "Accept":
-                      "application/json",
-
-                    "Authorization":
-                      `Bearer ${authToken}`
-                  },
-
-                  body: JSON.stringify({
-
-                    score:
-                      score,
-
-                    max_score:
-                      maxScore,
-
-                    feedback:
-                      feedback || null
-
-                  })
-                }
-              );
-
-
-            const data =
-              await response.json();
-
-
-            if (
-              !response.ok ||
-              !data.success
-            ) {
-
-              throw new Error(
-                data.message ||
-                "Failed to save grade."
-              );
-            }
-
-
-            showToast(
-              "Grade submitted successfully!",
-              "success"
-            );
-
-
-            closeGradingModalHandler();
-
-
-            // Reload table
-            await fetchSubmissions();
-
-
-          } catch (error) {
-
-            console.error(
-              "Grade error:",
-              error
-            );
-
-            showToast(
-              error.message ||
-              "Failed to save grade.",
-              "error"
-            );
-
-          } finally {
-
-            saveGradeBtn.disabled =
-              false;
-
-            saveGradeBtn.textContent =
-              "Save Grade";
-          }
-
-        }
-      );
-
-    }
-
-
-    // ---------------------------------------------------------------
-    // SEARCH SUBMISSIONS
-    // ---------------------------------------------------------------
-
-    const searchInput =
-      document.getElementById(
-        "searchInput"
-      );
-
-
-    if (searchInput) {
-
-      searchInput.addEventListener(
-        "input",
-        (event) => {
-
-          const query =
-            event.target.value
-              .toLowerCase()
-              .trim();
-
-
-          if (!query) {
-
-            renderSubmissionsTable(
-              allSubmissions
-            );
-
-            return;
-          }
-
-
-          const filtered =
-            allSubmissions.filter(
-              (item) => {
+    const filtered =
+        allSubmissions.filter(
+            (item) => {
 
                 const learner =
-                  item.learner || {};
+                    item.learner || {};
+
 
                 const course =
-                  item.course || {};
+                    item.course || {};
+
 
                 const module =
-                  item.module || {};
+                    item.module || {};
 
 
                 const searchableText = [
 
-                  learner.student_id,
+                    learner.school_id,
 
-                  learner.name,
+                    learner.name,
 
-                  course.code,
+                    learner.email,
 
-                  course.name,
+                    course.name,
 
-                  module.name,
+                    course.code,
 
-                  item.file_name,
+                    module.name,
 
-                  item.status
+                    module.title,
+
+                    item.file_name,
+
+                    item.status
 
                 ]
-                .filter(Boolean)
-                .join(" ")
-                .toLowerCase();
+                    .filter(Boolean)
+                    .join(" ")
+                    .toLowerCase();
 
 
-                return searchableText.includes(
-                  query
-                );
+                return searchableText
+                    .includes(keyword);
 
-              }
-            );
+            }
+        );
 
 
-          renderSubmissionsTable(
-            filtered
-          );
+    renderSubmissions(
+        filtered
+    );
 
-        }
-      );
+}
 
+
+searchInput.addEventListener(
+    "input",
+    filterSubmissions
+);
+
+
+/* =========================================================
+   FIND SUBMISSION
+========================================================= */
+
+function findSubmissionById(
+    submissionId
+) {
+
+    return allSubmissions.find(
+        (item) =>
+            Number(item.id) ===
+            Number(submissionId)
+    );
+
+}
+
+
+/* =========================================================
+   OPEN GRADING MODAL
+========================================================= */
+
+function openGradingModal(
+    submissionId,
+    viewOnly = false
+) {
+
+    const submission =
+        findSubmissionById(
+            submissionId
+        );
+
+
+    if (!submission) {
+
+        showToast(
+            "Submission could not be found.",
+            "error"
+        );
+
+        return;
     }
 
 
-    // ---------------------------------------------------------------
-    // LOAD DATA
-    // ---------------------------------------------------------------
+    currentSubmission =
+        submission;
 
-    document.addEventListener(
-      "DOMContentLoaded",
-      () => {
 
-        fetchSubmissions();
+    const learner =
+        submission.learner || {};
 
-      }
+
+    const course =
+        submission.course || {};
+
+
+    const module =
+        submission.module || {};
+
+
+    const grade =
+        submission.grade || null;
+
+
+    document.getElementById(
+        "gradingModalTitle"
+    ).textContent =
+        viewOnly
+            ? "View Grade"
+            : "Grade Submission";
+
+
+    document.getElementById(
+        "gradingLearner"
+    ).textContent =
+        learner.name || "Unknown Learner";
+
+
+    document.getElementById(
+        "gradingCourse"
+    ).textContent =
+        course.name ||
+        course.code ||
+        "—";
+
+
+    document.getElementById(
+        "gradingModule"
+    ).textContent =
+        module.name ||
+        module.title ||
+        "—";
+
+
+    const fileLink =
+        document.getElementById(
+            "gradingFile"
+        );
+
+
+    fileLink.textContent =
+        submission.file_name ||
+        "View submitted file";
+
+
+    fileLink.href = "#";
+
+
+    document.getElementById(
+        "modalScore"
+    ).value =
+        grade && grade.score !== undefined
+            ? grade.score
+            : "";
+
+
+    document.getElementById(
+        "modalMaxScore"
+    ).value =
+        grade && grade.max_score
+            ? grade.max_score
+            : 100;
+
+
+    document.getElementById(
+        "modalFeedback"
+    ).value =
+        grade && grade.feedback
+            ? grade.feedback
+            : "";
+
+
+    const scoreInput =
+        document.getElementById(
+            "modalScore"
+        );
+
+
+    const maxScoreInput =
+        document.getElementById(
+            "modalMaxScore"
+        );
+
+
+    const feedbackInput =
+        document.getElementById(
+            "modalFeedback"
+        );
+
+
+    const saveButton =
+        document.getElementById(
+            "saveGradeButton"
+        );
+
+
+    scoreInput.disabled =
+        viewOnly;
+
+
+    maxScoreInput.disabled =
+        viewOnly;
+
+
+    feedbackInput.disabled =
+        viewOnly;
+
+
+    saveButton.style.display =
+        viewOnly
+            ? "none"
+            : "inline-block";
+
+
+    gradingModal.classList.add(
+        "active"
     );
-  </script>
+
+}
+
+
+/* =========================================================
+   CLOSE GRADING MODAL
+========================================================= */
+
+function closeGradingModal() {
+
+    gradingModal.classList.remove(
+        "active"
+    );
+
+
+    currentSubmission =
+        null;
+
+}
+
+
+/* =========================================================
+   OPEN SUBMISSION FILE
+========================================================= */
+
+async function openCurrentSubmissionFile(
+    event
+) {
+
+    event.preventDefault();
+
+
+    if (!currentSubmission) {
+
+        showToast(
+            "No submission selected.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    await openSubmissionFile(
+        currentSubmission.id
+    );
+
+}
+
+
+/* =========================================================
+   OPEN SUBMISSION FILE
+========================================================= */
+
+async function openSubmissionFile(
+    submissionId
+) {
+
+    if (!authToken) {
+
+        showToast(
+            "Authentication token is missing.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    /*
+     * Open a blank tab immediately.
+     * This reduces the chance that the browser
+     * blocks the new window after the async request.
+     */
+
+    const newWindow =
+        window.open(
+            "",
+            "_blank"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/instructor/submissions/${submissionId}/file`,
+                {
+                    method: "GET",
+
+                    headers:
+                        getAuthHeaders()
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            if (newWindow) {
+                newWindow.close();
+            }
+
+            handleUnauthorized();
+
+            return;
+        }
+
+
+        if (!response.ok) {
+
+            if (newWindow) {
+                newWindow.close();
+            }
+
+            const data =
+                await parseJsonResponse(
+                    response
+                );
+
+
+            throw new Error(
+                data.message ||
+                "Unable to open submitted file."
+            );
+
+        }
+
+
+        const blob =
+            await response.blob();
+
+
+        const fileUrl =
+            URL.createObjectURL(
+                blob
+            );
+
+
+        if (newWindow) {
+
+            newWindow.location.href =
+                fileUrl;
+
+        } else {
+
+            /*
+             * Popup was blocked.
+             * Download/open through the current page.
+             */
+
+            const link =
+                document.createElement("a");
+
+            link.href =
+                fileUrl;
+
+            link.target =
+                "_blank";
+
+            link.rel =
+                "noopener";
+
+            document.body.appendChild(
+                link
+            );
+
+            link.click();
+
+            link.remove();
+
+        }
+
+
+        setTimeout(() => {
+
+            URL.revokeObjectURL(
+                fileUrl
+            );
+
+        }, 60000);
+
+
+    } catch (error) {
+
+        console.error(
+            "File opening error:",
+            error
+        );
+
+
+        if (newWindow) {
+            newWindow.close();
+        }
+
+
+        showToast(
+            error.message ||
+            "Unable to open the file.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SAVE GRADE
+========================================================= */
+
+async function saveGrade() {
+
+    if (!currentSubmission) {
+
+        showToast(
+            "No submission selected.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const score =
+        parseFloat(
+            document.getElementById(
+                "modalScore"
+            ).value
+        );
+
+
+    const maxScore =
+        parseFloat(
+            document.getElementById(
+                "modalMaxScore"
+            ).value
+        );
+
+
+    const feedback =
+        document.getElementById(
+            "modalFeedback"
+        ).value.trim();
+
+
+    if (
+        Number.isNaN(score) ||
+        score < 0
+    ) {
+
+        showToast(
+            "Please enter a valid score.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if (
+        Number.isNaN(maxScore) ||
+        maxScore <= 0
+    ) {
+
+        showToast(
+            "Maximum score must be greater than zero.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if (score > maxScore) {
+
+        showToast(
+            "Score cannot be greater than the maximum score.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const saveButton =
+        document.getElementById(
+            "saveGradeButton"
+        );
+
+
+    saveButton.disabled =
+        true;
+
+
+    saveButton.innerHTML = `
+
+        <i class="fa-solid fa-spinner fa-spin"></i>
+
+        Saving...
+
+    `;
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/instructor/submissions/${currentSubmission.id}/grade`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        ...getAuthHeaders(),
+
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        score: score,
+
+                        max_score: maxScore,
+
+                        feedback:
+                            feedback || null
+                    })
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            handleUnauthorized();
+
+            return;
+        }
+
+
+        const data =
+            await parseJsonResponse(
+                response
+            );
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Unable to save grade."
+            );
+
+        }
+
+
+        showToast(
+            data.message ||
+            "Grade saved successfully.",
+            "success"
+        );
+
+
+        closeGradingModal();
+
+
+        await loadSubmissions();
+
+
+    } catch (error) {
+
+        console.error(
+            "Save grade error:",
+            error
+        );
+
+
+        showToast(
+            error.message ||
+            "Unable to save grade.",
+            "error"
+        );
+
+    } finally {
+
+        saveButton.disabled =
+            false;
+
+        saveButton.innerHTML =
+            "Save Grade";
+
+    }
+
+}
+
+
+/* =========================================================
+   PROFILE MODAL
+========================================================= */
+
+async function openProfileModal() {
+
+    profileModal.classList.add(
+        "active"
+    );
+
+
+    await loadProfile();
+
+}
+
+
+/* =========================================================
+   CLOSE PROFILE MODAL
+========================================================= */
+
+function closeProfileModal() {
+
+    profileModal.classList.remove(
+        "active"
+    );
+
+}
+
+
+/* =========================================================
+   LOAD PROFILE
+========================================================= */
+
+async function loadProfile() {
+
+    if (!authToken) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/instructor/profile`,
+                {
+                    method: "GET",
+
+                    headers:
+                        getAuthHeaders()
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            handleUnauthorized();
+
+            return;
+        }
+
+
+        const data =
+            await parseJsonResponse(
+                response
+            );
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Unable to load profile."
+            );
+
+        }
+
+
+        const user =
+            data.user || {};
+
+
+        updateProfileUI(
+            user
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Profile loading error:",
+            error
+        );
+
+
+        showToast(
+            error.message ||
+            "Unable to load profile.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   UPDATE PROFILE UI
+========================================================= */
+
+function updateProfileUI(
+    user
+) {
+
+    const name =
+        user.name ||
+        "Instructor";
+
+
+    const email =
+        user.email ||
+        "";
+
+
+    const schoolId =
+        user.school_id ||
+        "";
+
+
+    const program =
+        user.program ||
+        "";
+
+
+    const contact =
+        user.contact ||
+        "";
+
+
+    const role =
+        user.role ||
+        "instructor";
+
+
+    document.getElementById(
+        "profileName"
+    ).value =
+        name;
+
+
+    document.getElementById(
+        "profileSchoolId"
+    ).value =
+        schoolId;
+
+
+    document.getElementById(
+        "profileEmail"
+    ).value =
+        email;
+
+
+    document.getElementById(
+        "profileContact"
+    ).value =
+        contact;
+
+
+    document.getElementById(
+        "profileProgram"
+    ).value =
+        program;
+
+
+    document.getElementById(
+        "profileRole"
+    ).value =
+        capitalizeFirstLetter(
+            role
+        );
+
+
+    /*
+     * Use textContent instead of innerHTML
+     * for the instructor name.
+     */
+
+    document.getElementById(
+        "headerUserName"
+    ).textContent =
+        name;
+
+}
+
+
+/* =========================================================
+   CAPITALIZE
+========================================================= */
+
+function capitalizeFirstLetter(
+    value
+) {
+
+    if (!value) {
+        return "";
+    }
+
+
+    return value.charAt(0).toUpperCase() +
+        value.slice(1);
+
+}
+
+
+/* =========================================================
+   SAVE PROFILE
+========================================================= */
+
+async function saveProfile(
+    event
+) {
+
+    event.preventDefault();
+
+
+    const email =
+        document.getElementById(
+            "profileEmail"
+        ).value.trim();
+
+
+    const contact =
+        document.getElementById(
+            "profileContact"
+        ).value.trim();
+
+
+    if (!email) {
+
+        showToast(
+            "Email is required.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const saveButton =
+        document.getElementById(
+            "saveProfileButton"
+        );
+
+
+    saveButton.disabled =
+        true;
+
+
+    saveButton.innerHTML = `
+
+        <i class="fa-solid fa-spinner fa-spin"></i>
+
+        Saving...
+
+    `;
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/instructor/profile`,
+                {
+                    method: "PUT",
+
+                    headers: {
+                        ...getAuthHeaders(),
+
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        /*
+                         * The current UI intentionally keeps
+                         * the instructor name read-only.
+                         */
+
+                        name:
+                            document.getElementById(
+                                "profileName"
+                            ).value.trim(),
+
+                        email:
+                            email,
+
+                        contact:
+                            contact || null
+
+                    })
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            handleUnauthorized();
+
+            return;
+        }
+
+
+        const data =
+            await parseJsonResponse(
+                response
+            );
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Unable to save profile."
+            );
+
+        }
+
+
+        if (data.user) {
+
+            updateProfileUI(
+                data.user
+            );
+
+        }
+
+
+        showToast(
+            data.message ||
+            "Profile updated successfully.",
+            "success"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Save profile error:",
+            error
+        );
+
+
+        showToast(
+            error.message ||
+            "Unable to save profile.",
+            "error"
+        );
+
+    } finally {
+
+        saveButton.disabled =
+            false;
+
+        saveButton.innerHTML =
+            "Save Changes";
+
+    }
+
+}
+
+
+/* =========================================================
+   PASSWORD SECTION
+========================================================= */
+
+function togglePasswordSection() {
+
+    passwordSection.classList.toggle(
+        "open"
+    );
+
+}
+
+
+/* =========================================================
+   CHANGE PASSWORD
+========================================================= */
+
+async function changePassword() {
+
+    const currentPassword =
+        document.getElementById(
+            "currentPassword"
+        ).value;
+
+
+    const newPassword =
+        document.getElementById(
+            "newPassword"
+        ).value;
+
+
+    const confirmPassword =
+        document.getElementById(
+            "confirmPassword"
+        ).value;
+
+
+    if (!currentPassword) {
+
+        showToast(
+            "Please enter your current password.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if (newPassword.length < 8) {
+
+        showToast(
+            "New password must contain at least 8 characters.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if (
+        newPassword !==
+        confirmPassword
+    ) {
+
+        showToast(
+            "New passwords do not match.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/instructor/profile/password`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        ...getAuthHeaders(),
+
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        current_password:
+                            currentPassword,
+
+                        new_password:
+                            newPassword,
+
+                        new_password_confirmation:
+                            confirmPassword
+
+                    })
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            handleUnauthorized();
+
+            return;
+        }
+
+
+        const data =
+            await parseJsonResponse(
+                response
+            );
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Unable to change password."
+            );
+
+        }
+
+
+        document.getElementById(
+            "currentPassword"
+        ).value = "";
+
+
+        document.getElementById(
+            "newPassword"
+        ).value = "";
+
+
+        document.getElementById(
+            "confirmPassword"
+        ).value = "";
+
+
+        passwordSection.classList.remove(
+            "open"
+        );
+
+
+        showToast(
+            data.message ||
+            "Password changed successfully.",
+            "success"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Change password error:",
+            error
+        );
+
+
+        showToast(
+            error.message ||
+            "Unable to change password.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   AVATAR PREVIEW
+========================================================= */
+
+document
+    .getElementById("avatarFile")
+    .addEventListener(
+        "change",
+        function () {
+
+            const file =
+                this.files[0];
+
+
+            if (!file) {
+                return;
+            }
+
+
+            if (
+                !file.type.startsWith(
+                    "image/"
+                )
+            ) {
+
+                showToast(
+                    "Please select an image file.",
+                    "error"
+                );
+
+                this.value = "";
+
+                return;
+            }
+
+
+            const imageUrl =
+                URL.createObjectURL(
+                    file
+                );
+
+
+            document.getElementById(
+                "profileAvatar"
+            ).src =
+                imageUrl;
+
+
+            document.getElementById(
+                "headerAvatar"
+            ).src =
+                imageUrl;
+
+        }
+    );
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+function handleLogout(
+    event
+) {
+
+    /*
+     * Clear the authentication token
+     * before going to the logout page.
+     */
+
+    sessionStorage.removeItem(
+        "token"
+    );
+
+    sessionStorage.removeItem(
+        "authToken"
+    );
+
+}
+
+
+/* =========================================================
+   UNAUTHORIZED
+========================================================= */
+
+function handleUnauthorized() {
+
+    sessionStorage.removeItem(
+        "token"
+    );
+
+    sessionStorage.removeItem(
+        "authToken"
+    );
+
+
+    showToast(
+        "Your session has expired. Please log in again.",
+        "error"
+    );
+
+
+    setTimeout(() => {
+
+        window.location.href =
+            "../index.html";
+
+    }, 1200);
+
+}
+
+
+/* =========================================================
+   CLOSE MODALS WHEN CLICKING OUTSIDE
+========================================================= */
+
+profileModal.addEventListener(
+    "click",
+    function (event) {
+
+        if (
+            event.target ===
+            profileModal
+        ) {
+
+            closeProfileModal();
+
+        }
+
+    }
+);
+
+
+gradingModal.addEventListener(
+    "click",
+    function (event) {
+
+        if (
+            event.target ===
+            gradingModal
+        ) {
+
+            closeGradingModal();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   ESC KEY
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function (event) {
+
+        if (
+            event.key ===
+            "Escape"
+        ) {
+
+            closeProfileModal();
+
+            closeGradingModal();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   INITIALIZE PAGE
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    async function () {
+
+        if (!checkAuthentication()) {
+            return;
+        }
+
+
+        /*
+         * Load instructor information.
+         */
+
+        await loadProfile();
+
+
+        /*
+         * Load submissions.
+         */
+
+        await loadSubmissions();
+
+    }
+);
+
+</script>
 
 </body>
+
 </html>

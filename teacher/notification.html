@@ -23,6 +23,194 @@
     <!-- Existing Instructor CSS -->
     <link rel="stylesheet" href="../teacher/CSS/notification.css">
 
+
+    <!-- Layout fixes: keep sidebar and notification content in separate columns -->
+    <style>
+        :root {
+            --lms-header-height: 68px;
+            --lms-sidebar-width: 270px;
+        }
+
+        html, body {
+            margin: 0;
+            min-height: 100%;
+            width: 100%;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: var(--lms-header-height);
+            z-index: 1000;
+        }
+
+        .app-body {
+            display: flex;
+            align-items: stretch;
+            width: 100%;
+            min-height: calc(100vh - var(--lms-header-height));
+        }
+
+        .sidebar {
+            position: sticky;
+            top: var(--lms-header-height);
+            flex: 0 0 var(--lms-sidebar-width);
+            width: var(--lms-sidebar-width);
+            height: calc(100vh - var(--lms-header-height));
+            min-height: 400px;
+            align-self: flex-start;
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 20;
+        }
+
+        .sidebar .nav-menu {
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100% - 50px);
+        }
+
+        .sidebar .logout-bottom {
+            margin-top: auto;
+        }
+
+        .main-content {
+            position: relative;
+            flex: 1 1 auto;
+            width: calc(100% - var(--lms-sidebar-width));
+            min-width: 0;
+            margin: 0;
+            padding: 28px 32px;
+            overflow: hidden;
+        }
+
+        .notifications-header-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            width: 100%;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            margin: 0;
+        }
+
+        .controls-row.notif-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            width: 100%;
+            margin-bottom: 24px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .search-wrapper {
+            flex: 0 1 300px;
+            width: min(100%, 300px);
+            min-width: 220px;
+        }
+
+        .notifications-card-container,
+        .notification-list {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .notification-item {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .profile-modal-overlay {
+            z-index: 2000;
+        }
+
+        .toast-container {
+            z-index: 3000;
+        }
+
+        /* Sidebar collapse */
+        .sidebar.collapsed {
+            flex-basis: 82px;
+            width: 82px;
+        }
+
+        .main-content.expanded {
+            width: calc(100% - 82px);
+        }
+
+        @media (max-width: 900px) {
+            :root {
+                --lms-sidebar-width: 220px;
+            }
+
+            .main-content {
+                padding: 22px;
+            }
+
+            .controls-row.notif-controls {
+                align-items: stretch;
+            }
+
+            .search-wrapper {
+                flex-basis: 100%;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 640px) {
+            :root {
+                --lms-sidebar-width: 72px;
+            }
+
+            .sidebar {
+                min-height: calc(100vh - var(--lms-header-height));
+            }
+
+            .main-content {
+                padding: 16px 12px;
+            }
+
+            .notifications-header-wrapper {
+                align-items: flex-start;
+            }
+
+            .page-title {
+                font-size: 22px;
+            }
+
+            .filter-tabs {
+                width: 100%;
+            }
+
+            .tab-btn {
+                max-width: 100%;
+            }
+
+            .search-wrapper {
+                min-width: 0;
+            }
+        }
+    </style>
+
 </head>
 
 <body>
@@ -687,7 +875,7 @@
     <!-- =========================================================
          JAVASCRIPT
          ========================================================= -->
-<<script>
+<script>
 
     /* =====================================================
        API SETTINGS

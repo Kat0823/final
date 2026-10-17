@@ -1,2725 +1,1746 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <title>MPSU ETEEAP LMS - Instructor Notifications</title>
+        :root {
+            --green: #086235;
+            --burgundy: #500b14;
+            --yellow: #e5a400;
+            --background: #f3f5f8;
+            --border: #dce4eb;
+            --text: #26352c;
+            --muted: #748078;
+        }
 
-    <!-- Google Fonts -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+        body {
+            font-family: "Poppins", sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+        }
 
-    <!-- Font Awesome -->
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        button, input {
+            font: inherit;
+        }
 
-    <!-- Existing Instructor CSS -->
-    <link rel="stylesheet" href="../teacher/CSS/notification.css">
+        button {
+            cursor: pointer;
+        }
 
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* HEADER */
+
+        .header {
+            height: 84px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            background: var(--green);
+            color: white;
+        }
+
+        .header-left,
+        .header-right,
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-left {
+            gap: 13px;
+        }
+
+        .logo-box {
+            width: 44px;
+            height: 44px;
+            background: white;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .logo-box img {
+            width: 90%;
+            height: 90%;
+            object-fit: contain;
+        }
+
+        .main-title {
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .sub-title {
+            font-size: 11px;
+            opacity: 0.85;
+        }
+
+        .user-profile {
+            gap: 10px;
+            cursor: pointer;
+            padding: 5px 8px;
+            border-radius: 8px;
+        }
+
+        .user-profile:hover {
+            background: rgba(255,255,255,0.12);
+        }
+
+        .avatar-ring {
+            width: 42px;
+            height: 42px;
+            border: 2px solid white;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .avatar-ring img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-name {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .user-role {
+            display: block;
+            font-size: 11px;
+            opacity: 0.8;
+        }
+
+        /* PAGE LAYOUT */
+
+        .app-body {
+            display: flex;
+            min-height: 100vh;
+            padding-top: 84px;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            top: 84px;
+            bottom: 0;
+            left: 0;
+            width: 270px;
+            padding: 20px 15px;
+            background: var(--burgundy);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            z-index: 50;
+            transition: width 0.25s;
+            border-radius: 0 12px 0 0;
+        }
+
+        .view-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 10px 22px;
+        }
+
+        .view-label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .view-toggle-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 19px;
+            padding: 5px;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .nav-item {
+            min-height: 44px;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            color: white;
+            transition: background 0.2s;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 17px;
+            flex-shrink: 0;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.12);
+        }
+
+        .nav-item.active {
+            background: var(--yellow);
+            color: #171717;
+            font-weight: 600;
+            outline: 1px solid #bd8700;
+        }
+
+        .logout-bottom {
+            margin-top: auto;
+        }
+
+        .sidebar.collapsed {
+            width: 78px;
+        }
+
+        .sidebar.collapsed .view-label,
+        .sidebar.collapsed .nav-item span {
+            display: none;
+        }
+
+        .sidebar.collapsed .view-header {
+            justify-content: center;
+        }
+
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .sidebar.collapsed .nav-item i {
+            width: auto;
+        }
+
+        /* MAIN CONTENT */
+
+        .main-content {
+            margin-left: 270px;
+            width: calc(100% - 270px);
+            min-width: 0;
+            min-height: calc(100vh - 84px);
+            padding: 30px;
+            transition: margin-left 0.25s, width 0.25s;
+        }
+
+        .main-content.expanded {
+            margin-left: 78px;
+            width: calc(100% - 78px);
+        }
+
+        .notifications-header-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 28px;
+        }
+
+        .page-title {
+            font-size: 25px;
+            font-weight: 700;
+        }
+
+        .mark-all-read-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 14px;
+            border: 1px solid var(--green);
+            border-radius: 7px;
+            color: var(--green);
+            background: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .mark-all-read-btn:hover {
+            background: var(--green);
+            color: white;
+        }
+
+        .mark-all-read-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* FILTERS */
+
+        .controls-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+
+        .tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 14px;
+            background: white;
+            border: 1px solid #cfdae5;
+            border-radius: 22px;
+            color: #4e6071;
+            font-size: 12px;
+        }
+
+        .tab-btn:hover {
+            background: #eef4f0;
+        }
+
+        .tab-btn.active {
+            background: var(--green);
+            color: white;
+            border-color: var(--green);
+        }
+
+        .badge-count {
+            min-width: 19px;
+            height: 19px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 20px;
+            background: #edf1ee;
+            color: #526056;
+            font-size: 10px;
+            padding: 0 5px;
+        }
+
+        .tab-btn.active .badge-count {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        /* SEARCH */
+
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 300px;
+            max-width: 100%;
+            padding: 8px 12px;
+            background: white;
+            border: 1px solid #cfdae5;
+            border-radius: 8px;
+        }
+
+        .search-icon-box {
+            color: #91a2b7;
+            font-size: 16px;
+        }
+
+        .dropdown-input-wrapper {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .dropdown-label {
+            display: block;
+            font-size: 9px;
+            color: #71839a;
+            font-weight: 600;
+        }
+
+        .input-with-arrow input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 12px;
+            color: var(--text);
+            padding-top: 2px;
+        }
+
+        /* NOTIFICATION LIST */
+
+        .notifications-card-container {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.035);
+            overflow: hidden;
+        }
+
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 22px;
+            border-bottom: 1px solid #edf0f2;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-item:hover {
+            background: #f8faf9;
+        }
+
+        .notification-item.unread {
+            background: #f0f8f3;
+        }
+
+        .notification-item.unread:hover {
+            background: #e7f3eb;
+        }
+
+        .notif-icon-box {
+            width: 43px;
+            height: 43px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 17px;
+        }
+
+        .submission-icon {
+            color: #3567bd;
+            background: #e8efff;
+        }
+
+        .system-icon {
+            color: #ae7817;
+            background: #fff1d6;
+        }
+
+        .notif-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notif-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .notif-text {
+            color: #657168;
+            font-size: 13px;
+            line-height: 1.8;
+            overflow-wrap: anywhere;
+        }
+
+        .notif-text strong {
+            color: #26372c;
+            font-weight: 600;
+        }
+
+        .unread-dot {
+            width: 8px;
+            height: 8px;
+            background: #16964f;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 8px;
+        }
+
+        .notif-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .notif-time {
+            font-size: 11px;
+            color: #8b968e;
+        }
+
+        .btn-action-primary {
+            display: inline-block;
+            padding: 7px 12px;
+            background: var(--green);
+            color: white;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .btn-action-primary:hover {
+            background: #064b29;
+        }
+
+        .notification-loading,
+        .notification-empty {
+            min-height: 190px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .notification-loading i,
+        .notification-empty i {
+            font-size: 30px;
+            color: #8ba394;
+        }
+
+        .retry-btn {
+            margin-top: 5px;
+            border: none;
+            background: var(--green);
+            color: white;
+            padding: 9px 15px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        /* PROFILE MODAL */
+
+        .profile-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 500;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0,0,0,0.5);
+            overflow-y: auto;
+        }
+
+        .profile-modal-overlay.active {
+            display: flex;
+        }
+
+        .profile-modal-card {
+            width: 100%;
+            max-width: 580px;
+            max-height: 92vh;
+            overflow-y: auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.2);
+        }
+
+        .profile-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .profile-modal-title {
+            font-size: 16px;
+            color: var(--green);
+        }
+
+        .profile-modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 6px;
+            background: #eef2ef;
+            color: #59665e;
+            font-size: 22px;
+        }
+
+        .profile-modal-body {
+            padding: 24px;
+        }
+
+        .avatar-upload-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 24px;
+        }
+
+        .avatar-upload-preview {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            flex-shrink: 0;
+        }
+
+        .avatar-upload-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #e1ece4;
+        }
+
+        .avatar-edit-badge {
+            position: absolute;
+            right: -2px;
+            bottom: 0;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--green);
+            color: white;
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 10px;
+        }
+
+        .avatar-file-input {
+            display: none;
+        }
+
+        .avatar-upload-text h4 {
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .avatar-upload-text small {
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .profile-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            margin-bottom: 16px;
+        }
+
+        .profile-form-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #4d5c52;
+        }
+
+        .profile-form-group input {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #dce5df;
+            border-radius: 7px;
+            outline: none;
+            font-size: 12px;
+        }
+
+        .profile-form-group input:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(8,98,53,0.08);
+        }
+
+        .profile-form-group input:disabled {
+            background: #f2f5f3;
+            color: #7c8780;
+        }
+
+        .password-section {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .password-toggle-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: #f8faf8;
+            cursor: pointer;
+        }
+
+        .password-toggle-header h4 {
+            font-size: 12px;
+        }
+
+        .password-toggle-header h4 i {
+            margin-right: 7px;
+            color: var(--green);
+        }
+
+        .chevron-icon {
+            font-size: 12px;
+            transition: transform 0.2s;
+        }
+
+        .password-section.open .chevron-icon {
+            transform: rotate(180deg);
+        }
+
+        .password-fields {
+            display: none;
+            padding: 17px 15px 0;
+        }
+
+        .password-section.open .password-fields {
+            display: block;
+        }
+
+        .profile-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 17px 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn-cancel,
+        .btn-save {
+            padding: 10px 17px;
+            border: none;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .btn-cancel {
+            background: #edf1ee;
+            color: #536158;
+        }
+
+        .btn-save {
+            background: var(--green);
+            color: white;
+        }
+
+        .btn-save:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* TOAST */
+
+        .toast-container {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 360px;
+            padding: 13px 17px;
+            background: white;
+            border-radius: 7px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.13);
+            font-size: 12px;
+            border-left: 4px solid var(--green);
+        }
+
+        .toast-error {
+            border-left-color: #dc3545;
+        }
+
+        .toast-error i {
+            color: #dc3545;
+        }
+
+        .toast-success i {
+            color: var(--green);
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 220px;
+            }
+
+            .main-content {
+                margin-left: 220px;
+                width: calc(100% - 220px);
+                padding: 24px 18px;
+            }
+
+            .main-content.expanded {
+                margin-left: 78px;
+                width: calc(100% - 78px);
+            }
+
+            .search-wrapper {
+                width: 250px;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .header {
+                height: 72px;
+                padding: 0 12px;
+            }
+
+            .app-body {
+                padding-top: 72px;
+            }
+
+            .header-titles .main-title {
+                font-size: 13px;
+            }
+
+            .header-titles .sub-title {
+                font-size: 9px;
+            }
+
+            .logo-box {
+                width: 38px;
+                height: 38px;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .avatar-ring {
+                width: 35px;
+                height: 35px;
+            }
+
+            .sidebar {
+                top: 72px;
+                width: 68px;
+                padding: 15px 7px;
+            }
+
+            .sidebar .view-label,
+            .sidebar .nav-item span {
+                display: none;
+            }
+
+            .sidebar .view-header {
+                justify-content: center;
+                padding-left: 0;
+                padding-right: 0;
+            }
+
+            .sidebar .nav-item {
+                justify-content: center;
+                padding: 12px 0;
+            }
+
+            .sidebar .nav-item i {
+                width: auto;
+            }
+
+            .main-content,
+            .main-content.expanded {
+                margin-left: 68px;
+                width: calc(100% - 68px);
+                padding: 22px 12px;
+            }
+
+            .notifications-header-wrapper {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .page-title {
+                font-size: 22px;
+            }
+
+            .controls-row {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .filter-tabs {
+                gap: 5px;
+            }
+
+            .tab-btn {
+                padding: 8px 10px;
+                font-size: 11px;
+            }
+
+            .search-wrapper {
+                width: 100%;
+            }
+
+            .notification-item {
+                padding: 16px 12px;
+                gap: 10px;
+            }
+
+            .notif-icon-box {
+                width: 35px;
+                height: 35px;
+                font-size: 14px;
+            }
+
+            .notif-footer {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .form-grid-2 {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .profile-modal-body {
+                padding: 18px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <!-- =========================================================
-         TOAST CONTAINER
-         ========================================================= -->
-
     <div id="toastContainer" class="toast-container"></div>
 
-
-    <!-- =========================================================
-         HEADER
-         ========================================================= -->
-
+    <!-- HEADER -->
     <header class="header">
-
         <div class="header-left">
-
             <div class="logo-box">
-
-                <img
-                    src="../images/logo.png"
-                    alt="MPSU logo">
-
+                <img src="../images/mpsu-logo.png" alt="MPSU Logo">
             </div>
 
             <div class="header-titles">
-
-                <div class="main-title">
-                    MPSU ETEEAP LMS
-                </div>
-
-                <div class="sub-title">
-                    Mountain Province State University
-                </div>
-
+                <div class="main-title">MPSU ETEEAP LMS</div>
+                <div class="sub-title">Mountain Province State University</div>
             </div>
-
         </div>
 
-
         <div class="header-right">
-
-            <div
-                class="user-profile"
-                id="userProfileBtn"
-                style="cursor: pointer;">
-
+            <div class="user-profile" id="userProfileBtn">
                 <div class="avatar-ring">
-
-                    <img
-                        id="headerAvatar"
+                    <img id="headerAvatar"
                         src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200"
-                        alt="Instructor Avatar">
-
+                        alt="Instructor">
                 </div>
 
                 <div class="user-info">
-
                     <span class="user-name">
-                        <span id="headerInstructorName">
-                            Instructor
-                        </span>
-
+                        <span id="headerInstructorName">Kim Reyes</span>
                         <i class="fa-solid fa-caret-down"></i>
                     </span>
-
-                    <span class="user-role">
-                        Instructor
-                    </span>
-
+                    <span class="user-role">Instructor</span>
                 </div>
-
             </div>
-
         </div>
-
     </header>
-
-
-    <!-- =========================================================
-         APPLICATION BODY
-         ========================================================= -->
 
     <div class="app-body">
 
-
-        <!-- =====================================================
-             SIDEBAR
-             ===================================================== -->
-
+        <!-- SIDEBAR -->
         <aside class="sidebar">
-
             <div class="view-header">
+                <span class="view-label">View</span>
 
-                <span class="view-label">
-                    View
-                </span>
-
-                <button
-                    type="button"
-                    class="view-toggle-btn"
-                    id="viewToggle"
-                    title="Toggle Sidebar">
-
+                <button type="button" class="view-toggle-btn" id="viewToggle"
+                    title="Toggle sidebar">
                     <i class="fa-regular fa-rectangle-list"></i>
-
                 </button>
-
             </div>
-
 
             <nav class="nav-menu">
-
-                <a
-                    href="dashboard.html"
-                    class="nav-item">
-
+                <a href="dashboard.html" class="nav-item">
                     <i class="fa-solid fa-users"></i>
-
-                    <span>
-                        Learners Progress
-                    </span>
-
+                    <span>Learners Progress</span>
                 </a>
 
-
-                <a
-                    href="class.html"
-                    class="nav-item">
-
+                <a href="class.html" class="nav-item">
                     <i class="fa-solid fa-layer-group"></i>
-
-                    <span>
-                        Classes
-                    </span>
-
+                    <span>Classes</span>
                 </a>
 
-
-                <a
-                    href="submissions.html"
-                    class="nav-item">
-
+                <a href="submissions.html" class="nav-item">
                     <i class="fa-regular fa-folder"></i>
-
-                    <span>
-                        Submission
-                    </span>
-
+                    <span>Submission</span>
                 </a>
 
-
-                <a
-                    href="notification.html"
-                    class="nav-item active">
-
+                <a href="notification.html" class="nav-item active">
                     <i class="fa-regular fa-bell"></i>
-
-                    <span>
-                        Notification
-                    </span>
-
+                    <span>Notification</span>
                 </a>
 
-
-                <a
-                    href="logout.html"
-                    class="nav-item logout-bottom">
-
+                <a href="logout.html" class="nav-item logout-bottom">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
-
-                    <span>
-                        Logout
-                    </span>
-
+                    <span>Logout</span>
                 </a>
-
             </nav>
-
         </aside>
 
-
-
-        <!-- =====================================================
-             MAIN CONTENT
-             ===================================================== -->
-
+        <!-- CONTENT -->
         <main class="main-content">
 
-
-            <!-- PAGE HEADER -->
-
             <div class="notifications-header-wrapper">
+                <h1 class="page-title">Notifications</h1>
 
-                <h1 class="page-title">
-                    Notifications
-                </h1>
-
-
-                <button
-                    class="mark-all-read-btn"
-                    id="markAllReadBtn">
-
+                <button type="button" class="mark-all-read-btn" id="markAllReadBtn">
                     <i class="fa-solid fa-check-double"></i>
-
                     Mark all as read
-
                 </button>
-
             </div>
 
-
-
-            <!-- =================================================
-                 FILTER AND SEARCH
-                 ================================================= -->
-
-            <div class="controls-row notif-controls">
-
+            <div class="controls-row">
 
                 <div class="filter-tabs">
-
-
-                    <button
-                        class="tab-btn active"
-                        data-filter="all">
-
-                        All
-
-                        <span
-                            class="badge-count"
-                            id="allCount">
-
-                            0
-
-                        </span>
-
+                    <button type="button" class="tab-btn active" data-filter="all">
+                        All <span class="badge-count" id="allCount">0</span>
                     </button>
 
-
-
-                    <button
-                        class="tab-btn"
-                        data-filter="unread">
-
-                        Unread
-
-                        <span
-                            class="badge-count unread-badge"
-                            id="unreadCount">
-
-                            0
-
-                        </span>
-
+                    <button type="button" class="tab-btn" data-filter="unread">
+                        Unread <span class="badge-count" id="unreadCount">0</span>
                     </button>
 
-
-
-                    <button
-                        class="tab-btn"
-                        data-filter="submission">
-
+                    <button type="button" class="tab-btn" data-filter="submission">
                         Submissions
-
                     </button>
 
-
-
-                    <button
-                        class="tab-btn"
-                        data-filter="system">
-
+                    <button type="button" class="tab-btn" data-filter="system">
                         System
-
                     </button>
-
                 </div>
-
-
-
-                <!-- SEARCH -->
 
                 <div class="search-wrapper">
-
                     <div class="search-icon-box">
-
                         <i class="fa-solid fa-magnifying-glass"></i>
-
                     </div>
-
 
                     <div class="dropdown-input-wrapper">
-
-                        <span class="dropdown-label">
-                            Search
-                        </span>
-
-
+                        <span class="dropdown-label">SEARCH</span>
                         <div class="input-with-arrow">
-
-                            <input
-                                type="text"
-                                id="searchInput"
+                            <input type="text" id="searchInput"
                                 placeholder="Search notification...">
-
                         </div>
-
                     </div>
-
                 </div>
 
             </div>
-
-
-
-            <!-- =================================================
-                 NOTIFICATIONS
-                 ================================================= -->
 
             <div class="notifications-card-container">
-
-                <div
-                    class="notification-list"
-                    id="notificationList">
-
-
-                    <!-- Loading message -->
-
+                <div class="notification-list" id="notificationList">
                     <div class="notification-loading">
-
                         <i class="fa-solid fa-spinner fa-spin"></i>
-
                         Loading notifications...
-
                     </div>
-
-
                 </div>
-
             </div>
-
 
         </main>
-
     </div>
 
-
-
-    <!-- =========================================================
-         INSTRUCTOR PROFILE MODAL
-         ========================================================= -->
-
-    <div
-        class="profile-modal-overlay"
-        id="profileModalOverlay">
-
-
+    <!-- PROFILE MODAL -->
+    <div class="profile-modal-overlay" id="profileModalOverlay">
         <div class="profile-modal-card">
 
-
-            <!-- MODAL HEADER -->
-
             <div class="profile-modal-header">
+                <h3 class="profile-modal-title">Instructor Profile Settings</h3>
 
-                <div>
-
-                    <h3 class="profile-modal-title">
-
-                        Instructor Profile Settings
-
-                    </h3>
-
-                </div>
-
-
-                <button
-                    class="profile-modal-close"
-                    id="closeProfileModal"
-                    aria-label="Close">
-
-                    &times;
-
-                </button>
-
+                <button type="button" class="profile-modal-close"
+                    id="closeProfileModal" aria-label="Close">&times;</button>
             </div>
 
-
-
-            <!-- =================================================
-                 PROFILE FORM
-                 ================================================= -->
-
             <form id="profileSettingsForm">
-
-
                 <div class="profile-modal-body">
 
-
-                    <!-- PROFILE PHOTO -->
-
                     <div class="avatar-upload-section">
-
-
                         <div class="avatar-upload-preview">
-
-                            <img
-                                id="avatarPreview"
+                            <img id="avatarPreview"
                                 src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200"
-                                alt="Instructor Profile Picture">
+                                alt="Profile photo">
 
-
-                            <label
-                                for="avatarInput"
-                                class="avatar-edit-badge"
-                                title="Change Photo">
-
+                            <label for="avatarInput" class="avatar-edit-badge">
                                 <i class="fa-solid fa-camera"></i>
-
                             </label>
 
-
-                            <input
-                                type="file"
-                                id="avatarInput"
-                                accept="image/*"
-                                class="avatar-file-input">
-
+                            <input type="file" id="avatarInput"
+                                accept="image/*" class="avatar-file-input">
                         </div>
-
 
                         <div class="avatar-upload-text">
-
-                            <h4>
-                                Profile Photo
-                            </h4>
-
+                            <h4>Profile Photo</h4>
+                            <small>Image preview only; uploading requires backend support.</small>
                         </div>
-
                     </div>
-
-
-
-                    <!-- =================================================
-                         INSTRUCTOR INFORMATION
-                         ================================================= -->
 
                     <div class="form-grid-2">
-
+                        <div class="profile-form-group">
+                            <label for="instructorId">Instructor ID</label>
+                            <input type="text" id="instructorId" disabled>
+                        </div>
 
                         <div class="profile-form-group">
-
-                            <label for="instructorId">
-                                Instructor ID
-                            </label>
-
-
-                            <input
-                                type="text"
-                                id="instructorId"
-                                value=""
-                                disabled
-                                class="input-disabled">
-
+                            <label for="instructorName">Full Name</label>
+                            <input type="text" id="instructorName" disabled>
                         </div>
-
-
-
-                        <div class="profile-form-group">
-
-                            <label for="instructorName">
-                                Full Name
-                            </label>
-
-
-                            <input
-                                type="text"
-                                id="instructorName"
-                                value=""
-                                disabled
-                                class="input-disabled">
-
-                        </div>
-
                     </div>
-
-
-
-                    <!-- EMAIL -->
 
                     <div class="profile-form-group">
-
-                        <label for="instructorEmail">
-                            Email Address
-                        </label>
-
-
-                        <input
-                            type="email"
-                            id="instructorEmail"
-                            value=""
-                            required>
-
+                        <label for="instructorEmail">Email Address</label>
+                        <input type="email" id="instructorEmail" required>
                     </div>
-
-
-
-                    <!-- PHONE -->
 
                     <div class="profile-form-group">
-
-                        <label for="instructorPhone">
-                            Mobile Number
-                        </label>
-
-
-                        <input
-                            type="tel"
-                            id="instructorPhone"
-                            value=""
-                            placeholder="+63 9XX XXX XXXX"
-                            required>
-
+                        <label for="instructorPhone">Mobile Number</label>
+                        <input type="tel" id="instructorPhone" required>
                     </div>
 
-
-
-                    <!-- =================================================
-                         PASSWORD SECTION
-                         ================================================= -->
-
-                    <div
-                        class="password-section"
-                        id="passwordSection">
-
-
-                        <div
-                            class="password-toggle-header"
-                            id="passwordToggleBtn">
-
-                            <h4>
-
-                                <i class="fa-solid fa-lock"></i>
-
-                                Change Password
-
-                            </h4>
-
-
-                            <i
-                                class="fa-solid fa-chevron-down chevron-icon">
-                            </i>
-
+                    <div class="password-section" id="passwordSection">
+                        <div class="password-toggle-header" id="passwordToggleBtn"
+                            role="button" tabindex="0" aria-expanded="false">
+                            <h4><i class="fa-solid fa-lock"></i> Change Password</h4>
+                            <i class="fa-solid fa-chevron-down chevron-icon"></i>
                         </div>
-
-
 
                         <div class="password-fields">
-
-
                             <div class="profile-form-group">
-
-                                <label for="currentPassword">
-
-                                    Current Password
-
-                                </label>
-
-
-                                <input
-                                    type="password"
-                                    id="currentPassword"
-                                    placeholder="Enter current password">
-
+                                <label for="currentPassword">Current Password</label>
+                                <input type="password" id="currentPassword"
+                                    autocomplete="current-password">
                             </div>
 
-
-
                             <div class="profile-form-group">
-
-                                <label for="newPassword">
-
-                                    New Password
-
-                                </label>
-
-
-                                <input
-                                    type="password"
-                                    id="newPassword"
-                                    placeholder="Enter new password (min. 6 characters)">
-
+                                <label for="newPassword">New Password</label>
+                                <input type="password" id="newPassword"
+                                    autocomplete="new-password">
                             </div>
 
-
-
                             <div class="profile-form-group">
-
-                                <label for="confirmPassword">
-
-                                    Confirm New Password
-
-                                </label>
-
-
-                                <input
-                                    type="password"
-                                    id="confirmPassword"
-                                    placeholder="Confirm new password">
-
+                                <label for="confirmPassword">Confirm New Password</label>
+                                <input type="password" id="confirmPassword"
+                                    autocomplete="new-password">
                             </div>
-
-
                         </div>
-
                     </div>
 
-
                 </div>
-
-
-
-                <!-- =================================================
-                     MODAL FOOTER
-                     ================================================= -->
 
                 <div class="profile-modal-footer">
+                    <button type="button" class="btn-cancel"
+                        id="cancelProfileModal">Cancel</button>
 
-
-                    <button
-                        type="button"
-                        class="btn-cancel"
-                        id="cancelProfileModal">
-
-                        Cancel
-
-                    </button>
-
-
-                    <button
-                        type="submit"
-                        class="btn-save">
-
-                        Save Changes
-
-                    </button>
-
-
+                    <button type="submit" class="btn-save">Save Changes</button>
                 </div>
-
-
             </form>
 
         </div>
-
     </div>
 
+    <script>
+        /*
+         * IMPORTANT:
+         * Keep the same API URL used by your working instructor login page.
+         */
+        const API_BASE_URL = "http://localhost:8000/api";
+        const authToken = sessionStorage.getItem("authToken");
 
+        let allNotifications = [];
+        let currentFilter = "all";
+        let avatarObjectUrl = null;
 
-    <!-- =========================================================
-         JAVASCRIPT
-         ========================================================= -->
-<<script>
+        const $ = id => document.getElementById(id);
 
-    /* =====================================================
-       API SETTINGS
-       ===================================================== */
-
-    const API_BASE_URL = "http://localhost:8000/api";
-
-    const authToken =
-        sessionStorage.getItem("authToken");
-
-    let allNotifications = [];
-
-    let currentFilter = "all";
-
-
-    /* =====================================================
-       SIDEBAR TOGGLE
-       ===================================================== */
-
-    const viewToggle =
-        document.getElementById("viewToggle");
-
-    const sidebar =
-        document.querySelector(".sidebar");
-
-    const mainContent =
-        document.querySelector(".main-content");
-
-    if (viewToggle) {
-
-        viewToggle.addEventListener(
-            "click",
-            function () {
-
-                sidebar.classList.toggle("collapsed");
-
-                mainContent.classList.toggle("expanded");
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       LOAD NOTIFICATIONS
-       ===================================================== */
-
-    async function loadNotifications() {
-
-        const notificationList =
-            document.getElementById("notificationList");
-
-        if (!notificationList) {
-            return;
-        }
-
-        if (!authToken) {
-
-            notificationList.innerHTML = `
-
-                <div class="notification-empty">
-
-                    <i class="fa-solid fa-lock"></i>
-
-                    <p>
-                        Please log in again.
-                    </p>
-
-                </div>
-
-            `;
-
-            return;
-        }
-
-        try {
-
-            notificationList.innerHTML = `
-
-                <div class="notification-loading">
-
-                    <i class="fa-solid fa-spinner fa-spin"></i>
-
-                    Loading notifications...
-
-                </div>
-
-            `;
-
-            const response = await fetch(
-                `${API_BASE_URL}/instructor/notifications`,
-                {
-                    method: "GET",
-
-                    headers: {
-                        "Accept": "application/json",
-
-                        "Authorization":
-                            `Bearer ${authToken}`
-                    }
-                }
-            );
-
-            const data = await response.json();
-
-            if (!response.ok) {
-
-                throw new Error(
-                    data.message ||
-                    "Unable to load notifications."
-                );
-
+        /* API HELPER */
+        async function apiRequest(endpoint, options = {}) {
+            if (!authToken) {
+                throw new Error("No login token found. Please log in again.");
             }
 
-            allNotifications =
-                data.notifications || [];
-
-            updateNotificationCounts();
-
-            renderNotifications();
-
-        }
-        catch (error) {
-
-            console.error(
-                "Notification loading error:",
-                error
-            );
-
-            notificationList.innerHTML = `
-
-                <div class="notification-empty">
-
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-
-                    <p>
-                        Unable to load notifications.
-                    </p>
-
-                    <small>
-                        ${escapeHtml(error.message)}
-                    </small>
-
-                </div>
-
-            `;
-
-        }
-
-    }
-
-
-    /* =====================================================
-       UPDATE NOTIFICATION COUNTS
-       ===================================================== */
-
-    function updateNotificationCounts() {
-
-        const allCount =
-            document.getElementById("allCount");
-
-        const unreadCount =
-            document.getElementById("unreadCount");
-
-        const total =
-            allNotifications.length;
-
-        const unread =
-            allNotifications.filter(
-                notification =>
-                    !notification.is_read
-            ).length;
-
-        if (allCount) {
-            allCount.textContent = total;
-        }
-
-        if (unreadCount) {
-            unreadCount.textContent = unread;
-        }
-
-    }
-
-
-    /* =====================================================
-       RENDER NOTIFICATIONS
-       ===================================================== */
-
-    function renderNotifications() {
-
-        const notificationList =
-            document.getElementById(
-                "notificationList"
-            );
-
-        const searchInput =
-            document.getElementById(
-                "searchInput"
-            );
-
-        if (!notificationList) {
-            return;
-        }
-
-        const searchText =
-            searchInput
-                ? searchInput.value
-                    .trim()
-                    .toLowerCase()
-                : "";
-
-        let filteredNotifications =
-            [...allNotifications];
-
-
-        if (currentFilter === "unread") {
-
-            filteredNotifications =
-                filteredNotifications.filter(
-                    notification =>
-                        !notification.is_read
-                );
-
-        }
-
-
-        else if (
-            currentFilter === "submission"
-        ) {
-
-            filteredNotifications =
-                filteredNotifications.filter(
-                    notification =>
-                        getNotificationCategory(
-                            notification
-                        ) === "submission"
-                );
-
-        }
-
-
-        else if (
-            currentFilter === "system"
-        ) {
-
-            filteredNotifications =
-                filteredNotifications.filter(
-                    notification =>
-                        getNotificationCategory(
-                            notification
-                        ) === "system"
-                );
-
-        }
-
-
-        if (searchText) {
-
-            filteredNotifications =
-                filteredNotifications.filter(
-                    notification => {
-
-                        const searchableText = [
-
-                            notification.title || "",
-
-                            notification.message || "",
-
-                            notification.type || ""
-
-                        ]
-                        .join(" ")
-                        .toLowerCase();
-
-                        return searchableText.includes(
-                            searchText
-                        );
-
-                    }
-                );
-
-        }
-
-
-        if (
-            filteredNotifications.length === 0
-        ) {
-
-            notificationList.innerHTML = `
-
-                <div class="notification-empty">
-
-                    <i class="fa-regular fa-bell-slash"></i>
-
-                    <p>
-                        No notifications found.
-                    </p>
-
-                </div>
-
-            `;
-
-            return;
-
-        }
-
-
-        notificationList.innerHTML =
-            filteredNotifications
-                .map(
-                    notification =>
-                        createNotificationHTML(
-                            notification
-                        )
-                )
-                .join("");
-
-
-        document
-            .querySelectorAll(
-                ".notification-item"
-            )
-            .forEach(item => {
-
-                item.addEventListener(
-                    "click",
-                    function (event) {
-
-                        if (
-                            event.target.closest(
-                                ".btn-action-primary"
-                            ) ||
-                            event.target.closest(
-                                ".btn-action-secondary"
-                            )
-                        ) {
-
-                            return;
-
-                        }
-
-                        const notificationId =
-                            this.dataset
-                                .notificationId;
-
-                        markNotificationAsRead(
-                            notificationId
-                        );
-
-                    }
-                );
-
+            const headers = {
+                Accept: "application/json",
+                Authorization: `Bearer ${authToken}`,
+                ...(options.body ? {"Content-Type": "application/json"} : {})
+            };
+
+            const response = await fetch(API_BASE_URL + endpoint, {
+                ...options,
+                headers
             });
 
-    }
-
-
-    /* =====================================================
-       CREATE NOTIFICATION HTML
-       ===================================================== */
-
-    function createNotificationHTML(
-        notification
-    ) {
-
-        const category =
-            getNotificationCategory(
-                notification
-            );
-
-        const isUnread =
-            !notification.is_read;
-
-        const readClass =
-            isUnread
-                ? "unread"
-                : "read";
-
-        const icon =
-            getNotificationIcon(
-                notification,
-                category
-            );
-
-        const title =
-            notification.title ||
-            "Notification";
-
-        const message =
-            notification.message ||
-            "";
-
-        const createdAt =
-            formatNotificationTime(
-                notification.created_at
-            );
-
-
-        return `
-
-            <div
-                class="notification-item ${readClass}"
-                data-category="${category}"
-                data-notification-id="${notification.id}">
-
-                <div
-                    class="notif-icon-box ${category}-icon">
-
-                    <i class="${icon}"></i>
-
-                </div>
-
-
-                <div class="notif-avatar system-avatar">
-
-                    <i class="fa-solid fa-bell"></i>
-
-                </div>
-
-
-                <div class="notif-content">
-
-                    <div class="notif-title-row">
-
-                        <p class="notif-text">
-
-                            <strong>
-                                ${escapeHtml(title)}
-                            </strong>
-
-                            ${escapeHtml(message)}
-
-                        </p>
-
-
-                        ${
-                            isUnread
-                                ? `
-
-                                    <span
-                                        class="unread-dot"
-                                        title="Unread">
-                                    </span>
-
-                                `
-                                : ""
-                        }
-
-                    </div>
-
-
-                    <div class="notif-footer">
-
-                        <span class="notif-time">
-
-                            <i class="fa-regular fa-clock"></i>
-
-                            ${createdAt}
-
-                        </span>
-
-
-                        <div class="notif-actions">
-
-                            ${
-                                isSubmissionNotification(
-                                    notification
-                                )
-
-                                ?
-
-                                `
-
-                                    <a
-                                        href="submissions.html"
-                                        class="btn-action-primary"
-                                        onclick="
-                                            markNotificationAsRead(
-                                                ${notification.id}
-                                            );
-                                        ">
-
-                                        Review Submission
-
-                                    </a>
-
-                                `
-
-                                :
-
-                                ""
-
-                            }
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        `;
-
-    }
-
-
-    /* =====================================================
-       GET CATEGORY
-       ===================================================== */
-
-    function getNotificationCategory(
-        notification
-    ) {
-
-        const type =
-            String(
-                notification.type || ""
-            ).toLowerCase();
-
-        const title =
-            String(
-                notification.title || ""
-            ).toLowerCase();
-
-        const message =
-            String(
-                notification.message || ""
-            ).toLowerCase();
-
-
-        if (
-
-            type.includes("submission")
-
-            ||
-
-            title.includes("submission")
-
-            ||
-
-            message.includes("submitted")
-
-        ) {
-
-            return "submission";
-
-        }
-
-
-        return "system";
-
-    }
-
-
-    /* =====================================================
-       GET ICON
-       ===================================================== */
-
-    function getNotificationIcon(
-        notification,
-        category
-    ) {
-
-        if (
-            category === "submission"
-        ) {
-
-            return "fa-solid fa-file-arrow-up";
-
-        }
-
-
-        const type =
-            String(
-                notification.type || ""
-            ).toLowerCase();
-
-
-        if (
-            type.includes("message")
-        ) {
-
-            return "fa-regular fa-comment-dots";
-
-        }
-
-
-        if (
-            type.includes("announcement")
-        ) {
-
-            return "fa-solid fa-bullhorn";
-
-        }
-
-
-        return "fa-solid fa-bell";
-
-    }
-
-
-    /* =====================================================
-       CHECK SUBMISSION NOTIFICATION
-       ===================================================== */
-
-    function isSubmissionNotification(
-        notification
-    ) {
-
-        return (
-            getNotificationCategory(
-                notification
-            ) === "submission"
-        );
-
-    }
-
-
-    /* =====================================================
-       MARK ONE NOTIFICATION AS READ
-       ===================================================== */
-
-    async function markNotificationAsRead(
-        notificationId
-    ) {
-
-        if (
-            !notificationId ||
-            !authToken
-        ) {
-
-            return;
-
-        }
-
-
-        try {
-
-            const response =
-                await fetch(
-
-                    `${API_BASE_URL}/instructor/notifications/${notificationId}/read`,
-
-                    {
-                        method: "POST",
-
-                        headers: {
-
-                            "Accept":
-                                "application/json",
-
-                            "Authorization":
-                                `Bearer ${authToken}`
-
-                        }
-
-                    }
-
-                );
-
-
-            const data =
-                await response.json();
-
+            let data = {};
+
+            try {
+                data = await response.json();
+            } catch {
+                data = {};
+            }
 
             if (!response.ok) {
+                const validationError = data.errors
+                    ? Object.values(data.errors).flat()[0]
+                    : null;
 
                 throw new Error(
+                    validationError ||
                     data.message ||
-                    "Unable to mark notification as read."
+                    `API request failed: ${response.status}`
                 );
-
             }
 
+            return data;
+        }
 
-            const notification =
-                allNotifications.find(
-                    item =>
-                        Number(item.id) ===
-                        Number(notificationId)
-                );
+        /* TOAST */
+        function showToast(message, type = "success") {
+            const toast = document.createElement("div");
+            toast.className = `toast toast-${type}`;
 
+            const icon = document.createElement("i");
+            icon.className = type === "success"
+                ? "fa-solid fa-circle-check"
+                : "fa-solid fa-circle-exclamation";
 
-            if (notification) {
+            const text = document.createElement("span");
+            text.textContent = message;
 
-                notification.is_read = true;
+            toast.append(icon, text);
+            $("toastContainer").appendChild(toast);
 
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        /* SIDEBAR TOGGLE */
+        $("viewToggle").addEventListener("click", () => {
+            document.querySelector(".sidebar").classList.toggle("collapsed");
+            document.querySelector(".main-content").classList.toggle("expanded");
+        });
+
+        /* CATEGORY */
+        function getCategory(item) {
+            const type = String(item.type || "").toLowerCase();
+            const title = String(item.title || "").toLowerCase();
+            const message = String(item.message || "").toLowerCase();
+
+            return (
+                type.includes("submission") ||
+                title.includes("submission") ||
+                message.includes("submitted")
+            ) ? "submission" : "system";
+        }
+
+        /* ICON */
+        function getIcon(item) {
+            const type = String(item.type || "").toLowerCase();
+
+            if (getCategory(item) === "submission") {
+                return "fa-solid fa-file-arrow-up";
             }
 
-
-            updateNotificationCounts();
-
-            renderNotifications();
-
-        }
-        catch (error) {
-
-            console.error(
-                "Mark notification error:",
-                error
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       MARK ALL AS READ
-       ===================================================== */
-
-    const markAllReadBtn =
-        document.getElementById(
-            "markAllReadBtn"
-        );
-
-
-    if (markAllReadBtn) {
-
-        markAllReadBtn.addEventListener(
-            "click",
-            async function () {
-
-                if (!authToken) {
-
-                    showToast(
-                        "Please log in again.",
-                        "error"
-                    );
-
-                    return;
-
-                }
-
-
-                try {
-
-                    const response =
-                        await fetch(
-
-                            `${API_BASE_URL}/instructor/notifications/read-all`,
-
-                            {
-                                method: "POST",
-
-                                headers: {
-
-                                    "Accept":
-                                        "application/json",
-
-                                    "Authorization":
-                                        `Bearer ${authToken}`
-
-                                }
-
-                            }
-
-                        );
-
-
-                    const data =
-                        await response.json();
-
-
-                    if (!response.ok) {
-
-                        throw new Error(
-                            data.message ||
-                            "Unable to mark notifications as read."
-                        );
-
-                    }
-
-
-                    allNotifications =
-                        allNotifications.map(
-                            notification => ({
-
-                                ...notification,
-
-                                is_read: true
-
-                            })
-                        );
-
-
-                    updateNotificationCounts();
-
-                    renderNotifications();
-
-
-                    showToast(
-                        "All notifications marked as read!",
-                        "success"
-                    );
-
-                }
-                catch (error) {
-
-                    console.error(
-                        "Mark all notifications error:",
-                        error
-                    );
-
-
-                    showToast(
-                        error.message,
-                        "error"
-                    );
-
-                }
-
+            if (type.includes("message")) {
+                return "fa-regular fa-comment-dots";
             }
-        );
 
-    }
-
-
-    /* =====================================================
-       FILTER TABS
-       ===================================================== */
-
-    const tabBtns =
-        document.querySelectorAll(
-            ".tab-btn"
-        );
-
-
-    tabBtns.forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                function () {
-
-                    tabBtns.forEach(
-                        btn =>
-                            btn.classList.remove(
-                                "active"
-                            )
-                    );
-
-
-                    this.classList.add(
-                        "active"
-                    );
-
-
-                    currentFilter =
-                        this.dataset.filter ||
-                        "all";
-
-
-                    renderNotifications();
-
-                }
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       SEARCH
-       ===================================================== */
-
-    const searchInput =
-        document.getElementById(
-            "searchInput"
-        );
-
-
-    if (searchInput) {
-
-        searchInput.addEventListener(
-            "input",
-            function () {
-
-                renderNotifications();
-
+            if (type.includes("announcement")) {
+                return "fa-solid fa-bullhorn";
             }
-        );
 
-    }
-
-
-    /* =====================================================
-       FORMAT NOTIFICATION TIME
-       ===================================================== */
-
-    function formatNotificationTime(
-        dateValue
-    ) {
-
-        if (!dateValue) {
-            return "Unknown time";
+            return "fa-solid fa-bell";
         }
 
+        /* TIME FORMAT */
+        function formatTime(value) {
+            if (!value) return "Unknown time";
 
-        const date =
-            new Date(dateValue);
+            const date = new Date(value);
 
+            if (Number.isNaN(date.getTime())) return "Unknown time";
 
-        if (
-            Number.isNaN(
-                date.getTime()
-            )
-        ) {
+            const seconds = Math.max(0, Math.floor((Date.now() - date.getTime()) / 1000));
 
-            return "Unknown time";
+            if (seconds < 60) return "Just now";
+            if (seconds < 3600) return Math.floor(seconds / 60) + " minutes ago";
+            if (seconds < 86400) return Math.floor(seconds / 3600) + " hours ago";
+            if (seconds < 172800) return "Yesterday";
 
-        }
-
-
-        const now =
-            new Date();
-
-
-        const difference =
-            Math.floor(
-                (now - date) / 1000
-            );
-
-
-        if (
-            difference < 60
-        ) {
-
-            return "Just now";
-
-        }
-
-
-        if (
-            difference < 3600
-        ) {
-
-            const minutes =
-                Math.floor(
-                    difference / 60
-                );
-
-            return `${minutes} minute${
-                minutes !== 1
-                    ? "s"
-                    : ""
-            } ago`;
-
-        }
-
-
-        if (
-            difference < 86400
-        ) {
-
-            const hours =
-                Math.floor(
-                    difference / 3600
-                );
-
-            return `${hours} hour${
-                hours !== 1
-                    ? "s"
-                    : ""
-            } ago`;
-
-        }
-
-
-        if (
-            difference < 172800
-        ) {
-
-            return "Yesterday";
-
-        }
-
-
-        return date.toLocaleDateString(
-            "en-PH",
-            {
+            return date.toLocaleDateString("en-PH", {
                 month: "short",
                 day: "numeric",
                 year: "numeric"
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       ESCAPE HTML
-       ===================================================== */
-
-    function escapeHtml(
-        value
-    ) {
-
-        const div =
-            document.createElement(
-                "div"
-            );
-
-        div.textContent =
-            value ?? "";
-
-        return div.innerHTML;
-
-    }
-
-
-    /* =====================================================
-       PROFILE MODAL ELEMENTS
-       ===================================================== */
-
-    const userProfileBtn =
-        document.getElementById(
-            "userProfileBtn"
-        );
-
-    const profileModalOverlay =
-        document.getElementById(
-            "profileModalOverlay"
-        );
-
-    const closeProfileModal =
-        document.getElementById(
-            "closeProfileModal"
-        );
-
-    const cancelProfileModal =
-        document.getElementById(
-            "cancelProfileModal"
-        );
-
-    const avatarInput =
-        document.getElementById(
-            "avatarInput"
-        );
-
-    const avatarPreview =
-        document.getElementById(
-            "avatarPreview"
-        );
-
-    const headerAvatar =
-        document.getElementById(
-            "headerAvatar"
-        );
-
-    const profileForm =
-        document.getElementById(
-            "profileSettingsForm"
-        );
-
-
-    /* =====================================================
-       PASSWORD INPUTS
-       ===================================================== */
-
-    const passwordSection =
-        document.getElementById(
-            "passwordSection"
-        );
-
-    const passwordToggleBtn =
-        document.getElementById(
-            "passwordToggleBtn"
-        );
-
-    const currentPasswordInput =
-        document.getElementById(
-            "currentPassword"
-        );
-
-    const newPasswordInput =
-        document.getElementById(
-            "newPassword"
-        );
-
-    const confirmPasswordInput =
-        document.getElementById(
-            "confirmPassword"
-        );
-
-
-    /* =====================================================
-       PROFILE INPUTS
-       ===================================================== */
-
-    const instructorIdInput =
-        document.getElementById(
-            "instructorId"
-        );
-
-    const instructorNameInput =
-        document.getElementById(
-            "instructorName"
-        );
-
-    const instructorEmailInput =
-        document.getElementById(
-            "instructorEmail"
-        );
-
-    const instructorPhoneInput =
-        document.getElementById(
-            "instructorPhone"
-        );
-
-
-    /* =====================================================
-       TOAST
-       ===================================================== */
-
-    function showToast(
-        message,
-        type = "success"
-    ) {
-
-        let toastContainer =
-            document.getElementById(
-                "toastContainer"
-            );
-
-
-        if (!toastContainer) {
-
-            toastContainer =
-                document.createElement(
-                    "div"
-                );
-
-            toastContainer.id =
-                "toastContainer";
-
-            toastContainer.className =
-                "toast-container";
-
-            document.body.appendChild(
-                toastContainer
-            );
-
+            });
         }
 
-
-        const toast =
-            document.createElement(
-                "div"
-            );
-
-
-        toast.className =
-            `toast toast-${type}`;
-
-
-        const iconClass =
-            type === "success"
-                ? "fa-circle-check"
-                : "fa-circle-exclamation";
-
-
-        toast.innerHTML = `
-
-            <i class="fa-solid ${iconClass}"></i>
-
-            <span>
-                ${escapeHtml(message)}
-            </span>
-
-        `;
-
-
-        toastContainer.appendChild(
-            toast
-        );
-
-
-        setTimeout(
-            () => {
-
-                toast.classList.add(
-                    "show"
-                );
-
-            },
-            10
-        );
-
-
-        setTimeout(
-            () => {
-
-                toast.classList.remove(
-                    "show"
-                );
-
-
-                setTimeout(
-                    () => {
-
-                        toast.remove();
-
-                    },
-                    300
-                );
-
-
-            },
-            3500
-        );
-
-    }
-
-
-    /* =====================================================
-       LOAD INSTRUCTOR PROFILE
-       ===================================================== */
-
-    async function loadInstructorProfile() {
-
-        if (!authToken) {
-
-            showToast(
-                "Please log in again.",
-                "error"
-            );
-
-            return;
-
+        /* UPDATE COUNTS */
+        function updateCounts() {
+            $("allCount").textContent = allNotifications.length;
+            $("unreadCount").textContent =
+                allNotifications.filter(item => !item.is_read).length;
         }
 
+        /* CREATE NOTIFICATION */
+        function createNotification(item) {
+            const category = getCategory(item);
+            const unread = !item.is_read;
 
-        try {
+            const card = document.createElement("div");
+            card.className = "notification-item " + (unread ? "unread" : "read");
 
-            const response =
-                await fetch(
-                    `${API_BASE_URL}/instructor/profile`,
-                    {
-                        method: "GET",
+            const iconBox = document.createElement("div");
+            iconBox.className = `notif-icon-box ${category}-icon`;
 
-                        headers: {
+            const icon = document.createElement("i");
+            icon.className = getIcon(item);
+            iconBox.appendChild(icon);
 
-                            "Accept":
-                                "application/json",
+            const content = document.createElement("div");
+            content.className = "notif-content";
 
-                            "Authorization":
-                                `Bearer ${authToken}`
+            const titleRow = document.createElement("div");
+            titleRow.className = "notif-title-row";
 
-                        }
+            const text = document.createElement("p");
+            text.className = "notif-text";
 
-                    }
-                );
+            const title = document.createElement("strong");
+            title.textContent = item.title || "Notification";
+            text.appendChild(title);
 
-
-            const data =
-                await response.json();
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    data.message ||
-                    "Unable to load instructor profile."
-                );
-
+            if (item.message) {
+                text.appendChild(document.createTextNode(" " + item.message));
             }
 
+            titleRow.appendChild(text);
 
-            /*
-             * IMPORTANT:
-             * InstructorProfileController returns
-             * the profile using "user".
-             */
-
-            const instructor =
-                data.user;
-
-
-            if (!instructor) {
-
-                throw new Error(
-                    "Instructor profile data was not returned."
-                );
-
+            if (unread) {
+                const dot = document.createElement("span");
+                dot.className = "unread-dot";
+                dot.title = "Unread";
+                titleRow.appendChild(dot);
             }
 
+            const footer = document.createElement("div");
+            footer.className = "notif-footer";
 
-            if (instructorIdInput) {
+            const time = document.createElement("span");
+            time.className = "notif-time";
 
-                instructorIdInput.value =
-                    instructor.school_id || "";
+            const clock = document.createElement("i");
+            clock.className = "fa-regular fa-clock";
 
+            time.append(clock, document.createTextNode(" " + formatTime(item.created_at)));
+
+            const actions = document.createElement("div");
+
+            if (category === "submission") {
+                const link = document.createElement("a");
+                link.href = "submissions.html";
+                link.className = "btn-action-primary";
+                link.textContent = "Review Submission";
+
+                link.addEventListener("click", () => markAsRead(item.id));
+                actions.appendChild(link);
             }
 
+            footer.append(time, actions);
+            content.append(titleRow, footer);
+            card.append(iconBox, content);
 
-            if (instructorNameInput) {
+            card.addEventListener("click", event => {
+                if (event.target.closest("a, button")) return;
+                if (!item.is_read) markAsRead(item.id);
+            });
 
-                instructorNameInput.value =
-                    instructor.name || "";
-
-            }
-
-
-            if (instructorEmailInput) {
-
-                instructorEmailInput.value =
-                    instructor.email || "";
-
-            }
-
-
-            if (instructorPhoneInput) {
-
-                instructorPhoneInput.value =
-                    instructor.contact || "";
-
-            }
-
-
-            const headerInstructorName =
-                document.getElementById(
-                    "headerInstructorName"
-                );
-
-
-            if (headerInstructorName) {
-
-                headerInstructorName.textContent =
-                    instructor.name ||
-                    "Instructor";
-
-            }
-
-
-            sessionStorage.setItem(
-                "user",
-                JSON.stringify(instructor)
-            );
-
-        }
-        catch (error) {
-
-            console.error(
-                "Profile loading error:",
-                error
-            );
-
-            showToast(
-                error.message,
-                "error"
-            );
-
+            return card;
         }
 
-    }
+        /* RENDER LIST */
+        function renderNotifications() {
+            const list = $("notificationList");
+            const search = $("searchInput").value.trim().toLowerCase();
 
+            let results = [...allNotifications];
 
-    /* =====================================================
-       PASSWORD ACCORDION
-       ===================================================== */
+            if (currentFilter === "unread") {
+                results = results.filter(item => !item.is_read);
+            } else if (currentFilter === "submission") {
+                results = results.filter(item => getCategory(item) === "submission");
+            } else if (currentFilter === "system") {
+                results = results.filter(item => getCategory(item) === "system");
+            }
 
-    if (
-        passwordToggleBtn &&
-        passwordSection
-    ) {
+            if (search) {
+                results = results.filter(item =>
+                    [item.title, item.message, item.type]
+                        .join(" ")
+                        .toLowerCase()
+                        .includes(search)
+                );
+            }
 
-        passwordToggleBtn.addEventListener(
-            "click",
-            function (event) {
+            list.replaceChildren();
 
+            if (results.length === 0) {
+                const empty = document.createElement("div");
+                empty.className = "notification-empty";
+
+                const icon = document.createElement("i");
+                icon.className = "fa-regular fa-bell-slash";
+
+                const message = document.createElement("p");
+                message.textContent = allNotifications.length === 0
+                    ? "You have no notifications yet."
+                    : "No notifications match your search or filter.";
+
+                empty.append(icon, message);
+                list.appendChild(empty);
+                return;
+            }
+
+            results.forEach(item => list.appendChild(createNotification(item)));
+        }
+
+        /* LOAD NOTIFICATIONS */
+        async function loadNotifications() {
+            const list = $("notificationList");
+
+            list.innerHTML = `
+                <div class="notification-loading">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    Loading notifications...
+                </div>
+            `;
+
+            try {
+                const data = await apiRequest("/instructor/notifications");
+
+                allNotifications = Array.isArray(data.notifications)
+                    ? data.notifications
+                    : [];
+
+                updateCounts();
+                renderNotifications();
+
+                console.log("Notifications loaded:", allNotifications.length);
+            } catch (error) {
+                console.error("Could not load notifications:", error);
+
+                list.replaceChildren();
+
+                const empty = document.createElement("div");
+                empty.className = "notification-empty";
+
+                const icon = document.createElement("i");
+                icon.className = "fa-solid fa-triangle-exclamation";
+
+                const message = document.createElement("p");
+                message.textContent = error.message;
+
+                const retry = document.createElement("button");
+                retry.className = "retry-btn";
+                retry.textContent = "Try Again";
+                retry.addEventListener("click", loadNotifications);
+
+                empty.append(icon, message, retry);
+                list.appendChild(empty);
+            }
+        }
+
+        /* MARK ONE READ */
+        async function markAsRead(id) {
+            const item = allNotifications.find(
+                notification => Number(notification.id) === Number(id)
+            );
+
+            if (!item || item.is_read) return;
+
+            try {
+                await apiRequest(
+                    `/instructor/notifications/${encodeURIComponent(id)}/read`,
+                    {method: "POST"}
+                );
+
+                item.is_read = true;
+                updateCounts();
+                renderNotifications();
+            } catch (error) {
+                console.error(error);
+                showToast(error.message, "error");
+            }
+        }
+
+        /* MARK ALL READ */
+        $("markAllReadBtn").addEventListener("click", async () => {
+            const button = $("markAllReadBtn");
+            button.disabled = true;
+
+            try {
+                await apiRequest("/instructor/notifications/read-all", {
+                    method: "POST"
+                });
+
+                allNotifications.forEach(item => item.is_read = true);
+
+                updateCounts();
+                renderNotifications();
+
+                showToast("All notifications marked as read.");
+            } catch (error) {
+                showToast(error.message, "error");
+            } finally {
+                button.disabled = false;
+            }
+        });
+
+        /* FILTERS */
+        document.querySelectorAll(".tab-btn").forEach(button => {
+            button.addEventListener("click", () => {
+                document.querySelectorAll(".tab-btn").forEach(tab =>
+                    tab.classList.remove("active")
+                );
+
+                button.classList.add("active");
+                currentFilter = button.dataset.filter;
+                renderNotifications();
+            });
+        });
+
+        $("searchInput").addEventListener("input", renderNotifications);
+
+        /* PROFILE */
+        const modal = $("profileModalOverlay");
+        const profileForm = $("profileSettingsForm");
+        const passwordSection = $("passwordSection");
+
+        async function loadProfile() {
+            try {
+                const data = await apiRequest("/instructor/profile");
+                const user = data.user;
+
+                if (!user) throw new Error("No profile information was returned.");
+
+                $("instructorId").value = user.school_id || user.instructor_id || "";
+                $("instructorName").value = user.name || "";
+                $("instructorEmail").value = user.email || "";
+                $("instructorPhone").value = user.contact || "";
+
+                $("headerInstructorName").textContent = user.name || "Instructor";
+                sessionStorage.setItem("user", JSON.stringify(user));
+            } catch (error) {
+                showToast(error.message, "error");
+            }
+        }
+
+        $("userProfileBtn").addEventListener("click", async () => {
+            modal.classList.add("active");
+            document.body.style.overflow = "hidden";
+            await loadProfile();
+        });
+
+        function togglePasswordSection() {
+            passwordSection.classList.toggle("open");
+            $("passwordToggleBtn").setAttribute(
+                "aria-expanded",
+                passwordSection.classList.contains("open")
+            );
+        }
+
+        $("passwordToggleBtn").addEventListener("click", togglePasswordSection);
+
+        $("passwordToggleBtn").addEventListener("keydown", event => {
+            if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault();
-
-                passwordSection.classList.toggle(
-                    "open"
-                );
-
+                togglePasswordSection();
             }
-        );
+        });
 
-    }
+        function closeModal() {
+            modal.classList.remove("active");
+            document.body.style.overflow = "";
 
+            $("currentPassword").value = "";
+            $("newPassword").value = "";
+            $("confirmPassword").value = "";
 
-    /* =====================================================
-       OPEN PROFILE MODAL
-       ===================================================== */
-
-    if (
-        userProfileBtn &&
-        profileModalOverlay
-    ) {
-
-        userProfileBtn.addEventListener(
-            "click",
-            async function () {
-
-                profileModalOverlay.classList.add(
-                    "active"
-                );
-
-                document.body.style.overflow =
-                    "hidden";
-
-                await loadInstructorProfile();
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       RESET PASSWORD FIELDS
-       ===================================================== */
-
-    function resetPasswordFields() {
-
-        if (passwordSection) {
-
-            passwordSection.classList.remove(
-                "open"
-            );
-
+            passwordSection.classList.remove("open");
+            $("passwordToggleBtn").setAttribute("aria-expanded", "false");
         }
 
-
-        if (currentPasswordInput) {
-
-            currentPasswordInput.value =
-                "";
-
-        }
-
-
-        if (newPasswordInput) {
-
-            newPasswordInput.value =
-                "";
-
-        }
-
-
-        if (confirmPasswordInput) {
-
-            confirmPasswordInput.value =
-                "";
-
-        }
-
-    }
-
-
-    /* =====================================================
-       CLOSE PROFILE MODAL
-       ===================================================== */
-
-    const closeModal = () => {
-
-        if (profileModalOverlay) {
-
-            profileModalOverlay.classList.remove(
-                "active"
-            );
-
-        }
-
-        document.body.style.overflow =
-            "";
-
-        resetPasswordFields();
-
-    };
-
-
-    if (closeProfileModal) {
-
-        closeProfileModal.addEventListener(
-            "click",
-            closeModal
-        );
-
-    }
-
-
-    if (cancelProfileModal) {
-
-        cancelProfileModal.addEventListener(
-            "click",
-            closeModal
-        );
-
-    }
-
-
-    if (profileModalOverlay) {
-
-        profileModalOverlay.addEventListener(
-            "click",
-            function (event) {
-
-                if (
-                    event.target ===
-                    profileModalOverlay
-                ) {
-
-                    closeModal();
-
-                }
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       PROFILE PHOTO PREVIEW
-       ===================================================== */
-
-    if (avatarInput) {
-
-        avatarInput.addEventListener(
-            "change",
-            function (event) {
-
-                const file =
-                    event.target.files[0];
-
-
-                if (!file) {
-                    return;
-                }
-
-
-                if (
-                    file.size >
-                    2 * 1024 * 1024
-                ) {
-
-                    showToast(
-                        "Image size exceeds 2MB limit.",
-                        "error"
-                    );
-
-                    avatarInput.value =
-                        "";
-
-                    return;
-
-                }
-
-
-                const reader =
-                    new FileReader();
-
-
-                reader.onload =
-                    function (event) {
-
-                        if (avatarPreview) {
-
-                            avatarPreview.src =
-                                event.target.result;
-
-                        }
-
-                    };
-
-
-                reader.readAsDataURL(
-                    file
-                );
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       SAVE INSTRUCTOR PROFILE
-       ===================================================== */
-
-    async function saveInstructorProfile() {
-
-        if (!authToken) {
-
-            showToast(
-                "Please log in again.",
-                "error"
-            );
-
-            return false;
-
-        }
-
-
-        const name =
-            instructorNameInput
-                ? instructorNameInput.value.trim()
-                : "";
-
-        const email =
-            instructorEmailInput
-                ? instructorEmailInput.value.trim()
-                : "";
-
-        const contact =
-            instructorPhoneInput
-                ? instructorPhoneInput.value.trim()
-                : "";
-
-
-        if (!name) {
-
-            showToast(
-                "Full name is required.",
-                "error"
-            );
-
-            return false;
-
-        }
-
-
-        if (!email) {
-
-            showToast(
-                "Email address is required.",
-                "error"
-            );
-
-            return false;
-
-        }
-
-
-        try {
-
-            const response =
-                await fetch(
-                    `${API_BASE_URL}/instructor/profile`,
-                    {
-                        method: "PUT",
-
-                        headers: {
-
-                            "Accept":
-                                "application/json",
-
-                            "Content-Type":
-                                "application/json",
-
-                            "Authorization":
-                                `Bearer ${authToken}`
-
-                        },
-
-                        body: JSON.stringify({
-
-                            name: name,
-
-                            email: email,
-
-                            contact: contact
-
-                        })
-
-                    }
-                );
-
-
-            const data =
-                await response.json();
-
-
-            if (!response.ok) {
-
-                if (data.errors) {
-
-                    const firstError =
-                        Object.values(
-                            data.errors
-                        )[0]?.[0];
-
-                    throw new Error(
-                        firstError ||
-                        "Unable to update profile."
-                    );
-
-                }
-
-
-                throw new Error(
-                    data.message ||
-                    "Unable to update profile."
-                );
-
+        $("closeProfileModal").addEventListener("click", closeModal);
+        $("cancelProfileModal").addEventListener("click", closeModal);
+
+        modal.addEventListener("click", event => {
+            if (event.target === modal) closeModal();
+        });
+
+        document.addEventListener("keydown", event => {
+            if (event.key === "Escape") closeModal();
+        });
+
+        /* PROFILE IMAGE PREVIEW */
+        $("avatarInput").addEventListener("change", event => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith("image/")) {
+                showToast("Select a valid image file.", "error");
+                event.target.value = "";
+                return;
             }
 
-
-            /*
-             * InstructorProfileController returns
-             * the updated data using "user".
-             */
-
-            if (data.user) {
-
-                sessionStorage.setItem(
-                    "user",
-                    JSON.stringify(
-                        data.user
-                    )
-                );
-
-
-                if (headerInstructorName) {
-
-                    headerInstructorName.textContent =
-                        data.user.name;
-
-                }
-
+            if (file.size > 2 * 1024 * 1024) {
+                showToast("The image must not exceed 2MB.", "error");
+                event.target.value = "";
+                return;
             }
 
+            if (avatarObjectUrl) URL.revokeObjectURL(avatarObjectUrl);
 
-            return true;
+            avatarObjectUrl = URL.createObjectURL(file);
+            $("avatarPreview").src = avatarObjectUrl;
+            $("headerAvatar").src = avatarObjectUrl;
+        });
 
-        }
-        catch (error) {
+        /* SAVE PROFILE */
+        async function saveProfile() {
+            const email = $("instructorEmail").value.trim();
+            const contact = $("instructorPhone").value.trim();
 
-            console.error(
-                "Profile update error:",
-                error
-            );
-
-            showToast(
-                error.message,
-                "error"
-            );
-
-            return false;
-
-        }
-
-    }
-
-
-    /* =====================================================
-       CHANGE PASSWORD
-       ===================================================== */
-
-    async function changeInstructorPassword() {
-
-        const currentPassword =
-            currentPasswordInput
-                ? currentPasswordInput.value.trim()
-                : "";
-
-        const newPassword =
-            newPasswordInput
-                ? newPasswordInput.value.trim()
-                : "";
-
-        const confirmPassword =
-            confirmPasswordInput
-                ? confirmPasswordInput.value.trim()
-                : "";
-
-
-        const changingPassword =
-            currentPassword ||
-            newPassword ||
-            confirmPassword;
-
-
-        /*
-         * Password section is optional.
-         * If all fields are empty, do nothing.
-         */
-
-        if (!changingPassword) {
-
-            return true;
-
-        }
-
-
-        if (!currentPassword) {
-
-            showToast(
-                "Please enter your current password.",
-                "error"
-            );
-
-            return false;
-
-        }
-
-
-        if (
-            !newPassword ||
-            newPassword.length < 8
-        ) {
-
-            showToast(
-                "New password must be at least 8 characters.",
-                "error"
-            );
-
-            return false;
-
-        }
-
-
-        if (
-            newPassword !==
-            confirmPassword
-        ) {
-
-            showToast(
-                "New passwords do not match.",
-                "error"
-            );
-
-            return false;
-
-        }
-
-
-        try {
-
-            const response =
-                await fetch(
-                    `${API_BASE_URL}/instructor/profile/password`,
-                    {
-                        /*
-                         * IMPORTANT:
-                         * Controller uses POST.
-                         */
-
-                        method: "POST",
-
-                        headers: {
-
-                            "Accept":
-                                "application/json",
-
-                            "Content-Type":
-                                "application/json",
-
-                            "Authorization":
-                                `Bearer ${authToken}`
-
-                        },
-
-                        body: JSON.stringify({
-
-                            current_password:
-                                currentPassword,
-
-                            /*
-                             * IMPORTANT:
-                             * Controller expects new_password.
-                             */
-
-                            new_password:
-                                newPassword,
-
-                            new_password_confirmation:
-                                confirmPassword
-
-                        })
-
-                    }
-                );
-
-
-            const data =
-                await response.json();
-
-
-            if (!response.ok) {
-
-                if (data.errors) {
-
-                    const firstError =
-                        Object.values(
-                            data.errors
-                        )[0]?.[0];
-
-                    throw new Error(
-                        firstError ||
-                        "Unable to change password."
-                    );
-
-                }
-
-
-                throw new Error(
-                    data.message ||
-                    "Unable to change password."
-                );
-
+            if (!email || !contact) {
+                showToast("Complete your email and mobile number.", "error");
+                return false;
             }
 
+            try {
+                const data = await apiRequest("/instructor/profile", {
+                    method: "PUT",
+                    body: JSON.stringify({email, contact})
+                });
 
-            showToast(
-                "Password changed successfully.",
-                "success"
-            );
-
-
-            return true;
-
-        }
-        catch (error) {
-
-            console.error(
-                "Password change error:",
-                error
-            );
-
-            showToast(
-                error.message,
-                "error"
-            );
-
-            return false;
-
-        }
-
-    }
-
-
-    /* =====================================================
-       PROFILE FORM SUBMIT
-       ===================================================== */
-
-    if (profileForm) {
-
-        profileForm.addEventListener(
-            "submit",
-            async function (event) {
-
-                event.preventDefault();
-
-
-                /*
-                 * First save profile information.
-                 */
-
-                const profileSaved =
-                    await saveInstructorProfile();
-
-
-                if (!profileSaved) {
-                    return;
+                if (data.user) {
+                    sessionStorage.setItem("user", JSON.stringify(data.user));
+                    $("headerInstructorName").textContent =
+                        data.user.name || "Instructor";
                 }
 
-
-                /*
-                 * Then change password if the
-                 * password fields were filled.
-                 */
-
-                const passwordChanged =
-                    await changeInstructorPassword();
-
-
-                if (!passwordChanged) {
-                    return;
-                }
-
-
-                /*
-                 * Update avatar preview locally.
-                 *
-                 * Avatar is NOT saved to the database yet.
-                 */
-
-                if (
-                    headerAvatar &&
-                    avatarPreview
-                ) {
-
-                    headerAvatar.src =
-                        avatarPreview.src;
-
-                }
-
-
-                showToast(
-                    "Profile settings saved successfully!",
-                    "success"
-                );
-
-
-                setTimeout(
-                    () => {
-
-                        closeModal();
-
-                    },
-                    500
-                );
-
+                return true;
+            } catch (error) {
+                showToast(error.message, "error");
+                return false;
             }
-        );
-
-    }
-
-
-    /* =====================================================
-       PAGE LOAD
-       ===================================================== */
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        function () {
-
-            loadInstructorProfile();
-
-            loadNotifications();
-
         }
-    );
 
-</script>
+        /* CHANGE PASSWORD */
+        async function changePassword() {
+            const current = $("currentPassword").value;
+            const next = $("newPassword").value;
+            const confirm = $("confirmPassword").value;
+
+            if (!current && !next && !confirm) return true;
+
+            if (!current) {
+                showToast("Enter your current password.", "error");
+                return false;
+            }
+
+            if (next.length < 8) {
+                showToast("The new password must have at least 8 characters.", "error");
+                return false;
+            }
+
+            if (next !== confirm) {
+                showToast("The new passwords do not match.", "error");
+                return false;
+            }
+
+            try {
+                await apiRequest("/instructor/profile/password", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        current_password: current,
+                        new_password: next,
+                        new_password_confirmation: confirm
+                    })
+                });
+
+                showToast("Password changed successfully.");
+                return true;
+            } catch (error) {
+                showToast(error.message, "error");
+                return false;
+            }
+        }
+
+        profileForm.addEventListener("submit", async event => {
+            event.preventDefault();
+
+            const button = profileForm.querySelector(".btn-save");
+            button.disabled = true;
+
+            try {
+                if (!await saveProfile()) return;
+                if (!await changePassword()) return;
+
+                showToast("Profile settings saved.");
+                setTimeout(closeModal, 500);
+            } finally {
+                button.disabled = false;
+            }
+        });
+
+        /* INITIALIZE */
+        loadNotifications();
+    </script>
 
 </body>
-
 </html>

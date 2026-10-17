@@ -3,7 +3,12 @@
    Learner Progress
 ===================================================== */
 
-const API_BASE_URL = "http://localhost:8000/api";
+/*
+ * API URL
+ * Change this URL if your backend uses a different
+ * address, such as a GitHub Codespaces forwarded URL.
+ */
+const API_BASE_URL = "http://127.0.0.1:8000/api";
 
 
 /* =====================================================
@@ -71,13 +76,8 @@ let learners = [];
 ===================================================== */
 
 if (!token) {
-
-    console.warn(
-        "No authentication token found."
-    );
-
-    window.location.href =
-        "/index.html";
+    console.warn("No authentication token found.");
+    window.location.href = "/index.html";
 }
 
 
@@ -86,124 +86,94 @@ if (!token) {
 ===================================================== */
 
 async function loadDashboard() {
-
     if (!token) {
         return;
     }
 
-
     try {
-
-        const response =
-            await fetch(
-                `${API_BASE_URL}/instructor/dashboard`,
-                {
-                    method: "GET",
-
-                    headers: {
-                        "Accept":
-                            "application/json",
-
-                        "Authorization":
-                            `Bearer ${token}`
-                    }
+        const response = await fetch(
+            `${API_BASE_URL}/instructor/dashboard`,
+            {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json",
+                    "Authorization": `Bearer ${token}`
                 }
-            );
+            }
+        );
 
+        /*
+         * Read the response safely.
+         */
+        const data = await response.json().catch(() => ({}));
 
-        /* =================================================
+        console.log("Instructor dashboard:", data);
+
+        /* =============================================
            AUTHENTICATION ERROR
-        ================================================= */
+        ============================================= */
 
         if (response.status === 401) {
-
             console.warn(
                 "Authentication token is invalid or expired."
             );
 
-            sessionStorage.clear();
-
-            window.location.href =
-                "/index.html";
-
+            clearLoginSession();
+            window.location.href = "/index.html";
             return;
         }
 
+        /* =============================================
+           PERMISSION ERROR
+        ============================================= */
 
-        const data =
-            await response.json();
+        if (response.status === 403) {
+            showDashboardError(
+                "You do not have permission to view this dashboard."
+            );
+            return;
+        }
 
-
-        console.log(
-            "Instructor dashboard:",
-            data
-        );
-
-
-        /* =================================================
+        /* =============================================
            API ERROR
-        ================================================= */
+        ============================================= */
 
-        if (
-            !response.ok ||
-            !data.success
-        ) {
-
+        if (!response.ok || !data.success) {
             throw new Error(
-                data.message ||
-                "Unable to load dashboard."
+                data.message || "Unable to load dashboard."
             );
         }
 
-
-        /* =================================================
+        /* =============================================
            INSTRUCTOR INFORMATION
-        ================================================= */
+        ============================================= */
 
-        updateInstructorInformation(
-            data.instructor
-        );
+        updateInstructorInformation(data.instructor);
 
-
-        /* =================================================
+        /* =============================================
            STATISTICS
-        ================================================= */
+        ============================================= */
 
-        updateStatistics(
-            data.statistics
-        );
+        updateStatistics(data.statistics);
 
-
-        /* =================================================
+        /* =============================================
            LEARNERS
-        ================================================= */
+        ============================================= */
 
-        learners =
-            Array.isArray(data.learners)
-                ? data.learners
-                : [];
+        learners = Array.isArray(data.learners)
+            ? data.learners
+            : [];
 
+        renderLearners(learners);
 
-        renderLearners(
-            learners
-        );
-
-    }
-
-
-    catch (error) {
-
-        console.error(
-            "Dashboard error:",
-            error
-        );
-
+    } catch (error) {
+        console.error("Dashboard error:", error);
 
         showDashboardError(
-            error.message
+            error.message ||
+            "Unable to connect to the server. Please try again."
         );
     }
-
 }
 
 
@@ -211,96 +181,58 @@ async function loadDashboard() {
    UPDATE INSTRUCTOR INFORMATION
 ===================================================== */
 
-function updateInstructorInformation(
-    instructor
-) {
-
+function updateInstructorInformation(instructor) {
     if (!instructor) {
         return;
     }
 
-
-    /* =================================================
-       HEADER NAME
-    ================================================= */
+    /* Header name */
 
     if (headerName) {
-
         headerName.textContent =
-            instructor.name ||
-            "Instructor";
+            instructor.name || "Instructor";
     }
 
-
-    /* =================================================
-       HEADER AVATAR
-    ================================================= */
+    /* Header avatar initials */
 
     if (headerAvatar) {
+        const name = instructor.name || "Instructor";
 
-        const name =
-            instructor.name ||
-            "Instructor";
+        const initials = name
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean)
+            .map(word => word.charAt(0))
+            .join("")
+            .substring(0, 2)
+            .toUpperCase();
 
-
-        const initials =
-            name
-                .split(" ")
-                .filter(Boolean)
-                .map(
-                    word =>
-                        word.charAt(0)
-                )
-                .join("")
-                .substring(0, 2)
-                .toUpperCase();
-
-
-        headerAvatar.textContent =
-            initials || "I";
+        headerAvatar.textContent = initials || "I";
     }
 
+    /* Update stored user information */
 
-    /* =================================================
-       UPDATE SESSION USER
-    ================================================= */
-
-    const storedUser =
-        sessionStorage.getItem("user");
-
+    const storedUser = sessionStorage.getItem("user");
 
     if (storedUser) {
-
         try {
-
-            const user =
-                JSON.parse(storedUser);
-
-
-            const updatedUser = {
-                ...user,
-                ...instructor
-            };
-
+            const user = JSON.parse(storedUser);
 
             sessionStorage.setItem(
                 "user",
-                JSON.stringify(
-                    updatedUser
-                )
+                JSON.stringify({
+                    ...user,
+                    ...instructor
+                })
             );
 
-        }
-
-        catch (error) {
-
+        } catch (error) {
             console.warn(
                 "Unable to update stored user.",
                 error
             );
         }
     }
-
 }
 
 
@@ -308,42 +240,30 @@ function updateInstructorInformation(
    UPDATE STATISTICS
 ===================================================== */
 
-function updateStatistics(
-    statistics
-) {
-
+function updateStatistics(statistics) {
     if (!statistics) {
         return;
     }
 
-
     if (totalLearners) {
-
         totalLearners.textContent =
             statistics.total_learners ?? 0;
     }
 
-
     if (totalClasses) {
-
         totalClasses.textContent =
             statistics.total_classes ?? 0;
     }
 
-
     if (totalModules) {
-
         totalModules.textContent =
             statistics.total_modules ?? 0;
     }
 
-
     if (pendingSubmissions) {
-
         pendingSubmissions.textContent =
             statistics.pending_submissions ?? 0;
     }
-
 }
 
 
@@ -351,317 +271,138 @@ function updateStatistics(
    RENDER LEARNERS
 ===================================================== */
 
-function renderLearners(
-    learnerList
-) {
-
+function renderLearners(learnerList) {
     if (!learnersTableBody) {
         return;
     }
 
-
     learnersTableBody.innerHTML = "";
 
+    /* Show empty message if there are no learners */
 
-    /* =================================================
-       EMPTY
-    ================================================= */
-
-    if (
-        !learnerList ||
-        learnerList.length === 0
-    ) {
-
+    if (!Array.isArray(learnerList) || learnerList.length === 0) {
         if (emptyMessage) {
-
-            emptyMessage.style.display =
-                "block";
+            emptyMessage.style.display = "block";
         }
-
 
         return;
     }
 
-
     if (emptyMessage) {
-
-        emptyMessage.style.display =
-            "none";
+        emptyMessage.style.display = "none";
     }
 
+    /* Create a table row for each learner */
 
-    /* =================================================
-       CREATE ROWS
-    ================================================= */
+    learnerList.forEach(learner => {
+        const row = document.createElement("tr");
 
-    learnerList.forEach(
-        learner => {
+        /* Student ID */
 
-            const row =
-                document.createElement("tr");
+        const studentIdCell = document.createElement("td");
 
+        studentIdCell.textContent =
+            learner.school_id || "—";
 
-            /* -----------------------------------------
-               STUDENT ID
-            ----------------------------------------- */
+        /* Learner name */
 
-            const studentIdCell =
-                document.createElement("td");
+        const learnerCell = document.createElement("td");
 
-            studentIdCell.textContent =
-                learner.school_id ||
-                "—";
+        learnerCell.textContent =
+            learner.name || "Unknown Learner";
 
+        /* Class codes */
 
-            /* -----------------------------------------
-               LEARNER
-            ----------------------------------------- */
+        const classCell = document.createElement("td");
 
-            const learnerCell =
-                document.createElement("td");
+        let classCodes = [];
 
-            learnerCell.textContent =
-                learner.name ||
-                "Unknown Learner";
-
-
-            /* -----------------------------------------
-               CLASS CODE
-            ----------------------------------------- */
-
-            const classCell =
-                document.createElement("td");
-
-
-            let classCode = "—";
-
-
-            if (
-                Array.isArray(
-                    learner.class_codes
-                ) &&
-                learner.class_codes.length > 0
-            ) {
-
-                classCode =
-                    learner.class_codes.join(", ");
-
-            }
-
-            else if (
-                learner.class_code
-            ) {
-
-                classCode =
-                    learner.class_code;
-            }
-
-
-            classCell.textContent =
-                classCode;
-
-
-            /* -----------------------------------------
-               MODULES
-            ----------------------------------------- */
-
-            const modulesCell =
-                document.createElement("td");
-
-            modulesCell.textContent =
-                learner.modules_assigned ?? 0;
-
-
-            /* -----------------------------------------
-               PROGRESS
-            ----------------------------------------- */
-
-            const progressCell =
-                document.createElement("td");
-
-
-            const progressWrapper =
-                document.createElement(
-                    "div"
-                );
-
-            progressWrapper.className =
-                "progress-wrapper";
-
-
-            const progressBar =
-                document.createElement(
-                    "div"
-                );
-
-            progressBar.className =
-                "progress-bar";
-
-
-            const progressFill =
-                document.createElement(
-                    "div"
-                );
-
-            progressFill.className =
-                "progress-fill";
-
-
-            let progress =
-                Number(
-                    learner.progress
-                );
-
-
-            if (
-                Number.isNaN(progress)
-            ) {
-
-                progress = 0;
-            }
-
-
-            progress =
-                Math.max(
-                    0,
-                    Math.min(
-                        100,
-                        progress
-                    )
-                );
-
-
-            progressFill.style.width =
-                `${progress}%`;
-
-
-            const progressText =
-                document.createElement(
-                    "span"
-                );
-
-            progressText.className =
-                "progress-text";
-
-            progressText.textContent =
-                `${progress}%`;
-
-
-            progressBar.appendChild(
-                progressFill
-            );
-
-
-            progressWrapper.appendChild(
-                progressBar
-            );
-
-
-            progressWrapper.appendChild(
-                progressText
-            );
-
-
-            progressCell.appendChild(
-                progressWrapper
-            );
-
-
-            /* -----------------------------------------
-               STATUS
-            ----------------------------------------- */
-
-            const statusCell =
-                document.createElement("td");
-
-
-            const status =
-                learner.status ||
-                "Pending Plan";
-
-
-            const statusBadge =
-                document.createElement(
-                    "span"
-                );
-
-            statusBadge.className =
-                "status-badge";
-
-
-            if (
-                status === "Completed"
-            ) {
-
-                statusBadge.classList.add(
-                    "status-completed"
-                );
-
-            }
-
-            else if (
-                status === "Active"
-            ) {
-
-                statusBadge.classList.add(
-                    "status-active"
-                );
-
-            }
-
-            else {
-
-                statusBadge.classList.add(
-                    "status-pending"
-                );
-            }
-
-
-            statusBadge.textContent =
-                status;
-
-
-            statusCell.appendChild(
-                statusBadge
-            );
-
-
-            /* -----------------------------------------
-               ADD CELLS
-            ----------------------------------------- */
-
-            row.appendChild(
-                studentIdCell
-            );
-
-            row.appendChild(
-                learnerCell
-            );
-
-            row.appendChild(
-                classCell
-            );
-
-            row.appendChild(
-                modulesCell
-            );
-
-            row.appendChild(
-                progressCell
-            );
-
-            row.appendChild(
-                statusCell
-            );
-
-
-            learnersTableBody.appendChild(
-                row
-            );
-
+        if (
+            Array.isArray(learner.class_codes) &&
+            learner.class_codes.length > 0
+        ) {
+            classCodes = learner.class_codes;
+        } else if (learner.class_code) {
+            classCodes = [learner.class_code];
         }
-    );
 
+        classCell.textContent =
+            classCodes.length > 0
+                ? classCodes.join(", ")
+                : "—";
+
+        /* Modules assigned */
+
+        const modulesCell = document.createElement("td");
+
+        modulesCell.textContent =
+            learner.modules_assigned ?? 0;
+
+        /* Progress bar */
+
+        const progressCell = document.createElement("td");
+
+        const progressWrapper = document.createElement("div");
+        progressWrapper.className = "progress-wrapper";
+
+        const progressBar = document.createElement("div");
+        progressBar.className = "progress-bar";
+
+        const progressFill = document.createElement("div");
+        progressFill.className = "progress-fill";
+
+        let progress = Number(learner.progress);
+
+        if (!Number.isFinite(progress)) {
+            progress = 0;
+        }
+
+        progress = Math.max(0, Math.min(100, progress));
+
+        progressFill.style.width = `${progress}%`;
+
+        const progressText = document.createElement("span");
+        progressText.className = "progress-text";
+        progressText.textContent = `${progress}%`;
+
+        progressBar.appendChild(progressFill);
+        progressWrapper.appendChild(progressBar);
+        progressWrapper.appendChild(progressText);
+        progressCell.appendChild(progressWrapper);
+
+        /* Learner status */
+
+        const statusCell = document.createElement("td");
+
+        const status = learner.status || "Pending Plan";
+
+        const statusBadge = document.createElement("span");
+        statusBadge.className = "status-badge";
+
+        const normalizedStatus = status.toLowerCase();
+
+        if (normalizedStatus === "completed") {
+            statusBadge.classList.add("status-completed");
+        } else if (normalizedStatus === "active") {
+            statusBadge.classList.add("status-active");
+        } else {
+            statusBadge.classList.add("status-pending");
+        }
+
+        statusBadge.textContent = status;
+        statusCell.appendChild(statusBadge);
+
+        /* Add cells to the row */
+
+        row.appendChild(studentIdCell);
+        row.appendChild(learnerCell);
+        row.appendChild(classCell);
+        row.appendChild(modulesCell);
+        row.appendChild(progressCell);
+        row.appendChild(statusCell);
+
+        learnersTableBody.appendChild(row);
+    });
 }
 
 
@@ -670,77 +411,39 @@ function renderLearners(
 ===================================================== */
 
 if (learnerSearch) {
+    learnerSearch.addEventListener("input", function () {
+        const searchTerm = this.value.trim().toLowerCase();
 
-    learnerSearch.addEventListener(
-        "input",
-        function () {
-
-            const searchTerm =
-                this.value
-                    .trim()
-                    .toLowerCase();
-
-
-            if (!searchTerm) {
-
-                renderLearners(
-                    learners
-                );
-
-                return;
-            }
-
-
-            const filteredLearners =
-                learners.filter(
-                    learner => {
-
-                        const name =
-                            (
-                                learner.name ||
-                                ""
-                            ).toLowerCase();
-
-
-                        const schoolId =
-                            (
-                                learner.school_id ||
-                                ""
-                            ).toLowerCase();
-
-
-                        const classCode =
-                            (
-                                learner.class_code ||
-                                ""
-                            ).toLowerCase();
-
-
-                        return (
-                            name.includes(
-                                searchTerm
-                            ) ||
-
-                            schoolId.includes(
-                                searchTerm
-                            ) ||
-
-                            classCode.includes(
-                                searchTerm
-                            )
-                        );
-
-                    }
-                );
-
-
-            renderLearners(
-                filteredLearners
-            );
-
+        if (!searchTerm) {
+            renderLearners(learners);
+            return;
         }
-    );
 
+        const filteredLearners = learners.filter(learner => {
+            const name = String(
+                learner.name || ""
+            ).toLowerCase();
+
+            const schoolId = String(
+                learner.school_id || ""
+            ).toLowerCase();
+
+            const classCode = [
+                learner.class_code || "",
+                ...(Array.isArray(learner.class_codes)
+                    ? learner.class_codes
+                    : [])
+            ].join(" ").toLowerCase();
+
+            return (
+                name.includes(searchTerm) ||
+                schoolId.includes(searchTerm) ||
+                classCode.includes(searchTerm)
+            );
+        });
+
+        renderLearners(filteredLearners);
+    });
 }
 
 
@@ -748,19 +451,10 @@ if (learnerSearch) {
    SIDEBAR TOGGLE
 ===================================================== */
 
-if (viewToggleButton) {
-
-    viewToggleButton.addEventListener(
-        "click",
-        function () {
-
-            sidebar.classList.toggle(
-                "collapsed"
-            );
-
-        }
-    );
-
+if (viewToggleButton && sidebar) {
+    viewToggleButton.addEventListener("click", function () {
+        sidebar.classList.toggle("collapsed");
+    });
 }
 
 
@@ -768,19 +462,10 @@ if (viewToggleButton) {
    MOBILE SIDEBAR
 ===================================================== */
 
-if (mobileMenuButton) {
-
-    mobileMenuButton.addEventListener(
-        "click",
-        function () {
-
-            sidebar.classList.toggle(
-                "mobile-open"
-            );
-
-        }
-    );
-
+if (mobileMenuButton && sidebar) {
+    mobileMenuButton.addEventListener("click", function () {
+        sidebar.classList.toggle("mobile-open");
+    });
 }
 
 
@@ -789,33 +474,28 @@ if (mobileMenuButton) {
    WHEN NAVIGATION IS CLICKED
 ===================================================== */
 
-const navigationLinks =
-    document.querySelectorAll(
-        ".nav-item"
-    );
+const navigationLinks = document.querySelectorAll(".nav-item");
+
+navigationLinks.forEach(link => {
+    link.addEventListener("click", function () {
+        if (window.innerWidth <= 750 && sidebar) {
+            sidebar.classList.remove("mobile-open");
+        }
+    });
+});
 
 
-navigationLinks.forEach(
-    link => {
+/* =====================================================
+   CLEAR LOGIN SESSION
+===================================================== */
 
-        link.addEventListener(
-            "click",
-            function () {
-
-                if (
-                    window.innerWidth <= 750
-                ) {
-
-                    sidebar.classList.remove(
-                        "mobile-open"
-                    );
-                }
-
-            }
-        );
-
-    }
-);
+function clearLoginSession() {
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("authToken");
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("role");
+    sessionStorage.removeItem("firstLogin");
+}
 
 
 /* =====================================================
@@ -823,60 +503,21 @@ navigationLinks.forEach(
 ===================================================== */
 
 if (logoutLink) {
+    logoutLink.addEventListener("click", function (event) {
+        event.preventDefault();
 
-    logoutLink.addEventListener(
-        "click",
-        function (event) {
+        const confirmLogout = confirm(
+            "Are you sure you want to logout?"
+        );
 
-            event.preventDefault();
-
-
-            const confirmLogout =
-                confirm(
-                    "Are you sure you want to logout?"
-                );
-
-
-            if (!confirmLogout) {
-                return;
-            }
-
-
-            /*
-             * Remove authentication information.
-             */
-
-            sessionStorage.removeItem(
-                "token"
-            );
-
-            sessionStorage.removeItem(
-                "authToken"
-            );
-
-            sessionStorage.removeItem(
-                "user"
-            );
-
-            sessionStorage.removeItem(
-                "role"
-            );
-
-            sessionStorage.removeItem(
-                "firstLogin"
-            );
-
-
-            /*
-             * Return to login page.
-             */
-
-            window.location.href =
-                "/index.html";
-
+        if (!confirmLogout) {
+            return;
         }
-    );
 
+        clearLoginSession();
+
+        window.location.href = "/index.html";
+    });
 }
 
 
@@ -884,52 +525,27 @@ if (logoutLink) {
    SHOW DASHBOARD ERROR
 ===================================================== */
 
-function showDashboardError(
-    message
-) {
-
+function showDashboardError(message) {
     if (!learnersTableBody) {
         return;
     }
 
+    learnersTableBody.innerHTML = "";
 
-    learnersTableBody.innerHTML = `
-        <tr>
-            <td
-                colspan="6"
-                class="error-cell">
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
 
-                <i class="fa-solid fa-circle-exclamation"></i>
+    cell.colSpan = 6;
+    cell.className = "error-cell";
+    cell.textContent =
+        message || "Unable to load learner information.";
 
-                <br><br>
+    row.appendChild(cell);
+    learnersTableBody.appendChild(row);
 
-                ${escapeHtml(
-                    message ||
-                    "Unable to load learner information."
-                )}
-
-            </td>
-        </tr>
-    `;
-
-}
-
-
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
-
-function escapeHtml(
-    text
-) {
-
-    const div =
-        document.createElement("div");
-
-    div.textContent =
-        text;
-
-    return div.innerHTML;
+    if (emptyMessage) {
+        emptyMessage.style.display = "none";
+    }
 }
 
 
@@ -937,4 +553,6 @@ function escapeHtml(
    START DASHBOARD
 ===================================================== */
 
-loadDashboard();
+if (token) {
+    loadDashboard();
+}
