@@ -11,6 +11,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\Storage;
 
 use App\Models\Module;
+use App\Models\Progress;
 use App\Models\Submission;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
@@ -502,7 +503,19 @@ $learner = User::create([
             ], 404);
         }
 
-        $learner->delete();
+        // The database cascades a user delete to their submissions, grades
+        // and progress, so refuse when any exist. Deactivating keeps them.
+        if ($learner->submissions()->exists() || $learner->progress()->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This learner has submissions or progress records and cannot be deleted. Deactivate the account instead.',
+            ], 409);
+        }
+
+        DB::transaction(function () use ($learner): void {
+            $learner->tokens()->delete();
+            $learner->delete();
+        });
 
         return response()->json([
             'success' => true,
@@ -689,7 +702,19 @@ $learner = User::create([
             ], 404);
         }
 
-        $instructor->delete();
+        // Deleting an instructor would erase every grade they gave and leave
+        // their classes without an instructor, so refuse when either exists.
+        if ($instructor->gradesGiven()->exists() || $instructor->instructedCourses()->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This instructor is assigned to classes or has graded work and cannot be deleted. Deactivate the account instead.',
+            ], 409);
+        }
+
+        DB::transaction(function () use ($instructor): void {
+            $instructor->tokens()->delete();
+            $instructor->delete();
+        });
 
         return response()->json([
             'success' => true,
@@ -841,6 +866,22 @@ public function destroyClass(Request $request, int $id): JsonResponse
             'success' => false,
             'message' => 'Class not found.',
         ], 404);
+    }
+
+    // Deleting a class cascades to its modules (including soft-deleted ones)
+    // and from there to submissions, grades and progress.
+    $moduleIds = Module::withTrashed()
+        ->where('course_id', $class->id)
+        ->select('id');
+
+    if (
+        Submission::whereIn('module_id', $moduleIds)->exists()
+        || Progress::whereIn('module_id', $moduleIds)->exists()
+    ) {
+        return response()->json([
+            'success' => false,
+            'message' => 'This class has learner submissions or progress records and cannot be deleted. Mark the class inactive instead.',
+        ], 409);
     }
 
     $class->delete();
