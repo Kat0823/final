@@ -4,31 +4,44 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Middleware\EnsureAccountIsActive;
 use App\Http\Middleware\EnsureSystemAdmin;
+
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\PasswordController;
-use App\Http\Controllers\Api\SubmissionController;
+
+use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\ModuleController;
+use App\Http\Controllers\Api\SubmissionController;
 use App\Http\Controllers\Api\GradeController;
 use App\Http\Controllers\Api\NotificationController;
+
 use App\Http\Controllers\Api\InstructorController;
+use App\Http\Controllers\Api\InstructorDashboardController;
+use App\Http\Controllers\Api\InstructorCourseController;
+use App\Http\Controllers\Api\InstructorModuleController;
+use App\Http\Controllers\Api\InstructorNotificationController;
+use App\Http\Controllers\Api\InstructorProfileController;
+
 use App\Http\Controllers\Api\AcademicAdminController;
 use App\Http\Controllers\Api\SystemAdminController;
 use App\Http\Controllers\Api\SystemAdminAcademicAdminController;
 
 /*
 |--------------------------------------------------------------------------
-| API Routes
+| Siknayan LMS API
 |--------------------------------------------------------------------------
+|
+| One login endpoint serves every role. The response tells the frontend
+| which portal to open (learner, instructor, academic_admin, system_admin).
+|
 */
 
-// Login
+// Login (all roles)
 Route::post('/login', [AuthController::class, 'login']);
 
 
 /*
 |--------------------------------------------------------------------------
-| Protected Routes
+| Protected routes (valid token + active account)
 |--------------------------------------------------------------------------
 */
 
@@ -37,319 +50,144 @@ Route::middleware([
     EnsureAccountIsActive::class,
 ])->group(function () {
 
+    // Revokes the current token (all roles)
     Route::post('/logout', [AuthController::class, 'logout']);
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | System Administrator
+    |--------------------------------------------------------------------------
+    */
 
     Route::prefix('system-admin')
         ->middleware(EnsureSystemAdmin::class)
         ->group(function () {
+
             Route::get('/session', static fn () => response()->json([
                 'success' => true,
             ]));
 
-            Route::get(
-                '/dashboard',
-                [SystemAdminController::class, 'dashboard']
-            );
+            Route::get('/dashboard', [SystemAdminController::class, 'dashboard']);
 
-            Route::get(
-                '/academic-administrators',
-                [SystemAdminAcademicAdminController::class, 'index']
-            );
-            Route::post(
-                '/academic-administrators',
-                [SystemAdminAcademicAdminController::class, 'store']
-            );
-            Route::put(
-                '/academic-administrators/{id}',
-                [SystemAdminAcademicAdminController::class, 'update']
-            );
-            Route::delete(
-                '/academic-administrators/{id}',
-                [SystemAdminAcademicAdminController::class, 'destroy']
-            );
+            Route::get('/academic-administrators', [SystemAdminAcademicAdminController::class, 'index']);
+            Route::post('/academic-administrators', [SystemAdminAcademicAdminController::class, 'store']);
+            Route::put('/academic-administrators/{id}', [SystemAdminAcademicAdminController::class, 'update']);
+            Route::delete('/academic-administrators/{id}', [SystemAdminAcademicAdminController::class, 'destroy']);
         });
 
+
     /*
     |--------------------------------------------------------------------------
-    | Student Routes
+    | Learner
     |--------------------------------------------------------------------------
     */
 
-    Route::get(
-        '/student/courses',
-        [StudentController::class, 'courses']
-    );
+    Route::post('/student/setup-password', [PasswordController::class, 'setup']);
 
-    Route::get(
-        '/student/courses/{courseId}',
-        [StudentController::class, 'course']
-    );
+    Route::get('/student/courses', [StudentController::class, 'courses']);
+    Route::get('/student/courses/{courseId}', [StudentController::class, 'course']);
 
-    Route::post(
-        '/student/setup-password',
-        [PasswordController::class, 'setup']
-    );
+    Route::get('/student/modules/{moduleId}', [ModuleController::class, 'show']);
+    Route::get('/student/modules/{moduleId}/material', [ModuleController::class, 'material']);
 
-    Route::get(
-        '/student/modules/{moduleId}',
-        [ModuleController::class, 'show']
-    );
+    Route::post('/student/submissions', [SubmissionController::class, 'store']);
 
-    Route::post(
-        '/student/submissions',
-        [SubmissionController::class, 'store']
-    );
+    Route::get('/student/grades', [GradeController::class, 'index']);
 
-    Route::get(
-        '/student/grades',
-        [GradeController::class, 'index']
-    );
-
-    Route::get(
-        '/student/notifications',
-        [NotificationController::class, 'index']
-    );
+    Route::get('/student/notifications', [NotificationController::class, 'index']);
+    Route::post('/student/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+    Route::post('/student/notifications/{notificationId}/read', [NotificationController::class, 'markAsRead']);
 
 
     /*
     |--------------------------------------------------------------------------
-    | Instructor Routes
+    | Instructor
     |--------------------------------------------------------------------------
     */
 
-    Route::post(
-        '/instructor/setup-password',
-        [PasswordController::class, 'setupInstructor']
-    );
+    Route::post('/instructor/setup-password', [PasswordController::class, 'setupInstructor']);
 
-    Route::get(
-        '/instructor/submissions',
-        [InstructorController::class, 'submissions']
-    );
+    Route::get('/instructor/dashboard', [InstructorDashboardController::class, 'index']);
 
-    Route::get(
-        '/instructor/submissions',
-        [SubmissionController::class, 'instructorIndex']
-    );
+    // Classes and their modules
+    Route::get('/instructor/classes', [InstructorCourseController::class, 'index']);
+    Route::get('/instructor/classes/{courseId}', [InstructorCourseController::class, 'show']);
+    Route::post('/instructor/classes/{courseId}/modules', [InstructorModuleController::class, 'store']);
+    Route::put('/instructor/modules/{moduleId}', [InstructorModuleController::class, 'update']);
 
-    Route::post(
-        '/instructor/submissions/{submissionId}/grade',
-        [GradeController::class, 'store']
-    );
+    // Submissions and grading
+    Route::get('/instructor/submissions', [InstructorController::class, 'submissions']);
+    Route::get('/instructor/submissions/{submissionId}/file', [InstructorController::class, 'file']);
+    Route::post('/instructor/submissions/{submissionId}/grade', [GradeController::class, 'store']);
+
+    // Notifications
+    Route::get('/instructor/notifications', [InstructorNotificationController::class, 'index']);
+    Route::post('/instructor/notifications/read-all', [InstructorNotificationController::class, 'markAllAsRead']);
+    Route::post('/instructor/notifications/{notificationId}/read', [InstructorNotificationController::class, 'markAsRead']);
+
+    // Profile
+    Route::get('/instructor/profile', [InstructorProfileController::class, 'show']);
+    Route::put('/instructor/profile', [InstructorProfileController::class, 'update']);
+    Route::post('/instructor/profile/password', [InstructorProfileController::class, 'changePassword']);
 
 
     /*
     |--------------------------------------------------------------------------
-    | Academic Admin Routes
+    | Academic Administrator (the proposal's "Administrator")
     |--------------------------------------------------------------------------
     */
 
     Route::prefix('admin')->group(function () {
 
-        Route::post(
-            '/setup-password',
-            [PasswordController::class, 'setupAcademicAdmin']
-        );
+        Route::post('/setup-password', [PasswordController::class, 'setupAcademicAdmin']);
+        Route::put('/change-password', [PasswordController::class, 'changePassword']);
 
-        // Academic Admin Notifications
-        Route::get(
-            '/notifications',
-            [NotificationController::class, 'adminIndex']
-        );
+        // Notifications
+        Route::get('/notifications', [NotificationController::class, 'adminIndex']);
+        Route::patch('/notifications/{id}/read', [NotificationController::class, 'markRead']);
+        Route::patch('/notifications/{id}/unread', [NotificationController::class, 'markUnread']);
+        Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
 
-        Route::patch(
-            '/notifications/{id}/read',
-            [NotificationController::class, 'markRead']
-        );
+        // Dashboard and reports
+        Route::get('/dashboard', [AcademicAdminController::class, 'dashboard']);
+        Route::get('/reports', [AcademicAdminController::class, 'reports']);
 
-        Route::patch(
-            '/notifications/{id}/unread',
-            [NotificationController::class, 'markUnread']
-        );
+        // Profile
+        Route::get('/profile', [AcademicAdminController::class, 'profile']);
+        Route::put('/profile', [AcademicAdminController::class, 'updateProfile']);
+        Route::post('/profile/photo', [AcademicAdminController::class, 'uploadProfilePhoto']);
 
-        Route::delete(
-            '/notifications/{id}',
-            [NotificationController::class, 'destroy']
-        );
+        // Learners
+        Route::get('/learners', [AcademicAdminController::class, 'learners']);
+        Route::post('/learners', [AcademicAdminController::class, 'storeLearner']);
+        Route::post('/learners/import', [AcademicAdminController::class, 'importLearners']);
+        Route::put('/learners/{id}', [AcademicAdminController::class, 'updateLearner']);
+        Route::delete('/learners/{id}', [AcademicAdminController::class, 'destroyLearner']);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Dashboard
-        |--------------------------------------------------------------------------
-        */
-        Route::get(
-    '/classes/{id}/modules',
-    [AcademicAdminController::class, 'classModules']
-);
+        // Instructors
+        Route::get('/instructors', [AcademicAdminController::class, 'instructors']);
+        Route::post('/instructors', [AcademicAdminController::class, 'storeInstructor']);
+        Route::post('/instructors/import', [AcademicAdminController::class, 'importInstructors']);
+        Route::put('/instructors/{id}', [AcademicAdminController::class, 'updateInstructor']);
+        Route::delete('/instructors/{id}', [AcademicAdminController::class, 'destroyInstructor']);
 
-Route::post(
-    '/classes/{id}/modules',
-    [AcademicAdminController::class, 'storeModule']
-);
-Route::post(
-    '/module-files',
-    [AcademicAdminController::class, 'uploadModuleFile']
-);
+        // Classes
+        Route::get('/classes', [AcademicAdminController::class, 'classes']);
+        Route::post('/classes', [AcademicAdminController::class, 'storeClass']);
+        Route::put('/classes/{id}', [AcademicAdminController::class, 'updateClass']);
+        Route::delete('/classes/{id}', [AcademicAdminController::class, 'destroyClass']);
 
-Route::get(
-    '/module-files',
-    [AcademicAdminController::class, 'showModuleFile']
-);
+        // Class enrollment
+        Route::get('/classes/{id}/learners', [AcademicAdminController::class, 'classLearners']);
+        Route::post('/classes/{id}/learners', [AcademicAdminController::class, 'enrollLearner']);
+        Route::delete('/classes/{id}/learners/{learnerId}', [AcademicAdminController::class, 'removeLearner']);
 
-Route::put(
-    '/classes/{id}/modules/sync',
-    [AcademicAdminController::class, 'syncClassModules']
-);
-        Route::get(
-            '/dashboard',
-            [AcademicAdminController::class, 'dashboard']
-        );
-
-        Route::get(
-            '/reports',
-            [AcademicAdminController::class, 'reports']
-        );
-
-        Route::get( '/profile',
-    [AcademicAdminController::class, 'profile']
-        );
-
-        Route::put(
-    '/profile',
-    [AcademicAdminController::class, 'updateProfile']
-);
-
-Route::post('/profile/photo', [
-    AcademicAdminController::class,
-    'uploadProfilePhoto',
-]);
-
-Route::put(
-    '/change-password',
-    [PasswordController::class, 'changePassword']
-);
-        /*
-        |--------------------------------------------------------------------------
-        | Learners
-        |--------------------------------------------------------------------------
-        */
-
-        Route::get(
-            '/learners',
-            [AcademicAdminController::class, 'learners']
-        );
-
-        Route::post(
-            '/learners',
-            [AcademicAdminController::class, 'storeLearner']
-        );
-
-                Route::post(
-            '/learners/import',
-            [AcademicAdminController::class, 'importLearners']
-        );
-
-        Route::put(
-            '/learners/{id}',
-            [AcademicAdminController::class, 'updateLearner']
-        );
-
-        Route::delete(
-            '/learners/{id}',
-            [AcademicAdminController::class, 'destroyLearner']
-        );
-
-        // Class Enrollment
-Route::get(
-    '/classes/{id}/learners',
-    [AcademicAdminController::class, 'classLearners']
-);
-
-Route::post(
-    '/classes/{id}/learners',
-    [AcademicAdminController::class, 'enrollLearner']
-);
-
-Route::delete(
-    '/classes/{id}/learners/{learnerId}',
-    [AcademicAdminController::class, 'removeLearner']
-);
-        /*
-        |--------------------------------------------------------------------------
-        | Instructors
-        |--------------------------------------------------------------------------
-        */
-
-        Route::get(
-            '/instructors',
-            [AcademicAdminController::class, 'instructors']
-        );
-
-        Route::post(
-            '/instructors',
-            [AcademicAdminController::class, 'storeInstructor']
-        );
-
-        Route::post(
-    '/instructors/import',
-    [AcademicAdminController::class, 'importInstructors']
-);
-
-        Route::put(
-            '/instructors/{id}',
-            [AcademicAdminController::class, 'updateInstructor']
-        );
-
-        Route::delete(
-            '/instructors/{id}',
-            [AcademicAdminController::class, 'destroyInstructor']
-        );
-
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Classes
-        |--------------------------------------------------------------------------
-        */
-
-        Route::get(
-            '/classes',
-            [AcademicAdminController::class, 'classes']
-        );
-
-        Route::post(
-            '/classes',
-            [AcademicAdminController::class, 'storeClass']
-        );
-
-        Route::put(
-            '/classes/{id}',
-            [AcademicAdminController::class, 'updateClass']
-        );
-
-        Route::delete(
-            '/classes/{id}',
-            [AcademicAdminController::class, 'destroyClass']
-        );
+        // Class modules and module files
+        Route::get('/classes/{id}/modules', [AcademicAdminController::class, 'classModules']);
+        Route::post('/classes/{id}/modules', [AcademicAdminController::class, 'storeModule']);
+        Route::put('/classes/{id}/modules/sync', [AcademicAdminController::class, 'syncClassModules']);
+        Route::post('/module-files', [AcademicAdminController::class, 'uploadModuleFile']);
+        Route::get('/module-files', [AcademicAdminController::class, 'showModuleFile']);
     });
-    // Class Enrollment
-Route::get(
-    '/classes/{id}/learners',
-    [AcademicAdminController::class, 'classLearners']
-);
-
-Route::post(
-    '/classes/{id}/learners',
-    [AcademicAdminController::class, 'enrollLearner']
-);
-
-Route::delete(
-    '/classes/{id}/learners/{learnerId}',
-    [AcademicAdminController::class, 'removeLearner']
-    
-);
-
-
-
 });

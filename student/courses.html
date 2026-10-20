@@ -1201,15 +1201,23 @@
     ========================= -->
 
     <script src="../api-config.js"></script>
-    <script>
+<script>
 
 
         /* =========================
            API SETTINGS
         ========================= */
 
-        const API_BASE_URL =
-            window.SIKNAYAN_API_ORIGIN;
+        /*
+            Laravel API
+
+            If localhost:8000 does not work
+            from your browser in Codespaces,
+            replace this with your forwarded
+            port 8000 URL.
+        */
+
+        const API_BASE_URL = window.SIKNAYAN_API_ORIGIN;
 
 
         /* =========================

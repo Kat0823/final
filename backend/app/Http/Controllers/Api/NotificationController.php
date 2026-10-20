@@ -131,6 +131,65 @@ class NotificationController extends Controller
         ]);
     }
 
+    // =====================================================
+    // LEARNER: MARK ONE NOTIFICATION AS READ
+    // =====================================================
+
+    public function markAsRead(Request $request, $notificationId): JsonResponse
+    {
+        $user = $request->user();
+
+        if (!$user || $user->role !== 'learner') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only learners can update these notifications.',
+            ], 403);
+        }
+
+        $notification = $user->notifications()
+            ->where('id', $notificationId)
+            ->first();
+
+        if (!$notification) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Notification not found.',
+            ], 404);
+        }
+
+        $notification->update(['is_read' => true]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Notification marked as read.',
+        ]);
+    }
+
+    // =====================================================
+    // LEARNER: MARK ALL NOTIFICATIONS AS READ
+    // =====================================================
+
+    public function markAllAsRead(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if (!$user || $user->role !== 'learner') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only learners can update these notifications.',
+            ], 403);
+        }
+
+        $user->notifications()
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'All notifications marked as read.',
+        ]);
+    }
+
     private function checkAdmin(Request $request): ?JsonResponse
     {
         if (!$request->user() ||

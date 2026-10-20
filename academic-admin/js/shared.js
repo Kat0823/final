@@ -589,6 +589,19 @@ refreshIcons();
         confirmButton.disabled = true;
         confirmButton.textContent = "Logging out...";
 
+        // Revoke the token on the server first (api-config.js provides this).
+        if (window.siknayanLogout) {
+            const earlyPath = window.location.pathname.toLowerCase();
+
+            window.siknayanLogout(
+                earlyPath.includes("/academic-admin/pages/")
+                    ? "../../index.html"
+                    : "../index.html"
+            );
+
+            return;
+        }
+
         sessionStorage.removeItem("isLoggedIn");
         sessionStorage.removeItem("studentId");
         sessionStorage.removeItem("userRole");

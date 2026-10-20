@@ -1,0 +1,21 @@
+# Secrets and machine-specific files: never commit these
+.env
+.env.*
+!.env.example
+*.sqlite
+*.sqlite3
+backend/storage/logs/*.log
+backend/storage/app/private/
+backend/storage/app/public/profile-photos/
+backend/vendor/
+node_modules/
+
+# Database dumps (they contain real accounts)
+*.sql
+*.sql.gz
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

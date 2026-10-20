@@ -13,6 +13,7 @@ class Grade extends Model
         'score',
         'max_score',
         'feedback',
+        'graded_at',
     ];
 
     protected function casts(): array
@@ -20,6 +21,7 @@ class Grade extends Model
         return [
             'score' => 'decimal:2',
             'max_score' => 'decimal:2',
+            'graded_at' => 'datetime',
         ];
     }
 

@@ -1,3 +1,12 @@
+# Siknayan LMS: MySQL + Laravel API + static frontend.
+#
+#   1. cp .env.example .env     (then set the two passwords inside it)
+#   2. docker compose up --build
+#   3. docker compose exec backend php artisan db:seed     (first time only)
+#
+# Frontend: http://localhost:8080   API: http://localhost:8000/api
+# Database passwords come from the untracked .env file, never from this file.
+
 services:
 
   mysql:
@@ -5,12 +14,13 @@ services:
     container_name: siknayan-mysql
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: siknayan
-      MYSQL_USER: siknayan
-      MYSQL_PASSWORD: siknayan_password
-      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-siknayan}
+      MYSQL_USER: ${MYSQL_USER:-siknayan}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Copy .env.example to .env and set MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Copy .env.example to .env and set MYSQL_ROOT_PASSWORD}
     ports:
-      - "3306:3306"
+      # Reachable from this computer only (for MySQL Workbench), not from the network.
+      - "127.0.0.1:3306:3306"
     volumes:
       - siknayan_mysql_data:/var/lib/mysql
     networks:
@@ -22,13 +32,31 @@ services:
     container_name: siknayan-backend
     restart: unless-stopped
     working_dir: /var/www/html
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_DATABASE: ${MYSQL_DATABASE:-siknayan}
+      DB_USERNAME: ${MYSQL_USER:-siknayan}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - ./backend:/var/www/html
     ports:
       - "8000:8000"
     depends_on:
       - mysql
-    command: php artisan serve --host=0.0.0.0 --port=8000
+    networks:
+      - siknayan-network
+
+  web:
+    image: nginx:1.27-alpine
+    container_name: siknayan-web
+    restart: unless-stopped
+    volumes:
+      - ./:/usr/share/nginx/html:ro
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "8080:80"
     networks:
       - siknayan-network
 

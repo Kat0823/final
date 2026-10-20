@@ -245,7 +245,8 @@
 
     <!-- JAVASCRIPT -->
 
-    <script>
+    <script src="../api-config.js"></script>
+<script>
 
         function goBack() {
 
@@ -255,6 +256,11 @@
 
 
         function logoutUser() {
+
+            if (window.siknayanLogout) {
+                window.siknayanLogout("../index.html");
+                return;
+            }
 
             sessionStorage.clear();
 
