@@ -124,6 +124,12 @@ class PasswordController extends Controller
         $user->password = Hash::make($validated['password']);
         $user->save();
 
+        // Log out every other session; keep the one making this request.
+        $currentTokenId = $user->currentAccessToken()?->id;
+        $user->tokens()
+            ->when($currentTokenId, fn ($query) => $query->whereKeyNot($currentTokenId))
+            ->delete();
+
         return response()->json([
             'success' => true,
             'message' => 'Password changed successfully.',

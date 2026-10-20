@@ -137,6 +137,12 @@ class InstructorProfileController extends Controller
             'password' => $validated['new_password'],
         ]);
 
+        // Log out every other session; keep the one making this request.
+        $currentTokenId = $instructor->currentAccessToken()?->id;
+        $instructor->tokens()
+            ->when($currentTokenId, fn ($query) => $query->whereKeyNot($currentTokenId))
+            ->delete();
+
         return response()->json([
             'success' => true,
             'message' => 'Password changed successfully.',

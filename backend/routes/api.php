@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Middleware\EnsureAccountIsActive;
+use App\Http\Middleware\EnsurePasswordSetupComplete;
 use App\Http\Middleware\EnsureSystemAdmin;
 
 use App\Http\Controllers\Api\AuthController;
@@ -48,6 +49,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware([
     'auth:sanctum',
     EnsureAccountIsActive::class,
+    EnsurePasswordSetupComplete::class,
 ])->group(function () {
 
     // Revokes the current token (all roles)

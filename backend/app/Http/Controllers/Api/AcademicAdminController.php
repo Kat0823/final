@@ -391,7 +391,8 @@ $learner = User::create([
     'contact' => $validated['contact'] ?? null,
     'password' => Hash::make($validated['password']),
     'role' => 'learner',
-    'password_setup_complete' => true,
+    // The admin chose this password, so the learner must replace it.
+    'password_setup_complete' => false,
     'is_active' => $validated['is_active'] ?? true,
 ]);
         return response()->json([
@@ -455,15 +456,19 @@ $learner = User::create([
             'is_active' => ['sometimes', 'boolean'],
         ]);
 
-        if (array_key_exists('password', $validated) && $validated['password']) {
+        $passwordReset = !empty($validated['password']);
+
+        if ($passwordReset) {
             $validated['password'] = Hash::make($validated['password']);
+            // Admin reset: the learner must choose a new password at next login.
+            $validated['password_setup_complete'] = false;
         } else {
             unset($validated['password']);
         }
 
         $learner->update($validated);
 
-        if (array_key_exists('is_active', $validated) && !$learner->is_active) {
+        if ($passwordReset || (array_key_exists('is_active', $validated) && !$learner->is_active)) {
             $learner->tokens()->delete();
         }
 
@@ -579,7 +584,8 @@ $learner = User::create([
             'contact' => $validated['contact'] ?? null,
             'password' => Hash::make($validated['password']),
             'role' => 'instructor',
-            'password_setup_complete' => true,
+            // The admin chose this password, so the instructor must replace it.
+            'password_setup_complete' => false,
             'is_active' => $validated['is_active'] ?? true,
         ]);
 
@@ -656,13 +662,17 @@ $learner = User::create([
             'is_active' => $validated['is_active'] ?? $instructor->is_active,
         ];
 
-        if (!empty($validated['password'])) {
+        $passwordReset = !empty($validated['password']);
+
+        if ($passwordReset) {
             $updateData['password'] = Hash::make($validated['password']);
+            // Admin reset: the instructor must choose a new password at next login.
+            $updateData['password_setup_complete'] = false;
         }
 
         $instructor->update($updateData);
 
-        if (array_key_exists('is_active', $validated) && !$instructor->is_active) {
+        if ($passwordReset || (array_key_exists('is_active', $validated) && !$instructor->is_active)) {
             $instructor->tokens()->delete();
         }
 
