@@ -1,13 +1,8 @@
 /* =========================================================
-   SIKNAYAN - ACADEMIC ADMIN
-   reports.js
-   Frontend reporting workspace.
-
-   Current data source:
-       localStorage
-
-   Future data source:
-       FastAPI -> PostgreSQL
+SIKNAYAN - ACADEMIC ADMIN
+reports.js
+Frontend reporting workspace backed by the authenticated
+Laravel reports API.
 ========================================================= */
 
 (function initReportsPage() {
@@ -25,30 +20,6 @@
     if (!page) {
         return;
     }
-
-
-    /* =====================================================
-       STORAGE KEYS
-    ===================================================== */
-
-    const KEYS = {
-
-        learners:
-            "siknayan_academic_admin_learners",
-
-        classes:
-            "siknayan_academic_admin_classes",
-
-        instructors:
-            "siknayan_academic_admin_instructors",
-
-        learnerAccounts:
-            "siknayan_academic_admin_learner_accounts",
-
-        instructorAccounts:
-            "siknayan_academic_admin_instructor_accounts"
-
-    };
 
 
     /* =====================================================
@@ -226,359 +197,112 @@
         null;
 
 
-    /* =====================================================
-       STORAGE HELPERS
-    ===================================================== */
+    let reportData = null;
+    let reportLoadPromise = null;
 
-    function read(key) {
-
-        try {
-
-            const value =
-                localStorage.getItem(key);
-
-            return value
-                ? JSON.parse(value)
-                : null;
-
-        } catch (error) {
-
-            console.error(
-                `Reports: failed to read ${key}`,
-                error
-            );
-
-            return null;
-        }
-    }
-
-
-    function arrayFrom(
-        value,
-        preferredKeys = []
-    ) {
-
-        if (Array.isArray(value)) {
-            return value;
-        }
-
-        if (
-            !value ||
-            typeof value !== "object"
-        ) {
-            return [];
-        }
-
-        for (
-            const key of preferredKeys
-        ) {
-
-            if (
-                Array.isArray(
-                    value[key]
-                )
-            ) {
-
-                return value[key];
-            }
-        }
-
-        if (
-            Array.isArray(
-                value.items
-            )
-        ) {
-
-            return value.items;
-        }
-
-        /*
-        Learner storage is currently
-        an object keyed by learner ID.
-
-        Example:
-        {
-            "23-00349": {...},
-            "23-00412": {...}
-        }
-        */
-
-        return Object.values(
-            value
-        ).filter(
-            item =>
-                item &&
-                typeof item === "object"
+    function getApiToken() {
+        return (
+            window.SIKNAYAN_API_TOKEN ||
+            sessionStorage.getItem("authToken") ||
+            sessionStorage.getItem("token") ||
+            localStorage.getItem("siknayan_api_token") ||
+            localStorage.getItem("token") ||
+            localStorage.getItem("access_token") ||
+            ""
         );
     }
 
+    async function fetchReportData() {
+        const token = getApiToken();
 
-    function getData() {
-
-        const learnerState =
-            read(
-                KEYS.learners
-            );
-
-
-        const learners =
-            arrayFrom(
-                learnerState,
-                [
-                    "learners"
-                ]
-            );
-
-
-        const modules =
-            learnerState &&
-            !Array.isArray(learnerState) &&
-            learnerState.modules &&
-            typeof learnerState.modules === "object"
-
-                ? learnerState.modules
-
-                : {};
-
-
-        return {
-
-            learners,
-
-
-            modules,
-
-
-            classes:
-                arrayFrom(
-                    read(
-                        KEYS.classes
-                    ),
-                    [
-                        "classes"
-                    ]
-                ),
-
-
-            instructors:
-                arrayFrom(
-                    read(
-                        KEYS.instructors
-                    ),
-                    [
-                        "instructors"
-                    ]
-                ),
-
-
-            learnerAccounts:
-                arrayFrom(
-                    read(
-                        KEYS.learnerAccounts
-                    ),
-                    [
-                        "accounts",
-                        "learnerAccounts"
-                    ]
-                ),
-
-
-            instructorAccounts:
-                arrayFrom(
-                    read(
-                        KEYS.instructorAccounts
-                    ),
-                    [
-                        "accounts",
-                        "instructorAccounts"
-                    ]
-                ),
-
-
-            /* =========================================
-            CENTRAL MODULE LIBRARY
-
-            Used by the Module & Submission Report
-            to include modules even when there is
-            no learner activity yet.
-            ========================================= */
-
-            libraryModules:
-                getModuleLibrary()
-
-        };
-    }
-
-    /* =====================================================
-    MODULE LIBRARY HELPERS
-    ===================================================== */
-
-    function getModuleLibrary() {
-
-        const source =
-            window.SiknayanModuleLibraryData;
-
-        if (
-            !source ||
-            typeof source.getPrograms !== "function"
-        ) {
-            console.warn(
-                "Reports: Module Library Data is not available."
-            );
-
-            return [];
+        if (!token) {
+            throw new Error("Your login session is missing. Please sign in again.");
         }
 
-
-        const programs =
-            source.getPrograms();
-
-        if (
-            !Array.isArray(programs)
-        ) {
-            return [];
+        if (!window.SIKNAYAN_API_ROOT) {
+            throw new Error("The Laravel API is not configured for this page.");
         }
 
-
-        const modules = [];
-
-
-        programs.forEach(
-            program => {
-
-                const programCode =
-                    text(
-                        program?.code
-                    );
-
-                const programName =
-                    text(
-                        program?.name
-                    ) ||
-                    programCode;
-
-
-                /*
-                * Build a lookup of courses belonging
-                * to this program.
-                */
-                const courseMap =
-                    new Map();
-
-
-                const courses =
-                    Array.isArray(
-                        program?.courses
-                    )
-                        ? program.courses
-                        : [];
-
-
-                courses.forEach(
-                    course => {
-
-                        const courseId =
-                            text(
-                                course?.id
-                            );
-
-                        if (!courseId) {
-                            return;
-                        }
-
-
-                        const courseCode =
-                            text(
-                                course?.code
-                            );
-
-
-                        const courseName =
-                            text(
-                                course?.name ||
-                                course?.title
-                            );
-
-
-                        courseMap.set(
-                            courseId,
-                            courseCode ||
-                            courseName ||
-                            courseId
-                        );
-                    }
-                );
-
-
-                const programModules =
-                    Array.isArray(
-                        program?.modules
-                    )
-                        ? program.modules
-                        : [];
-
-
-                programModules.forEach(
-                    module => {
-
-                        const id =
-                            text(
-                                module?.id
-                            );
-
-                        if (!id) {
-                            return;
-                        }
-
-
-                        const courseId =
-                            text(
-                                module?.courseId
-                            );
-
-
-                        modules.push({
-
-                            ...module,
-
-                            id,
-
-                            title:
-                                text(
-                                    module?.title ||
-                                    module?.name
-                                ) ||
-                                "Untitled Module",
-
-                            program:
-                                text(
-                                    module?.program
-                                ) ||
-                                programCode,
-
-                            programName,
-
-                            courseId,
-
-                            course:
-                                courseMap.get(
-                                    courseId
-                                ) ||
-                                text(
-                                    module?.course
-                                ) ||
-                                courseId ||
-                                "—"
-
-                        });
-                    }
-                );
+        const response = await fetch(
+            `${window.SIKNAYAN_API_ROOT}/admin/reports`,
+            {
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${token}`
+                }
             }
         );
 
+        const payload = await response.json().catch(() => null);
 
-        return modules;
+        if (!response.ok) {
+            throw new Error(
+                payload?.message ||
+                `Unable to load report data (HTTP ${response.status}).`
+            );
+        }
+
+        if (
+            !payload?.success ||
+            !Array.isArray(payload.learners) ||
+            !Array.isArray(payload.classes) ||
+            !Array.isArray(payload.instructors) ||
+            !Array.isArray(payload.libraryModules) ||
+            !payload.modules ||
+            typeof payload.modules !== "object"
+        ) {
+            throw new Error(
+                payload?.message ||
+                "The Laravel API returned an invalid reports response."
+            );
+        }
+
+        return payload;
     }
+
+    function setReportStatus(message, updatedText) {
+        el.tableBody.replaceChildren();
+        el.tableHead.replaceChildren();
+        el.summary.replaceChildren();
+        el.empty.hidden = false;
+        el.emptyText.textContent = message;
+        el.updated.textContent = updatedText;
+        el.count.textContent = "0 records";
+        el.pagination.hidden = true;
+
+        const footerCount = document.getElementById("reportFooterCount");
+        if (footerCount) {
+            footerCount.textContent = "Showing 0 of 0 records";
+        }
+    }
+
+    async function refreshReportData() {
+        if (reportLoadPromise) {
+            return reportLoadPromise;
+        }
+
+        setReportStatus("Loading report data...", "Loading reports...");
+
+        reportLoadPromise = (async () => {
+            try {
+                reportData = await fetchReportData();
+                renderFilters();
+                renderReport();
+            } catch (error) {
+                console.error("Reports: failed to load current database data.", error);
+                reportData = null;
+                setReportStatus(
+                    `Report data could not be loaded. ${error.message}`,
+                    "Reports unavailable"
+                );
+            } finally {
+                reportLoadPromise = null;
+            }
+        })();
+
+        return reportLoadPromise;
+    }
+
 
     /* =====================================================
        GENERAL HELPERS
@@ -1283,7 +1007,10 @@
     function renderFilters() {
 
         const data =
-            getData();
+            reportData || {
+                learners: [],
+                classes: []
+            };
 
 
         const programList =
@@ -2123,6 +1850,13 @@
                                     learner?.id
                                 ),
 
+                            studentId:
+                                text(
+                                    learner?.school_id ??
+                                    learner?.schoolId
+                                ) ||
+                                "—",
+
                             name:
                                 text(
                                     learner?.name
@@ -2212,7 +1946,7 @@
                             ) ||
 
                             norm(
-                                row.id
+                                row.studentId
                             ).includes(
                                 query
                             ) ||
@@ -2369,8 +2103,7 @@
                             class="reports-mono"
                         >
                             ${escapeHtml(
-                                row.id ||
-                                "—"
+                                row.studentId
                             )}
                         </td>
 
@@ -5186,14 +4919,15 @@
 
     function renderReport() {
 
-        const data =
-            getData();
+        if (!reportData) {
+            return;
+        }
 
 
         const report =
             buildReport(
                 getFilters(),
-                data
+                reportData
             );
 
 
@@ -5951,9 +5685,7 @@
         "click",
         () => {
 
-            renderFilters();
-
-            renderReport();
+            refreshReportData();
 
         }
     );
@@ -5965,6 +5697,6 @@
 
     renderFilters();
 
-    renderReport();
+    refreshReportData();
 
 })();

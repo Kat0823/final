@@ -38,7 +38,7 @@
         <div class="brand">
 
             <img
-                src="../assets/images/mpsu_logo.png"
+                src="../assets/images/logo.png"
                 alt="MPSU Logo"
                 class="brand-logo"
             >
@@ -76,15 +76,15 @@
             <div class="profile">
 
                 <img
-                    src="../assets/images/macross.jpg"
-                    alt="Macross Arsel"
+                    alt="Academic Admin profile picture"
                     class="profile-avatar"
+                    style="visibility: hidden"
                 >
 
                 <div class="profile-info">
 
                     <strong>
-                        Macross Arsel
+                        <span id="topbarAdminName"></span>
                     </strong>
 
                     <span>
@@ -146,13 +146,12 @@
             <div class="sidebar-profile">
 
                 <img
-                    src="../assets/images/macross.jpg"
-                    alt="Macross Arsel"
+                    alt="Academic Admin profile picture"
                     class="sidebar-avatar"
+                    style="visibility: hidden"
                 >
 
                 <span class="sidebar-profile-name">
-                    Macross
                 </span>
 
             </div>
@@ -360,7 +359,7 @@
                     id="importLearnersExcelBtn"
                     class="primary-action-button"
                 >
-                    <i data-lucide="file-spreadsheet"></i>
+                    <i data-lucide="upload"></i>
                     Import Learners from Excel
                 </button>
 
@@ -370,7 +369,8 @@
                             class="primary-action-button"
                             style="margin-top: 18px;"
                         >
-                            Download Credentials Again
+                             <i data-lucide="download"></i>
+                            Download Credentials 
                         </button>
 
 <input
@@ -435,11 +435,11 @@
             </section>
 
             <div
-                id="learnerExcelImportStatus"
-                role="status"
-                aria-live="polite"
-                style="margin: 12px 0; white-space: pre-wrap;"
-            ></div>
+    id="learnerExcelImportStatus"
+    class="import-status"
+    role="status"
+    aria-live="polite"
+></div>
 
             <!-- =================================================
                  CONTROLS
@@ -715,9 +715,7 @@
                         id="accountEmail"
                         name="email"
                         placeholder="learner@example.com"
-                        autocomplete="email"
-                        required
-                    >
+                        autocomplete="email" >
 
                 </div>
 
@@ -1047,6 +1045,7 @@
          JAVASCRIPT
     ====================================================== -->
 
+    <script src="../../api-config.js"></script>
     <script src="../js/shared.js"></script>
 
     <script src="../js/program-data.js"></script>

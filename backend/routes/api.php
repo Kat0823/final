@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Middleware\EnsureAccountIsActive;
+use App\Http\Middleware\EnsureSystemAdmin;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\PasswordController;
@@ -11,6 +13,8 @@ use App\Http\Controllers\Api\GradeController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\InstructorController;
 use App\Http\Controllers\Api\AcademicAdminController;
+use App\Http\Controllers\Api\SystemAdminController;
+use App\Http\Controllers\Api\SystemAdminAcademicAdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +32,42 @@ Route::post('/login', [AuthController::class, 'login']);
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware([
+    'auth:sanctum',
+    EnsureAccountIsActive::class,
+])->group(function () {
+
+    Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::prefix('system-admin')
+        ->middleware(EnsureSystemAdmin::class)
+        ->group(function () {
+            Route::get('/session', static fn () => response()->json([
+                'success' => true,
+            ]));
+
+            Route::get(
+                '/dashboard',
+                [SystemAdminController::class, 'dashboard']
+            );
+
+            Route::get(
+                '/academic-administrators',
+                [SystemAdminAcademicAdminController::class, 'index']
+            );
+            Route::post(
+                '/academic-administrators',
+                [SystemAdminAcademicAdminController::class, 'store']
+            );
+            Route::put(
+                '/academic-administrators/{id}',
+                [SystemAdminAcademicAdminController::class, 'update']
+            );
+            Route::delete(
+                '/academic-administrators/{id}',
+                [SystemAdminAcademicAdminController::class, 'destroy']
+            );
+        });
 
     /*
     |--------------------------------------------------------------------------
@@ -107,6 +146,32 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('admin')->group(function () {
 
+        Route::post(
+            '/setup-password',
+            [PasswordController::class, 'setupAcademicAdmin']
+        );
+
+        // Academic Admin Notifications
+        Route::get(
+            '/notifications',
+            [NotificationController::class, 'adminIndex']
+        );
+
+        Route::patch(
+            '/notifications/{id}/read',
+            [NotificationController::class, 'markRead']
+        );
+
+        Route::patch(
+            '/notifications/{id}/unread',
+            [NotificationController::class, 'markUnread']
+        );
+
+        Route::delete(
+            '/notifications/{id}',
+            [NotificationController::class, 'destroy']
+        );
+
         /*
         |--------------------------------------------------------------------------
         | Dashboard
@@ -121,6 +186,15 @@ Route::post(
     '/classes/{id}/modules',
     [AcademicAdminController::class, 'storeModule']
 );
+Route::post(
+    '/module-files',
+    [AcademicAdminController::class, 'uploadModuleFile']
+);
+
+Route::get(
+    '/module-files',
+    [AcademicAdminController::class, 'showModuleFile']
+);
 
 Route::put(
     '/classes/{id}/modules/sync',
@@ -131,7 +205,29 @@ Route::put(
             [AcademicAdminController::class, 'dashboard']
         );
 
+        Route::get(
+            '/reports',
+            [AcademicAdminController::class, 'reports']
+        );
 
+        Route::get( '/profile',
+    [AcademicAdminController::class, 'profile']
+        );
+
+        Route::put(
+    '/profile',
+    [AcademicAdminController::class, 'updateProfile']
+);
+
+Route::post('/profile/photo', [
+    AcademicAdminController::class,
+    'uploadProfilePhoto',
+]);
+
+Route::put(
+    '/change-password',
+    [PasswordController::class, 'changePassword']
+);
         /*
         |--------------------------------------------------------------------------
         | Learners
@@ -194,6 +290,11 @@ Route::delete(
             [AcademicAdminController::class, 'storeInstructor']
         );
 
+        Route::post(
+    '/instructors/import',
+    [AcademicAdminController::class, 'importInstructors']
+);
+
         Route::put(
             '/instructors/{id}',
             [AcademicAdminController::class, 'updateInstructor']
@@ -248,6 +349,7 @@ Route::delete(
     [AcademicAdminController::class, 'removeLearner']
     
 );
+
 
 
 });

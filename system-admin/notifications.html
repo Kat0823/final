@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Notifications | Siknayan System Admin</title>
+
+    <link rel="stylesheet" href="css/system-admin.css">
+    <link rel="stylesheet" href="css/notifications.css">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <div class="brand">
+            <img
+                src="../images/logo.png"
+                alt="MPSU Logo"
+                class="brand-logo"
+            >
+
+            <div class="brand-text">
+                <h1>MPSU ETEEAP LMS</h1>
+                <p>Mountain Province State University</p>
+            </div>
+        </div>
+
+        <div class="topbar-right">
+            <button
+                class="icon-button notification-button"
+                type="button"
+                id="notificationBell"
+                aria-label="Notifications"
+                title="Notifications"
+            >
+                <i data-lucide="bell"></i>
+                <span class="notification-dot" id="notificationDot"></span>
+            </button>
+
+            <a
+                class="profile"
+                href="profile.html"
+                aria-label="Open My Profile"
+                title="My Profile"
+            >
+                <img
+                    src="../images/macross.jpg"
+                    alt="Arcana"
+                    class="profile-avatar"
+                >
+
+                <div class="profile-info">
+                    <strong>Arcana</strong>
+                    <span>Administrator</span>
+                </div>
+
+                <i
+                    data-lucide="chevron-right"
+                    class="profile-chevron"
+                ></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- APPLICATION LAYOUT -->
+    <div class="app-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+
+            <div class="sidebar-top">
+                <span class="sidebar-view-text">View</span>
+
+                <button
+                    class="sidebar-toggle"
+                    id="sidebarToggle"
+                    type="button"
+                    title="Toggle Sidebar"
+                    aria-label="Toggle Sidebar"
+                >
+                    <i data-lucide="panel-left"></i>
+                </button>
+            </div>
+
+            <div class="sidebar-profile">
+                <img
+                    src="../images/macross.jpg"
+                    alt="Arcana"
+                    class="sidebar-avatar"
+                >
+
+                <div class="sidebar-profile-info">
+                    <span class="sidebar-profile-name">Arcana</span>
+                    <span class="sidebar-profile-role">Administrator</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+
+                <a href="administrators.html" class="nav-item">
+                    <i data-lucide="users"></i>
+                    <span class="nav-label">Academic Administrators</span>
+                </a>
+
+                <a href="backup.html" class="nav-item">
+                    <i data-lucide="database-backup"></i>
+                    <span class="nav-label">Data Backup</span>
+                </a>
+
+                <a href="audit-logs.html" class="nav-item">
+                    <i data-lucide="file-clock"></i>
+                    <span class="nav-label">Audit Logs</span>
+                </a>
+
+                <a href="profile.html" class="nav-item">
+                    <i data-lucide="user-round"></i>
+                    <span class="nav-label">My Profile</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a href="../index.html" class="nav-item" data-system-admin-logout>
+                    <i data-lucide="log-out"></i>
+                    <span class="nav-label">Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+            <!-- BREADCRUMB -->
+            <nav class="notifications-breadcrumb" aria-label="Breadcrumb">
+                <a href="dashboard.html">Dashboard</a>
+                <i data-lucide="chevron-right"></i>
+                <span aria-current="page">Notifications</span>
+            </nav>
+
+            <!-- PAGE HEADER -->
+            <section class="page-header notifications-page-header">
+                <div>
+                    <h2>Notifications</h2>
+                    <p>
+                        Security alerts and important system events.
+                    </p>
+                </div>
+
+                <span class="notification-demo-badge">
+                    SAMPLE DATA
+                </span>
+            </section>
+
+            <!-- NOTIFICATION FILTERS -->
+            <section class="panel notifications-filter-panel">
+                <div class="notifications-filter-header">
+                    <div>
+                        <h3>Inbox</h3>
+                        <p>Review and manage system notifications.</p>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        id="markAllReadButton"
+                    >
+                        <i data-lucide="check-check"></i>
+                        Mark all as read
+                    </button>
+                </div>
+
+                <div
+                    class="notification-filters"
+                    role="group"
+                    aria-label="Filter notifications"
+                >
+                    <button
+                        type="button"
+                        class="notification-filter active"
+                        data-filter="all"
+                        aria-pressed="true"
+                    >
+                        All
+                    </button>
+
+                    <button
+                        type="button"
+                        class="notification-filter"
+                        data-filter="unread"
+                        aria-pressed="false"
+                    >
+                        Unread
+                    </button>
+
+                    <button
+                        type="button"
+                        class="notification-filter"
+                        data-filter="security"
+                        aria-pressed="false"
+                    >
+                        <i data-lucide="shield-alert"></i>
+                        Security
+                    </button>
+
+                    <button
+                        type="button"
+                        class="notification-filter"
+                        data-filter="backups"
+                        aria-pressed="false"
+                    >
+                        <i data-lucide="database-backup"></i>
+                        Backups
+                    </button>
+
+                    <button
+                        type="button"
+                        class="notification-filter"
+                        data-filter="accounts"
+                        aria-pressed="false"
+                    >
+                        <i data-lucide="users"></i>
+                        Accounts
+                    </button>
+
+                    <button
+                        type="button"
+                        class="notification-filter"
+                        data-filter="system"
+                        aria-pressed="false"
+                    >
+                        <i data-lucide="server"></i>
+                        System
+                    </button>
+                </div>
+            </section>
+
+            <!-- NOTIFICATION LIST AND DETAILS -->
+            <section class="notifications-layout">
+
+                <!-- LEFT: NOTIFICATION LIST -->
+                <section class="panel notifications-list-panel">
+
+                    <div class="notifications-list-header">
+                        <h3>Recent notifications</h3>
+                        <span id="notificationCount">3 items</span>
+                    </div>
+
+                    <div
+                        class="notification-list"
+                        id="notificationList"
+                        aria-label="Notification list"
+                    >
+
+                        <!-- SAMPLE SECURITY NOTIFICATION -->
+                        <button
+                            type="button"
+                            class="notification-list-item is-selected is-unread"
+                            data-notification-id="security-signins"
+                            data-category="security"
+                            aria-pressed="true"
+                        >
+                            <span class="notification-list-icon security-icon">
+                                <i data-lucide="shield-alert"></i>
+                            </span>
+
+                            <span class="notification-list-content">
+                                <span class="notification-list-meta">
+                                    <span>Security</span>
+                                    <span class="notification-unread-label">
+                                        Unread
+                                    </span>
+                                </span>
+
+                                <strong>Repeated failed sign-ins</strong>
+
+                                <span class="notification-list-description">
+                                    Sample scenario: multiple unsuccessful
+                                    sign-in attempts were recorded.
+                                </span>
+
+                                <time datetime="2026-10-09T10:30:00">
+                                    Oct 9, 2026 · 10:30 AM
+                                </time>
+                            </span>
+
+                            <span
+                                class="notification-unread-dot"
+                                aria-label="Unread"
+                            ></span>
+                        </button>
+
+                        <!-- SAMPLE BACKUP NOTIFICATION -->
+                        <button
+                            type="button"
+                            class="notification-list-item is-unread"
+                            data-notification-id="backup-failed"
+                            data-category="backups"
+                            aria-pressed="false"
+                        >
+                            <span class="notification-list-icon backup-icon">
+                                <i data-lucide="database-backup"></i>
+                            </span>
+
+                            <span class="notification-list-content">
+                                <span class="notification-list-meta">
+                                    <span>Backups</span>
+                                    <span class="notification-unread-label">
+                                        Unread
+                                    </span>
+                                </span>
+
+                                <strong>Backup failed</strong>
+
+                                <span class="notification-list-description">
+                                    Sample scenario: a scheduled database
+                                    backup did not complete successfully.
+                                </span>
+
+                                <time datetime="2026-10-09T09:15:00">
+                                    Oct 9, 2026 · 9:15 AM
+                                </time>
+                            </span>
+
+                            <span
+                                class="notification-unread-dot"
+                                aria-label="Unread"
+                            ></span>
+                        </button>
+
+                        <!-- SAMPLE ACCOUNT NOTIFICATION -->
+                        <button
+                            type="button"
+                            class="notification-list-item"
+                            data-notification-id="account-updated"
+                            data-category="accounts"
+                            aria-pressed="false"
+                        >
+                            <span class="notification-list-icon account-icon">
+                                <i data-lucide="user-round-check"></i>
+                            </span>
+
+                            <span class="notification-list-content">
+                                <span class="notification-list-meta">
+                                    <span>Accounts</span>
+                                    <span class="notification-read-label">
+                                        Read
+                                    </span>
+                                </span>
+
+                                <strong>Administrator account updated</strong>
+
+                                <span class="notification-list-description">
+                                    Sample scenario: an administrator's
+                                    account details were changed.
+                                </span>
+
+                                <time datetime="2026-10-08T15:45:00">
+                                    Oct 8, 2026 · 3:45 PM
+                                </time>
+                            </span>
+                        </button>
+
+                    </div>
+
+                    <!-- EMPTY STATE, USED BY JAVASCRIPT -->
+                    <div
+                        class="notifications-empty"
+                        id="notificationsEmpty"
+                        hidden
+                    >
+                        <i data-lucide="bell-off"></i>
+                        <strong>No notifications found</strong>
+                        <span>
+                            Try another filter or check back later.
+                        </span>
+                    </div>
+
+                </section>
+
+                <!-- RIGHT: SELECTED NOTIFICATION DETAILS -->
+                <section
+                    class="panel notification-detail-panel"
+                    id="notificationDetail"
+                    aria-live="polite"
+                >
+
+                    <div class="notification-detail-header">
+                        <div>
+                            <span class="notification-detail-eyebrow">
+                                NOTIFICATION DETAILS
+                            </span>
+
+                            <h3 id="detailTitle">
+                                Repeated failed sign-ins
+                            </h3>
+                        </div>
+
+                        <span
+                            class="notification-severity severity-high"
+                            id="detailSeverity"
+                        >
+                            High
+                        </span>
+                    </div>
+
+                    <div class="notification-detail-body">
+
+                        <div class="notification-detail-tags">
+                            <span class="notification-category-tag" id="detailCategory">
+                                <i data-lucide="shield-alert"></i>
+                                Security
+                            </span>
+
+                            <span class="notification-status-tag" id="detailStatus">
+                                Unread
+                            </span>
+
+                            <span class="notification-sample-tag">
+                                Sample event
+                            </span>
+                        </div>
+
+                        <div class="notification-detail-field">
+                            <span class="detail-field-label">Date and time</span>
+                            <strong id="detailTimestamp">
+                                October 9, 2026 · 10:30 AM
+                            </strong>
+                        </div>
+
+                        <div class="notification-detail-field">
+                            <span class="detail-field-label">Description</span>
+
+                            <p id="detailDescription">
+                                This illustrative security alert represents
+                                multiple unsuccessful sign-in attempts.
+                                In the connected system, the security process
+                                would evaluate recorded authentication events
+                                before generating this notification.
+                            </p>
+                        </div>
+
+                        <div class="notification-recommendation">
+                            <div class="recommendation-icon">
+                                <i data-lucide="clipboard-check"></i>
+                            </div>
+
+                            <div>
+                                <strong>Recommended action</strong>
+
+                                <p id="detailRecommendation">
+                                    Review the relevant audit records and
+                                    investigate the sign-in attempts.
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="notification-detail-actions">
+
+                        <button
+                            type="button"
+                            class="secondary-button"
+                            id="markNotificationReadButton"
+                        >
+                            <i data-lucide="check"></i>
+                            Mark as read
+                        </button>
+
+                        <a
+                            href="audit-logs.html"
+                            class="primary-button"
+                            id="notificationActionLink"
+                        >
+                            <i data-lucide="external-link"></i>
+                            Open Audit Logs
+                        </a>
+
+                    </div>
+
+                </section>
+
+            </section>
+
+            <p class="notifications-prototype-note">
+                Notifications shown here are illustrative sample data.
+                They do not represent live security detections or system events.
+            </p>
+
+        </main>
+    </div>
+
+    <!-- SHARED AND PAGE-SPECIFIC JAVASCRIPT -->
+    <script src="../api-config.js"></script>
+    <script src="js/shared.js"></script>
+    <script src="js/notifications.js"></script>
+
+</body>
+</html>

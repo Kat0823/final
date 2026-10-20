@@ -38,7 +38,7 @@
         <div class="brand">
 
             <img
-                src="../assets/images/mpsu_logo.png"
+                src="../assets/images/logo.png"
                 alt="MPSU Logo"
                 class="brand-logo"
             >
@@ -75,15 +75,15 @@
             <div class="profile">
 
                 <img
-                    src="../assets/images/macross.jpg"
-                    alt="Macross Arsel"
+                    alt="Academic Admin profile picture"
                     class="profile-avatar"
+                    style="visibility: hidden"
                 >
 
                 <div class="profile-info">
 
                     <strong>
-                        Macross Arsel
+                        <span id="topbarAdminName"></span>
                     </strong>
 
                     <span>
@@ -145,13 +145,12 @@
             <div class="sidebar-profile">
 
                 <img
-                    src="../assets/images/macross.jpg"
-                    alt="Macross Arsel"
+                    alt="Academic Admin profile picture"
                     class="sidebar-avatar"
+                    style="visibility: hidden"
                 >
 
                 <span class="sidebar-profile-name">
-                    Macross
                 </span>
 
             </div>
@@ -255,22 +254,16 @@
             </nav>
 
 
-            <div class="sidebar-bottom">
-
-                <a
-                    href="#"
-                    class="nav-item logout"
-                >
-
-                    <i data-lucide="log-out"></i>
-
-                    <span class="nav-label">
-                        Logout
-                    </span>
-
-                </a>
-
-            </div>
+           <div class="sidebar-bottom">
+    <a
+        href="#"
+        class="nav-item logout"
+        id="academicAdminLogoutBtn"
+    >
+        <i data-lucide="log-out"></i>
+        <span class="nav-label">Logout</span>
+    </a>
+</div>
 
         </aside>
 
@@ -1184,6 +1177,7 @@
          PAGE JAVASCRIPT
          ========================================================= -->
 
+    <script src="../../api-config.js"></script>
     <script src="../js/shared.js"></script>
     <script src="../js/module-library-data.js"></script>
     <script src="../js/module-library-program.js"></script>

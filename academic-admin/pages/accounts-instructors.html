@@ -34,7 +34,7 @@
         <div class="brand">
 
             <img
-                src="../assets/images/mpsu_logo.png"
+                src="../assets/images/logo.png"
                 alt="MPSU Logo"
                 class="brand-logo"
             >
@@ -72,15 +72,15 @@
             <div class="profile">
 
                 <img
-                    src="../assets/images/macross.jpg"
-                    alt="Macross Arsel"
+                    alt="Academic Admin profile picture"
                     class="profile-avatar"
+                    style="visibility: hidden"
                 >
 
                 <div class="profile-info">
 
                     <strong>
-                        Macross Arsel
+                        <span id="topbarAdminName"></span>
                     </strong>
 
                     <span>
@@ -143,13 +143,12 @@
             <div class="sidebar-profile">
 
                 <img
-                    src="../assets/images/macross.jpg"
-                    alt="Macross Arsel"
+                    alt="Academic Admin profile picture"
                     class="sidebar-avatar"
+                    style="visibility: hidden"
                 >
 
                 <span class="sidebar-profile-name">
-                    Macross
                 </span>
 
             </div>
@@ -297,105 +296,68 @@
                  PAGE HEADING
             ====================== -->
 
-            <section class="learner-accounts-heading">
+           
+<a href="accounts.html" class="back-link">
+    <i data-lucide="arrow-left"></i>
+    <span>Back to Accounts</span>
+</a>
 
-                <div>
+<section class="learner-accounts-heading">
+    <div>
+        <h2>Instructor Accounts</h2>
+        <p>Manage instructor accounts, access, and class assignments.</p>
+    </div>
+<div class="instructor-account-actions">
 
-                    <a
-                        href="accounts.html"
-                        class="back-link"
-                    >
+    <button
+        type="button"
+        id="addInstructorAccountBtn"
+        class="primary-action-button"
+    >
+        <i data-lucide="plus"></i>
+        Add Instructor
+    </button>
 
-                        <i data-lucide="arrow-left"></i>
+    <button
+        type="button"
+        id="importInstructorsExcelBtn"
+        class="primary-action-button"
+    >
+        <i data-lucide="upload"></i>
+        Import Instructors from Excel
+    </button>
 
-                        <span>
-                            Back to Accounts
-                        </span>
+    <button
+        type="button"
+        id="downloadInstructorCredentialsBtn"
+        class="primary-action-button"
+        disabled
+    >
+        <i data-lucide="download"></i>
+        Download Credentials
+    </button>
 
-                    </a>
+    <button
+        type="button"
+        id="downloadInstructorCredentialsPdfBtn"
+        class="primary-action-button"
+        disabled
+    >
+        <i data-lucide="file-text"></i>
+        Download Credentials PDF
+    </button>
 
+    <input
+        type="file"
+        id="instructorsExcelFile"
+        accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        hidden
+    >
 
-                    <h2>
-                        Instructor Accounts
-                    </h2>
-
-                    <p>
-                        Manage instructor accounts, access, and class assignments.
-                    </p>
-
-                </div>
-
-
-                <button
-                    type="button"
-                    class="primary-action-button"
-                    id="addInstructorAccountBtn"
-                >
-
-                    <i data-lucide="plus"></i>
-
-                    <span>
-                        Add Instructor Account
-                    </span>
-
-                </button>
-
-            </section>
-
-
-
-            <!-- =====================
-                 CONTROLS
-            ====================== -->
-
-            <section class="learner-accounts-controls">
-
-
-                <div class="accounts-search">
-
-                    <i data-lucide="search"></i>
-
-                    <input
-                        type="search"
-                        id="instructorAccountSearch"
-                        placeholder="Search instructor, ID, or email..."
-                        autocomplete="off"
-                    >
-
-                </div>
+</div>
 
 
-                <div class="accounts-filter-group">
-
-                    <select
-                        id="instructorAccountStatusFilter"
-                        aria-label="Filter instructor accounts by status"
-                    >
-
-                        <option value="all">
-                            All Status
-                        </option>
-
-                        <option value="active">
-                            Active
-                        </option>
-
-                        <option value="inactive">
-                            Inactive
-                        </option>
-
-                        <option value="not-set-up">
-                            Not Set Up
-                        </option>
-
-                    </select>
-
-                </div>
-
-            </section>
-
-
-
+</section>
             <!-- =====================
                  TABLE
             ====================== -->
@@ -902,10 +864,12 @@
          SCRIPTS
     ========================== -->
 
+    <script src="../../api-config.js"></script>
     <script src="../js/shared.js"></script>
-
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="../js/accounts-instructors.js"></script>
-
+    
 </body>
 
 </html>

@@ -1,5 +1,5 @@
 const CLASS_DETAILS_API_BASE_URL =
-    "http://127.0.0.1:8000/api";
+    window.SIKNAYAN_API_ROOT;
 
 const CLASS_DETAILS_API_TOKEN_KEY =
     "siknayan_api_token";
@@ -127,26 +127,195 @@ async function initializeClassDetails() {
     }
 
 
-    const classes =
-        loadClasses();
+  let classes = loadClasses();
 
+currentClass = classes.find(
+    item => String(item.id) === String(classId)
+);
 
-    currentClass =
-        classes.find(
-            item =>
-                String(item.id) ===
-                String(classId)
-        );
+// If the class is missing locally, load it from Laravel.
+if (!currentClass) {
+    try {
+        const result = await classDetailsApiRequest("/admin/classes");
 
+        const apiClasses = Array.isArray(result?.classes)
+            ? result.classes
+            : [];
 
-    if (!currentClass) {
+        const normalizedClasses = apiClasses.map(item => {
+            const existing = classes.find(
+                localItem => String(localItem.id) === String(item.id)
+            );
 
-        showClassNotFound(
-            "The requested class could not be found."
-        );
+            return {
+                ...(existing || {}),
+                ...item,
 
-        return;
+                id: item.id,
+
+                classCode:
+                    item.classCode ||
+                    existing?.classCode ||
+                    item.code ||
+                    "",
+
+                courseName:
+                    item.courseName ||
+                    existing?.courseName ||
+                    item.name ||
+                    "",
+
+                courseCode:
+                    item.courseCode ||
+                    existing?.courseCode ||
+                    item.code ||
+                    "",
+
+                program:
+                    item.program ||
+                    existing?.program ||
+                    "",
+
+                instructorId:
+                    item.instructorId ??
+                    item.instructor_id ??
+                    existing?.instructorId ??
+                    null,
+
+                instructorName:
+                    item.instructorName ||
+                    item.instructor?.name ||
+                    existing?.instructorName ||
+                    "Unassigned",
+
+                learnerIds: Array.isArray(existing?.learnerIds)
+                    ? existing.learnerIds
+                    : Array.isArray(item.learners)
+                        ? item.learners.map(learner => learner.id)
+                        : [],
+
+                moduleIds: Array.isArray(existing?.moduleIds)
+                    ? existing.moduleIds
+                    : [],
+
+                status: normalizeStatus(
+                    item.status ??
+                    (Number(item.is_active) === 1 ? "Active" : "Inactive")
+                )
+            };
+        });
+
+        if (normalizedClasses.length > 0) {
+            classes = normalizedClasses;
+            saveClasses(classes);
+
+            currentClass = classes.find(
+                item => String(item.id) === String(classId)
+            );
+        }
+    } catch (error) {
+        console.error("Unable to load class from Laravel:", error);
     }
+}
+
+if (!currentClass) {
+    showClassNotFound(
+        "The requested class could not be found. Please check the Laravel API and class ID."
+    );
+    return;
+}
+
+/* Refresh the selected class from Laravel,
+   even when a local copy already exists. */
+try {
+    const result = await classDetailsApiRequest("/admin/classes");
+
+    const apiClass = Array.isArray(result?.classes)
+        ? result.classes.find(
+            item => String(item.id) === String(classId)
+        )
+        : null;
+
+    if (apiClass) {
+        const cachedClass = currentClass || {};
+
+        currentClass = {
+            ...cachedClass,
+            ...apiClass,
+
+            id: apiClass.id,
+
+            classCode:
+                apiClass.code ||
+                cachedClass.classCode ||
+                "",
+
+            courseName:
+                apiClass.name ||
+                cachedClass.courseName ||
+                "",
+
+            courseCode:
+                apiClass.subject_code ||
+                apiClass.courseCode ||
+                cachedClass.courseCode ||
+                apiClass.code ||
+                "",
+
+            program:
+                apiClass.program ||
+                cachedClass.program ||
+                "",
+
+            instructorId:
+                apiClass.instructor_id ??
+                cachedClass.instructorId ??
+                null,
+
+            instructorName:
+                apiClass.instructor?.name ||
+                cachedClass.instructorName ||
+                "Unassigned",
+
+            learnerIds:
+                Array.isArray(cachedClass.learnerIds)
+                    ? cachedClass.learnerIds
+                    : Array.isArray(apiClass.learners)
+                        ? apiClass.learners.map(learner => learner.id)
+                        : [],
+
+            moduleIds:
+                Array.isArray(cachedClass.moduleIds)
+                    ? cachedClass.moduleIds
+                    : [],
+
+            status: normalizeStatus(
+                apiClass.status ??
+                (Number(apiClass.is_active) === 1 ? "Active" : "Inactive")
+            )
+        };
+
+        const classIndex = classes.findIndex(
+            item => String(item.id) === String(apiClass.id)
+        );
+
+        if (classIndex === -1) {
+            classes.push(currentClass);
+        } else {
+            classes[classIndex] = {
+                ...classes[classIndex],
+                ...currentClass
+            };
+        }
+
+        saveClasses(classes);
+    }
+} catch (error) {
+    console.warn(
+        "Unable to refresh class details from Laravel:",
+        error
+    );
+}
 
 
     currentClass.learnerIds =
@@ -1312,6 +1481,18 @@ function getLearnerId(
 }
 
 
+function getLearnerSchoolId(
+    learner
+) {
+
+    return (
+        learner?.schoolId ??
+        learner?.school_id ??
+        ""
+    );
+}
+
+
 function getLearnerName(
     learner
 ) {
@@ -1462,7 +1643,7 @@ function renderLearnerRoster() {
             row.innerHTML = `
                 <td>
                     ${escapeHtml(
-                        getLearnerId(
+                        getLearnerSchoolId(
                             learner
                         ) || "—"
                     )}
@@ -1539,7 +1720,7 @@ function setupSearch() {
 
                             const id =
                                 String(
-                                    getLearnerId(
+                                    getLearnerSchoolId(
                                         learner
                                     )
                                 )
@@ -2501,19 +2682,57 @@ function setupModuleSidebar() {
         );
 
 
-    populateManageModuleProgramFilter(
-        programFilter,
-        modules,
-        currentClass.program
-    );
+    
+function populateManageModuleProgramFilter(
+    select,
+    modules,
+    selectedProgram
+) {
+    if (!select) return;
+
+    const program = String(
+        selectedProgram || currentClass?.program || ""
+    ).trim();
+
+    const option = document.createElement("option");
+
+    option.value = program || "__no_program__";
+    option.textContent = program || "Program unavailable";
+
+    select.replaceChildren(option);
+    select.value = option.value;
+}
 
 
-    populateManageModuleCourseFilter(
-        courseFilter,
-        modules,
-        programFilter.value,
-        currentClass.courseCode
-    );
+function populateManageModuleCourseFilter(
+    select,
+    modules,
+    selectedProgram,
+    selectedCourse
+) {
+    if (!select) return;
+
+    const courseCode = String(
+        selectedCourse || currentClass?.courseCode || ""
+    ).trim();
+
+    const courseName = String(
+        currentClass?.courseName || ""
+    ).trim();
+
+    const option = document.createElement("option");
+
+    option.value = courseCode || "__no_course__";
+
+    option.textContent =
+        courseName && courseName !== courseCode
+            ? `${courseCode} — ${courseName}`
+            : courseCode || "Subject unavailable";
+
+    select.replaceChildren(option);
+    select.value = option.value;
+}
+
 
 
     function renderFilteredModules() {
@@ -2524,58 +2743,38 @@ function setupModuleSidebar() {
                 : "";
 
 
-        const selectedProgram =
-            programFilter?.value ||
-            "all";
+        
+const requiredProgram = String(
+    currentClass?.program || ""
+).trim().toUpperCase();
 
+const requiredCourse = String(
+    currentClass?.courseCode || ""
+).trim().toUpperCase();
 
-        const selectedCourse =
-            courseFilter?.value ||
-            "all";
+let filtered = filterModules(
+    modules,
+    query
+);
 
+/* Only show modules matching this class's program and subject. */
+filtered = filtered.filter(module => {
+    const moduleProgram = String(
+        module?.programCode || ""
+    ).trim().toUpperCase();
 
-        let filtered =
-            filterModules(
-                modules,
-                query
-            );
+    const moduleCourse = String(
+        module?.courseCode || ""
+    ).trim().toUpperCase();
 
+    return (
+        requiredProgram !== "" &&
+        requiredCourse !== "" &&
+        moduleProgram === requiredProgram &&
+        moduleCourse === requiredCourse
+    );
+});
 
-        filtered =
-            filtered.filter(
-                module => {
-
-                    const matchesProgram =
-                        selectedProgram ===
-                            "all" ||
-                        String(
-                            module?.programCode ||
-                            ""
-                        ).toUpperCase() ===
-                            String(
-                                selectedProgram
-                            ).toUpperCase();
-
-
-                    const matchesCourse =
-                        selectedCourse ===
-                            "all" ||
-                        String(
-                            module?.courseCode ||
-                            ""
-                        ).toUpperCase() ===
-                            String(
-                                selectedCourse
-                            ).toUpperCase();
-
-
-                    return (
-                        matchesProgram &&
-                        matchesCourse
-                    );
-
-                }
-            );
 
 
         filtered.sort(
@@ -2788,8 +2987,21 @@ function setupModuleSidebar() {
                     programFilter.value,
                     currentClass.courseCode
                 );
+                
+if (courseFilter) {
+    const option = document.createElement("option");
 
+    option.value = classSubjectCode || "__no_course__";
 
+    option.textContent =
+        classSubjectName &&
+        classSubjectName.toUpperCase() !== classSubjectCode.toUpperCase()
+            ? `${classSubjectCode} — ${classSubjectName}`
+            : classSubjectCode || "Subject unavailable";
+
+    courseFilter.replaceChildren(option);
+    courseFilter.value = option.value;
+}
                 renderFilteredModules();
 
             };
@@ -2810,6 +3022,43 @@ function setupModuleSidebar() {
 
     renderFilteredModules();
 
+ /* Populate the filters when Manage Modules opens. */
+const classProgram = String(
+    currentClass?.program || ""
+).trim();
+
+const classSubjectCode = String(
+    currentClass?.courseCode || ""
+).trim();
+
+const classSubjectName = String(
+    currentClass?.courseName || ""
+).trim();
+
+if (programFilter) {
+    const option = document.createElement("option");
+
+    option.value = classProgram || "__no_program__";
+    option.textContent = classProgram || "Program unavailable";
+
+    programFilter.replaceChildren(option);
+    programFilter.value = option.value;
+}
+
+if (courseFilter) {
+    const option = document.createElement("option");
+
+    option.value = classSubjectCode || "__no_course__";
+
+    option.textContent =
+        classSubjectName &&
+        classSubjectName.toUpperCase() !== classSubjectCode.toUpperCase()
+            ? `${classSubjectCode} - ${classSubjectName}`
+            : classSubjectCode || "Subject unavailable";
+
+    courseFilter.replaceChildren(option);
+    courseFilter.value = option.value;
+}   
     initializeIcons();
 }
 

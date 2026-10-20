@@ -22,6 +22,8 @@ class User extends Authenticatable
         'program',
         'contact',
         'password_setup_complete',
+        'is_active',
+        'profile_photo_path',
     ];
 
     protected $hidden = [
@@ -35,6 +37,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'password_setup_complete' => 'boolean',
+            'is_active' => 'boolean',
         ];
     }
 

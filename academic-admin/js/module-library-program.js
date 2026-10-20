@@ -897,64 +897,50 @@
                     </span>
                 </div>
 
-                <span
-                    class="module-status ${
-                        module.status === "archived"
-                            ? "archived"
-                            : "active"
-                    }"
-                >
-                    ${
-                        module.status === "archived"
-                            ? "Archived"
-                            : "Active"
+                    <button
+                        type="button"
+                        class="module-view-button"
+                    >
+                        <i
+                            data-lucide="eye"
+                        ></i>
+
+                        <span>
+                            View Module
+                        </span>
+                    </button>
+                `;
+
+            card
+                .querySelector(
+                    ".module-menu-button"
+                )
+                .addEventListener(
+                    "click",
+                    event => {
+
+                        event.stopPropagation();
+
+                        openModuleMenu(
+                            module,
+                            event.currentTarget
+                        );
                     }
-                </span>
+                );
 
-                <button
-                    type="button"
-                    class="module-view-button"
-                >
-                    <i
-                        data-lucide="eye"
-                    ></i>
+            card
+                .querySelector(
+                    ".module-view-button"
+                )
+                .addEventListener(
+                    "click",
+                    () =>
+                        openViewModule(
+                            module.id
+                        )
+                );
 
-                    <span>
-                        View Module
-                    </span>
-                </button>
-            `;
-
-        card
-            .querySelector(
-                ".module-menu-button"
-            )
-            .addEventListener(
-                "click",
-                event => {
-
-                    event.stopPropagation();
-
-                    openModuleMenu(
-                        module,
-                        event.currentTarget
-                    );
-                }
-            );
-
-        card
-            .querySelector(
-                ".module-view-button"
-            )
-            .addEventListener(
-                "click",
-                () =>
-                    openViewModule(
-                        module.id
-                    )
-            );
-
-        return card;
+            return card;
     }
 
     function renderModules() {
@@ -1594,7 +1580,7 @@
 
     addModuleForm?.addEventListener(
         "submit",
-        event => {
+       async event => {
 
             event.preventDefault();
 
@@ -1685,6 +1671,24 @@
                 return;
             }
 
+            let uploadedFile = null;
+
+if (file) {
+    try {
+        uploadedFile = await uploadModuleFile(file);
+    } catch (error) {
+        console.error("Module file upload failed:", error);
+
+        if (moduleFileError) {
+            moduleFileError.textContent =
+                error.message || "Unable to upload the module file.";
+
+            moduleFileError.classList.add("visible");
+        }
+
+        return;
+    }
+}
             if (editingModuleId) {
 
                 const module =
@@ -1710,29 +1714,18 @@
                         courseId;
                 }
 
-                if (file) {
+               if (file && uploadedFile) {
+    module.fileObject = file;
+    module.fileName = uploadedFile.file_name || file.name;
+    module.fileSize = uploadedFile.file_size ?? file.size;
+    module.fileType =
+        uploadedFile.file_type ||
+        file.name.split(".").pop().toLowerCase();
 
-                    module.fileObject =
-                        file;
+    module.filePath = uploadedFile.file_path;
 
-                    module.fileName =
-                        file.name;
-
-                    module.fileSize =
-                        file.size;
-
-                    module.fileType =
-                        file.name
-                            .split(".")
-                            .pop()
-                            .toLowerCase();
-
-                    module.version =
-                        Number(
-                            module.version ||
-                            1
-                        ) + 1;
-                }
+    module.version = Number(module.version || 1) + 1;
+}
 
             } else {
 
@@ -1766,24 +1759,16 @@
 
                     status:
                         "active",
+fileName: uploadedFile.file_name || file.name,
+fileSize: uploadedFile.file_size ?? file.size,
+fileType:
+    uploadedFile.file_type ||
+    file.name.split(".").pop().toLowerCase(),
 
-                    fileName:
-                        file.name,
+filePath: uploadedFile.file_path,
+fileObject: file,
 
-                    fileSize:
-                        file.size,
-
-                    fileType:
-                        file.name
-                            .split(".")
-                            .pop()
-                            .toLowerCase(),
-
-                    fileObject:
-                        file,
-
-                    version:
-                        1
+version: 1
                 });
 
                 selectedCourse =
@@ -1871,6 +1856,120 @@
 
         refreshIcons();
     }
+
+    const MODULE_FILE_API_BASE_URL = window.SIKNAYAN_API_ROOT;
+
+function getModuleFileApiToken() {
+    return (
+        window.SIKNAYAN_API_TOKEN ||
+        localStorage.getItem("siknayan_api_token") ||
+        localStorage.getItem("token") ||
+        localStorage.getItem("access_token") ||
+        ""
+    );
+}
+
+async function uploadModuleFile(file) {
+    const token = getModuleFileApiToken();
+
+    if (!token) {
+        throw new Error("Your Laravel API token is missing. Please log in again.");
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await fetch(
+        `${MODULE_FILE_API_BASE_URL}/admin/module-files`,
+        {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: formData
+        }
+    );
+
+    let payload = null;
+
+    try {
+        payload = await response.json();
+    } catch {
+        // Handle a non-JSON server response below.
+    }
+
+    if (!response.ok || !payload?.success || !payload?.file_path) {
+        throw new Error(
+            payload?.message || `File upload failed (${response.status}).`
+        );
+    }
+
+    return payload;
+}
+
+async function openStoredModuleFile(module) {
+    if (!module?.filePath) {
+        alert("This module has no saved file path. Please upload its file again.");
+        return;
+    }
+
+    const token = getModuleFileApiToken();
+
+    if (!token) {
+        alert("Your Laravel API token is missing. Please log in again.");
+        return;
+    }
+
+    // Open the tab immediately to avoid the browser blocking it.
+    const fileTab = window.open("about:blank", "_blank");
+
+    if (!fileTab) {
+        alert("Please allow pop-ups for this site to open module files.");
+        return;
+    }
+
+    try {
+        const query = new URLSearchParams({
+            path: module.filePath,
+            name: module.fileName || "module-file"
+        });
+
+        const response = await fetch(
+            `${MODULE_FILE_API_BASE_URL}/admin/module-files?${query}`,
+            {
+                headers: {
+                    Accept: "*/*",
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+
+        if (!response.ok) {
+            let message = `Unable to open file (${response.status}).`;
+
+            try {
+                const payload = await response.json();
+                message = payload.message || message;
+            } catch {
+                // Keep the default error message.
+            }
+
+            throw new Error(message);
+        }
+
+        const blob = await response.blob();
+        const fileUrl = URL.createObjectURL(blob);
+
+        fileTab.location.href = fileUrl;
+
+        // Keep the URL available long enough for the browser viewer.
+        setTimeout(() => URL.revokeObjectURL(fileUrl), 300000);
+    } catch (error) {
+        fileTab.close();
+        alert(error.message || "Unable to open the uploaded module file.");
+    }
+}
 
     /* =====================================================
        VIEW MODULE
@@ -1968,24 +2067,50 @@
 
                         </div>
 
-                        <div
-                            class="module-view-row"
-                        >
+                        
+<div class="module-view-row">
+  <span>Status</span>
+  <strong>
+    ${escapeHtml(
+      String(module.status || "active")
+        .charAt(0).toUpperCase() +
+      String(module.status || "active").slice(1)
+    )}
+  </strong>
+</div>
 
-                            <span>
-                                Status
-                            </span>
 
-                            <strong>
-                                ${
-                                    module.status ===
-                                    "archived"
-                                        ? "Archived"
-                                        : "Active"
-                                }
-                            </strong>
+                        <div class="module-view-row">
 
-                        </div>
+    <span>
+        File
+    </span>
+
+    <strong>
+        ${
+            objectUrl
+                ? `
+                    <a
+                        href="${objectUrl}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style="color:#086642; text-decoration:underline; cursor:pointer;"
+                    >${escapeHtml(module.fileName || "Open uploaded file")}</a>
+                  `
+                : module.filePath
+                    ? `
+                        <a
+                            href="#"
+                            data-open-module-file="true"
+                            style="color:#086642; text-decoration:underline; cursor:pointer;"
+                            title="Open uploaded file"
+                        >${escapeHtml(module.fileName || "Open uploaded file")}</a>
+                      `
+                    : escapeHtml(module.fileName || "No file attached")
+        }
+    </strong>
+
+</div>
 
                         <div
                             class="module-view-row"
@@ -2030,24 +2155,7 @@
 
                         </div>
 
-                        <div
-                            class="module-view-row"
-                        >
-
-                            <span>
-                                File
-                            </span>
-
-                            <strong>
-                                ${escapeHtml(
-                                    module.fileName ||
-                                    "No file attached"
-                                )}
-                            </strong>
-
-                        </div>
-
-                    </div>
+        
 
                     <div
                         class="modal-actions"
@@ -2085,6 +2193,15 @@
         document.body.appendChild(
             overlay
         );
+
+        const storedFileLink = overlay.querySelector(
+    "[data-open-module-file]"
+);
+
+storedFileLink?.addEventListener("click", event => {
+    event.preventDefault();
+    openStoredModuleFile(module);
+});
 
         const close =
             () => {

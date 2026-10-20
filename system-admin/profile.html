@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>My Profile | Siknayan</title>
+
+    <link
+        rel="stylesheet"
+        href="css/system-admin.css"
+    >
+
+    <script
+        src="https://unpkg.com/lucide@latest"
+    ></script>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         TOPBAR
+    ====================================================== -->
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <img
+                src="../images/logo.png"
+                alt="MPSU Logo"
+                class="brand-logo"
+            >
+
+            <div class="brand-text">
+
+                <h1>
+                    MPSU ETEEAP LMS
+                </h1>
+
+                <p>
+                    Mountain Province State University
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="topbar-right">
+
+            <button
+                class="icon-button notification-button"
+                type="button"
+                title="Notifications"
+                aria-label="Notifications"
+            >
+
+                <i data-lucide="bell"></i>
+
+                <span class="notification-dot"></span>
+
+            </button>
+
+
+            <a class="profile" href="profile.html" aria-label="Open My Profile" title="My Profile">
+
+                <img
+                    src="../images/macross.jpg"
+                    alt="Arcana"
+                    class="profile-avatar"
+                >
+
+                <div class="profile-info">
+
+                    <strong>
+                        Arcana
+                    </strong>
+
+                    <span>
+                        Administrator
+                    </span>
+
+                </div>
+
+                <i
+                    data-lucide="chevron-right"
+                    class="profile-chevron"
+                ></i>
+
+            </a>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         APPLICATION LAYOUT
+    ====================================================== -->
+
+    <div class="app-layout">
+
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
+
+        <aside
+            class="sidebar"
+            id="sidebar"
+        >
+
+            <div class="sidebar-top">
+
+                <span class="sidebar-view-text">
+                    View
+                </span>
+
+                <button
+                    class="sidebar-toggle"
+                    id="sidebarToggle"
+                    type="button"
+                    title="Toggle Sidebar"
+                    aria-label="Toggle Sidebar"
+                >
+
+                    <i data-lucide="panel-left"></i>
+
+                </button>
+
+            </div>
+
+
+
+            <!-- Sidebar Profile -->
+
+            <div class="sidebar-profile">
+
+                <img
+                    src="../images/macross.jpg"
+                    alt="Arcana"
+                    class="sidebar-avatar"
+                >
+
+                <div class="sidebar-profile-info">
+
+                    <span class="sidebar-profile-name">
+                        Arcana
+                    </span>
+
+                    <span class="sidebar-profile-role">
+                        Administrator
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Navigation -->
+
+            <nav class="sidebar-nav">
+
+
+                <!-- Dashboard -->
+
+                <a
+                    href="dashboard.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="layout-dashboard"></i>
+
+                    <span class="nav-label">
+                        Dashboard
+                    </span>
+
+                </a>
+
+
+                <!-- Academic Administrators -->
+
+                <a
+                    href="administrators.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="users"></i>
+
+                    <span class="nav-label">
+                        Academic Administrators
+                    </span>
+
+                </a>
+
+
+                <!-- Data Backup -->
+
+                <a
+                    href="backup.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="database-backup"></i>
+
+                    <span class="nav-label">
+                        Data Backup
+                    </span>
+
+                </a>
+
+
+                <!-- Audit Logs -->
+
+                <a
+                    href="audit-logs.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="file-clock"></i>
+
+                    <span class="nav-label">
+                        Audit Logs
+                    </span>
+
+                </a>
+
+            
+
+                <!-- My Profile -->
+
+                <a
+                    href="profile.html"
+                    class="nav-item active"
+                >
+
+                    <i data-lucide="user-round"></i>
+
+                    <span class="nav-label">
+                        My Profile
+                    </span>
+
+                </a>
+</nav>
+
+
+
+            <!-- Logout -->
+
+            <div class="sidebar-bottom">
+
+                <a
+                    href="../index.html"
+                    class="nav-item"
+                    data-system-admin-logout
+                >
+
+                    <i data-lucide="log-out"></i>
+
+                    <span class="nav-label">
+                        Logout
+                    </span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+
+
+        <!-- =================================================
+             MAIN CONTENT
+        ================================================== -->
+
+        <main class="main-content profile-main">
+
+            <section class="page-header">
+                <div>
+                    <h2>My Profile</h2>
+                    <p>Manage your profile and account settings.</p>
+                </div>
+            </section>
+
+            <div class="profile-page-grid">
+
+                <section class="panel profile-information-card" aria-labelledby="profileInformationTitle">
+                    <div class="profile-card-heading-row">
+                        <div class="profile-card-heading">
+                            <h3 id="profileInformationTitle">Profile</h3>
+                            <p>Manage your personal information and profile photo.</p>
+                        </div>
+                        <button class="secondary-button profile-edit-button" id="editProfileButton" type="button">
+                            <i data-lucide="pencil"></i>
+                            Edit Profile
+                        </button>
+                    </div>
+
+                    <div class="profile-identity">
+                        <div class="profile-photo-wrap">
+                            <img
+                                src="../images/macross.jpg"
+                                data-default-src="../images/macross.jpg"
+                                alt="Arcana profile photo"
+                                class="profile-page-avatar"
+                                id="profilePageAvatar"
+                            >
+                            <button
+                                class="profile-photo-button"
+                                id="chooseProfilePhotoButton"
+                                type="button"
+                                aria-label="Choose profile photo"
+                                title="Choose profile photo"
+                                hidden
+                            >
+                                <i data-lucide="pencil"></i>
+                            </button>
+                            <input
+                                type="file"
+                                id="profilePhotoInput"
+                                accept="image/png,image/jpeg,image/webp"
+                                hidden
+                            >
+                        </div>
+
+                        <div class="profile-identity-copy">
+                            <h3 class="profile-page-name" id="profileDisplayName">Arcana</h3>
+                            <span class="profile-role-badge">
+                                <i data-lucide="shield-check"></i>
+                                Administrator
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="profile-detail-list" id="profileDetails">
+                        <div class="profile-detail-row">
+                            <span>Username</span>
+                            <strong id="profileDisplayUsername">admin</strong>
+                        </div>
+                        <div class="profile-detail-row">
+                            <span>Email address</span>
+                            <strong id="profileDisplayEmail">Not set</strong>
+                        </div>
+                    </div>
+
+                    <form class="profile-edit-form" id="profileEditForm" hidden>
+                        <div class="profile-edit-field">
+                            <label for="profileFullNameInput">Full Name</label>
+                            <input class="profile-edit-input" id="profileFullNameInput" name="fullName" type="text" maxlength="80" autocomplete="name" required>
+                        </div>
+                        <div class="profile-edit-field">
+                            <label for="profileUsernameInput">Username</label>
+                            <input class="profile-edit-input" id="profileUsernameInput" name="username" type="text" value="admin" readonly aria-describedby="profileAccountFieldsNote">
+                        </div>
+                        <div class="profile-edit-field">
+                            <label for="profileEmailInput">Email Address</label>
+                            <input class="profile-edit-input" id="profileEmailInput" name="email" type="email" maxlength="254" autocomplete="email" placeholder="Enter a contact email (optional)">
+                        </div>
+                        <p class="profile-edit-note" id="profileAccountFieldsNote">Username and administrator role are managed by the system and cannot be edited here. An email address is optional until account email services are configured.</p>
+                        <div class="profile-edit-actions">
+                            <button class="secondary-button" id="cancelProfileEditButton" type="button">Cancel</button>
+                            <button class="primary-button" type="submit">
+                                <i data-lucide="check"></i>
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
+
+                    <p class="profile-inline-status" id="profileEditStatus" role="status" aria-live="polite" hidden></p>
+                </section>
+
+                <section class="panel profile-password-card" aria-labelledby="changePasswordTitle">
+                    <div class="profile-card-heading">
+                        <h3 id="changePasswordTitle">Change Password</h3>
+                        <p>Use a long password or passphrase. Spaces are allowed.</p>
+                    </div>
+
+                    <form class="profile-password-form" id="passwordChangeForm">
+                        <div class="profile-password-field">
+                            <label for="currentPassword">Current Password</label>
+                            <div class="profile-password-input-wrap">
+                                <i data-lucide="lock-keyhole" class="profile-input-icon"></i>
+                                <input
+                                    type="password"
+                                    id="currentPassword"
+                                    name="currentPassword"
+                                    placeholder="Enter current password"
+                                    autocomplete="current-password"
+                                    required
+                                >
+                                <button type="button" class="password-visibility-toggle" data-password-toggle="currentPassword" aria-label="Show current password" title="Show password">
+                                    <i data-lucide="eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="profile-password-field">
+                            <label for="newPassword">New Password</label>
+                            <div class="profile-password-input-wrap">
+                                <i data-lucide="lock-keyhole" class="profile-input-icon"></i>
+                                <input
+                                    type="password"
+                                    id="newPassword"
+                                    name="newPassword"
+                                    placeholder="Enter new password"
+                                    autocomplete="new-password"
+                                    required
+                                    minlength="15"
+                                >
+                                <button type="button" class="password-visibility-toggle" data-password-toggle="newPassword" aria-label="Show new password" title="Show password">
+                                    <i data-lucide="eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="profile-password-field">
+                            <label for="confirmNewPassword">Confirm New Password</label>
+                            <div class="profile-password-input-wrap">
+                                <i data-lucide="lock-keyhole" class="profile-input-icon"></i>
+                                <input
+                                    type="password"
+                                    id="confirmNewPassword"
+                                    name="confirmNewPassword"
+                                    placeholder="Confirm new password"
+                                    autocomplete="new-password"
+                                    required
+                                    minlength="15"
+                                >
+                                <button type="button" class="password-visibility-toggle" data-password-toggle="confirmNewPassword" aria-label="Show password confirmation" title="Show password">
+                                    <i data-lucide="eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <p class="profile-inline-status" id="passwordFormStatus" role="status" aria-live="polite" hidden></p>
+
+                        <div class="profile-form-actions">
+                            <button type="reset" class="secondary-button" id="cancelPasswordChangeButton">Cancel</button>
+                            <button type="submit" class="primary-button">
+                                <i data-lucide="key-round"></i>
+                                Update Password
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+            </div>
+        </main>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script src="../api-config.js"></script>
+    <script src="js/shared.js"></script>
+    <script src="js/profile.js"></script>
+
+
+</body>
+
+</html>

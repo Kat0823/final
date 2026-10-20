@@ -447,7 +447,7 @@
         if (learnerIdElement) {
 
             learnerIdElement.textContent =
-                learner.id;
+                learner.schoolId || "—";
         }
 
 

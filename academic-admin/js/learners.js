@@ -37,7 +37,7 @@ const LEARNER_STORAGE_VERSION =
 ========================================================= */
 
 const LEARNER_API_BASE_URL =
-    "http://127.0.0.1:8000/api";
+    window.SIKNAYAN_API_ROOT;
 
 const LEARNER_API_TOKEN_KEY =
     "siknayan_api_token";
@@ -46,6 +46,8 @@ function getLearnerApiToken() {
 
     return (
         window.SIKNAYAN_API_TOKEN ||
+        sessionStorage.getItem("authToken") ||
+        sessionStorage.getItem("token") ||
         localStorage.getItem(
             LEARNER_API_TOKEN_KEY
         ) ||
@@ -65,7 +67,7 @@ async function fetchLearnersFromApi() {
     if (!token) {
 
         throw new Error(
-            "No API token found. Please save a fresh Laravel token as siknayan_api_token."
+            "No API token found. Please sign in again."
         );
 
     }
@@ -161,6 +163,12 @@ function normalizeApiLearner(
             learner.status ||
             "Active",
 
+        passwordSetupComplete:
+            Boolean(learner.password_setup_complete),
+
+        isActive:
+            learner.is_active !== false,
+
         lastActivity:
             learner.last_activity ||
             learner.lastActivity ||
@@ -201,6 +209,9 @@ async function syncLearnersFromApi() {
         state
     );
 
+    window.dispatchEvent(
+        new Event("siknayan:learners-refreshed")
+    );
 
     return state;
 
@@ -1519,7 +1530,7 @@ function updateLearnerModules(
                 </td>
 
                 <td class="student-id">
-                    ${escapeHtml(learner.schoolId || id)}
+                    ${escapeHtml(learner.schoolId || "—")}
                 </td>
 
 
@@ -1886,6 +1897,17 @@ syncLearnersFromApi()
             "Learners API initialization failed:",
             error
         );
+
+        if (document.querySelector(".learner-accounts-page")) {
+            window.dispatchEvent(
+                new CustomEvent("siknayan:learners-api-error", {
+                    detail: {
+                        message: error.message ||
+                            "Unable to load learner accounts from Laravel."
+                    }
+                })
+            );
+        }
 
     });
 

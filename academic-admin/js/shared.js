@@ -1,4 +1,4 @@
-/* =========================================================
+﻿/* =========================================================
    SIKNAYAN - ACADEMIC ADMIN
    shared.js
 ========================================================= */
@@ -344,3 +344,1877 @@ document.querySelectorAll(
 ========================================================= */
 
 refreshIcons();
+
+/* =========================================
+   ACADEMIC ADMIN LOGOUT CONFIRMATION
+   Reusable across Academic Admin pages
+========================================= */
+
+(function () {
+    // Prevent duplicate initialization.
+    if (window.siknayanLogoutInitialized) return;
+    window.siknayanLogoutInitialized = true;
+
+    // Add the confirmation card styles.
+    const logoutStyle = document.createElement("style");
+
+    logoutStyle.textContent = `
+        #sikLogoutOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        #sikLogoutOverlay.open {
+            display: flex;
+        }
+
+        .sik-logout-card {
+            width: 100%;
+            max-width: 420px;
+            padding: 32px;
+            border-radius: 18px;
+            background: #ffffff;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.22);
+            animation: sikLogoutAppear 0.2s ease-out;
+        }
+
+        @keyframes sikLogoutAppear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .sik-logout-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #e8f5ee;
+            color: #0a7549;
+        }
+
+        .sik-logout-icon svg {
+            width: 30px;
+            height: 30px;
+        }
+
+        .sik-logout-card h2 {
+            margin: 0 0 12px;
+            color: #202124;
+            font-size: 23px;
+        }
+
+        .sik-logout-card p {
+            margin: 0 0 26px;
+            color: #667085;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .sik-logout-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .sik-logout-actions button {
+            flex: 1;
+            min-height: 46px;
+            padding: 12px 16px;
+            border: 1px solid #d0d5dd;
+            border-radius: 9px;
+            font: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        #sikLogoutCancel {
+            background: #ffffff;
+            color: #344054;
+        }
+
+        #sikLogoutCancel:hover {
+            background: #f2f4f7;
+        }
+
+        #sikLogoutConfirm {
+            border-color: #0a7549;
+            background: #0a7549;
+            color: #ffffff;
+        }
+
+        #sikLogoutConfirm:hover {
+            background: #075b3b;
+        }
+
+        #sikLogoutConfirm:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 420px) {
+            .sik-logout-card {
+                padding: 26px 20px;
+            }
+
+            .sik-logout-actions {
+                flex-direction: column-reverse;
+            }
+        }
+    `;
+
+    document.head.appendChild(logoutStyle);
+
+    // Create the confirmation card once.
+    const logoutOverlay = document.createElement("div");
+
+    logoutOverlay.id = "sikLogoutOverlay";
+    logoutOverlay.setAttribute("role", "dialog");
+    logoutOverlay.setAttribute("aria-modal", "true");
+    logoutOverlay.setAttribute(
+        "aria-labelledby",
+        "sikLogoutTitle"
+    );
+
+    logoutOverlay.innerHTML = `
+        <section class="sik-logout-card">
+            <div class="sik-logout-icon">
+                <i data-lucide="log-out"></i>
+            </div>
+
+            <h2 id="sikLogoutTitle">Confirm Logout</h2>
+
+            <p>
+                Are you sure you want to log out of your account?
+            </p>
+
+            <div class="sik-logout-actions">
+                <button type="button" id="sikLogoutCancel">
+                    Cancel
+                </button>
+
+                <button type="button" id="sikLogoutConfirm">
+                    Yes, Log Out
+                </button>
+            </div>
+        </section>
+    `;
+
+    document.body.appendChild(logoutOverlay);
+
+    const cancelButton =
+        document.getElementById("sikLogoutCancel");
+
+    const confirmButton =
+        document.getElementById("sikLogoutConfirm");
+
+    let previousFocus = null;
+
+    function openLogoutConfirmation() {
+        previousFocus = document.activeElement;
+
+        logoutOverlay.classList.add("open");
+        document.body.style.overflow = "hidden";
+
+        if (window.lucide) {
+            window.lucide.createIcons();
+        }
+
+        cancelButton.focus();
+    }
+
+    function closeLogoutConfirmation() {
+        logoutOverlay.classList.remove("open");
+        document.body.style.overflow = "";
+
+        if (previousFocus && previousFocus.isConnected) {
+            previousFocus.focus();
+        }
+    }
+
+    // Listen for the logout button on every page.
+    // The button must have id="academicAdminLogoutBtn".
+    document.addEventListener("click", function (event) {
+        const logoutButton = event.target.closest(
+            "#academicAdminLogoutBtn"
+        );
+
+        if (!logoutButton) return;
+
+        event.preventDefault();
+        openLogoutConfirmation();
+    });
+
+    // Cancel logout.
+    cancelButton.addEventListener("click", function () {
+        closeLogoutConfirmation();
+    });
+
+    // Clicking the shaded background closes the card.
+    logoutOverlay.addEventListener("click", function (event) {
+        if (event.target === logoutOverlay) {
+            closeLogoutConfirmation();
+        }
+    });
+
+    // Escape closes the confirmation card.
+    document.addEventListener("keydown", function (event) {
+        if (
+            event.key === "Escape" &&
+            logoutOverlay.classList.contains("open")
+        ) {
+            closeLogoutConfirmation();
+        }
+    });
+
+    // Confirm logout and clear saved authentication information.
+    confirmButton.addEventListener("click", function () {
+        confirmButton.disabled = true;
+        confirmButton.textContent = "Logging out...";
+
+        sessionStorage.removeItem("isLoggedIn");
+        sessionStorage.removeItem("studentId");
+        sessionStorage.removeItem("userRole");
+        sessionStorage.removeItem("userName");
+        sessionStorage.removeItem("authToken");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("firstLogin");
+
+        localStorage.removeItem("siknayan_api_token");
+        localStorage.removeItem("token");
+        localStorage.removeItem("access_token");
+
+       
+
+        // Redirect to the main login page outside academic-admin.
+        const path = window.location.pathname.toLowerCase();
+
+        const loginUrl = path.includes("/academic-admin/pages/")
+            ? "../../index.html"
+            : "../index.html";
+
+        window.location.href = loginUrl;
+    });
+
+
+    // Render the logout icon.
+    if (window.lucide) {
+        window.lucide.createIcons();
+    }
+})();
+
+    
+/* ==========================================================
+   SIKNAYAN LMS - ACADEMIC ADMIN PROFILE MODAL
+   Opens when the admin clicks the header or sidebar profile.
+   ========================================================== */
+
+(() => {
+    if (window.siknayanProfileModalInitialized) return;
+    window.siknayanProfileModalInitialized = true;
+
+    const API_URL = `${window.SIKNAYAN_API_ROOT}/admin/profile`;
+
+    const style = document.createElement("style");
+    style.textContent = `
+        #sikProfileOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(15, 23, 42, .45);
+            backdrop-filter: blur(7px);
+            -webkit-backdrop-filter: blur(7px);
+            overflow-y: auto;
+        }
+
+        #sikProfileOverlay.open {
+            display: flex;
+        }
+
+        .sik-profile-modal {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+            border-radius: 18px;
+            background: #fff;
+            box-shadow: 0 20px 65px rgba(0,0,0,.25);
+            animation: sikProfileIn .2s ease-out;
+        }
+
+        @keyframes sikProfileIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .sik-profile-cover {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 28px;
+            padding-right: 60px;
+            color: #fff;
+            background: linear-gradient(125deg, #0a7549, #075b3b);
+        }
+
+       
+
+.sik-profile-avatar,
+button.sik-profile-avatar {
+    width: 90px;
+    height: 90px;
+    min-width: 90px;
+    min-height: 90px;
+    flex: 0 0 90px;
+    box-sizing: border-box;
+    display: block;
+    padding: 0;
+    overflow: hidden;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+}
+
+.sik-profile-avatar img,
+.sik-profile-avatar img:not([hidden]) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+}
+
+        
+/* Hide the fallback icon whenever the profile photo is visible. */
+.sik-profile-avatar:has(img:not([hidden])) svg,
+.sik-profile-avatar:has(img:not([hidden])) i {
+    display: none !important;
+}
+
+
+        
+.sik-profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+    box-sizing: border-box;
+padding: 0;
+aspect-ratio: 1 / 1;
+
+        .sik-profile-cover h2 {
+            margin: 0 0 8px;
+            font-size: 23px;
+            overflow-wrap: anywhere;
+        }
+
+        .sik-profile-cover p {
+            margin: 0 0 10px;
+            color: #e0f2e9;
+            line-height: 1.5;
+        }
+
+        .sik-profile-role {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 14px;
+            color: #e0f2e9;
+        }
+
+        .sik-profile-close {
+            position: absolute;
+            top: 13px;
+            right: 13px;
+            z-index: 2;
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            border: 0;
+            border-radius: 50%;
+            background: #fff;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .sik-profile-body {
+            padding: 26px 28px;
+        }
+
+        .sik-profile-body h3 {
+            margin: 0 0 20px;
+            font-size: 19px;
+        }
+
+        .sik-profile-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px 25px;
+        }
+
+        .sik-profile-field label {
+            display: block;
+            margin-bottom: 7px;
+            color: #667085;
+            font-size: 14px;
+        }
+
+        .sik-profile-field p {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        .sik-profile-security {
+            margin-top: 26px;
+            padding-top: 24px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .sik-profile-security-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .sik-profile-security-icon {
+            width: 46px;
+            height: 46px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: #f2f4f7;
+        }
+
+        .sik-profile-security-icon svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .sik-profile-security-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .sik-profile-security-info h4 {
+            margin: 0 0 5px;
+            font-size: 16px;
+        }
+
+        .sik-profile-security-info p {
+            margin: 0;
+            color: #667085;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .sik-profile-change {
+            padding: 8px;
+            border: 0;
+            background: transparent;
+            color: #086642;
+            font: inherit;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .sik-profile-status {
+            color: #087443;
+            font-weight: 600;
+        }
+
+        .sik-profile-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 22px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .sik-profile-button {
+            min-height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            padding: 12px;
+            border: 1px solid #d0d5dd;
+            border-radius: 11px;
+            background: #fff;
+            color: #202124;
+            font: inherit;
+            cursor: pointer;
+        }
+
+        .sik-profile-button:hover {
+            border-color: #086642;
+            background: #f8fbf9;
+        }
+
+        #sikProfileMessage {
+            margin: 0 0 16px;
+            color: #667085;
+            font-size: 14px;
+        }
+
+        #sikProfileMessage.error {
+            color: #b42318;
+        }
+
+        @media (max-width: 600px) {
+            #sikProfileOverlay {
+                padding: 12px;
+            }
+
+            .sik-profile-modal {
+                max-height: calc(100vh - 24px);
+            }
+
+            .sik-profile-cover {
+                gap: 13px;
+                padding: 22px 16px;
+                padding-right: 44px;
+            }
+
+            .sik-profile-avatar {
+                width: 65px;
+                height: 65px;
+            }
+
+            .sik-profile-cover h2 {
+                font-size: 18px;
+            }
+
+            .sik-profile-cover p {
+                font-size: 13px;
+            }
+
+            .sik-profile-body {
+                padding: 22px 17px;
+            }
+
+            .sik-profile-grid {
+                gap: 20px 12px;
+            }
+
+            .sik-profile-field p {
+                font-size: 14px;
+            }
+
+            .sik-profile-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+
+       
+        @media (max-width: 360px) {
+            .sik-profile-cover {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .sik-profile-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Profile photo upload */
+        .sik-profile-photo-upload {
+            padding: 16px 28px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #f8fbf9;
+        }
+
+        #sikProfilePhotoMessage {
+            margin: 10px 0 0;
+            color: #667085;
+            font-size: 14px;
+        }
+
+        #sikProfilePhotoMessage.error {
+            color: #b42318;
+        }
+
+        .sik-profile-photo-upload > label {
+            display: block;
+            margin-bottom: 10px;
+            color: #344054;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .sik-profile-photo-actions {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        #sikProfilePhotoInput {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.sik-profile-photo-actions .sik-change-profile-photo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    margin: 0;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #087443;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.sik-profile-photo-actions .sik-change-profile-photo:hover {
+    background: #065c36;
+}
+
+        #sikUploadProfilePhoto {
+            padding: 9px 15px;
+            border: 0;
+            border-radius: 8px;
+            background: #087443;
+            color: #fff;
+            font: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        #sikUploadProfilePhoto:hover {
+            background: #065c36;
+        }
+
+        #sikUploadProfilePhoto:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
+
+        /* Primary action button */
+        .sik-profile-button.primary {
+            border-color: #087443;
+            background: #087443;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .sik-profile-button.primary:hover {
+            border-color: #065c36;
+            background: #065c36;
+        }
+
+        .sik-profile-button[hidden] {
+            display: none !important;
+        }
+
+        /* Responsive photo upload spacing */
+        @media (max-width: 600px) {
+            .sik-profile-photo-upload {
+                padding: 16px;
+            }
+
+            .sik-profile-photo-actions {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+    `;
+    document.head.appendChild(style);
+
+    const overlay = document.createElement("div");
+    overlay.id = "sikProfileOverlay";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-label", "Profile settings");
+
+    overlay.innerHTML = `
+        <section class="sik-profile-modal">
+            <button type="button" class="sik-profile-close"
+                    id="sikProfileClose" aria-label="Close profile">
+                <i data-lucide="x"></i>
+            </button>
+
+<header class="sik-profile-cover">
+    <button
+        type="button"
+        class="sik-profile-avatar"
+        id="sikOpenPhotoViewer"
+        aria-label="View profile picture"
+    >
+        <img
+            id="sikProfileCoverPhoto"
+            src=""
+            alt="Administrator profile picture"
+            hidden
+        >
+        <i data-lucide="user-round" id="sikProfileCoverIcon"></i>
+    </button>
+
+    <div>
+        <h2 id="sikProfileName"></h2>
+        <p>Mountain Province State University</p>
+        <div class="sik-profile-role">
+            <i data-lucide="shield-check"></i>
+            <span id="sikProfileRole">Academic Administrator</span>
+        </div>
+    </div>
+</header>
+
+
+<div class="sik-profile-photo-upload">
+    <label for="sikProfilePhotoInput">Profile Picture</label>
+
+    <div class="sik-profile-photo-actions">
+        <label
+            for="sikProfilePhotoInput"
+            class="sik-change-profile-photo"
+        >
+            Change Profile Picture
+        </label>
+
+        <input
+            id="sikProfilePhotoInput"
+            class="sik-profile-photo-file-input"
+            type="file"
+            accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+        >
+
+        <button
+            type="button"
+            id="sikUploadProfilePhoto"
+            hidden
+        >
+            Upload Photo
+        </button>
+    </div>
+    <p id="sikProfilePhotoMessage" role="status" aria-live="polite"></p>
+</div>
+
+
+            <div class="sik-profile-body">
+                <p id="sikProfileMessage" role="status" aria-live="polite">
+                </p>
+
+                
+
+<section>
+    <h3>Personal Information</h3>
+
+    <div class="sik-profile-grid">
+        <div class="sik-profile-field">
+            <label>Full Name</label>
+            <p id="sikProfileFullName">—</p>
+            <input
+                id="sikProfileNameInput"
+                type="text"
+                value=""
+                maxlength="255"
+                autocomplete="name"
+                hidden
+            >
+        </div>
+
+        <div class="sik-profile-field">
+            <label>School ID</label>
+            <p id="sikProfileSchoolId">—</p>
+        </div>
+
+        <div class="sik-profile-field">
+            <label>Email Address</label>
+            <p id="sikProfileEmail">—</p>
+        </div>
+
+        <div class="sik-profile-field">
+            <label>Account Role</label>
+            <p id="sikProfileRoleDetail">—</p>
+        </div>
+    </div>
+</section>
+
+
+                <section class="sik-profile-security">
+                    <h3>Account &amp; Security</h3>
+
+                    <div class="sik-profile-security-row">
+                        <div class="sik-profile-security-icon">
+                            <i data-lucide="key-round"></i>
+                        </div>
+                        <div class="sik-profile-security-info">
+                            <h4>Password</h4>
+                            <p>Keep your account secure.</p>
+                        </div>
+                        <button type="button" class="sik-profile-change"
+                                data-sik-action="password">
+                            Change
+                        </button>
+                    </div>
+                </section>
+
+                
+<div class="sik-profile-actions">
+    <button
+        type="button"
+        class="sik-profile-button primary"
+        id="sikEditProfile"
+    >
+        <i data-lucide="pencil"></i>
+        Edit Profile
+    </button>
+
+    <button
+        type="button"
+        class="sik-profile-button primary"
+        id="sikSaveProfile"
+        hidden
+    >
+        <i data-lucide="check"></i>
+        Save Changes
+    </button>
+
+    <button
+        type="button"
+        class="sik-profile-button"
+        id="sikCancelProfileEdit"
+        hidden
+    >
+        <i data-lucide="x"></i>
+        Cancel
+    </button>
+</div>
+
+        </section>
+    `;
+
+    document.body.appendChild(overlay);
+
+    const $ = id => document.getElementById(id);
+
+    function refreshIcons() {
+        if (window.lucide) window.lucide.createIcons();
+    }
+
+    const coverPhoto = $("sikProfileCoverPhoto");
+    const coverIcon = $("sikProfileCoverIcon");
+
+    if (coverPhoto && coverIcon) {
+        coverPhoto.addEventListener("error", () => {
+            coverPhoto.hidden = true;
+            coverIcon.style.display = "";
+        });
+    }
+
+    function setPageAvatar(img, photoUrl, profileName = "") {
+        if (!photoUrl) {
+            img.removeAttribute("src");
+            delete img.dataset.profilePhotoUrl;
+            img.alt = "No profile picture";
+            img.style.visibility = "hidden";
+            return;
+        }
+
+        img.alt = profileName
+            ? `${profileName}'s profile picture`
+            : "Administrator profile picture";
+        img.src = photoUrl;
+        img.dataset.profilePhotoUrl = img.src;
+    }
+
+    const pageAvatars = document.querySelectorAll(
+        ".profile-avatar, .sidebar-avatar"
+    );
+
+    pageAvatars.forEach((img) => {
+        img.addEventListener("error", () => {
+            if (
+                !img.dataset.profilePhotoUrl ||
+                (img.currentSrc && img.currentSrc !== img.dataset.profilePhotoUrl)
+            ) {
+                return;
+            }
+
+            img.style.visibility = "hidden";
+        });
+
+        img.addEventListener("load", () => {
+            if (
+                img.dataset.profilePhotoUrl &&
+                (!img.currentSrc || img.currentSrc === img.dataset.profilePhotoUrl)
+            ) {
+                img.style.visibility = "visible";
+            }
+        });
+    });
+
+    function setProfileNames(name) {
+        const displayName = String(name || "").trim();
+        const firstName = displayName.split(/\s+/)[0] || "";
+
+        document.querySelectorAll("#topbarAdminName").forEach((element) => {
+            element.textContent = displayName;
+        });
+
+        document.querySelectorAll(
+            "#sidebarAdminName, .sidebar-profile-name"
+        ).forEach((element) => {
+            element.textContent = firstName;
+        });
+    }
+
+    function currentAcademicAdmin() {
+        try {
+            const user = JSON.parse(sessionStorage.getItem("user") || "null");
+            if (user && user.role === "academic_admin") {
+                return user;
+            }
+
+            if (sessionStorage.getItem("userRole") === "academic_admin") {
+                return {
+                    role: "academic_admin",
+                    name: sessionStorage.getItem("userName") || "",
+                    school_id: sessionStorage.getItem("studentId") || ""
+                };
+            }
+
+            return null;
+        } catch (error) {
+            console.error("Unable to read the signed-in user profile:", error);
+            return null;
+        }
+    }
+
+    function updateSessionUser(updates) {
+        try {
+            const currentUser = JSON.parse(
+                sessionStorage.getItem("user") || "{}"
+            );
+
+            sessionStorage.setItem(
+                "user",
+                JSON.stringify({
+                    ...currentUser,
+                    ...updates
+                })
+            );
+        } catch (error) {
+            console.error("Unable to update the signed-in user profile:", error);
+        }
+    }
+
+    function cacheProfile(profile) {
+        const userId = profile.id;
+
+        if (userId === null || userId === undefined) return;
+
+        try {
+            sessionStorage.setItem(
+                `siknayan_academic_admin_profile_${userId}`,
+                JSON.stringify({
+                    id: userId,
+                    name: profile.name || "",
+                    email: profile.email || "",
+                    school_id: profile.school_id || "",
+                    role: profile.role || "",
+                    profile_photo_url: profile.profile_photo_url || ""
+                })
+            );
+        } catch (error) {
+            console.error("Unable to cache the Academic Admin profile:", error);
+        }
+    }
+
+    function updateCachedProfile(updates) {
+        const user = currentAcademicAdmin();
+
+        if (!user || user.id === null || user.id === undefined) return;
+
+        let cachedProfile = {};
+
+        try {
+            cachedProfile = JSON.parse(
+                sessionStorage.getItem(
+                    `siknayan_academic_admin_profile_${user.id}`
+                ) || "{}"
+            );
+        } catch (error) {
+            console.error("Unable to update the cached Academic Admin profile:", error);
+        }
+
+        cacheProfile({
+            id: user.id,
+            name: updates.name ?? cachedProfile.name ?? user.name ?? "",
+            email: cachedProfile.email ?? "",
+            school_id: cachedProfile.school_id ?? "",
+            role: cachedProfile.role ?? user.role ?? "",
+            profile_photo_url:
+                updates.profile_photo_url ??
+                cachedProfile.profile_photo_url ??
+                ""
+        });
+        window.siknayanAdminProfile = {
+            ...(window.siknayanAdminProfile || {}),
+            ...updates
+        };
+    }
+
+    function restoreCachedProfile() {
+        const user = currentAcademicAdmin();
+
+        if (!user) return;
+
+        let cachedProfile = null;
+
+        try {
+            if (user.id !== null && user.id !== undefined) {
+                cachedProfile = JSON.parse(
+                    sessionStorage.getItem(
+                        `siknayan_academic_admin_profile_${user.id}`
+                    ) || "null"
+                );
+            } else if (user.school_id) {
+                for (let index = 0; index < sessionStorage.length; index++) {
+                    const key = sessionStorage.key(index);
+                    if (!key?.startsWith("siknayan_academic_admin_profile_")) {
+                        continue;
+                    }
+
+                    const profile = JSON.parse(
+                        sessionStorage.getItem(key) || "null"
+                    );
+                    if (
+                        profile &&
+                        String(profile.school_id) === String(user.school_id)
+                    ) {
+                        cachedProfile = profile;
+                        break;
+                    }
+                }
+            }
+        } catch (error) {
+            console.error("Unable to read the cached Academic Admin profile:", error);
+        }
+
+        const matchesUser =
+            cachedProfile &&
+            (
+                user.id !== null && user.id !== undefined
+                    ? String(cachedProfile.id) === String(user.id)
+                    : String(cachedProfile.school_id) === String(user.school_id)
+            );
+        const name = matchesUser && cachedProfile.name
+            ? cachedProfile.name
+            : user.name;
+        const photoUrl = matchesUser
+            ? cachedProfile.profile_photo_url
+            : "";
+
+        setProfileNames(name);
+        pageAvatars.forEach((img) => setPageAvatar(img, photoUrl, name));
+
+        const role = String(
+            matchesUser && cachedProfile.role
+                ? cachedProfile.role
+                : user.role || "academic_admin"
+        )
+            .replaceAll("_", " ")
+            .replace(/\b\w/g, letter => letter.toUpperCase());
+
+        setText("sikProfileName", name);
+        setText("sikProfileFullName", name);
+        setText(
+            "sikProfileEmail",
+            matchesUser ? cachedProfile.email : ""
+        );
+        setText(
+            "sikProfileSchoolId",
+            matchesUser ? cachedProfile.school_id : ""
+        );
+        setText("sikProfileRole", role);
+        setText("sikProfileRoleDetail", role);
+
+        if (coverPhoto && coverIcon) {
+            if (photoUrl) {
+                coverPhoto.src = photoUrl;
+                coverPhoto.hidden = false;
+                coverIcon.style.display = "none";
+            } else {
+                coverPhoto.removeAttribute("src");
+                coverPhoto.hidden = true;
+                coverIcon.style.display = "";
+            }
+        }
+    }
+
+    function clearProfileDisplay() {
+        setProfileNames("");
+        pageAvatars.forEach((img) => setPageAvatar(img, ""));
+
+        if (coverPhoto && coverIcon) {
+            coverPhoto.removeAttribute("src");
+            coverPhoto.hidden = true;
+            coverIcon.style.display = "";
+        }
+    }
+
+    function getToken() {
+        return (
+            window.SIKNAYAN_API_TOKEN ||
+            sessionStorage.getItem("authToken") ||
+            sessionStorage.getItem("token") ||
+            localStorage.getItem("siknayan_api_token") ||
+            localStorage.getItem("token") ||
+            localStorage.getItem("access_token") ||
+            ""
+        );
+    }
+
+    function setText(id, value) {
+        $(id).textContent =
+            value === null || value === undefined || value === ""
+                ? "Not provided"
+                : String(value);
+    }
+
+    let profileLoaded = false;
+    let profileLoadPromise = null;
+
+    function loadProfile() {
+        if (profileLoaded) {
+            return Promise.resolve(window.siknayanAdminProfile);
+        }
+
+        if (profileLoadPromise) {
+            return profileLoadPromise;
+        }
+
+        profileLoadPromise = loadProfileRequest().finally(() => {
+            profileLoadPromise = null;
+        });
+        window.siknayanAdminProfilePromise = profileLoadPromise;
+        return profileLoadPromise;
+    }
+
+    async function loadProfileRequest() {
+        $("sikProfileMessage").classList.remove("error");
+        $("sikProfileMessage").textContent = "";
+
+        window.siknayanAdminProfileError = "";
+        restoreCachedProfile();
+        const token = getToken();
+
+        if (!token) {
+            clearProfileDisplay();
+            window.siknayanAdminProfileError =
+                "No login token found. Please sign in again.";
+            $("sikProfileMessage").classList.add("error");
+            $("sikProfileMessage").textContent = window.siknayanAdminProfileError;
+            return null;
+        }
+
+        try {
+            const response = await fetch(API_URL, {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            const data = await response.json().catch(() => ({}));
+
+            if (!response.ok || !data.success || !data.profile) {
+                throw new Error(
+                    response.status === 401 || response.status === 403
+                        ? "Your session is not authorized. Please sign in again."
+                        : data.message || `Unable to load profile (HTTP ${response.status}).`
+                );
+            }
+
+        
+const profile = data.profile;
+
+const role = String(profile.role || "academic_admin")
+    .replaceAll("_", " ")
+    .replace(/\b\w/g, letter => letter.toUpperCase());
+
+const savedName = String(profile.name || "").trim();
+const savedPhotoUrl = String(profile.profile_photo_url || "").trim();
+updateSessionUser({
+    id: profile.id,
+    name: profile.name || "",
+    email: profile.email || "",
+    school_id: profile.school_id || "",
+    role: profile.role || "academic_admin"
+});
+cacheProfile(profile);
+profileLoaded = true;
+window.siknayanAdminProfile = profile;
+
+// Update every shared profile picture on the current page.
+pageAvatars.forEach((img) => {
+    setPageAvatar(img, savedPhotoUrl, savedName);
+});
+
+// Update names everywhere the shared profile is displayed.
+const displayName = savedName;
+setProfileNames(displayName);
+
+// Update the profile modal details.
+setText("sikProfileName", displayName);
+setText("sikProfileFullName", displayName);
+setText("sikProfileSchoolId", profile.school_id);
+setText("sikProfileEmail", profile.email);
+setText("sikProfileRole", role);
+setText("sikProfileRoleDetail", role);
+
+// Keep the saved name available for existing session-dependent UI.
+if (savedName) {
+    sessionStorage.setItem("userName", savedName);
+}
+
+// Update the large photo preview in the profile modal.
+const coverPhoto = $("sikProfileCoverPhoto");
+const coverIcon = $("sikProfileCoverIcon");
+
+if (coverPhoto && coverIcon) {
+    if (savedPhotoUrl) {
+        coverPhoto.src = savedPhotoUrl;
+
+        coverPhoto.hidden = false;
+        coverIcon.style.display = "none";
+    } else {
+        coverPhoto.removeAttribute("src");
+        coverPhoto.hidden = true;
+        coverIcon.style.display = "";
+    }
+    
+}
+
+                return profile;
+
+            } catch (error) {
+            console.error("Load profile error:", error);
+            window.siknayanAdminProfileError =
+                error.message || "Could not load your profile.";
+            $("sikProfileMessage").classList.add("error");
+            $("sikProfileMessage").textContent =
+                window.siknayanAdminProfileError;
+            return null;
+        }
+    }
+
+
+    // Restore profile modal open and close behavior.
+   
+function openProfileModal() {
+    overlay.classList.add("open");
+    document.body.style.overflow = "hidden";
+    refreshIcons();
+
+    if (!profileLoaded) {
+        loadProfile();
+    }
+
+    $("sikProfileClose").focus();
+
+    
+}
+
+
+    function closeProfileModal() {
+        overlay.classList.remove("open");
+        document.body.style.overflow = "";
+    }
+
+    document.addEventListener("click", (event) => {
+    const trigger = event.target.closest(
+        ".profile-avatar, .sidebar-avatar, #profileHeaderButton, .topbar-profile, #sidebarAdminProfile, .sidebar-user"
+    );
+
+    if (!trigger) return;
+    if (overlay.contains(trigger)) return;
+
+    event.preventDefault();
+    openProfileModal();
+});
+
+    $("sikProfileClose").addEventListener("click", closeProfileModal);
+
+    overlay.addEventListener("click", event => {
+        if (event.target === overlay) closeProfileModal();
+    });
+
+       document.addEventListener("keydown", event => {
+        if (
+            event.key === "Escape" &&
+            overlay.classList.contains("open")
+        ) {
+            closeProfileModal();
+        }
+    });
+    
+        // Profile editing: keep a snapshot so Cancel can discard changes.
+    let originalProfileValues = { name: "", email: "" };
+
+
+function setProfileEditMode(editing) {
+    $("sikProfileFullName").hidden = editing;
+    $("sikProfileNameInput").hidden = !editing;
+
+    $("sikEditProfile").hidden = editing;
+    $("sikSaveProfile").hidden = !editing;
+    $("sikCancelProfileEdit").hidden = !editing;
+
+    updateSaveButtonState();
+}
+
+
+function updateSaveButtonState() {
+    const nameInput = $("sikProfileNameInput");
+    const name = nameInput.value.trim();
+
+    const originalName = originalProfileValues.name || "";
+    const changed = name !== originalName;
+
+    $("sikSaveProfile").disabled = !changed || !name;
+}
+$("sikProfileNameInput").addEventListener(
+    "input",
+    updateSaveButtonState
+);
+
+function startProfileEdit() {
+    originalProfileValues = {
+        name: $("sikProfileFullName").textContent === "Not provided"
+            ? ""
+            : $("sikProfileFullName").textContent
+    };
+
+    $("sikProfileNameInput").value = originalProfileValues.name;
+    $("sikProfileNameInput").required = true;
+
+    $("sikProfileMessage").classList.remove("error");
+    $("sikProfileMessage").textContent = "";
+
+    setProfileEditMode(true);
+    $("sikProfileNameInput").focus();
+}
+
+    
+function cancelProfileEdit() {
+    $("sikProfileNameInput").value = originalProfileValues.name || "";
+
+    setProfileEditMode(false);
+
+    $("sikProfileMessage").classList.remove("error");
+    $("sikProfileMessage").textContent = "";
+}
+
+
+    $("sikEditProfile").addEventListener("click", startProfileEdit);
+    $("sikCancelProfileEdit").addEventListener("click", cancelProfileEdit);
+
+    
+$("sikSaveProfile").addEventListener("click", async () => {
+    console.log("SAVE HANDLER STARTED");
+
+    const nameInput = $("sikProfileNameInput");
+    const saveButton = $("sikSaveProfile");
+    const cancelButton = $("sikCancelProfileEdit");
+
+    nameInput.value = nameInput.value.trim();
+
+    if (!nameInput.reportValidity()) {
+        return;
+    }
+
+    if (!nameInput.value) {
+        nameInput.setCustomValidity("Full name is required.");
+        nameInput.reportValidity();
+        nameInput.setCustomValidity("");
+        return;
+    }
+
+    const token = getToken();
+    console.log("Save clicked. Token available:", Boolean(token));
+
+    if (!token) {
+        $("sikProfileMessage").classList.add("error");
+        $("sikProfileMessage").textContent =
+            "Your login session is missing. Please sign in again.";
+        return;
+    }
+
+    saveButton.disabled = true;
+    cancelButton.disabled = true;
+
+    $("sikProfileMessage").classList.remove("error");
+    $("sikProfileMessage").textContent = "Saving changes...";
+
+    try {
+        const response = await fetch(API_URL, {
+            method: "PUT",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                name: nameInput.value
+            })
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            throw new Error(
+                data.message || `Unable to save changes (HTTP ${response.status}).`
+            );
+        }
+
+        const updatedName =
+            data.profile?.name ??
+            data.data?.profile?.name ??
+            data.name ??
+            nameInput.value;
+
+        $("sikProfileFullName").textContent = updatedName;
+        $("sikProfileName").textContent = updatedName;
+        nameInput.value = updatedName;
+        sessionStorage.setItem("userName", updatedName);
+        updateSessionUser({ name: updatedName });
+        updateCachedProfile({ name: updatedName });
+        setProfileNames(updatedName);
+
+        cancelProfileEdit();
+
+        $("sikProfileMessage").classList.remove("error");
+        $("sikProfileMessage").textContent =
+            "Profile updated successfully.";
+
+    } catch (error) {
+        console.error("Save profile error:", error);
+        $("sikProfileMessage").classList.add("error");
+        $("sikProfileMessage").textContent =
+            error.message || "Could not save your profile.";
+    } finally {
+        saveButton.disabled = false;
+        cancelButton.disabled = false;
+    }
+});
+
+
+overlay.querySelectorAll('[data-sik-action="password"]').forEach(button => {
+    button.addEventListener("click", () => {
+        const message = $("sikProfileMessage");
+
+        message.classList.remove("error");
+        message.textContent = "";
+
+        let form = $("sikChangePasswordForm");
+
+        if (!form) {
+            form = document.createElement("form");
+            form.id = "sikChangePasswordForm";
+            form.hidden = true;
+
+            form.innerHTML = `
+                <h3>Change Password </h3>
+
+                <label for="sikCurrentPassword">Current Password</label>
+                <input id="sikCurrentPassword"
+                       name="current_password"
+                       type="password"
+                       autocomplete="current-password"
+                       required>
+
+                <label for="sikNewPassword">New Password</label>
+                <input id="sikNewPassword"
+                       name="password"
+                       type="password"
+                       autocomplete="new-password"
+                       minlength="8"
+                       required>
+
+                <label for="sikConfirmPassword">Confirm New Password</label>
+                <input id="sikConfirmPassword"
+                       name="password_confirmation"
+                       type="password"
+                       autocomplete="new-password"
+                       minlength="8"
+                       required>
+
+                <button id="sikSubmitPasswordChange" type="submit">
+                    Update Password
+                </button>
+
+                <p id="sikChangePasswordMessage"
+   role="status"
+   aria-live="polite"></p>
+            `;
+
+            form.addEventListener("submit", async event => {
+                event.preventDefault();
+
+                const result = $("sikChangePasswordMessage");
+                const submitButton = $("sikSubmitPasswordChange");
+                const currentPassword = $("sikCurrentPassword").value;
+                const newPassword = $("sikNewPassword").value;
+                const confirmPassword = $("sikConfirmPassword").value;
+
+                result.style.color = "#b42318";
+
+                if (newPassword !== confirmPassword) {
+                    result.textContent = "The new passwords do not match.";
+                    return;
+                }
+
+                if (currentPassword === newPassword) {
+                    result.textContent =
+                        "Your new password must differ from your current password.";
+                    return;
+                }
+
+                const token = getToken();
+
+                if (!token) {
+                    result.textContent =
+                        "No API token found. Please sign in again.";
+                    return;
+                }
+
+                submitButton.disabled = true;
+                submitButton.textContent = "Updating...";
+
+                try {
+                    const response = await fetch(
+                        `${window.SIKNAYAN_API_ROOT}/admin/change-password`,
+                        {
+                            method: "PUT",
+                            headers: {
+                                "Accept": "application/json",
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                current_password: currentPassword,
+                                password: newPassword,
+                                password_confirmation: confirmPassword
+                            })
+                        }
+                    );
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        const validationErrors = data.errors
+                            ? Object.values(data.errors).flat().join(" ")
+                            : "";
+
+                        throw new Error(
+                            validationErrors ||
+                            data.message ||
+                            "Unable to change password."
+                        );
+                    }
+
+                    result.style.color = "#087443";
+                    result.textContent =
+                        data.message || "Password changed successfully.";
+
+                    form.reset();
+                } catch (error) {
+                    result.textContent =
+                        error.message || "An unexpected error occurred.";
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.textContent = "Update Password";
+                }
+            });
+        }
+
+      // Find the Password row inside Account & Security.
+
+const passwordRow = button.closest(
+    ".sik-profile-security-row"
+);
+
+if (!passwordRow) {
+    message.textContent = "Password section not found.";
+    message.classList.add("error");
+    return;
+}
+
+if (form.hidden) {
+    passwordRow.insertAdjacentElement("afterend", form);
+    form.hidden = false;
+    form.style.display = "grid";
+
+    $("sikCurrentPassword")?.focus();
+} else {
+    form.hidden = true;
+    form.style.removeProperty("display");
+    form.reset();
+}
+    });
+});
+
+   
+    // Profile photo preview and upload
+    const photoInput = $("sikProfilePhotoInput");
+    const uploadPhotoButton = $("sikUploadProfilePhoto");
+    const photoMessage = $("sikProfilePhotoMessage");
+
+    let selectedProfilePhoto = null;
+    let uploadInProgress = false;
+    if (photoInput && uploadPhotoButton) {
+        uploadPhotoButton.hidden = true;
+
+        function restoreSavedPhoto() {
+            if (!coverPhoto || !coverIcon) return;
+
+            if (currentSavedPhotoUrl) {
+                coverPhoto.src = currentSavedPhotoUrl;
+                coverPhoto.hidden = false;
+                coverIcon.style.display = "none";
+            } else {
+                coverPhoto.removeAttribute("src");
+                coverPhoto.hidden = true;
+                coverIcon.style.display = "";
+            }
+        }
+
+        function rejectSelectedPhoto(message) {
+            selectedProfilePhoto = null;
+            photoInput.value = "";
+            uploadPhotoButton.hidden = true;
+            if (photoMessage) {
+                photoMessage.classList.add("error");
+                photoMessage.textContent = message;
+            }
+            restoreSavedPhoto();
+        }
+
+        photoInput.addEventListener("change", () => {
+            const file = photoInput.files && photoInput.files[0];
+            if (!file) return;
+
+            const extension = file.name.split(".").pop().toLowerCase();
+            const allowedExtensions = ["jpg", "jpeg", "png", "webp"];
+            const allowedMimeTypes = [
+                "image/jpeg",
+                "image/png",
+                "image/webp"
+            ];
+
+            if (
+                !allowedExtensions.includes(extension) ||
+                (file.type && !allowedMimeTypes.includes(file.type))
+            ) {
+                rejectSelectedPhoto(
+                    "Choose a JPG, JPEG, PNG, or WEBP image."
+                );
+                return;
+            }
+
+            if (file.size > 2 * 1024 * 1024) {
+                rejectSelectedPhoto("The image must not exceed 2 MB.");
+                return;
+            }
+
+            selectedProfilePhoto = file;
+            uploadPhotoButton.hidden = true;
+            if (photoMessage) {
+                photoMessage.classList.remove("error");
+                photoMessage.textContent = "";
+            }
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                if (
+                    selectedProfilePhoto !== file ||
+                    !coverPhoto ||
+                    !coverIcon
+                ) {
+                    return;
+                }
+
+                coverPhoto.src = reader.result;
+                coverPhoto.hidden = false;
+                coverIcon.style.display = "none";
+                coverIcon.setAttribute("aria-hidden", "true");
+                uploadPhotoButton.hidden = false;
+            };
+            reader.onerror = () => {
+                rejectSelectedPhoto(
+                    "The selected image could not be previewed. Please try another file."
+                );
+            };
+            reader.readAsDataURL(file);
+        });
+
+    uploadPhotoButton.addEventListener("click", async () => {
+        if (!selectedProfilePhoto || uploadInProgress) return;
+
+        const token = getToken();
+
+        if (!token) {
+            if (photoMessage) {
+                photoMessage.classList.add("error");
+                photoMessage.textContent =
+                    "Your login session has expired. Please sign in again.";
+            }
+            return;
+        }
+
+        const photoToUpload = selectedProfilePhoto;
+        const formData = new FormData();
+        formData.append("photo", photoToUpload);
+
+        uploadInProgress = true;
+        photoInput.disabled = true;
+        uploadPhotoButton.disabled = true;
+        uploadPhotoButton.textContent = "Uploading...";
+        if (photoMessage) {
+            photoMessage.classList.remove("error");
+            photoMessage.textContent = "Uploading photo...";
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/photo`, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            const data = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message || `Upload failed (HTTP ${response.status}).`
+                );
+            }
+
+            if (!data.profile_photo_url) {
+                throw new Error(
+                    "Upload succeeded, but the photo URL was not returned."
+                );
+            }
+
+            const uploadedPhotoUrl = data.profile_photo_url;
+            currentSavedPhotoUrl = uploadedPhotoUrl;
+            updateCachedProfile({ profile_photo_url: uploadedPhotoUrl });
+            window.siknayanAdminProfile = {
+                ...(window.siknayanAdminProfile || {}),
+                profile_photo_url: uploadedPhotoUrl
+            };
+
+            const refreshedPhotoUrl =
+                uploadedPhotoUrl +
+                (uploadedPhotoUrl.includes("?") ? "&" : "?") +
+                "t=" + Date.now();
+
+            pageAvatars.forEach((img) => {
+                setPageAvatar(
+                    img,
+                    refreshedPhotoUrl,
+                    $("topbarAdminName").textContent
+                );
+            });
+
+            if (coverPhoto && coverIcon) {
+                coverPhoto.src = refreshedPhotoUrl;
+                coverPhoto.hidden = false;
+                coverIcon.style.display = "none";
+                coverIcon.setAttribute("aria-hidden", "true");
+            }
+
+            selectedProfilePhoto = null;
+            photoInput.value = "";
+            uploadPhotoButton.hidden = true;
+            if (photoMessage) {
+                photoMessage.classList.remove("error");
+                photoMessage.textContent =
+                    "Profile picture updated successfully.";
+            }
+        } catch (error) {
+            console.error("Profile photo upload error:", error);
+            selectedProfilePhoto = null;
+            photoInput.value = "";
+            uploadPhotoButton.hidden = true;
+            restoreSavedPhoto();
+            if (photoMessage) {
+                photoMessage.classList.add("error");
+                photoMessage.textContent =
+                    error.message || "Could not upload the profile picture.";
+            }
+        } finally {
+            uploadInProgress = false;
+            photoInput.disabled = false;
+            uploadPhotoButton.disabled = false;
+            uploadPhotoButton.textContent = "Upload Photo";
+        }
+    });
+
+}
+  // Load the saved admin profile when the page initializes.
+  
+    loadProfile();
+
+
+    refreshIcons();
+})();

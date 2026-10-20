@@ -557,8 +557,9 @@
 
     </main>
 
+    <script src="../api-config.js"></script>
     <script>
-        const API_BASE_URL = "http://localhost:8000";
+        const API_BASE_URL = window.SIKNAYAN_API_ORIGIN;
 
         const setupForm = document.getElementById("setupForm");
         const newPassword = document.getElementById("newPassword");
@@ -823,4 +824,3 @@
 
 </body>
 </html>
-

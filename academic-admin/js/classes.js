@@ -40,24 +40,24 @@
    ===================================================== */
 
 const API_BASE_URL =
-    "http://127.0.0.1:8000/api";
+    window.SIKNAYAN_API_ROOT;
 
 const API_TOKEN_STORAGE_KEY =
     "siknayan_api_token";
 
 
-function getApiToken() {
 
+function getApiToken() {
     return (
+        sessionStorage.getItem("authToken") ||
         window.SIKNAYAN_API_TOKEN ||
-        localStorage.getItem(
-            API_TOKEN_STORAGE_KEY
-        ) ||
+        localStorage.getItem("siknayan_api_token") ||
         localStorage.getItem("token") ||
         localStorage.getItem("access_token") ||
         ""
     );
 }
+
 
 
 async function apiRequest(
@@ -704,7 +704,9 @@ function normalizeApiClass(
 
 
         courseCode:
-            classItem.code || "",
+    classItem.subject_code ||
+    classItem.code ||
+    "",
 
 
         courseName:
@@ -2339,7 +2341,6 @@ function cloneArray(
                         A class with this class code already exists.
                     </div>
 
-
                     <div class="modal-actions">
 
                         <button
@@ -2769,18 +2770,18 @@ function cloneArray(
 
     const courseName =
         getCourseName(selectedCourse);
-
-    const payload = {
-        name: courseName,
-        code: classCode,
-        program: program,
-        description:
-            existingClass?.description || "",
-        instructor_id:
-            Number(instructorId),
-        is_active:
-            status === "active"
-    };
+const payload = {
+    name: courseName,
+    code: classCode,
+    subject_code: courseCode,
+    program: program,
+    description:
+        existingClass?.description || "",
+    instructor_id:
+        Number(instructorId),
+    is_active:
+        status === "active"
+};
 
     try {
         let result;
@@ -2960,6 +2961,11 @@ function cloneArray(
                         : ""
                 }
 
+                <div
+                    class="form-error"
+                    id="dynamicDeleteError"
+                    role="alert"
+                ></div>
 
                 <div class="modal-actions">
 
@@ -3017,26 +3023,61 @@ function cloneArray(
     }
 
 
-    function deleteClass(
+    async function deleteClass(
         classId
     ) {
 
-        classes =
-            classes.filter(
-                classItem =>
-                    classItem.id !==
-                    classId
+        const overlay =
+            document.getElementById(
+                "dynamicDeleteClassModal"
             );
 
+        const confirmButton =
+            overlay?.querySelector(
+                "#dynamicDeleteConfirm"
+            );
 
-        saveClasses(
-            classes
-        );
+        if (!overlay || !confirmButton || confirmButton.disabled) {
+            return;
+        }
 
+        confirmButton.disabled = true;
+        confirmButton.textContent = "Deleting...";
+        overlay.querySelector("#dynamicDeleteCancel").disabled = true;
 
-        closeDynamicModal();
+        try {
+            const payload = await apiRequest(
+                `/admin/classes/${encodeURIComponent(classId)}`,
+                {
+                    method: "DELETE"
+                }
+            );
 
-        renderClasses();
+            if (!payload?.success) {
+                throw new Error(
+                    payload?.message || "The class could not be deleted."
+                );
+            }
+
+            classes = classes.filter(
+                classItem =>
+                    String(classItem.id) !== String(classId)
+            );
+
+            saveClasses(classes);
+            closeDynamicModal();
+            renderClasses();
+        } catch (error) {
+            console.error("Unable to delete class:", error);
+            confirmButton.disabled = false;
+            confirmButton.textContent = "Delete";
+            overlay.querySelector("#dynamicDeleteCancel").disabled = false;
+            showFormError(
+                overlay,
+                "#dynamicDeleteError",
+                error.message || "Unable to delete this class. Please try again."
+            );
+        }
     }
 
 

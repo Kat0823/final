@@ -1,4 +1,4 @@
-/* =========================================
+﻿/* =========================================
    SIKNAYAN - ACADEMIC ADMIN
    GLOBAL STYLES
 ========================================= */
@@ -219,6 +219,23 @@ body {
 
     white-space: nowrap;
 }
+
+/* Header profile trigger: preserves the existing header layout */
+#profileHeaderButton {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+}
+
+#profileHeaderButton:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 5px;
+    border-radius: 6px;
+}
+
 
 
 .profile-avatar {
@@ -636,10 +653,12 @@ body {
 ========================================================= */
 
 .dashboard-page {
-    height: calc(100vh - var(--header-height));
+    width: 100%;
+    min-width: 0;
     min-height: calc(100vh - var(--header-height));
-    overflow-y: auto;
+    height: auto;
     overflow-x: hidden;
+    overflow-y: visible;
     padding-bottom: 36px;
     overscroll-behavior: contain;
 }
@@ -1798,6 +1817,13 @@ body {
     background: #fff5d9;
 
     color: #866500;
+}
+
+.status-inactive {
+
+    background: #fde8e7;
+
+    color: #b42318;
 }
 
 
@@ -10243,6 +10269,344 @@ body:has(.program-library-page) {
             100%;
 
     }
+}
 
+/* =========================================
+   INSTRUCTOR ACCOUNTS TOOLBAR
+========================================= */
+
+.instructor-accounts-page {
+    overflow-x: hidden;
+    padding-top: 24px;
+}
+
+.instructor-accounts-page .learner-accounts-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 26px;
+}
+
+.instructor-accounts-page .learner-accounts-heading h2 {
+    margin-top: 7px;
+    font-size: 34px;
+    font-weight: 700;
+}
+
+.instructor-accounts-page .learner-accounts-heading p {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.instructor-account-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+    min-width: 0;
+}
+
+.instructor-account-actions .primary-action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex: 0 0 auto;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.instructor-account-actions .primary-action-button svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.instructor-account-actions .primary-action-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+@media (max-width: 1100px) {
+    .instructor-account-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 700px) {
+    .instructor-account-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .instructor-account-actions .primary-action-button {
+        width: 100%;
+    }
+}
+
+/* =========================================
+   ACADEMIC ADMIN DASHBOARD SCROLLING
+   Keep dashboard scrolling on the document,
+   while leaving the sidebar fixed.
+========================================= */
+
+html:has(.dashboard-page),
+body:has(.dashboard-page) {
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+}
+
+body:has(.dashboard-page) .app-layout {
+    height: auto !important;
+    min-height: calc(100vh - var(--header-height));
+    overflow: visible !important;
+}
+
+body:has(.dashboard-page) .main-content.dashboard-page {
+    height: auto !important;
+    min-height: calc(100vh - var(--header-height));
+    overflow: visible !important;
+    overflow-y: visible !important;
+    overscroll-behavior: auto;
+}
+
+/* Learner Excel Import Status Messages */
+#learnerExcelImportStatus {
+    display: none;
+    padding: 12px 16px;
+    margin-top: 12px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+    transition: opacity 0.3s ease;
+}
+
+/* Success container */
+#learnerExcelImportStatus.success-message {
+    display: block;
+    color: #166534 !important;
+    background-color: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+/* Error container */
+#learnerExcelImportStatus.error-message {
+    display: block;
+    color: #b42318 !important;
+    background-color: #fef2f2;
+    border-color: #fecaca;
+}
+/* Instructor Accounts: match Learner Accounts layout */
+body:has(.instructor-accounts-page) .main-content.instructor-accounts-page {
+    box-sizing: border-box;
+    padding-top: 26px !important;
+    min-height: calc(100vh - var(--header-height));
+    height: auto !important;
+    overflow-x: hidden;
+    overflow-y: visible;
+}
+
+body:has(.instructor-accounts-page) .instructor-accounts-page > .back-link {
+    display: inline-flex;
+    margin-bottom: 16px;
+}
+
+body:has(.instructor-accounts-page) .instructor-accounts-page > .learner-accounts-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 0 !important;
+    margin-bottom: 26px !important;
+    min-height: 0 !important;
+}
+
+body:has(.instructor-accounts-page) .instructor-account-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+body:has(.instructor-accounts-page) .instructor-account-actions .primary-action-button {
+    min-height: 38px;
+    margin: 0;
+    white-space: nowrap;
+}
+
+body:has(.instructor-accounts-page) .instructor-accounts-page .learner-accounts-table-card {
+    margin-top: 0 !important;
+}
+
+@media (max-width: 700px) {
+    body:has(.instructor-accounts-page) .instructor-account-actions {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    body:has(.instructor-accounts-page) .instructor-account-actions .primary-action-button {
+        width: 100%;
+    }
+}
+    
+/* Profile photo upload */
+.sik-profile-photo-upload {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0 22px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.sik-profile-photo-upload .sik-profile-photo-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.sik-profile-photo-actions label {
+    width: 100%;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+#sikProfilePhotoInput {
+    max-width: 230px;
+    font-size: 13px;
+}
+
+#sikUploadProfilePhoto {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    background: #08734f;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#sikUploadProfilePhoto:hover {
+    background: #065b3f;
+}
+
+#sikUploadProfilePhoto:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+
+#sikSubmitPasswordChange:hover {
+    background: #065f38;
+}
+
+#sikSubmitPasswordChange:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+#sikChangePasswordMessage {
+    margin: 0;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+/* ===== SIKNAYAN CHANGE PASSWORD FORM ===== */
+
+#sikChangePasswordForm {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    width: 100%;
+    max-width: 100%;
+    margin: 16px 0;
+    padding: 20px;
+    box-sizing: border-box;
+    background: #ffffff;
+    border: 1px solid #dbe4ee;
+    border-radius: 12px;
+}
+
+#sikChangePasswordForm[hidden] {
+    display: none !important;
+}
+
+#sikChangePasswordForm h3 {
+    grid-column: 1 / -1;
+    margin: 0 0 6px;
+    color: #064e3b;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+#sikChangePasswordForm label {
+    display: block;
+    width: 100%;
+    margin: 0;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+#sikChangePasswordForm input[type="password"] {
+    display: block;
+    width: 100%;
+    height: 44px;
+    min-width: 0;
+    margin: 0;
+    padding: 10px 12px;
+    box-sizing: border-box;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #0f172a;
+    font: inherit;
+}
+
+#sikChangePasswordForm input[type="password"]:focus {
+    border-color: #087443;
+    outline: none;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgb(8 116 67 / 12%);
+}
+
+#sikSubmitPasswordChange {
+    display: block;
+    width: 100%;
+    min-height: 46px;
+    margin: 6px 0 0;
+    padding: 10px 16px;
+    box-sizing: border-box;
+    border: 0;
+    border-radius: 8px;
+    background: #087443;
+    color: #ffffff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+/* Hide notification count badges when their count is zero */
+#tabAllCount[hidden],
+#tabUnreadCount[hidden],
+#tabSubmissionCount[hidden],
+#tabGradingCount[hidden],
+#tabStatusCount[hidden],
+#tabSystemCount[hidden] {
+    display: none !important;
 }
 

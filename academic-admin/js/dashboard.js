@@ -14,26 +14,6 @@
 
 
     /* =====================================================
-       STORAGE KEYS
-    ===================================================== */
-
-    const LEARNER_STORAGE_KEY =
-        "siknayan_academic_admin_learners";
-
-    const CLASS_STORAGE_KEY =
-        "siknayan_academic_admin_classes";
-
-    const INSTRUCTOR_STORAGE_KEY =
-        "siknayan_academic_admin_instructors";
-
-    const LEARNER_ACCOUNT_STORAGE_KEY =
-        "siknayan_academic_admin_learner_accounts";
-
-    const INSTRUCTOR_ACCOUNT_STORAGE_KEY =
-        "siknayan_academic_admin_instructor_accounts";
-
-
-    /* =====================================================
        ELEMENTS
     ===================================================== */
 
@@ -57,6 +37,7 @@
             "classEnrollmentSummary"
         );
 
+        
     const totalInstructors =
         document.getElementById(
             "totalInstructors"
@@ -124,163 +105,6 @@
 
 
     /* =====================================================
-       STORAGE HELPERS
-    ===================================================== */
-
-    function readStorage(key) {
-
-        try {
-
-            const raw =
-                localStorage.getItem(key);
-
-            if (!raw) {
-                return null;
-            }
-
-            return JSON.parse(raw);
-
-        } catch (error) {
-
-            console.error(
-                `Dashboard: unable to read ${key}`,
-                error
-            );
-
-            return null;
-        }
-    }
-
-
-    function readArrayStorage(key) {
-
-        const stored =
-            readStorage(key);
-
-        if (Array.isArray(stored)) {
-            return stored;
-        }
-
-        if (
-            stored &&
-            Array.isArray(stored.items)
-        ) {
-            return stored.items;
-        }
-
-        if (
-            stored &&
-            Array.isArray(stored.accounts)
-        ) {
-            return stored.accounts;
-        }
-
-        if (
-            stored &&
-            Array.isArray(stored.instructors)
-        ) {
-            return stored.instructors;
-        }
-
-        if (
-            stored &&
-            Array.isArray(stored.learners)
-        ) {
-            return stored.learners;
-        }
-
-        if (
-            stored &&
-            Array.isArray(stored.classes)
-        ) {
-            return stored.classes;
-        }
-
-        return [];
-    }
-
-
-    /* =====================================================
-       DATA LOADERS
-    ===================================================== */
-
-    function loadLearnerState() {
-
-        const stored =
-            readStorage(
-                LEARNER_STORAGE_KEY
-            );
-
-        if (
-            stored &&
-            typeof stored === "object" &&
-            !Array.isArray(stored)
-        ) {
-
-            return {
-                learners:
-                    Array.isArray(
-                        stored.learners
-                    )
-                        ? stored.learners
-                        : [],
-
-                modules:
-                    stored.modules &&
-                    typeof stored.modules === "object"
-                        ? stored.modules
-                        : {}
-            };
-        }
-
-        if (Array.isArray(stored)) {
-
-            return {
-                learners: stored,
-                modules: {}
-            };
-        }
-
-        return {
-            learners: [],
-            modules: {}
-        };
-    }
-
-
-    function loadClasses() {
-
-        return readArrayStorage(
-            CLASS_STORAGE_KEY
-        );
-    }
-
-
-    function loadInstructors() {
-
-        return readArrayStorage(
-            INSTRUCTOR_STORAGE_KEY
-        );
-    }
-
-
-    function loadLearnerAccounts() {
-
-        return readArrayStorage(
-            LEARNER_ACCOUNT_STORAGE_KEY
-        );
-    }
-
-
-    function loadInstructorAccounts() {
-
-        return readArrayStorage(
-            INSTRUCTOR_ACCOUNT_STORAGE_KEY
-        );
-    }
-
-
-    /* =====================================================
        NORMALIZATION
     ===================================================== */
 
@@ -312,9 +136,9 @@
         learner
     ) {
 
-        return normalizeStatus(
-            learner?.status
-        );
+        return learner?.is_active === false
+            ? "inactive"
+            : "active";
     }
 
 
@@ -427,55 +251,16 @@
         ).length;
     }
 
-
+    
     /* =====================================================
        MODULE CALCULATIONS
     ===================================================== */
 
     function calculateModuleAssignments(
-        learnerState
+        learners
     ) {
 
-        const modules =
-            learnerState.modules;
-
-        if (
-            modules &&
-            typeof modules === "object"
-        ) {
-
-            let total = 0;
-
-            Object.values(
-                modules
-            ).forEach(
-                learnerModules => {
-
-                    if (
-                        Array.isArray(
-                            learnerModules
-                        )
-                    ) {
-
-                        total +=
-                            learnerModules.length;
-                    }
-
-                }
-            );
-
-            if (total > 0) {
-                return total;
-            }
-        }
-
-
-        /*
-            Fallback for compatibility with older
-            learner records.
-        */
-
-        return learnerState.learners.reduce(
+        return learners.reduce(
             (
                 total,
                 learner
@@ -498,69 +283,12 @@
     }
 
 
-    function calculateAwaitingGrade(
-        learnerState
-    ) {
-
-        let total = 0;
-
-        const modules =
-            learnerState.modules;
-
-        if (
-            !modules ||
-            typeof modules !== "object"
-        ) {
-            return 0;
-        }
-
-        Object.values(
-            modules
-        ).forEach(
-            learnerModules => {
-
-                if (
-                    !Array.isArray(
-                        learnerModules
-                    )
-                ) {
-                    return;
-                }
-
-                learnerModules.forEach(
-                    module => {
-
-                        const status =
-                            normalizeStatus(
-                                module?.status
-                            );
-
-                        if (
-                            status.includes(
-                                "awaiting grade"
-                            )
-                        ) {
-
-                            total++;
-                        }
-
-                    }
-                );
-
-            }
-        );
-
-        return total;
-    }
-
-
     /* =====================================================
        INSTRUCTOR CALCULATIONS
     ===================================================== */
 
     function buildInstructorMap(
-        instructors,
-        classes
+        instructors
     ) {
 
         const map =
@@ -581,46 +309,6 @@
                         instructor.id
                     ),
                     instructor
-                );
-
-            }
-        );
-
-
-        /*
-            If instructor records have not yet been
-            initialized, derive missing instructors
-            from class relationships.
-        */
-
-        classes.forEach(
-            classItem => {
-
-                const id =
-                    classItem?.instructorId;
-
-                if (!id) {
-                    return;
-                }
-
-                const key =
-                    String(id);
-
-                if (
-                    map.has(key)
-                ) {
-                    return;
-                }
-
-                map.set(
-                    key,
-                    {
-                        id: key,
-                        name:
-                            classItem.instructorName ||
-                            "Unknown Instructor",
-                        status: "ACTIVE"
-                    }
                 );
 
             }
@@ -774,15 +462,11 @@
     ===================================================== */
 
     function renderOverview(
-        learnerState,
+        statistics,
+        learners,
         classes,
-        instructorMap,
-        learnerAccounts,
-        instructorAccounts
+        instructors
     ) {
-
-        const learners =
-            learnerState.learners;
 
 
         const programSet =
@@ -861,10 +545,16 @@
 
         const completedCount =
             learners.filter(
-                learner =>
-                    getLearnerStatus(
-                        learner
-                    ) === "completed"
+                learner => {
+                    const progress =
+                        getLearnerProgress(learner);
+
+                    return (
+                        Number(learner?.modulesAssigned || 0) > 0 &&
+                        progress !== null &&
+                        progress >= 100
+                    );
+                }
             ).length;
 
 
@@ -900,31 +590,14 @@
 
         const moduleAssignments =
             calculateModuleAssignments(
-                learnerState
+                learners
             );
-
-
-        const awaitingGrade =
-            calculateAwaitingGrade(
-                learnerState
-            );
-
-
-        const activeLearnerAccounts =
-            learnerAccounts.filter(
-                account =>
-                    normalizeStatus(
-                        account?.status
-                    ) === "active"
-            ).length;
 
 
         const activeInstructorAccounts =
-            instructorAccounts.filter(
-                account =>
-                    normalizeStatus(
-                        account?.status
-                    ) === "active"
+            instructors.filter(
+                instructor =>
+                    instructor?.is_active !== false
             ).length;
 
 
@@ -939,7 +612,7 @@
 
         if (totalLearners) {
             totalLearners.textContent =
-                learners.length;
+                statistics.learners;
         }
 
 
@@ -954,7 +627,7 @@
 
         if (totalClasses) {
             totalClasses.textContent =
-                activeClassRecords.length;
+                statistics.active_classes;
         }
 
 
@@ -969,7 +642,7 @@
 
         if (totalInstructors) {
             totalInstructors.textContent =
-                instructorMap.size;
+                statistics.instructors;
         }
 
 
@@ -1025,7 +698,7 @@
 
         if (queueAwaitingGrade) {
             queueAwaitingGrade.textContent =
-                awaitingGrade;
+                statistics.awaiting_grade;
         }
 
 
@@ -1047,7 +720,7 @@
                 )}`;
         }
     }
-
+    
 
     /* =====================================================
        RENDER ACTIVE CLASSES
@@ -1230,8 +903,7 @@
 
     function renderRecentAccountActivity(
         learners,
-        learnerAccounts,
-        instructorAccounts
+        instructors
     ) {
 
         if (!recentAccountActivity) {
@@ -1239,50 +911,29 @@
         }
 
 
-        const learnerMap =
-            new Map(
-                learners.map(
-                    learner => [
-                        String(
-                            learner?.id
-                        ),
-                        learner
-                    ]
-                )
-            );
-
-
         const activities = [];
 
 
-        learnerAccounts.forEach(
-            account => {
+        learners.forEach(
+            learner => {
 
                 if (
-                    !account?.createdAt
+                    !learner?.created_at
                 ) {
                     return;
                 }
-
-                const learner =
-                    learnerMap.get(
-                        String(
-                            account.learnerId
-                        )
-                    );
-
 
                 activities.push({
                     type: "Learner Account",
                     name:
                         learner?.name ||
-                        account?.email ||
+                        learner?.email ||
                         "Unknown Learner",
                     email:
-                        account?.email ||
+                        learner?.email ||
                         "",
                     createdAt:
-                        account.createdAt,
+                        learner.created_at,
                     icon:
                         "user-plus"
                 });
@@ -1291,11 +942,11 @@
         );
 
 
-        instructorAccounts.forEach(
-            account => {
+        instructors.forEach(
+            instructor => {
 
                 if (
-                    !account?.createdAt
+                    !instructor?.created_at
                 ) {
                     return;
                 }
@@ -1303,15 +954,14 @@
                 activities.push({
                     type: "Instructor Account",
                     name:
-                        account?.name ||
-                        account?.fullName ||
-                        account?.email ||
+                        instructor?.name ||
+                        instructor?.email ||
                         "Unknown Instructor",
                     email:
-                        account?.email ||
+                        instructor?.email ||
                         "",
                     createdAt:
-                        account.createdAt,
+                        instructor.created_at,
                     icon:
                         "user-plus"
                 });
@@ -1419,92 +1069,249 @@
 
 
     /* =====================================================
-       STARTUP
+       AUTHENTICATED API
     ===================================================== */
 
-    function refreshDashboard() {
+    let dashboardLoadPromise = null;
 
-        const learnerState =
-            loadLearnerState();
+    function getApiToken() {
+        return (
+            window.SIKNAYAN_API_TOKEN ||
+            sessionStorage.getItem("authToken") ||
+            sessionStorage.getItem("token") ||
+            localStorage.getItem("siknayan_api_token") ||
+            localStorage.getItem("token") ||
+            localStorage.getItem("access_token") ||
+            ""
+        );
+    }
 
-        const classes =
-            loadClasses();
+    async function dashboardApiRequest(path) {
+        const token = getApiToken();
 
-        const instructors =
-            loadInstructors();
+        if (!token) {
+            throw new Error("Your login session is missing. Please sign in again.");
+        }
 
-        const learnerAccounts =
-            loadLearnerAccounts();
+        if (!window.SIKNAYAN_API_ROOT) {
+            throw new Error("The Laravel API is not configured for this page.");
+        }
 
-        const instructorAccounts =
-            loadInstructorAccounts();
+        const response = await fetch(
+            `${window.SIKNAYAN_API_ROOT}${path}`,
+            {
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
 
+        let payload = null;
 
-        const instructorMap =
-            buildInstructorMap(
-                instructors,
-                classes
+        try {
+            payload = await response.json();
+        } catch {
+            payload = null;
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                payload?.message ||
+                `Unable to load dashboard data (HTTP ${response.status}).`
             );
+        }
 
+        if (!payload?.success) {
+            throw new Error(
+                payload?.message || "The Laravel API returned an invalid dashboard response."
+            );
+        }
 
-        renderOverview(
-            learnerState,
-            classes,
-            instructorMap,
-            learnerAccounts,
-            instructorAccounts
-        );
+        return payload;
+    }
 
+    function normalizeLearner(learner) {
+        return {
+            ...learner,
+            modulesAssigned: Number(learner.modules_assigned || 0),
+            is_active: learner.is_active !== false
+        };
+    }
 
-        renderActiveClasses(
-            classes
-        );
+    function normalizeClass(classItem) {
+        return {
+            ...classItem,
+            classCode: classItem.code || "",
+            courseCode: classItem.subject_code || classItem.code || "",
+            courseName: classItem.name || "",
+            instructorId: classItem.instructor_id ?? null,
+            instructorName: classItem.instructor?.name || "Unassigned",
+            learnerIds: Array.isArray(classItem.learners)
+                ? classItem.learners.map(learner => learner.id)
+                : [],
+            status: classItem.is_active === false ? "inactive" : "active"
+        };
+    }
 
+    function setDashboardLoading() {
+        [
+            totalLearners,
+            totalClasses,
+            totalInstructors,
+            totalModuleAssignments,
+            activeLearners,
+            inactiveLearners,
+            completedLearners,
+            averageProgress,
+            queueLearnersWithoutClass,
+            queueAwaitingGrade,
+            queueEmptyClasses
+        ].forEach(element => {
+            if (element) {
+                element.textContent = "...";
+            }
+        });
 
-        renderRecentAccountActivity(
-            learnerState.learners,
-            learnerAccounts,
-            instructorAccounts
-        );
-
-
-        if (
-            typeof refreshIcons ===
-            "function"
-        ) {
-            refreshIcons();
+        if (learnerProgramSummary) {
+            learnerProgramSummary.textContent = "Loading...";
+        }
+        if (classEnrollmentSummary) {
+            classEnrollmentSummary.textContent = "Loading...";
+        }
+        if (instructorAccountSummary) {
+            instructorAccountSummary.textContent = "Loading...";
+        }
+        if (dashboardUpdated) {
+            dashboardUpdated.textContent = "Loading dashboard...";
         }
     }
 
+    function setDashboardUnavailable(message) {
+        [
+            totalLearners,
+            totalClasses,
+            totalInstructors,
+            totalModuleAssignments,
+            activeLearners,
+            inactiveLearners,
+            completedLearners,
+            averageProgress,
+            queueLearnersWithoutClass,
+            queueAwaitingGrade,
+            queueEmptyClasses
+        ].forEach(element => {
+            if (element) {
+                element.textContent = "—";
+            }
+        });
+
+        if (learnerProgramSummary) {
+            learnerProgramSummary.textContent = "Unavailable";
+        }
+        if (classEnrollmentSummary) {
+            classEnrollmentSummary.textContent = "Unavailable";
+        }
+        if (instructorAccountSummary) {
+            instructorAccountSummary.textContent = "Unavailable";
+        }
+
+        const errorMessage =
+            `Dashboard data could not be loaded. ${message}`;
+
+        if (dashboardUpdated) {
+            dashboardUpdated.textContent = "Dashboard unavailable";
+        }
+        if (activeClassesList) {
+            activeClassesList.innerHTML =
+                `<div class="dashboard-empty-state">${escapeHtml(errorMessage)}</div>`;
+        }
+        if (recentAccountActivity) {
+            recentAccountActivity.innerHTML =
+                `<div class="dashboard-empty-state">${escapeHtml(errorMessage)}</div>`;
+        }
+    }
+
+    async function refreshDashboard() {
+        if (dashboardLoadPromise) {
+            return dashboardLoadPromise;
+        }
+
+        setDashboardLoading();
+
+        dashboardLoadPromise = (async () => {
+            try {
+                const [
+                    dashboardPayload,
+                    learnersPayload,
+                    instructorsPayload,
+                    classesPayload
+                ] = await Promise.all([
+                    dashboardApiRequest("/admin/dashboard"),
+                    dashboardApiRequest("/admin/learners"),
+                    dashboardApiRequest("/admin/instructors"),
+                    dashboardApiRequest("/admin/classes")
+                ]);
+
+                const statistics = dashboardPayload.statistics;
+                const learners = Array.isArray(learnersPayload.learners)
+                    ? learnersPayload.learners.map(normalizeLearner)
+                    : null;
+                const instructors = Array.isArray(instructorsPayload.instructors)
+                    ? instructorsPayload.instructors
+                    : null;
+                const classes = Array.isArray(classesPayload.classes)
+                    ? classesPayload.classes.map(normalizeClass)
+                    : null;
+
+                if (
+                    !statistics ||
+                    !Number.isFinite(Number(statistics.learners)) ||
+                    !Number.isFinite(Number(statistics.instructors)) ||
+                    !Number.isFinite(Number(statistics.active_classes)) ||
+                    !Number.isFinite(Number(statistics.awaiting_grade)) ||
+                    !learners ||
+                    !instructors ||
+                    !classes
+                ) {
+                    throw new Error("The Laravel API returned incomplete dashboard data.");
+                }
+
+                statistics.learners = Number(statistics.learners);
+                statistics.instructors = Number(statistics.instructors);
+                statistics.active_classes = Number(statistics.active_classes);
+                statistics.awaiting_grade = Number(statistics.awaiting_grade);
+
+                renderOverview(
+                    statistics,
+                    learners,
+                    classes,
+                    instructors
+                );
+                renderActiveClasses(classes);
+                renderRecentAccountActivity(learners, instructors);
+
+                if (typeof refreshIcons === "function") {
+                    refreshIcons();
+                }
+            } catch (error) {
+                console.error("Dashboard API load failed:", error);
+                setDashboardUnavailable(
+                    error.message || "Please check your connection and sign-in status."
+                );
+            } finally {
+                dashboardLoadPromise = null;
+            }
+        })();
+
+        return dashboardLoadPromise;
+    }
 
     refreshDashboard();
 
-
-    /*
-        Refresh when returning to the tab so
-        Dashboard reflects changes made in
-        other pages.
-    */
-
-    window.addEventListener(
-        "storage",
-        refreshDashboard
-    );
-
-
-    document.addEventListener(
-        "visibilitychange",
-        () => {
-
-            if (
-                document.visibilityState ===
-                "visible"
-            ) {
-
-                refreshDashboard();
-            }
-
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") {
+            refreshDashboard();
         }
-    );
-
+    });
 })();

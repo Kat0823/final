@@ -35,6 +35,18 @@ class PasswordController extends Controller
         return $this->completeSetup($request);
     }
 
+    public function setupAcademicAdmin(Request $request): JsonResponse
+    {
+        if ($request->user()->role !== 'academic_admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'This endpoint is for Academic Administrators only.',
+            ], 403);
+        }
+
+        return $this->completeSetup($request);
+    }
+
     // Shared password setup logic
     private function completeSetup(Request $request): JsonResponse
     {
@@ -71,6 +83,50 @@ class PasswordController extends Controller
             'success' => true,
             'message' => 'Password setup completed successfully.',
             'token' => $newToken,
+        ]);
+    }
+
+    // Change password for the authenticated Academic Admin
+    public function changePassword(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if (!$user || $user->role !== 'academic_admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only Academic Admins can use this endpoint.',
+            ], 403);
+        }
+
+        $validated = $request->validate([
+            'current_password' => ['required', 'string'],
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                'different:current_password',
+            ],
+        ]);
+
+        if (!Hash::check($validated['current_password'], $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your current password is incorrect.',
+                'errors' => [
+                    'current_password' => [
+                        'Your current password is incorrect.',
+                    ],
+                ],
+            ], 422);
+        }
+
+        $user->password = Hash::make($validated['password']);
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password changed successfully.',
         ]);
     }
 }

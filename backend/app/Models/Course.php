@@ -13,13 +13,14 @@ class Course extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'code',
-        'program',
-        'description',
-        'instructor_id',
-        'is_active',
-    ];
+    'name',
+    'code',
+    'subject_code',
+    'program',
+    'description',
+    'instructor_id',
+    'is_active',
+];
 
     public function instructor(): BelongsTo
     {

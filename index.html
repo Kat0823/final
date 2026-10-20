@@ -448,12 +448,9 @@
 
     </div>
 
+    <script src="api-config.js"></script>
     <script>
-        /*
-         * Laravel API address.
-         * Make sure your backend is running on port 8000.
-         */
-        const API_BASE_URL = "http://localhost:8000";
+        const API_BASE_URL = window.SIKNAYAN_API_ORIGIN;
 
         // Form elements
         const loginForm = document.getElementById("loginForm");
@@ -499,15 +496,16 @@
 
         // Redirect according to account role
         function redirectByRole(role) {
-            const destinations = {
-                learner: "student/classes.html",
-                instructor: "teacher/dashboard.html",
-                admin: "Admin/dashboard.html",
-                administrator: "Admin/dashboard.html",
-                director: "director/dashboard.html"
-            };
-
-            return destinations[role] || null;
+       const destinations = {
+    learner: "student/classes.html",
+    instructor: "teacher/dashboard.html",
+    admin: "Admin/dashboard.html",
+    administrator: "Admin/dashboard.html",
+    director: "director/dashboard.html",
+    academic_admin: "academic-admin/index.html",
+    system_admin: "system-admin/dashboard.html"
+};
+         return destinations[role] || null;
         }
 
         // Login form
@@ -573,26 +571,36 @@
                     );
                 }
 
-                // Store the token and user for this browser session.
-                // Never store the user's password.
-                sessionStorage.setItem("authToken", data.token);
+                if (role === "system_admin" && data.first_login === true) {
+                    throw new Error(
+                        "System Admin accounts must be provisioned with password setup complete."
+                    );
+                }
 
-                sessionStorage.setItem(
-                    "user",
-                    JSON.stringify(data.user)
-                );
+              // Store the token and user for this browser session.
+// Never store the user's password.
+        sessionStorage.setItem("authToken", data.token);
+
+// Also save the token using the key expected by Classes.
+        localStorage.setItem("siknayan_api_token", data.token);
+
+sessionStorage.setItem(
+    "user",
+    JSON.stringify(data.user)
+);
 
                 // First-time password setup
                 if (data.first_login === true) {
                     sessionStorage.setItem("firstLogin", "true");
 
-                    const setupPages = {
-                        learner: "student/setup.html",
-                        instructor: "teacher/setup.html",
-                        admin: "Admin/setup.html",
-                        administrator: "Admin/setup.html",
-                        director: "director/setup.html"
-                    };
+  const setupPages = {
+    learner: "student/setup.html",
+    instructor: "teacher/setup.html",
+    admin: "Admin/setup.html",
+    administrator: "Admin/setup.html",
+    director: "director/setup.html",
+    academic_admin: "academic-admin/setup.html"
+};
 
                     const setupDestination = setupPages[role];
 
@@ -641,4 +649,3 @@
 
 </body>
 </html>
-

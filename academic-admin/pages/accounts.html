@@ -22,7 +22,7 @@
         <div class="brand">
 
             <img
-                src="../assets/images/mpsu_logo.png"
+                src="../assets/images/logo.png"
                 alt="MPSU Logo"
                 class="brand-logo"
             >
@@ -47,25 +47,26 @@
             </button>
 
 
-            <div class="profile">
+               <div
+    class="profile"
+    id="profileHeaderButton"
+    role="button"
+    tabindex="0"
+    aria-label="Open profile settings"
+>
+    <img
+        alt="Profile picture"
+        class="profile-avatar"
+        style="visibility: hidden"
+    >
 
-                <img
-                    src="../assets/images/macross.jpg"
-                    alt="Macross Arsel"
-                    class="profile-avatar"
-                >
+    <div class="profile-info">
+        <strong id="topbarAdminName"></strong>
+        <span>Administrator</span>
+    </div>
 
-                <div class="profile-info">
-                    <strong>Macross Arsel</strong>
-                    <span>Administrator</span>
-                </div>
-
-                <i
-                    data-lucide="chevron-down"
-                    class="profile-chevron"
-                ></i>
-
-            </div>
+    <i data-lucide="chevron-down" class="profile-chevron"></i>
+</div>
 
         </div>
 
@@ -101,20 +102,23 @@
             </div>
 
 
-            <!-- Profile -->
-            <div class="sidebar-profile">
+            <!-- Sidebar Profile -->
+<div
+    class="sidebar-profile"
+    id="sidebarAdminProfile"
+    role="button"
+    tabindex="0"
+    aria-label="Open profile settings"
+>
+    <img
+        alt="Profile picture"
+        class="sidebar-avatar"
+        style="visibility: hidden"
+    >
 
-                <img
-                    src="../assets/images/macross.jpg"
-                    alt="Macross Arsel"
-                    class="sidebar-avatar"
-                >
-
-                <span class="sidebar-profile-name">
-                    Macross
-                </span>
-
-            </div>
+    <span class="sidebar-profile-name" id="sidebarAdminName">
+    </span>
+</div>
 
 
             <!-- Navigation -->
@@ -169,14 +173,16 @@
 
 
             <!-- Logout -->
-            <div class="sidebar-bottom">
-
-                <a href="#" class="nav-item logout">
-                    <i data-lucide="log-out"></i>
-                    <span class="nav-label">Logout</span>
-                </a>
-
-            </div>
+ <div class="sidebar-bottom">
+    <a
+        href="#"
+        class="nav-item logout"
+        id="academicAdminLogoutBtn"
+    >
+        <i data-lucide="log-out"></i>
+        <span class="nav-label">Logout</span>
+    </a>
+</div>
 
         </aside>
 
@@ -288,6 +294,7 @@
     </div>
 
 
+    <script src="../../api-config.js"></script>
     <script src="../js/shared.js"></script>
     <script src="../js/accounts.js"></script>
 

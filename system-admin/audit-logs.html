@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Audit Logs | Siknayan
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="css/system-admin.css"
+    >
+
+    <script
+        src="https://unpkg.com/lucide@latest"
+    ></script>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         TOPBAR
+    ====================================================== -->
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <img
+                src="../images/logo.png"
+                alt="MPSU Logo"
+                class="brand-logo"
+            >
+
+            <div class="brand-text">
+
+                <h1>
+                    MPSU ETEEAP LMS
+                </h1>
+
+                <p>
+                    Mountain Province State University
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="topbar-right">
+
+            <button
+                class="icon-button notification-button"
+                type="button"
+                title="Notifications"
+                aria-label="Notifications"
+            >
+
+                <i data-lucide="bell"></i>
+
+                <span class="notification-dot"></span>
+
+            </button>
+
+
+            <a class="profile" href="profile.html" aria-label="Open My Profile" title="My Profile">
+
+                <img
+                    src="../images/macross.jpg"
+                    alt="Arcana"
+                    class="profile-avatar"
+                >
+
+                <div class="profile-info">
+
+                    <strong>
+                        Arcana
+                    </strong>
+
+                    <span>
+                        Administrator
+                    </span>
+
+                </div>
+
+                <i
+                    data-lucide="chevron-right"
+                    class="profile-chevron"
+                ></i>
+
+            </a>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         APPLICATION LAYOUT
+    ====================================================== -->
+
+    <div class="app-layout">
+
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
+
+        <aside
+            class="sidebar"
+            id="sidebar"
+        >
+
+            <div class="sidebar-top">
+
+                <span class="sidebar-view-text">
+                    View
+                </span>
+
+                <button
+                    class="sidebar-toggle"
+                    id="sidebarToggle"
+                    type="button"
+                    title="Toggle Sidebar"
+                    aria-label="Toggle Sidebar"
+                >
+
+                    <i data-lucide="panel-left"></i>
+
+                </button>
+
+            </div>
+
+
+
+            <!-- Sidebar Profile -->
+
+            <div class="sidebar-profile">
+
+                <img
+                    src="../images/macross.jpg"
+                    alt="Arcana"
+                    class="sidebar-avatar"
+                >
+
+                <div class="sidebar-profile-info">
+
+                    <span class="sidebar-profile-name">
+                        Arcana
+                    </span>
+
+                    <span class="sidebar-profile-role">
+                        Administrator
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Navigation -->
+
+            <nav class="sidebar-nav">
+
+
+                <!-- Dashboard -->
+
+                <a
+                    href="dashboard.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="layout-dashboard"></i>
+
+                    <span class="nav-label">
+                        Dashboard
+                    </span>
+
+                </a>
+
+
+                <!-- Academic Administrators -->
+
+                <a
+                    href="administrators.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="users"></i>
+
+                    <span class="nav-label">
+                        Academic Administrators
+                    </span>
+
+                </a>
+
+
+                <!-- Data Backup -->
+
+                <a
+                    href="backup.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="database-backup"></i>
+
+                    <span class="nav-label">
+                        Data Backup
+                    </span>
+
+                </a>
+
+
+                <!-- Audit Logs -->
+
+                <a
+                    href="audit-logs.html"
+                    class="nav-item active"
+                >
+
+                    <i data-lucide="file-clock"></i>
+
+                    <span class="nav-label">
+                        Audit Logs
+                    </span>
+
+                </a>
+
+            
+
+                <!-- My Profile -->
+
+                <a
+                    href="profile.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="user-round"></i>
+
+                    <span class="nav-label">
+                        My Profile
+                    </span>
+
+                </a>
+</nav>
+
+
+
+            <!-- Logout -->
+
+            <div class="sidebar-bottom">
+
+                <a
+                    href="../index.html"
+                    class="nav-item"
+                    data-system-admin-logout
+                >
+
+                    <i data-lucide="log-out"></i>
+
+                    <span class="nav-label">
+                        Logout
+                    </span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+
+
+        <!-- =================================================
+             MAIN CONTENT
+        ================================================== -->
+
+        <main class="main-content">
+
+
+            <!-- =================================================
+                 PAGE HEADER
+            ================================================== -->
+
+            <section class="page-header">
+
+                <div>
+
+                    <h2>
+                        Audit Logs
+                    </h2>
+
+                    <p>
+                        Review significant system activity and administrative actions.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 FILTERS
+            ================================================== -->
+
+            <section class="panel audit-filter-panel">
+
+                <div class="audit-panel-header">
+
+                    <div>
+
+                        <h3>
+                            Filter Audit Logs
+                        </h3>
+
+                        <p>
+                            Narrow the audit trail by date, actor, action, or keyword.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="audit-filter-body">
+
+
+                    <!-- Date From -->
+
+                    <div class="audit-filter-field">
+
+                        <label
+                            for="auditDateFrom"
+                        >
+                            Date From
+                        </label>
+
+                        <input
+                            type="date"
+                            id="auditDateFrom"
+                        >
+
+                    </div>
+
+
+
+                    <!-- Date To -->
+
+                    <div class="audit-filter-field">
+
+                        <label
+                            for="auditDateTo"
+                        >
+                            Date To
+                        </label>
+
+                        <input
+                            type="date"
+                            id="auditDateTo"
+                        >
+
+                    </div>
+
+
+
+                    <!-- Actor -->
+
+                    <div class="audit-filter-field">
+
+                        <label
+                            for="auditAdministrator"
+                        >
+                            Actor
+                        </label>
+
+                        <select
+                            id="auditAdministrator"
+                        >
+
+                            <option value="">
+                                All Actors
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- Action -->
+
+                    <div class="audit-filter-field">
+
+                        <label
+                            for="auditAction"
+                        >
+                            Action
+                        </label>
+
+                        <select
+                            id="auditAction"
+                        >
+
+                            <option value="">
+                                All Actions
+                            </option>
+
+                            <option value="login">
+                                Login
+                            </option>
+
+                            <option value="logout">
+                                Logout
+                            </option>
+
+                            <option value="create">
+                                Create
+                            </option>
+
+                            <option value="update">
+                                Update
+                            </option>
+
+                            <option value="delete">
+                                Delete
+                            </option>
+
+                            <option value="backup">
+                                Backup
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- Search -->
+
+                    <div class="audit-filter-field audit-search-field">
+
+                        <label
+                            for="auditSearch"
+                        >
+                            Search
+                        </label>
+
+                        <div class="audit-search-wrapper">
+
+                            <i data-lucide="search"></i>
+
+                            <input
+                                type="search"
+                                id="auditSearch"
+                                placeholder="Search actor, role, module, or details..."
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Filter Actions -->
+
+                    <div class="audit-filter-actions">
+
+                        <button
+                            type="button"
+                            class="secondary-button"
+                            id="clearAuditFilters"
+                        >
+
+                            <i data-lucide="rotate-ccw"></i>
+
+                            <span>
+                                Clear
+                            </span>
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="primary-button"
+                            id="applyAuditFilters"
+                        >
+
+                            <i data-lucide="filter"></i>
+
+                            <span>
+                                Apply Filters
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 AUDIT LOG TABLE
+            ================================================== -->
+
+            <section class="panel audit-log-panel">
+
+
+                <div class="audit-log-header">
+
+                    <div>
+
+                        <span class="audit-section-label">
+                            Activity
+                        </span>
+
+                        <h3>
+                            System Audit Log
+                        </h3>
+
+                        <p>
+                            Centralized record of significant actions performed within the LMS.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        id="exportAuditLog"
+                    >
+
+                        <i data-lucide="download"></i>
+
+                        <span>
+                            Export Log
+                        </span>
+
+                    </button>
+
+                </div>
+
+
+
+                <div class="audit-table-wrapper">
+
+                    <table class="audit-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Date &amp; Time
+                                </th>
+
+                                <th>
+                                    Actor
+                                </th>
+
+                                <th>
+                                    Role
+                                </th>
+
+                                <th>
+                                    Action
+                                </th>
+
+                                <th>
+                                    Module
+                                </th>
+
+                                <th>
+                                    Details
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="auditLogBody">
+
+                            <tr>
+
+                                <td
+                                    colspan="6"
+                                    class="audit-empty-state"
+                                >
+
+                                    <div class="audit-empty-content">
+
+                                        <i
+                                            data-lucide="file-clock"
+                                        ></i>
+
+                                        <strong>
+                                            No audit records yet
+                                        </strong>
+
+                                        <span>
+                                            System activity will appear here once audit logging is connected to the system.
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     TABLE FOOTER
+                ================================================== -->
+
+                <div class="audit-table-footer">
+
+                    <span id="auditRecordCount">
+                        Showing 0 of 0 records
+                    </span>
+
+                    <div class="audit-pagination"
+                        aria-label="Audit log pagination">
+
+                        <label for="auditPageSize">Rows per page</label>
+
+                        <select id="auditPageSize" class="audit-page-size">
+                            <option value="10" selected>10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+
+                        <button
+                            type="button"
+                            class="audit-page-button"
+                            id="auditPreviousPage"
+                            aria-label="Previous page"
+                            disabled
+                        >
+                            <i data-lucide="chevron-left"></i>
+                        </button>
+
+                        <span id="auditPageIndicator"
+                            class="audit-page-indicator">
+                            Page 1 of 1
+                        </span>
+
+                        <button
+                            type="button"
+                            class="audit-page-button"
+                            id="auditNextPage"
+                            aria-label="Next page"
+                            disabled
+                        >
+                            <i data-lucide="chevron-right"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+        </main>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script src="../api-config.js"></script>
+    <script src="js/shared.js"></script>
+
+    <script src="js/audit-logs.js"></script>
+
+
+</body>
+
+</html>

@@ -1200,6 +1200,7 @@
          JAVASCRIPT
     ========================= -->
 
+    <script src="../api-config.js"></script>
     <script>
 
 
@@ -1207,17 +1208,8 @@
            API SETTINGS
         ========================= */
 
-        /*
-            Laravel API
-
-            If localhost:8000 does not work
-            from your browser in Codespaces,
-            replace this with your forwarded
-            port 8000 URL.
-        */
-
         const API_BASE_URL =
-            "http://localhost:8000";
+            window.SIKNAYAN_API_ORIGIN;
 
 
         /* =========================

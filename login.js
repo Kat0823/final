@@ -46,6 +46,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const data = await response.json();
 
+            console.log("Login status:", response.status);
+            console.log("Login successful:", response.ok);
+            console.log("Response fields:", Object.keys(data));
+            console.log("Token returned:", !!data.token);
             // Login failed
             if (!response.ok || !data.success) {
                 alert(data.message || "Login failed.");
@@ -57,6 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
             sessionStorage.setItem("studentId", studentId);
             sessionStorage.setItem("userRole", data.user.role);
             sessionStorage.setItem("userName", data.user.name);
+            sessionStorage.setItem("user", JSON.stringify(data.user));
 
             // Save Laravel token
             sessionStorage.setItem("authToken", data.token);

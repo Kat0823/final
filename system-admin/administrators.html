@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Siknayan | Academic Administrators</title>
+
+    <link
+        rel="stylesheet"
+        href="css/system-admin.css"
+    >
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         TOPBAR
+    ====================================================== -->
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <img
+                src="../images/logo.png"
+                alt="MPSU Logo"
+                class="brand-logo"
+            >
+
+            <div class="brand-text">
+
+                <h1>
+                    MPSU ETEEAP LMS
+                </h1>
+
+                <p>
+                    Mountain Province State University
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="topbar-right">
+
+            <button
+                class="icon-button notification-button"
+                type="button"
+                aria-label="Notifications"
+            >
+
+                <i data-lucide="bell"></i>
+
+                <span class="notification-dot"></span>
+
+            </button>
+
+
+            <a class="profile" href="profile.html" aria-label="Open My Profile" title="My Profile">
+
+                <img
+                    src="../images/macross.jpg"
+                    alt="Arcana"
+                    class="profile-avatar"
+                >
+
+                <div class="profile-info">
+
+                    <strong>
+                        Arcana
+                    </strong>
+
+                    <span>
+                        Administrator
+                    </span>
+
+                </div>
+
+                <i
+                    data-lucide="chevron-right"
+                    class="profile-chevron"
+                ></i>
+
+            </a>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         APPLICATION LAYOUT
+    ====================================================== -->
+
+    <div class="app-layout">
+
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
+
+        <aside
+            class="sidebar"
+            id="sidebar"
+        >
+
+            <div class="sidebar-top">
+
+                <span class="sidebar-view-text">
+                    View
+                </span>
+
+                <button
+                    class="sidebar-toggle"
+                    id="sidebarToggle"
+                    type="button"
+                    aria-label="Toggle sidebar"
+                >
+
+                    <i data-lucide="panel-left"></i>
+
+                </button>
+
+            </div>
+
+
+
+            <div class="sidebar-profile">
+
+                <img
+                    src="../images/macross.jpg"
+                    alt="Arcana"
+                    class="sidebar-avatar"
+                >
+
+                <div class="sidebar-profile-info">
+
+                    <span class="sidebar-profile-name">
+                        Arcana
+                    </span>
+
+                    <span class="sidebar-profile-role">
+                        Administrator
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <nav class="sidebar-nav">
+
+
+                <!-- Dashboard -->
+
+                <a
+                    href="dashboard.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="layout-dashboard"></i>
+
+                    <span class="nav-label">
+                        Dashboard
+                    </span>
+
+                </a>
+
+
+
+                <!-- Academic Administrators -->
+
+                <a
+                    href="administrators.html"
+                    class="nav-item active"
+                >
+
+                    <i data-lucide="users"></i>
+
+                    <span class="nav-label">
+                        Academic Administrators
+                    </span>
+
+                </a>
+
+
+
+                <!-- Data Backup -->
+
+                <a
+                    href="backup.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="database-backup"></i>
+
+                    <span class="nav-label">
+                        Data Backup
+                    </span>
+
+                </a>
+
+
+
+                <!-- Audit Logs -->
+
+                <a
+                    href="audit-logs.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="file-clock"></i>
+
+                    <span class="nav-label">
+                        Audit Logs
+                    </span>
+
+                </a>
+
+
+            
+
+                <!-- My Profile -->
+
+                <a
+                    href="profile.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="user-round"></i>
+
+                    <span class="nav-label">
+                        My Profile
+                    </span>
+
+                </a>
+</nav>
+
+
+
+            <!-- Logout -->
+
+            <div class="sidebar-bottom">
+
+                <a
+                    href="../index.html"
+                    class="nav-item"
+                    data-system-admin-logout
+                >
+
+                    <i data-lucide="log-out"></i>
+
+                    <span class="nav-label">
+                        Logout
+                    </span>
+
+                </a>
+
+            </div>
+
+
+        </aside>
+
+
+
+        <!-- =================================================
+             MAIN CONTENT
+        ================================================== -->
+
+        <main class="main-content">
+
+
+            <!-- =================================================
+                 PAGE HEADER
+            ================================================== -->
+
+            <section class="page-header">
+
+                <div>
+
+                    <h2>
+                        Academic Administrators
+                    </h2>
+
+                    <p>
+                        Manage academic administrator accounts and access.
+                    </p>
+
+                </div>
+
+
+                <div class="page-header-actions">
+
+                    <button
+                        type="button"
+                        class="primary-button"
+                        id="createAdministratorButton"
+                    >
+
+                        <i data-lucide="plus"></i>
+
+                        <span>
+                            Create Administrator
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 ADMINISTRATOR MANAGEMENT
+            ================================================== -->
+
+            <section class="administrators-panel">
+
+
+                <!-- =================================================
+                     TOOLBAR
+                ================================================== -->
+
+                <div class="administrators-toolbar">
+
+                    <div class="search-box">
+
+                        <i data-lucide="search"></i>
+
+                        <input
+                            type="search"
+                            id="administratorSearch"
+                            placeholder="Search administrators..."
+                            aria-label="Search administrators"
+                        >
+
+                    </div>
+
+
+                    <div class="administrator-count">
+                        Showing 0 administrators
+                    </div>
+
+                </div>
+
+                <p
+                    class="administrator-status-message"
+                    id="administratorStatusMessage"
+                    role="status"
+                    aria-live="polite"
+                    hidden
+                ></p>
+
+
+
+                <!-- =================================================
+                     TABLE
+                ================================================== -->
+
+                <div class="administrators-table-wrapper">
+
+                    <table class="administrators-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Name
+                                </th>
+
+                                <th>
+                                    School ID
+                                </th>
+
+                                <th>
+                                    Email
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Actions
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="administratorsTableBody">
+
+                            <tr class="empty-row">
+
+                                <td colspan="5">
+
+                                    <div class="empty-state">
+
+                                        <i data-lucide="users"></i>
+
+                                        <strong>
+                                            No academic administrators
+                                        </strong>
+
+                                        <span>
+                                            Create an administrator account to get started.
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+        </main>
+
+
+    </div>
+
+
+
+    <!-- =====================================================
+         CREATE / EDIT ADMINISTRATOR MODAL
+    ====================================================== -->
+
+    <div
+        class="modal-overlay"
+        id="administratorModalOverlay"
+        hidden
+    >
+
+        <div
+            class="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="administratorModalTitle"
+        >
+
+
+            <div class="modal-header">
+
+                <div>
+
+                    <h2 id="administratorModalTitle">
+                        Create Academic Administrator
+                    </h2>
+
+                    <p id="administratorModalDescription">
+                        Enter the account details below.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="icon-button modal-close"
+                    id="closeAdministratorModal"
+                    aria-label="Close"
+                >
+
+                    <i data-lucide="x"></i>
+
+                </button>
+
+            </div>
+
+
+
+            <form id="administratorForm">
+
+
+                <div class="modal-body">
+
+
+                    <input
+                        type="hidden"
+                        id="administratorId"
+                    >
+
+
+
+                    <!-- NAME -->
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label for="administratorSchoolId">
+                                School ID
+                            </label>
+
+                            <input
+                                type="text"
+                                id="administratorSchoolId"
+                                placeholder="Enter School ID"
+                                autocomplete="username"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-row">
+
+
+                        <div class="form-group">
+
+                            <label for="administratorFirstName">
+                                First Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="administratorFirstName"
+                                placeholder="Enter first name"
+                                autocomplete="given-name"
+                                required
+                            >
+
+                        </div>
+
+
+
+                        <div class="form-group">
+
+                            <label for="administratorLastName">
+                                Last Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="administratorLastName"
+                                placeholder="Enter last name"
+                                autocomplete="family-name"
+                                required
+                            >
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <!-- EMAIL -->
+
+                    <div class="form-group">
+
+                        <label for="administratorEmail">
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="administratorEmail"
+                            placeholder="Enter email address"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- PROFILE PHOTO -->
+
+                    <div class="form-group">
+
+                        <label for="administratorPhoto">
+
+                            Profile Photo
+
+                            <span
+                                style="
+                                    color: var(--muted);
+                                    font-size: 11px;
+                                    font-weight: 400;
+                                "
+                            >
+                                (Optional)
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="file"
+                            id="administratorPhoto"
+                            accept="image/jpeg, image/png"
+                        >
+
+                        <span class="form-hint">
+                            Optional. JPG or PNG image.
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- PASSWORD -->
+
+                    <div class="form-group">
+
+                        <label for="administratorPassword">
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="administratorPassword"
+                            placeholder="Enter password"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                        <span
+                            class="form-hint"
+                            id="passwordHint"
+                        >
+                            Use a secure password.
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- CONFIRM PASSWORD -->
+
+                    <div class="form-group">
+
+                        <label for="administratorConfirmPassword">
+                            Confirm Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="administratorConfirmPassword"
+                            placeholder="Confirm password"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- STATUS -->
+
+                    <div class="form-group">
+
+                        <label for="administratorStatus">
+                            Status
+                        </label>
+
+                        <select id="administratorStatus">
+
+                            <option value="active">
+                                Active
+                            </option>
+
+                            <option value="inactive">
+                                Inactive
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        id="cancelAdministratorButton"
+                    >
+                        Cancel
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="primary-button"
+                        id="saveAdministratorButton"
+                    >
+
+                        <i data-lucide="user-plus"></i>
+
+                        <span id="saveAdministratorButtonText">
+                            Create Account
+                        </span>
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         VIEW ADMINISTRATOR MODAL
+    ====================================================== -->
+
+    <div
+        class="modal-overlay"
+        id="viewAdministratorModalOverlay"
+        hidden
+    >
+
+        <div
+            class="modal view-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="viewAdministratorModalTitle"
+        >
+
+
+            <div class="modal-header">
+
+                <div>
+
+                    <h2 id="viewAdministratorModalTitle">
+                        Administrator Details
+                    </h2>
+
+                    <p>
+                        Account information
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="icon-button modal-close"
+                    id="closeViewAdministratorModal"
+                    aria-label="Close"
+                >
+
+                    <i data-lucide="x"></i>
+
+                </button>
+
+            </div>
+
+
+
+            <div class="modal-body">
+
+
+                <!-- ADMINISTRATOR PROFILE -->
+
+                <div class="view-profile">
+
+
+                    <div
+                        class="view-profile-avatar"
+                        id="viewAdministratorAvatar"
+                    >
+
+                        <span id="viewAdministratorInitials">
+                            AM
+                        </span>
+
+                        <img
+                            id="viewAdministratorPhoto"
+                            src=""
+                            alt=""
+                            hidden
+                        >
+
+                    </div>
+
+
+
+                    <div class="view-profile-info">
+
+                        <strong id="viewAdministratorName">
+                            —
+                        </strong>
+
+                        <span id="viewAdministratorStatus">
+                            —
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- ACCOUNT DETAILS -->
+
+                <div class="form-row">
+
+
+                    <div class="form-group">
+
+                        <label>
+                            School ID
+                        </label>
+
+                        <div
+                            class="view-detail-value"
+                            id="viewAdministratorUsername"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Email Address
+                        </label>
+
+                        <div
+                            class="view-detail-value"
+                            id="viewAdministratorEmail"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="form-row">
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Created
+                        </label>
+
+                        <div
+                            class="view-detail-value"
+                            id="viewAdministratorCreated"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Last Updated
+                        </label>
+
+                        <div
+                            class="view-detail-value"
+                            id="viewAdministratorUpdated"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="secondary-button"
+                    id="closeViewAdministratorButton"
+                >
+                    Close
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         DELETE ADMINISTRATOR CONFIRMATION MODAL
+    ====================================================== -->
+
+    <div
+        class="modal-overlay"
+        id="deleteAdministratorModalOverlay"
+        hidden
+    >
+
+        <div
+            class="modal delete-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="deleteAdministratorModalTitle"
+        >
+
+
+            <div class="modal-header">
+
+                <div>
+
+                    <h2 id="deleteAdministratorModalTitle">
+                        Delete Academic Administrator
+                    </h2>
+
+                    <p>
+                        This action cannot be undone.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="icon-button modal-close"
+                    id="closeDeleteAdministratorModal"
+                    aria-label="Close"
+                >
+
+                    <i data-lucide="x"></i>
+
+                </button>
+
+            </div>
+
+
+
+            <div class="modal-body">
+
+
+                <div class="delete-confirmation">
+
+
+                    <div class="delete-confirmation-icon">
+
+                        <i data-lucide="triangle-alert"></i>
+
+                    </div>
+
+
+
+                    <div class="delete-confirmation-content">
+
+                        <strong>
+                            Are you sure you want to delete this account?
+                        </strong>
+
+                        <p>
+                            You are about to permanently remove
+                            the following academic administrator:
+                        </p>
+
+
+                        <div class="delete-administrator-summary">
+
+                            <strong
+                                id="deleteAdministratorName"
+                            >
+                                —
+                            </strong>
+
+                            <span
+                                id="deleteAdministratorEmail"
+                            >
+                                —
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="secondary-button"
+                    id="cancelDeleteAdministratorButton"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="button"
+                    class="danger-button"
+                    id="confirmDeleteAdministratorButton"
+                >
+
+                    <i data-lucide="trash-2"></i>
+
+                    <span>
+                        Delete Administrator
+                    </span>
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script src="../api-config.js"></script>
+    <script src="js/shared.js"></script>
+
+    <script src="js/administrators.js"></script>
+
+
+</body>
+
+</html>

@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\TransientToken;
 
 class AuthController extends Controller
 {
@@ -30,6 +32,13 @@ class AuthController extends Controller
             ], 401);
         }
 
+        if (!$user->is_active) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This account is deactivated. Please contact your administrator.',
+            ], 403);
+        }
+
         // Create an authentication token
         $token = $user->createToken('siknayan-login')->plainTextToken;
 
@@ -51,5 +60,25 @@ class AuthController extends Controller
             ],
         ]);
     }
-}
 
+    public function logout(Request $request): JsonResponse
+    {
+        $currentAccessToken = $request->user()->currentAccessToken();
+
+        if ($currentAccessToken instanceof TransientToken) {
+            Auth::guard('web')->logout();
+
+            if ($request->hasSession()) {
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+            }
+        } else {
+            $currentAccessToken?->delete();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Logged out successfully.',
+        ]);
+    }
+}

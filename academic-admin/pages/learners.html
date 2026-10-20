@@ -20,7 +20,7 @@
 
         <div class="brand">
             <img
-                src="../assets/images/mpsu_logo.png"
+                src="../assets/images/logo.png"
                 alt="MPSU Logo"
                 class="brand-logo"
             >
@@ -38,17 +38,20 @@
                 <span class="notification-dot"></span>
             </button>
 
-            <div class="profile">
-                <img
-                    src="../assets/images/macross.jpg"
-                    alt="Macross Arsel"
-                    class="profile-avatar"
-                >
+            
+<div class="profile">
+    <img
+        alt="Academic Admin profile picture"
+        class="profile-avatar"
+        style="visibility: hidden"
+    >
 
-                <div class="profile-info">
-                    <strong>Macross Arsel</strong>
-                    <span>Administrator</span>
-                </div>
+    <div class="profile-info">
+        <strong id="topbarAdminName"></strong>
+        <span>Administrator</span>
+    </div>
+</div>
+
 
                 <i
                     data-lucide="chevron-down"
@@ -88,20 +91,24 @@
             </div>
 
 
-            <!-- Profile -->
-            <div class="sidebar-profile">
 
-                <img
-                    src="../assets/images/macross.jpg"
-                    alt="Macross Arsel"
-                    class="sidebar-avatar"
-                >
+<!-- Sidebar Profile -->
+<div
+    class="sidebar-profile"
+    id="sidebarAdminProfile"
+    role="button"
+    tabindex="0"
+    aria-label="Open profile settings"
+>
+    <img
+        alt="Academic Admin profile picture"
+        class="sidebar-avatar"
+        style="visibility: hidden"
+    >
 
-                <span class="sidebar-profile-name">
-                    Macross
-                </span>
-
-            </div>
+    <span class="sidebar-profile-name" id="sidebarAdminName">
+    </span>
+</div>
 
 
             <!-- Navigation -->
@@ -146,14 +153,16 @@
 
 
             <!-- Logout -->
-            <div class="sidebar-bottom">
-
-                <a href="#" class="nav-item logout">
-                    <i data-lucide="log-out"></i>
-                    <span class="nav-label">Logout</span>
-                </a>
-
-            </div>
+           <div class="sidebar-bottom">
+    <a
+        href="#"
+        class="nav-item logout"
+        id="academicAdminLogoutBtn"
+    >
+        <i data-lucide="log-out"></i>
+        <span class="nav-label">Logout</span>
+    </a>
+</div>
 
         </aside>
 
@@ -273,6 +282,7 @@
     </div>
 
 
+    <script src="../../api-config.js"></script>
     <script src="../js/shared.js"></script>
     <script src="../js/program-data.js"></script>
     <script src="../js/learners.js"></script>

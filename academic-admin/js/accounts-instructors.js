@@ -1,4 +1,4 @@
-/* =========================================================
+﻿/* =========================================================
    SIKNAYAN - INSTRUCTOR ACCOUNTS
    ---------------------------------------------------------
    Instructor-centered account management.
@@ -8,7 +8,8 @@
    access has been created.
 ========================================================= */
 
-(function initInstructorAccountsPage() {
+(
+    function initInstructorAccountsPage() {
 
     const page =
         document.querySelector(
@@ -36,7 +37,7 @@
 
 
 const INSTRUCTOR_API_BASE_URL =
-    "http://127.0.0.1:8000/api";
+    window.SIKNAYAN_API_ROOT;
 
 const INSTRUCTOR_API_TOKEN_KEY =
     "siknayan_api_token";
@@ -44,58 +45,63 @@ const INSTRUCTOR_API_TOKEN_KEY =
 function getInstructorApiToken() {
     return (
         window.SIKNAYAN_API_TOKEN ||
-        localStorage.getItem(INSTRUCTOR_API_TOKEN_KEY) ||
+        sessionStorage.getItem("authToken") ||
+        sessionStorage.getItem("token") ||
+        localStorage.getItem("siknayan_api_token") ||
         localStorage.getItem("token") ||
         localStorage.getItem("access_token") ||
         ""
     );
 }
 
-async function instructorApiRequest(
-    path,
-    options = {}
-) {
-    const token =
-        getInstructorApiToken();
+async function instructorApiRequest(path, options = {}) {
+    const token = getInstructorApiToken();
 
     if (!token) {
         throw new Error(
-            "No API token found. Please save a fresh Laravel token as siknayan_api_token."
+            "No API token found. Please log in again."
         );
     }
 
-    const response =
-        await fetch(
-            `${INSTRUCTOR_API_BASE_URL}${path}`,
-            {
-                ...options,
+    const headers = {
+        Accept: "application/json",
+        ...(options.headers || {}),
+        Authorization: `Bearer ${token}`
+    };
 
-                headers: {
-                    Accept:
-                        "application/json",
+    if (options.body instanceof FormData) {
+        delete headers["Content-Type"];
+    } else {
+        headers["Content-Type"] = "application/json";
+    }
 
-                    "Content-Type":
-                        "application/json",
-
-                    ...(options.headers || {}),
-
-                    Authorization:
-                        `Bearer ${token}`
-                }
-            }
-        );
+    const response = await fetch(
+        `${INSTRUCTOR_API_BASE_URL}${path}`,
+        {
+            ...options,
+            headers
+        }
+    );
 
     let payload = null;
 
     try {
-        payload =
-            await response.json();
+        payload = await response.json();
     } catch {
         payload = null;
     }
 
     if (!response.ok) {
+        const validationErrors = Array.isArray(payload?.errors)
+            ? payload.errors.map(item =>
+                `Row ${item.row ?? "?"}: ${item.message || "Invalid data."}`
+            ).join(" ")
+            : payload?.errors
+                ? Object.values(payload.errors).flat().join(" ")
+                : "";
+
         throw new Error(
+            validationErrors ||
             payload?.message ||
             `API request failed (${response.status}).`
         );
@@ -132,7 +138,21 @@ async function instructorApiRequest(
             "addInstructorAccountBtn"
         );
 
+const importInstructorsExcelBtn =
+    document.getElementById("importInstructorsExcelBtn");
 
+
+    const instructorsExcelFile =
+    document.getElementById("instructorsExcelFile");
+
+const downloadInstructorCredentialsBtn =
+    document.getElementById("downloadInstructorCredentialsBtn");
+
+const downloadInstructorCredentialsPdfBtn =
+    document.getElementById("downloadInstructorCredentialsPdfBtn");
+
+let latestInstructorCredentials = [];
+let instructorCredentialsExpiryTimer = null;
 
     /* =====================================================
        ADD / EDIT MODAL
@@ -430,12 +450,19 @@ async function instructorApiRequest(
                         "",
 
                     status:
-                        "active",
+                        !instructor.password_setup_complete
+                            ? "not-set-up"
+                            : instructor.is_active === false
+                                ? "inactive"
+                                : "active",
 
                     passwordSetupComplete:
                         Boolean(
                             instructor.password_setup_complete
-                        )
+                        ),
+
+                    isActive:
+                        instructor.is_active !== false
 
                 })
             );
@@ -443,7 +470,6 @@ async function instructorApiRequest(
         saveInstructors(
             instructors
         );
-
 
         /*
          * Build the account view from the
@@ -473,7 +499,17 @@ async function instructorApiRequest(
                         "Never",
 
                     status:
-                        "active",
+                        !instructor.password_setup_complete
+                            ? "not-set-up"
+                            : instructor.is_active === false
+                                ? "inactive"
+                                : "active",
+
+                    isActive:
+                        instructor.is_active !== false,
+
+                    passwordSetupComplete:
+                        Boolean(instructor.password_setup_complete),
 
                     backendManaged:
                         true
@@ -775,10 +811,17 @@ async function instructorApiRequest(
         accounts
     ) {
 
+        const safeAccounts =
+            accounts.map(account => {
+                const safeAccount = { ...account };
+                delete safeAccount.password;
+                return safeAccount;
+            });
+
         localStorage.setItem(
             ACCOUNT_STORAGE_KEY,
             JSON.stringify(
-                accounts
+                safeAccounts
             )
         );
 
@@ -960,15 +1003,17 @@ async function instructorApiRequest(
         status
     ) {
 
-        return (
-            String(
-                status ||
-                ""
-            ).toLowerCase() ===
-            "active"
-        )
-            ? "status-active"
-            : "status-pending";
+        const normalized = String(status || "").toLowerCase();
+
+        if (normalized === "active") {
+            return "status-active";
+        }
+
+        if (normalized === "inactive") {
+            return "status-inactive";
+        }
+
+        return "status-pending";
 
     }
 
@@ -1047,10 +1092,13 @@ async function instructorApiRequest(
 
         passwordInput.value =
             generateTemporaryPassword();
+        passwordInput.required = true;
+        passwordInput.placeholder = "";
 
 
         accountStatusInput.value =
             "active";
+        accountStatusInput.disabled = false;
 
 
         instructorIdInput.readOnly =
@@ -1154,10 +1202,13 @@ async function instructorApiRequest(
 
         passwordInput.value =
             generateTemporaryPassword();
+        passwordInput.required = true;
+        passwordInput.placeholder = "";
 
 
         accountStatusInput.value =
             "active";
+        accountStatusInput.disabled = false;
 
 
         instructorIdInput.readOnly =
@@ -1252,14 +1303,12 @@ async function instructorApiRequest(
             "";
 
 
-        passwordInput.value =
-            account.password ||
-            "";
-
+        passwordInput.value = "";
+        passwordInput.required = false;
+        passwordInput.placeholder = "Leave blank to keep the current password";
 
         accountStatusInput.value =
-            account.status ||
-            "active";
+            account.isActive === false ? "inactive" : "active";
 
 
         instructorIdInput.readOnly =
@@ -1277,6 +1326,8 @@ async function instructorApiRequest(
         statusGroup.hidden =
             false;
 
+        accountStatusInput.disabled =
+            account.passwordSetupComplete !== true;
 
         accountModal.hidden =
             false;
@@ -1433,6 +1484,8 @@ async function instructorApiRequest(
         }
 
 
+        let savedToApi = false;
+
         try {
 
             /* =================================================
@@ -1473,6 +1526,10 @@ async function instructorApiRequest(
                     email:
                         email
                 };
+
+                if (account.passwordSetupComplete) {
+                    requestData.is_active = status === "active";
+                }
 
 
                 /*
@@ -1515,6 +1572,7 @@ async function instructorApiRequest(
                         }
                     );
 
+                savedToApi = true;
 
                 /*
                  * Re-sync from Laravel so the UI reflects
@@ -1561,14 +1619,18 @@ async function instructorApiRequest(
                                     instructorId,
 
                                 password:
-                                    password
+                                    password,
+
+                                is_active:
+                                    status === "active"
                             })
                     }
                 );
 
+                savedToApi = true;
 
-            /*
-             * Laravel is now the source of truth.
+                /*
+                 * Laravel is now the source of truth.
              * Do not store the submitted password.
              */
             await syncInstructorsFromApi();
@@ -1595,12 +1657,62 @@ async function instructorApiRequest(
             );
 
             alert(
-                error.message ||
-                "Unable to save instructor."
+                savedToApi
+                    ? "The instructor account was saved, but the list could not be refreshed. Reload the page to verify the latest data."
+                    : error.message || "Unable to save instructor."
             );
 
         }
 
+    }
+
+
+    async function toggleAccountStatus(accountId) {
+        const accounts = getAccounts();
+        const account = accounts.find(item => item.id === accountId);
+
+        if (!account) {
+            return;
+        }
+
+        if (!account.backendId || account.passwordSetupComplete !== true) {
+            alert("Account status can be changed only for a linked account that has completed setup.");
+            return;
+        }
+
+        const deactivate = account.isActive !== false;
+        const instructorName = getInstructorName(account);
+        const confirmed = window.confirm(
+            deactivate
+                ? `Deactivate the account for ${instructorName}?`
+                : `Activate the account for ${instructorName}?`
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            const payload = await instructorApiRequest(
+                `/admin/instructors/${encodeURIComponent(account.backendId)}`,
+                {
+                    method: "PUT",
+                    body: JSON.stringify({ is_active: !deactivate })
+                }
+            );
+
+            if (!payload?.success) {
+                throw new Error(payload?.message || "The account status was not updated.");
+            }
+
+            account.isActive = payload.instructor?.is_active !== false;
+            account.status = account.isActive ? "active" : "inactive";
+            saveAccounts(accounts);
+            renderTable();
+        } catch (error) {
+            console.error("Instructor account status update failed:", error);
+            alert(error.message || "Unable to update the instructor account status.");
+        }
     }
 
 
@@ -1820,7 +1932,7 @@ async function instructorApiRequest(
 
                 emailCell.textContent =
                     account?.email ||
-                    "—";
+                    "â€”";
 
 
 
@@ -1873,7 +1985,7 @@ async function instructorApiRequest(
 
                 lastLoginCell.textContent =
                     account?.lastLogin ||
-                    "—";
+                    "â€”";
 
 
 
@@ -1999,50 +2111,23 @@ async function instructorApiRequest(
                     );
 
 
-                    actionsCell.appendChild(
+                    if (account.passwordSetupComplete) {
+                        actionsCell.appendChild(
+                            createActionButton(
+                                "Reset",
+                                "key-round",
+                                () => openResetPasswordModal(account.id)
+                            )
+                        );
 
-                        createActionButton(
-
-                            "Reset",
-
-                            "key-round",
-
-                            () =>
-                                openResetPasswordModal(
-                                    account.id
-                                )
-
-                        )
-
-                    );
-
-
-                    actionsCell.appendChild(
-
-                        createActionButton(
-
-                            account.status ===
-                                "active"
-
-                                ? "Deactivate"
-
-                                : "Activate",
-
-                            account.status ===
-                                "active"
-
-                                ? "user-x"
-
-                                : "user-check",
-
-                            () =>
-                                toggleAccountStatus(
-                                    account.id
-                                )
-
-                        )
-
-                    );
+                        actionsCell.appendChild(
+                            createActionButton(
+                                account.isActive !== false ? "Deactivate" : "Activate",
+                                account.isActive !== false ? "user-x" : "user-check",
+                                () => toggleAccountStatus(account.id)
+                            )
+                        );
+                    }
 
 
                     actionsCell.appendChild(
@@ -2277,9 +2362,9 @@ async function instructorApiRequest(
     const backendId =
         account.backendId;
 
-    if (!backendId) {
+    if (!backendId || account.passwordSetupComplete !== true) {
         alert(
-            "This instructor is not linked to a Laravel account. Refresh the page and try again."
+            "Password reset is available only for a linked account that has completed setup."
         );
         return;
     }
@@ -2709,11 +2794,368 @@ async function confirmDeleteAccount() {
         );
     }
 }
+function clearInstructorCredentialExports() {
+    if (instructorCredentialsExpiryTimer) {
+        clearTimeout(instructorCredentialsExpiryTimer);
+        instructorCredentialsExpiryTimer = null;
+    }
 
+    latestInstructorCredentials = [];
+
+    if (downloadInstructorCredentialsBtn) {
+        downloadInstructorCredentialsBtn.disabled = true;
+    }
+
+    if (downloadInstructorCredentialsPdfBtn) {
+        downloadInstructorCredentialsPdfBtn.disabled = true;
+    }
+}
+
+function enableInstructorCredentialExports(credentials) {
+    clearInstructorCredentialExports();
+
+    latestInstructorCredentials = credentials;
+
+    if (downloadInstructorCredentialsBtn) {
+        downloadInstructorCredentialsBtn.disabled = false;
+    }
+
+    if (downloadInstructorCredentialsPdfBtn) {
+        downloadInstructorCredentialsPdfBtn.disabled = false;
+    }
+
+    instructorCredentialsExpiryTimer = setTimeout(() => {
+        clearInstructorCredentialExports();
+
+        alert(
+            "The temporary credential download period has expired. " +
+            "Import the instructor accounts again if you need a new credential export."
+        );
+    }, 120000);
+}
+
+async function saveInstructorCredentialFile(
+    blob,
+    defaultName,
+    mimeType,
+    extension
+) {
+    if ("showSaveFilePicker" in window) {
+        try {
+            const handle = await window.showSaveFilePicker({
+                suggestedName: defaultName,
+                types: [{
+                    description: extension.toUpperCase() + " file",
+                    accept: {
+                        [mimeType]: ["." + extension]
+                    }
+                }]
+            });
+
+            const writable = await handle.createWritable();
+            await writable.write(blob);
+            await writable.close();
+
+            return true;
+        } catch (error) {
+            if (error.name === "AbortError") {
+                return false;
+            }
+
+            console.error("Save As failed:", error);
+            alert("Unable to save using the file picker. Trying a browser download instead.");
+        }
+    }
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = defaultName;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+    return true;
+}
+
+function getInstructorCredentialRows() {
+    return latestInstructorCredentials.map(item => ({
+        "Instructor Name": item.name || "",
+        "School ID": item.school_id || "",
+        "Email": item.email || "",
+        "Temporary Password": item.temporary_password || ""
+    }));
+}
+
+async function downloadInstructorCredentials() {
+    if (!latestInstructorCredentials.length) {
+        alert("No temporary credentials are available to download.");
+        return;
+    }
+
+    if (!window.XLSX) {
+        alert("The Excel library did not load. Check your internet connection and reload the page.");
+        return;
+    }
+
+    const worksheet = window.XLSX.utils.json_to_sheet(
+        getInstructorCredentialRows()
+    );
+
+    worksheet["!cols"] = [
+        { wch: 28 },
+        { wch: 18 },
+        { wch: 32 },
+        { wch: 24 }
+    ];
+
+    const workbook = window.XLSX.utils.book_new();
+
+    window.XLSX.utils.book_append_sheet(
+        workbook,
+        worksheet,
+        "Instructor Credentials"
+    );
+
+    const excelData = window.XLSX.write(workbook, {
+        bookType: "xlsx",
+        type: "array"
+    });
+
+    const blob = new Blob([excelData], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    });
+
+    await saveInstructorCredentialFile(
+        blob,
+        "siknayan-instructor-credentials.xlsx",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "xlsx"
+    );
+}
+
+async function downloadInstructorCredentialsPdf() {
+    if (!latestInstructorCredentials.length) {
+        alert("No temporary credentials are available to download.");
+        return;
+    }
+
+    if (!window.jspdf?.jsPDF) {
+        alert("The PDF library did not load. Check your internet connection and reload the page.");
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+
+    const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: "a4"
+    });
+
+    const rows = getInstructorCredentialRows();
+    const headers = Object.keys(rows[0]);
+    const widths = [48, 28, 65, 45];
+    const margin = 10;
+    let y = 29;
+
+    function drawTitle() {
+        pdf.setFont("helvetica", "bold");
+        pdf.setFontSize(14);
+        pdf.text("Instructor Temporary Credentials", margin, 14);
+
+        pdf.setFont("helvetica", "normal");
+        pdf.setFontSize(8);
+        pdf.text(
+            "Confidential - distribute credentials securely.",
+            margin,
+            20
+        );
+    }
+
+    function drawHeader() {
+        pdf.setFont("helvetica", "bold");
+        pdf.setFontSize(8);
+
+        let x = margin;
+
+        headers.forEach((header, index) => {
+            pdf.rect(x, y, widths[index], 9);
+            pdf.text(header, x + 2, y + 5.8);
+            x += widths[index];
+        });
+
+        y += 9;
+        pdf.setFont("helvetica", "normal");
+    }
+
+    drawTitle();
+    drawHeader();
+
+    pdf.setFontSize(7.5);
+
+    rows.forEach(row => {
+        const cells = headers.map((header, index) =>
+            pdf.splitTextToSize(
+                String(row[header] ?? ""),
+                widths[index] - 4
+            )
+        );
+
+        const lineCount = Math.max(
+            ...cells.map(lines => lines.length)
+        );
+
+        const rowHeight = Math.max(9, lineCount * 3.5 + 6);
+
+        if (y + rowHeight > 190) {
+            pdf.addPage();
+            y = 14;
+            drawHeader();
+            pdf.setFontSize(7.5);
+        }
+
+        let x = margin;
+
+        cells.forEach((lines, index) => {
+            pdf.rect(x, y, widths[index], rowHeight);
+            pdf.text(lines, x + 2, y + 5.5);
+            x += widths[index];
+        });
+
+        y += rowHeight;
+    });
+
+    const pdfBlob = pdf.output("blob");
+
+    await saveInstructorCredentialFile(
+        pdfBlob,
+        "siknayan-instructor-credentials.pdf",
+        "application/pdf",
+        "pdf"
+    );
+}
+
+async function importInstructorsFromExcel() {
+    const file = instructorsExcelFile?.files?.[0];
+
+    if (!file) {
+        alert("Please select an Excel (.xlsx) file first.");
+        return;
+    }
+
+    if (!file.name.toLowerCase().endsWith(".xlsx")) {
+        alert("Please select an .xlsx Excel file.");
+        return;
+    }
+    clearInstructorCredentialExports();
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    importInstructorsExcelBtn.disabled = true;
+    importInstructorsExcelBtn.textContent = "Importing...";
+
+    try {
+        const payload = await instructorApiRequest(
+            "/admin/instructors/import",
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        const instructors = Array.isArray(payload?.instructors)
+            ? payload.instructors
+            : [];
+
+        const credentials = instructors.filter(item =>
+            item.name &&
+            item.school_id &&
+            item.temporary_password
+        );
+
+        if (
+            !payload?.success ||
+            instructors.length === 0 ||
+            credentials.length !== instructors.length
+        ) {
+            latestInstructorCredentials = [];
+            downloadInstructorCredentialsBtn.disabled = true;
+
+            alert(
+                "The server response did not include complete temporary credentials. " +
+                "Please check the import response before retrying."
+            );
+            return;
+        }
+
+        enableInstructorCredentialExports(credentials);
+
+        if (typeof syncInstructorsFromApi === "function") {
+            await syncInstructorsFromApi();
+        }
+
+        if (typeof renderTable === "function") {
+            renderTable();
+        }
+
+        alert(
+    `${payload.count ?? credentials.length} instructor account(s) imported successfully. ` +
+    "Choose Excel or PDF to download the temporary credentials within two minutes."
+);
+    } catch (error) {
+        console.error("Instructor Excel import failed:", error);
+
+        if (latestInstructorCredentials.length > 0) {
+            alert(
+                "Instructor accounts were imported, but the table could not be refreshed. " +
+                "The temporary credential download remains available; reload the page to refresh the list."
+            );
+        } else {
+            clearInstructorCredentialExports();
+            alert(error.message || "Unable to import instructor accounts.");
+        }
+    } finally {
+        importInstructorsExcelBtn.disabled = false;
+        importInstructorsExcelBtn.innerHTML =
+            '<i data-lucide="file-spreadsheet"></i><span>Import Instructors from Excel</span>';
+
+        if (instructorsExcelFile) {
+            instructorsExcelFile.value = "";
+        }
+
+        refreshPageIcons();
+    }
+}
     /* =====================================================
        EVENTS
     ===================================================== */
+if (importInstructorsExcelBtn && instructorsExcelFile) {
+    importInstructorsExcelBtn.addEventListener("click", () => {
+        instructorsExcelFile.click();
+    });
 
+    instructorsExcelFile.addEventListener("change", importInstructorsFromExcel);
+}
+
+if (downloadInstructorCredentialsBtn) {
+    downloadInstructorCredentialsBtn.addEventListener(
+        "click",
+        downloadInstructorCredentials
+    );
+}
+
+if (downloadInstructorCredentialsPdfBtn) {
+    downloadInstructorCredentialsPdfBtn.addEventListener(
+        "click",
+        downloadInstructorCredentialsPdf
+    );
+}
     if (
         addButton
     ) {

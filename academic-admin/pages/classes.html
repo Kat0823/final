@@ -35,7 +35,7 @@
         <div class="brand">
 
             <img
-                src="../assets/images/mpsu_logo.png"
+                src="../assets/images/logo.png"
                 alt="MPSU Logo"
                 class="brand-logo"
             >
@@ -75,20 +75,18 @@
             <div class="profile">
 
                 <img
-                    src="../assets/images/macross.jpg"
-                    alt="Macross Arsel"
+                    alt="Academic Admin profile picture"
                     class="profile-avatar"
+                    style="visibility: hidden"
                 >
 
                 <div class="profile-info">
 
-                    <strong>
-                        Macross Arsel
-                    </strong>
+                  <strong id="topbarAdminName"></strong>
 
-                    <span>
-                        Administrator
-                    </span>
+<span class="profile-role">
+    Administrator
+</span>
 
                 </div>
 
@@ -146,14 +144,12 @@
             <div class="sidebar-profile">
 
                 <img
-                    src="../assets/images/macross.jpg"
-                    alt="Macross Arsel"
+                    alt="Academic Admin profile picture"
                     class="sidebar-avatar"
+                    style="visibility: hidden"
                 >
 
-                <span class="sidebar-profile-name">
-                    Macross
-                </span>
+                <strong id="sidebarAdminName"></strong>
 
             </div>
 
@@ -292,27 +288,18 @@
                  LOGOUT
                  ================================================= -->
 
-            <div class="sidebar-bottom">
-
-                <a
-                    href="#"
-                    class="nav-item logout"
-                >
-
-                    <i data-lucide="log-out"></i>
-
-                    <span class="nav-label">
-                        Logout
-                    </span>
-
-                </a>
-
-            </div>
-
-
-        </aside>
-
-
+   
+<div class="sidebar-bottom">
+    <a
+        href="#"
+        class="nav-item logout"
+        id="academicAdminLogoutBtn"
+    >
+        <i data-lucide="log-out"></i>
+        <span class="nav-label">Logout</span>
+    </a>
+</div>
+</aside>
 
         <!-- =====================================================
              MAIN CONTENT
@@ -995,6 +982,7 @@
 
 
 
+    <script src="../../api-config.js"></script>
     <script src="../js/shared.js"></script>
     <script src="../js/program-data.js"></script>
     <script src="../js/module-library-data.js"></script>

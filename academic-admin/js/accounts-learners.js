@@ -362,11 +362,16 @@
     }
 
     function saveAccounts(accounts) {
+        const safeAccounts = accounts.map(account => {
+            const safeAccount = { ...account };
+            delete safeAccount.password;
+            return safeAccount;
+        });
         localStorage.setItem(
             ACCOUNT_STORAGE_KEY,
             JSON.stringify({
                 version: ACCOUNT_STORAGE_VERSION,
-                accounts
+                accounts: safeAccounts
             })
         );
     }
@@ -406,9 +411,9 @@
     }
 
     function getStatusClass(status) {
-        return status === "active"
-            ? "status-active"
-            : "status-pending";
+        if (status === "active") return "status-active";
+        if (status === "inactive") return "status-inactive";
+        return "status-pending";
     }
 
     /* ---------------- ACCOUNT UTILITIES ---------------- */
@@ -419,7 +424,7 @@
 
         let password = "";
 
-        for (let index = 0; index < 10; index++) {
+        for (let index = 0; index < 9; index++) {
             password += characters.charAt(
                 Math.floor(
                     Math.random() *
@@ -454,6 +459,8 @@
         programInput.disabled = false;
         emailInput.readOnly = false;
         passwordInput.readOnly = false;
+        passwordInput.required = true;
+        passwordInput.placeholder = "";
         accountStatusInput.disabled = false;
 
         saveLearnerAccountButton.innerHTML = `
@@ -474,6 +481,8 @@
         programInput.disabled = true;
         emailInput.readOnly = false;
         passwordInput.readOnly = false;
+        passwordInput.required = false;
+        passwordInput.placeholder = "Leave blank to keep the current password";
         accountStatusInput.disabled = false;
 
         saveLearnerAccountButton.innerHTML = `
@@ -493,6 +502,8 @@
         programInput.disabled = false;
         emailInput.readOnly = false;
         passwordInput.readOnly = false;
+        passwordInput.required = true;
+        passwordInput.placeholder = "";
         accountStatusInput.disabled = false;
     }
 
@@ -620,13 +631,14 @@
         emailInput.value =
             account.email || "";
 
-        passwordInput.value =
-            account.password || "";
+        passwordInput.value = "";
 
         accountStatusInput.value =
-            account.status || "active";
+            account.isActive === false ? "inactive" : "active";
 
         setEditMode();
+        accountStatusInput.disabled =
+            account.passwordSetupComplete !== true;
 
         accountModal.hidden = false;
 
@@ -740,7 +752,7 @@
 
     /* ---------------- SAVE ACCOUNT ---------------- */
 
-    function saveAccount(event) {
+    async function saveAccount(event) {
         event.preventDefault();
 
         const accounts =
@@ -796,15 +808,12 @@
             return;
         }
 
-        if (!email) {
-            alert(
-                "Please enter an email address."
-            );
-            emailInput.focus();
-            return;
-        }
-
-        if (!password) {
+  if (email && !emailInput.checkValidity()) {
+    alert("Please enter a valid email address.");
+    emailInput.focus();
+    return;
+}
+        if (!editingId && !password) {
             alert(
                 "Please provide a temporary password."
             );
@@ -813,15 +822,12 @@
         }
 
         const duplicateEmail =
-            accounts.some(
-                account =>
-                    String(
-                        account.email || ""
-                    ).toLowerCase() === email &&
-                    String(
-                        account.id
-                    ) !== String(editingId)
-            );
+    email !== "" &&
+    accounts.some(
+        account =>
+            String(account.email || "").toLowerCase() === email &&
+            String(account.id) !== String(editingId)
+    );
 
         if (duplicateEmail) {
             alert(
@@ -847,92 +853,291 @@
                 return;
             }
 
-            accounts[
-                accountIndex
-            ] = {
-                ...accounts[accountIndex],
-                email,
-                password,
-                status
-            };
+            const account = accounts[accountIndex];
 
-            saveAccounts(accounts);
+            if (!account.backendId) {
+                alert("This learner account is not linked to Laravel. Refresh the page and try again.");
+                return;
+            }
+
+            if (password && password.length < 8) {
+                alert("The password must be at least 8 characters.");
+                passwordInput.focus();
+                return;
+            }
+
+            saveLearnerAccountButton.disabled = true;
+            saveLearnerAccountButton.textContent = "Saving changes...";
+
+            try {
+                const requestData = {
+                    email: email || null
+                };
+
+                if (password) {
+                    requestData.password = password;
+                }
+
+                if (account.passwordSetupComplete) {
+                    requestData.is_active = status === "active";
+                }
+
+                const payload = await learnerAccountsApiRequest(
+                    `/admin/learners/${encodeURIComponent(account.backendId)}`,
+                    {
+                        method: "PUT",
+                        body: JSON.stringify(requestData)
+                    }
+                );
+
+                if (!payload?.success || !payload?.learner) {
+                    throw new Error(payload?.message || "The server returned an unexpected learner response.");
+                }
+
+                accounts[accountIndex] = {
+                    ...account,
+                    email: payload.learner.email || "",
+                    isActive: payload.learner.is_active !== false,
+                    status: payload.learner.is_active === false ? "inactive" : "active"
+                };
+                saveAccounts(accounts);
+                closeAccountModal();
+                renderTable();
+                alert(payload.message || "Learner account updated successfully.");
+            } catch (error) {
+                console.error("Learner account update failed:", error);
+                alert(error.message || "Unable to update the learner account.");
+            } finally {
+                saveLearnerAccountButton.disabled = false;
+                refreshIcons();
+            }
+            return;
+        }
+
+      
+        /* CREATE ACCOUNT THROUGH LARAVEL */
+
+        const token = getImportApiToken();
+
+        if (!token) {
+            alert("Your API token is missing. Please sign in again.");
+            return;
+        }
+
+        const apiBase =
+            typeof LEARNER_API_BASE_URL !== "undefined"
+                ? LEARNER_API_BASE_URL
+                : window.SIKNAYAN_API_ROOT;
+
+        const originalButtonHTML =
+            saveLearnerAccountButton.innerHTML;
+
+        saveLearnerAccountButton.disabled = true;
+        saveLearnerAccountButton.textContent = "Creating account...";
+
+        try {
+            const response = await fetch(
+                `${apiBase}/admin/learners`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        name: fullName,
+                        email: email || null,
+                        school_id: studentId,
+                        program: program,
+                        password: password,
+                        is_active: status === "active"
+                    })
+                }
+            );
+
+            let payload = null;
+
+            try {
+                payload = await response.json();
+            } catch {
+                payload = null;
+            }
+
+            if (!response.ok || !payload?.success || !payload?.learner?.id) {
+                let details = "";
+
+                if (
+                    payload?.errors &&
+                    typeof payload.errors === "object"
+                ) {
+                    details = Object.entries(payload.errors)
+                        .map(([field, messages]) =>
+                            `${field}: ${
+                                Array.isArray(messages)
+                                    ? messages.join(", ")
+                                    : String(messages)
+                            }`
+                        )
+                        .join("\n");
+                }
+
+                throw new Error(
+                    [
+                        payload?.message ||
+                            `Unable to create learner (${response.status}).`,
+                        details
+                    ].filter(Boolean).join("\n")
+                );
+            }
+
+            const created = payload.learner;
+            const backendId = String(created.id);
+            const schoolId = String(created.school_id || studentId);
+
+            /*
+             * Update the local display cache using the database ID
+             * returned by Laravel, not the Student ID.
+             */
+            const state = loadLearnerState();
+
+            const legacyLearners = state.learners.filter(learner =>
+                String(learner.schoolId || "").trim().toLowerCase() ===
+                    schoolId.toLowerCase() ||
+                String(learner.id).trim().toLowerCase() ===
+                    schoolId.toLowerCase() ||
+                String(learner.id) === backendId
+            );
+
+            const legacyIds = new Set(
+                legacyLearners.map(learner => String(learner.id))
+            );
+
+            const previousLearner = legacyLearners[0] || {};
+
+            let previousModules = [];
+
+            for (const legacyId of legacyIds) {
+                if (Array.isArray(state.modules[legacyId])) {
+                    previousModules = state.modules[legacyId];
+                    break;
+                }
+            }
+
+            state.learners = state.learners.filter(learner =>
+                !legacyIds.has(String(learner.id)) &&
+                String(learner.id) !== backendId
+            );
+
+            state.learners.push({
+                ...previousLearner,
+                id: backendId,
+                schoolId: schoolId,
+                name: created.name || fullName,
+                email: created.email || email || "",
+                program: created.program || program,
+                modulesAssigned: Number(
+                    previousLearner.modulesAssigned || 0
+                ),
+                progress: previousLearner.progress ?? 0,
+                status: created.password_setup_complete
+                    ? "Active"
+                    : "Not Set Up",
+                passwordSetupComplete:
+                    Boolean(created.password_setup_complete),
+                isActive:
+                    created.is_active !== false,
+                lastActivity: previousLearner.lastActivity || "Never",
+                backendAccount: true
+            });
+
+            if (!Array.isArray(state.modules[backendId])) {
+                state.modules[backendId] = previousModules;
+            }
+
+            for (const legacyId of legacyIds) {
+                if (legacyId !== backendId) {
+                    delete state.modules[legacyId];
+                }
+            }
+
+            saveLearnerState(state);
+
+            /*
+             * Keep locally stored account details linked to the
+             * canonical learner ID returned by Laravel.
+             */
+            const updatedAccounts = accounts.filter(account =>
+                !legacyIds.has(String(account.learnerId)) &&
+                String(account.learnerId) !== backendId &&
+                String(account.learnerId) !== schoolId
+            );
+
+            updatedAccounts.push({
+                id: createAccountId(backendId),
+                learnerId: backendId,
+                backendId,
+                email: created.email || email,
+                lastLogin: "Never",
+                status: status,
+                isActive: created.is_active !== false,
+                passwordSetupComplete:
+                    Boolean(created.password_setup_complete),
+                backendManaged: true,
+                createdAt: created.created_at ||
+                    new Date().toISOString()
+            });
+
+            saveAccounts(updatedAccounts);
+
+            /*
+             * Update class references if this learner previously
+             * existed in local storage under the Student ID.
+             */
+            if (legacyIds.size > 0) {
+                const classes = loadClassRecords();
+
+                const updatedClasses = classes.map(classItem => {
+                    const learnerIds = [
+                        ...new Set(
+                            classItem.learnerIds.map(id =>
+                                legacyIds.has(String(id))
+                                    ? backendId
+                                    : String(id)
+                            )
+                        )
+                    ];
+
+                    return {
+                        ...classItem,
+                        learnerIds,
+                        learners: learnerIds.length
+                    };
+                });
+
+                saveClassRecords(updatedClasses);
+            }
+
             closeAccountModal();
             renderTable();
-            return;
-        }
 
-        /* CREATE ACCOUNT FOR NEW OR EXISTING LEARNER */
-
-        const existingLearner =
-            getLearners().find(
-                learner =>
-                    String(learner.id)
-                        .toLowerCase() ===
-                    studentId.toLowerCase()
-            );
-
-        if (
-            existingLearner &&
-            getAccountForLearner(
-                existingLearner.id
-            )
-        ) {
             alert(
-                "This Student ID already has a learner account."
+                `Learner account created successfully for ${created.name || fullName}.`
             );
-            return;
-        }
+        } catch (error) {
+            console.error("Create learner account failed:", error);
 
-        const learner =
-            getOrCreateLearner(
-                studentId,
-                fullName,
-                program
-            );
-
-        if (!learner) return;
-
-        if (
-            getAccountForLearner(
-                learner.id
-            )
-        ) {
             alert(
-                "This learner already has an account."
+                error.message ||
+                "Unable to create the learner account. Please try again."
             );
-            return;
+        } finally {
+            saveLearnerAccountButton.disabled = false;
+            saveLearnerAccountButton.innerHTML = originalButtonHTML;
+            refreshIcons();
         }
-
-        accounts.push({
-            id:
-                createAccountId(
-                    learner.id
-                ),
-
-            learnerId:
-                learner.id,
-
-            email,
-            password,
-
-            lastLogin:
-                "Never",
-
-            status,
-
-            createdAt:
-                new Date().toISOString()
-        });
-
-        saveAccounts(accounts);
-        closeAccountModal();
-        renderTable();
-
-        alert(
-            `Learner account created for ${learner.name}.`
-        );
     }
+
 
     /* ---------------- ACTION BUTTON ---------------- */
 
@@ -1009,16 +1214,17 @@
              * every learner gets a row, even without an account.
              */
 
-            const accountStatus =
-                account
-                    ? (
-                        account.status === "inactive"
-                            ? "inactive"
-                            : "active"
-                    )
-                    : learner.backendAccount
-                        ? "active"
-                        : "not-set-up";
+            const passwordSetupComplete = account
+                ? account.passwordSetupComplete !== false
+                : learner.passwordSetupComplete === true;
+            const isActive = account
+                ? account.isActive !== false
+                : learner.isActive !== false;
+            const accountStatus = !passwordSetupComplete
+                ? "not-set-up"
+                : isActive
+                    ? "active"
+                    : "inactive";
 
             const searchableText = [
                 learner.id,
@@ -1074,7 +1280,7 @@
                 "student-id";
 
             studentIdCell.textContent =
-                learner.schoolId || learner.id;
+                learner.schoolId || "—";
 
             const learnerCell =
                 document.createElement("td");
@@ -1147,59 +1353,41 @@
             actionsCell.className =
                 "learner-account-actions";
 
-            if (account) {
-                actionsCell.appendChild(
-                    createActionButton(
-                        "Edit",
-                        "pencil",
-                        () =>
-                            openEditModal(
-                                account.id
-                            )
-                    )
-                );
+if (account) {
+    actionsCell.appendChild(
+        createActionButton(
+            "Edit",
+            "pencil",
+            () => openEditModal(account.id)
+        )
+    );
 
-                actionsCell.appendChild(
-                    createActionButton(
-                        "Reset",
-                        "key-round",
-                        () =>
-                            openResetPasswordModal(
-                                account.id
-                            )
-                    )
-                );
+    if (passwordSetupComplete) {
+        actionsCell.appendChild(
+            createActionButton(
+                "Reset",
+                "key-round",
+                () => openResetPasswordModal(account.id)
+            )
+        );
 
-                actionsCell.appendChild(
-                    createActionButton(
-                        accountStatus ===
-                            "active"
-                            ? "Deactivate"
-                            : "Activate",
-
-                        accountStatus ===
-                            "active"
-                            ? "user-x"
-                            : "user-check",
-
-                        () =>
-                            toggleAccountStatus(
-                                account.id
-                            )
-                    )
-                );
-            } else {
-                actionsCell.appendChild(
-                    createActionButton(
-                        "Create Account",
-                        "user-plus",
-                        () =>
-                            openAddModalForLearner(
-                                learner.id
-                            )
-                    )
-                );
-            }
+        actionsCell.appendChild(
+            createActionButton(
+                accountStatus === "active" ? "Deactivate" : "Activate",
+                accountStatus === "active" ? "user-x" : "user-check",
+                () => toggleAccountStatus(account.id)
+            )
+        );
+    }
+} else if (!learner.backendAccount) {
+    actionsCell.appendChild(
+        createActionButton(
+            "Create Account",
+            "user-plus",
+            () => openAddModalForLearner(learner.id)
+        )
+    );
+}
 
             actionsCell.appendChild(
                 createActionButton(
@@ -1286,7 +1474,7 @@
         resetPasswordValue.value = "";
     }
 
-    function confirmResetPassword() {
+    async function confirmResetPassword() {
         if (!resetAccountId) return;
 
         const accounts =
@@ -1301,30 +1489,45 @@
 
         if (!account) return;
 
-        const newPassword =
-            resetPasswordValue.value.trim();
-
-        if (!newPassword) {
-            alert(
-                "Please provide a temporary password."
-            );
+        if (!account.backendId || account.passwordSetupComplete !== true) {
+            alert("Password reset is available only for an active account that has completed setup.");
             return;
         }
 
-        account.password =
-            newPassword;
+        const newPassword =
+            resetPasswordValue.value.trim();
 
-        saveAccounts(accounts);
-        closeResetPasswordModal();
+        if (newPassword.length < 8) {
+            alert("The temporary password must be at least 8 characters.");
+            return;
+        }
 
-        alert(
-            "The temporary password has been reset."
-        );
+        confirmResetPasswordButton.disabled = true;
+
+        try {
+            const payload = await learnerAccountsApiRequest(
+                `/admin/learners/${encodeURIComponent(account.backendId)}`,
+                {
+                    method: "PUT",
+                    body: JSON.stringify({ password: newPassword })
+                }
+            );
+
+            closeResetPasswordModal();
+            alert(
+                `${payload?.message || "The temporary password has been reset."}\n\nNew password: ${newPassword}`
+            );
+        } catch (error) {
+            console.error("Learner password reset failed:", error);
+            alert(error.message || "Unable to reset the learner password.");
+        } finally {
+            confirmResetPasswordButton.disabled = false;
+        }
     }
 
     /* ---------------- TOGGLE ACCOUNT STATUS ---------------- */
 
-    function toggleAccountStatus(
+    async function toggleAccountStatus(
         accountId
     ) {
         const accounts =
@@ -1342,9 +1545,12 @@
         const learnerName =
             getLearnerName(account);
 
-        const goingInactive =
-            account.status ===
-            "active";
+        if (!account.backendId || account.passwordSetupComplete !== true) {
+            alert("Account status can be changed only for a linked account that has completed setup.");
+            return;
+        }
+
+        const goingInactive = account.isActive !== false;
 
         const confirmed =
             window.confirm(
@@ -1355,13 +1561,27 @@
 
         if (!confirmed) return;
 
-        account.status =
-            goingInactive
-                ? "inactive"
-                : "active";
+        try {
+            const payload = await learnerAccountsApiRequest(
+                `/admin/learners/${encodeURIComponent(account.backendId)}`,
+                {
+                    method: "PUT",
+                    body: JSON.stringify({ is_active: !goingInactive })
+                }
+            );
 
-        saveAccounts(accounts);
-        renderTable();
+            if (!payload?.success) {
+                throw new Error(payload?.message || "The account status was not updated.");
+            }
+
+            account.isActive = payload.learner?.is_active !== false;
+            account.status = account.isActive ? "active" : "inactive";
+            saveAccounts(accounts);
+            renderTable();
+        } catch (error) {
+            console.error("Learner account status update failed:", error);
+            alert(error.message || "Unable to update the learner account status.");
+        }
     }
 
     /* ---------------- DELETE LEARNER ---------------- */
@@ -1489,7 +1709,7 @@
             const apiBase =
                 typeof LEARNER_API_BASE_URL !== "undefined"
                     ? LEARNER_API_BASE_URL
-                    : "http://127.0.0.1:8000/api";
+                    : window.SIKNAYAN_API_ROOT;
 
             try {
                 const response = await fetch(
@@ -1753,13 +1973,22 @@
 
     /* Refresh this table when the import handler syncs backend learners. */
     window.addEventListener("siknayan:learners-refreshed", () => {
+        syncLearnerAccountCacheFromState();
         renderTable();
         refreshIcons();
+    });
+
+    window.addEventListener("siknayan:learners-api-error", event => {
+        alert(
+            event.detail?.message ||
+            "Unable to load learner accounts from Laravel."
+        );
     });
 
     /* ---------------- INITIAL RENDER ---------------- */
 
     initializeProgramOptions();
+    syncLearnerAccountCacheFromState();
     renderTable();
     refreshIcons();
 
@@ -1783,29 +2012,146 @@
     const closeLearnerCredentialDownloadDialogButton =
         document.getElementById("closeLearnerCredentialDownloadDialogBtn");
 
-    let latestImportedLearners = [];
-    if (downloadLearnerCredentialsAgainButton) {
+ let latestImportedLearners = [];
+let credentialButtonTimer = null;
+
+if (downloadLearnerCredentialsAgainButton) {
+    downloadLearnerCredentialsAgainButton.disabled = true;
+}
+
+function enableCredentialDownloadForTwoMinutes() {
+    if (!downloadLearnerCredentialsAgainButton) return;
+
+    clearTimeout(credentialButtonTimer);
+
+    downloadLearnerCredentialsAgainButton.disabled = false;
+
+    credentialButtonTimer = setTimeout(() => {
         downloadLearnerCredentialsAgainButton.disabled = true;
-    }
+        latestImportedLearners = [];
+    }, 2 * 60 * 1000);
+}
 
     function getImportApiToken() {
-        return (
-            window.SIKNAYAN_API_TOKEN ||
-            localStorage.getItem("siknayan_api_token") ||
-            localStorage.getItem("token") ||
-            localStorage.getItem("access_token") ||
-            ""
+    return (
+        sessionStorage.getItem("authToken") ||
+        sessionStorage.getItem("token") ||
+        localStorage.getItem("siknayan_api_token") ||
+        localStorage.getItem("token") ||
+        localStorage.getItem("access_token") ||
+        window.SIKNAYAN_API_TOKEN ||
+        ""
+    );
+}
+
+    async function learnerAccountsApiRequest(path, options = {}) {
+        const token = getImportApiToken();
+
+        if (!token) {
+            throw new Error("Your session has expired. Please sign in again.");
+        }
+
+        const apiBase =
+            typeof LEARNER_API_BASE_URL !== "undefined"
+                ? LEARNER_API_BASE_URL
+                : window.SIKNAYAN_API_ROOT;
+        const headers = {
+            Accept: "application/json",
+            Authorization: "Bearer " + token,
+            ...(options.headers || {})
+        };
+
+        if (options.body instanceof FormData) {
+            delete headers["Content-Type"];
+        } else if (options.body) {
+            headers["Content-Type"] = "application/json";
+        }
+
+        const response = await fetch(`${apiBase}${path}`, {
+            ...options,
+            headers
+        });
+
+        let payload = null;
+        try {
+            payload = await response.json();
+        } catch {
+            payload = null;
+        }
+
+        if (!response.ok) {
+            const validationErrors = payload?.errors
+                ? Object.values(payload.errors).flat().join(" ")
+                : "";
+            throw new Error(
+                validationErrors ||
+                payload?.message ||
+                `Account request failed (${response.status}).`
+            );
+        }
+
+        return payload;
+    }
+
+    function syncLearnerAccountCacheFromState() {
+        const backendLearners = getLearners().filter(
+            learner => learner.backendAccount && learner.id
         );
+        const backendIds = new Set();
+        backendLearners.forEach(learner => {
+            backendIds.add(String(learner.id));
+            if (learner.schoolId) {
+                backendIds.add(String(learner.schoolId));
+            }
+        });
+        const localAccounts = getAccounts().filter(account =>
+            !account.backendManaged &&
+            !account.backendId &&
+            !backendIds.has(String(account.learnerId))
+        );
+        const backendAccounts = backendLearners.map(learner => ({
+            id: createAccountId(learner.id),
+            learnerId: String(learner.id),
+            backendId: learner.backendId || learner.id,
+            email: learner.email || "",
+            lastLogin: "Never",
+            status: learner.isActive === false ? "inactive" : "active",
+            isActive: learner.isActive !== false,
+            passwordSetupComplete: learner.passwordSetupComplete === true,
+            backendManaged: true
+        }));
+
+        saveAccounts([...localAccounts, ...backendAccounts]);
     }
 
-    function setExcelImportStatus(message, isError = false) {
-        if (!learnerExcelImportStatus) return;
+    let learnerExcelImportStatusTimer;
 
-        learnerExcelImportStatus.textContent = message;
-        learnerExcelImportStatus.style.color =
-            isError ? "#b42318" : "inherit";
-    }
+function setExcelImportStatus(message, isError = false) {
+    if (!learnerExcelImportStatus) return;
 
+    clearTimeout(learnerExcelImportStatusTimer);
+
+    learnerExcelImportStatus.className =
+        `import-status show ${isError ? "error" : "success"}`;
+
+    learnerExcelImportStatus.replaceChildren();
+
+    const icon = document.createElement("span");
+    icon.className = "import-status-icon";
+    icon.textContent = isError ? "⚠" : "✓";
+    icon.setAttribute("aria-hidden", "true");
+
+    const text = document.createElement("span");
+    text.textContent = message;
+
+    learnerExcelImportStatus.append(icon, text);
+    learnerExcelImportStatus.setAttribute("role", "status");
+
+    learnerExcelImportStatusTimer = setTimeout(() => {
+        learnerExcelImportStatus.classList.remove("show");
+        learnerExcelImportStatus.replaceChildren();
+    }, isError ? 10000 : 5000);
+}
     function getCredentialRows() {
         return latestImportedLearners.map(learner => ({
             "Student Name": learner.name ?? "",
@@ -1835,8 +2181,51 @@
         refreshIcons();
         closeLearnerCredentialDownloadDialogButton?.focus();
     }
+    async function saveCredentialFile(blob, suggestedName, mimeType, extension) {
+    const fileName = prompt(
+        "Enter a filename for the credentials file:",
+        suggestedName.replace(/\.[^.]+$/, "")
+    );
 
-    function downloadImportedCredentialsExcel() {
+    if (fileName === null || !fileName.trim()) return;
+
+    const safeName = fileName.trim().replace(/[<>:"/\\|?*]/g, "_");
+    const finalName = safeName.endsWith(`.${extension}`)
+        ? safeName
+        : `${safeName}.${extension}`;
+
+    // Use Save As to choose both filename and destination folder.
+    if (window.showSaveFilePicker) {
+        try {
+            const handle = await window.showSaveFilePicker({
+                suggestedName: finalName,
+                types: [{
+                    description: `${extension.toUpperCase()} file`,
+                    accept: { [mimeType]: [`.${extension}`] }
+                }]
+            });
+
+            const writable = await handle.createWritable();
+            await writable.write(blob);
+            await writable.close();
+            return true;
+        } catch (error) {
+            if (error.name === "AbortError") return false;
+            throw error;
+        }
+    }
+
+    // Fallback for browsers without Save As API.
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = finalName;
+    link.click();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    return true;
+}
+    async function downloadImportedCredentialsExcel() {
         if (!latestImportedLearners.length) {
             setExcelImportStatus("No imported credentials are available to export.", true);
             return;
@@ -1861,15 +2250,28 @@
 
         const workbook = window.XLSX.utils.book_new();
         window.XLSX.utils.book_append_sheet(workbook, worksheet, "Learner Credentials");
-        window.XLSX.writeFile(workbook, "siknayan-learner-credentials.xlsx");
+        const excelData = window.XLSX.write(workbook, {
+    bookType: "xlsx",
+    type: "array"
+});
 
+const blob = new Blob([excelData], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+});
+
+await saveCredentialFile(
+    blob,
+    "siknayan-learner-credentials.xlsx",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "xlsx"
+);
         closeLearnerCredentialDownloadDialog();
         setExcelImportStatus(
             "Excel credentials file downloaded. Store it securely and share temporary passwords privately."
         );
     }
 
-    function downloadImportedCredentialsPdf() {
+    async function downloadImportedCredentialsPdf() {
         if (!latestImportedLearners.length) {
             setExcelImportStatus("No imported credentials are available to export.", true);
             return;
@@ -1950,7 +2352,14 @@
             y += rowHeight;
         });
 
-        pdf.save("siknayan-learner-credentials.pdf");
+        const pdfBlob = pdf.output("blob");
+
+await saveCredentialFile(
+    pdfBlob,
+    "Learner-credentials.pdf",
+    "application/pdf",
+    "pdf"
+);
         closeLearnerCredentialDownloadDialog();
         setExcelImportStatus(
             "PDF credentials file downloaded. Store it securely and share temporary passwords privately."
@@ -2332,7 +2741,7 @@
             const apiBase =
                 typeof LEARNER_API_BASE_URL !== "undefined"
                     ? LEARNER_API_BASE_URL
-                    : "http://127.0.0.1:8000/api";
+                    : window.SIKNAYAN_API_ROOT;
 
             const response = await fetch(
                 `${apiBase}/admin/learners/import`,
@@ -2353,19 +2762,32 @@
                 payload = null;
             }
 
-            if (!response.ok || !payload?.success) {
-                const details = Array.isArray(payload?.errors)
-                    ? payload.errors.map(error =>
-                        `Row ${error.row ?? "?"}: ${error.message}`
-                    ).join("\n")
-                    : "";
+ if (!response.ok || !payload?.success) {
+    let details = "";
 
-                throw new Error(
-                    [payload?.message || `Import failed (${response.status}).`, details]
-                        .filter(Boolean)
-                        .join("\n")
-                );
-            }
+    if (Array.isArray(payload?.errors)) {
+        details = payload.errors.map(error =>
+            `Row ${error.row ?? "?"}: ${error.message ?? "Invalid data."}`
+        ).join("\n");
+    } else if (payload?.errors && typeof payload.errors === "object") {
+        details = Object.entries(payload.errors)
+            .map(([field, messages]) =>
+                `${field}: ${
+                    Array.isArray(messages)
+                        ? messages.join(", ")
+                        : String(messages)
+                }`
+            )
+            .join("\n");
+    }
+
+    throw new Error(
+        [
+            payload?.message || `Import failed (${response.status}).`,
+            details
+        ].filter(Boolean).join("\n")
+    );
+}
 
             latestImportedLearners = Array.isArray(payload.learners)
                 ? payload.learners
@@ -2384,9 +2806,18 @@
                     downloadLearnerCredentialsAgainButton.disabled = false;
                 }
 
+                const emailSummary = payload.email_summary ?? {};
+                const emailMessage = [
+                    `Email transport accepted: ${Number(emailSummary.sent ?? 0)}`,
+                    `Skipped (no email): ${Number(emailSummary.skipped_no_email ?? 0)}`,
+                    `Failed: ${Number(emailSummary.failed ?? 0)}`,
+                    `Not configured: ${Number(emailSummary.not_configured ?? 0)}`
+                ].join(" | ");
+
                 setExcelImportStatus(
-                    `${payload.imported_count ?? latestImportedLearners.length} learner account(s) imported successfully. Temporary credentials are ready to download.`
-                );
+    `${payload.imported_count ?? latestImportedLearners.length} learner account(s) imported successfully.`
+);
+                enableCredentialDownloadForTwoMinutes();
                 openLearnerCredentialDownloadDialog();
             } else {
                 latestImportedLearners = [];
@@ -2466,6 +2897,10 @@
                 modulesAssigned: Number(learner.modules_assigned || 0),
                 progress: learner.progress ?? null,
                 status: learner.status || "Active",
+                passwordSetupComplete:
+                    Boolean(learner.password_setup_complete),
+                isActive:
+                    learner.is_active !== false,
                 lastActivity: learner.last_activity || "Never",
                 backendAccount: true
             }));
