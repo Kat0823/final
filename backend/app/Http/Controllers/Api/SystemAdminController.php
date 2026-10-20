@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\SystemAdminAuditLog;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
@@ -48,4 +49,34 @@ class SystemAdminController extends Controller
             'statistics' => $statistics,
         ]);
     }
+
+    /**
+     * Newest audit entries first. The page filters and paginates these
+     * in the browser, so this returns a bounded list.
+     */
+    public function auditLogs(): JsonResponse
+    {
+        $logs = SystemAdminAuditLog::query()
+            ->latest('id')
+            ->limit(self::AUDIT_LOG_LIMIT)
+            ->get()
+            ->map(fn (SystemAdminAuditLog $log): array => [
+                'id' => $log->id,
+                'action' => $log->action,
+                'actor_id' => $log->actor_id,
+                'actor_name' => $log->actor_name,
+                'target_id' => $log->target_id,
+                'target_name' => $log->target_name,
+                'details' => $log->details,
+                'created_at' => $log->created_at?->toIso8601String(),
+            ]);
+
+        return response()->json([
+            'success' => true,
+            'logs' => $logs,
+            'limit' => self::AUDIT_LOG_LIMIT,
+        ]);
+    }
+
+    private const AUDIT_LOG_LIMIT = 1000;
 }

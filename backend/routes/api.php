@@ -71,6 +71,7 @@ Route::middleware([
             ]));
 
             Route::get('/dashboard', [SystemAdminController::class, 'dashboard']);
+            Route::get('/audit-logs', [SystemAdminController::class, 'auditLogs']);
 
             Route::get('/academic-administrators', [SystemAdminAcademicAdminController::class, 'index']);
             Route::post('/academic-administrators', [SystemAdminAcademicAdminController::class, 'store']);

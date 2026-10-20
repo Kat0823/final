@@ -62,30 +62,123 @@ let auditCurrentPage = 1;
    STORAGE HELPERS
 ========================================================= */
 
+/*
+ * Audit records come from the server (GET /api/system-admin/audit-logs).
+ * They're loaded once into this list; filtering, paging and export then
+ * work on the list in the browser.
+ */
+let auditLogCache = [];
+
 function getAuditLogs() {
-    try {
-        const stored =
-            localStorage.getItem(
-                AUDIT_LOG_STORAGE_KEY
-            );
+    return auditLogCache;
+}
 
-        if (!stored) {
-            return [];
+const AUDIT_FIELD_LABELS = {
+    name: "name",
+    school_id: "school ID",
+    email: "email",
+    is_active: "status",
+    profile_photo: "profile photo"
+};
+
+function formatAuditValue(value) {
+    if (value === true) return "active";
+    if (value === false) return "inactive";
+    if (value === null || value === undefined || value === "") return "(none)";
+    return String(value);
+}
+
+function describeAuditEntry(entry) {
+    const target = entry.target_name || "an account";
+    const details = entry.details || {};
+    const schoolId = details.school_id ? ` (${details.school_id})` : "";
+
+    switch (String(entry.action || "").toLowerCase()) {
+        case "create":
+            return `Created Academic Admin account ${target}${schoolId}`;
+        case "delete":
+            return `Deleted Academic Admin account ${target}${schoolId}`;
+        case "activate":
+            return `Activated Academic Admin account ${target}`;
+        case "deactivate":
+            return `Deactivated Academic Admin account ${target}`;
+        case "update": {
+            const changes = Object.entries(details).map(([field, change]) => {
+                const label = AUDIT_FIELD_LABELS[field] || field;
+
+                if (field === "profile_photo") {
+                    return change && change.removed
+                        ? "removed profile photo"
+                        : "changed profile photo";
+                }
+
+                if (change && typeof change === "object" && "from" in change) {
+                    return `${label}: ${formatAuditValue(change.from)} → ${formatAuditValue(change.to)}`;
+                }
+
+                return label;
+            });
+
+            return changes.length
+                ? `Updated ${target}: ${changes.join("; ")}`
+                : `Updated ${target}`;
         }
+        default:
+            return `${formatAction(entry.action)} ${target}`;
+    }
+}
 
-        const logs =
-            JSON.parse(stored);
+function toAuditRow(entry) {
+    return {
+        id: entry.id,
+        timestamp: entry.created_at,
+        actorName: entry.actor_name || "—",
+        actorRole: "System Administrator",
+        action: entry.action,
+        module: "Academic Admin Accounts",
+        details: describeAuditEntry(entry)
+    };
+}
 
-        return Array.isArray(logs)
-            ? logs
-            : [];
-    } catch (error) {
-        console.error(
-            "Unable to read audit log data:",
-            error
+async function loadAuditLogs() {
+    renderEmptyState(
+        "Loading audit records...",
+        "Fetching the latest activity from the server."
+    );
+
+    try {
+        const response = await fetch(
+            `${window.SIKNAYAN_API_ROOT}/system-admin/audit-logs`,
+            {
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${systemAdminToken}`
+                }
+            }
         );
 
-        return [];
+        if (response.status === 401) {
+            redirectToLogin();
+            return;
+        }
+
+        const payload = await response.json().catch(() => null);
+
+        if (!response.ok || !payload?.success || !Array.isArray(payload.logs)) {
+            throw new Error(
+                payload?.message || `The server returned an error (${response.status}).`
+            );
+        }
+
+        auditLogCache = payload.logs.map(toAuditRow);
+        refreshAuditLogs();
+    } catch (error) {
+        console.error("Unable to load audit records:", error);
+        auditLogCache = [];
+        renderEmptyState(
+            "Unable to load audit records",
+            error.message || "Check that the backend is running, then refresh the page."
+        );
     }
 }
 
@@ -168,6 +261,8 @@ function formatAction(action) {
         logout: "Logout",
         create: "Create",
         update: "Update",
+        activate: "Activate",
+        deactivate: "Deactivate",
         delete: "Delete",
         backup: "Backup"
     };
@@ -573,7 +668,7 @@ function renderAuditLogs(logs) {
 
             renderEmptyState(
                 "No audit records yet",
-                "System activity will appear here once audit logging is connected to the system."
+                "Changes to Academic Admin accounts will appear here."
             );
 
         } else {
@@ -1215,4 +1310,4 @@ if (auditNextPageButton) {
    INITIALIZE
 ========================================================= */
 
-refreshAuditLogs();
+loadAuditLogs();
