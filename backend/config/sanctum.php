@@ -50,7 +50,8 @@ return [
     |
     */
 
-    'expiration' => null,
+    // Login tokens expire after 8 hours by default (a school day).
+    'expiration' => env('SANCTUM_TOKEN_EXPIRATION', 480),
 
     /*
     |--------------------------------------------------------------------------

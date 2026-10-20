@@ -8,10 +8,19 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\TransientToken;
 
 class AuthController extends Controller
 {
+    private const MAX_ATTEMPTS_PER_ACCOUNT = 5;
+    private const MAX_ATTEMPTS_PER_IP = 20;
+    private const LOCKOUT_SECONDS = 60;
+
+    // bcrypt hash of a random string; used only to keep timing constant.
+    private const DUMMY_HASH = '$2y$12$xbCXUaGCC.0LUYG6tdx2ieIdxF74k0gojg.JWYBBqiu57UccNNLqq';
+
     public function login(Request $request): JsonResponse
     {
         // Validate login inputs
@@ -20,17 +29,48 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
+        // Limit failed attempts: per account+IP, and per IP across accounts.
+        $accountKey = 'login:' . Str::lower(trim($validated['school_id'])) . '|' . $request->ip();
+        $ipKey = 'login-ip:' . $request->ip();
+
+        if (
+            RateLimiter::tooManyAttempts($accountKey, self::MAX_ATTEMPTS_PER_ACCOUNT)
+            || RateLimiter::tooManyAttempts($ipKey, self::MAX_ATTEMPTS_PER_IP)
+        ) {
+            $seconds = max(
+                RateLimiter::availableIn($accountKey),
+                RateLimiter::availableIn($ipKey)
+            );
+
+            return response()->json([
+                'success' => false,
+                'message' => "Too many failed login attempts. Please try again in {$seconds} seconds.",
+                'retry_after' => $seconds,
+            ], 429);
+        }
+
         // Find the account using the school ID
         $user = User::where('school_id', $validated['school_id'])
             ->first();
 
-        // Check whether the account and password are valid
-        if (!$user || !Hash::check($validated['password'], $user->password)) {
+        // Check the password even when the ID doesn't exist, so response
+        // time doesn't reveal which school IDs are registered.
+        $passwordValid = Hash::check(
+            $validated['password'],
+            $user?->password ?? self::DUMMY_HASH
+        );
+
+        if (!$user || !$passwordValid) {
+            RateLimiter::hit($accountKey, self::LOCKOUT_SECONDS);
+            RateLimiter::hit($ipKey, self::LOCKOUT_SECONDS);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid ID or password.',
             ], 401);
         }
+
+        RateLimiter::clear($accountKey);
 
         if (!$user->is_active) {
             return response()->json([
