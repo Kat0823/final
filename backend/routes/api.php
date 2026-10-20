@@ -55,6 +55,9 @@ Route::middleware([
     // Revokes the current token (all roles)
     Route::post('/logout', [AuthController::class, 'logout']);
 
+    // Change your own password (all roles; needs the current password)
+    Route::put('/account/password', [PasswordController::class, 'changeOwnPassword']);
+
 
     /*
     |--------------------------------------------------------------------------

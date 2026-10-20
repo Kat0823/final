@@ -153,6 +153,31 @@ class ForcedPasswordChangeTest extends TestCase
         $this->assertSame(1, $learner->tokens()->count());
     }
 
+    public function test_learner_can_change_their_own_password(): void
+    {
+        $this->user('learner', true, '24-00006');
+        $token = $this->login('24-00006');
+
+        $this->withToken($token)
+            ->putJson('/api/account/password', [
+                'current_password' => 'wrong-password',
+                'password' => 'learner-new-pass',
+                'password_confirmation' => 'learner-new-pass',
+            ])
+            ->assertStatus(422);
+
+        $this->withToken($token)
+            ->putJson('/api/account/password', [
+                'current_password' => 'temporary-pass',
+                'password' => 'learner-new-pass',
+                'password_confirmation' => 'learner-new-pass',
+            ])
+            ->assertOk();
+
+        $this->app['auth']->forgetGuards();
+        $this->login('24-00006', 'learner-new-pass');
+    }
+
     public function test_changing_password_logs_out_other_sessions_only(): void
     {
         $this->user('academic_admin', true, 'ADM-0006');

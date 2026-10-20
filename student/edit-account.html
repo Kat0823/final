@@ -694,6 +694,30 @@
 
     </style>
 
+    <style>
+        .account-note {
+            margin: 0 0 18px;
+            color: #4b5563;
+            font-size: 14px;
+        }
+
+        .account-message {
+            margin: 16px 0 0;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .account-message.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .account-message.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+    </style>
 </head>
 
 
@@ -732,7 +756,7 @@
                 href="profile.html"
                 class="user-link">
 
-                Macross Arsel
+                <span id="headerUserName">Learner</span>
 
             </a>
 
@@ -851,9 +875,7 @@
 
                     <div>
 
-                        <h3>
-                            Macross Arsel
-                        </h3>
+                        <h3><span id="editUserName">Learner</span></h3>
 
                         <p>
                             Learner
@@ -867,110 +889,54 @@
 
                 <!-- FORM -->
 
-                <form id="editForm">
+                <form id="changePasswordForm" novalidate>
+
+                    <p class="account-note">
+                        To change your email address, ask your Academic Administrator.
+                    </p>
 
                     <div class="edit-grid">
 
-
-                        <!-- OLD PASSWORD -->
-
                         <div>
-
-                            <label for="oldPassword">
-                                Old Password
+                            <label for="currentPassword">
+                                Current Password
                             </label>
-
                             <input
                                 type="password"
-                                id="oldPassword"
-                                placeholder="Enter old password">
-
+                                id="currentPassword"
+                                autocomplete="current-password"
+                                placeholder="Enter your current password"
+                                required>
                         </div>
 
-
-                        <!-- OLD EMAIL -->
-
                         <div>
-
-                            <label for="oldEmail">
-                                Old Email Address
-                            </label>
-
-                            <input
-                                type="email"
-                                id="oldEmail"
-                                value="arsel@gmail.com"
-                                readonly>
-
-                        </div>
-
-
-                        <!-- NEW PASSWORD -->
-
-                        <div>
-
-                            <label for="editNewPassword">
+                            <label for="newPasswordInput">
                                 New Password
                             </label>
-
                             <input
                                 type="password"
-                                id="editNewPassword"
-                                placeholder="Enter new password">
-
+                                id="newPasswordInput"
+                                autocomplete="new-password"
+                                minlength="8"
+                                placeholder="At least 8 characters"
+                                required>
                         </div>
 
-
-                        <!-- NEW EMAIL -->
-
                         <div>
-
-                            <label for="newEmail">
-                                New Email Address
+                            <label for="confirmPasswordInput">
+                                Confirm New Password
                             </label>
-
-                            <input
-                                type="email"
-                                id="newEmail"
-                                placeholder="Enter new email">
-
-                        </div>
-
-
-                        <!-- CONFIRM PASSWORD -->
-
-                        <div>
-
-                            <label for="editConfirmPassword">
-                                Confirm Password
-                            </label>
-
                             <input
                                 type="password"
-                                id="editConfirmPassword"
-                                placeholder="Confirm password">
-
-                        </div>
-
-
-                        <!-- CONFIRM EMAIL -->
-
-                        <div>
-
-                            <label for="confirmEmail">
-                                Confirm Email Address
-                            </label>
-
-                            <input
-                                type="email"
-                                id="confirmEmail"
-                                placeholder="Confirm email">
-
+                                id="confirmPasswordInput"
+                                autocomplete="new-password"
+                                placeholder="Type the new password again"
+                                required>
                         </div>
 
                     </div>
 
-
+                    <p id="passwordMessage" class="account-message" role="status" hidden></p>
 
                     <!-- BUTTONS -->
 
@@ -980,8 +946,8 @@
                             Cancel
                         </a>
 
-                        <button type="submit">
-                            Save Changes
+                        <button type="submit" id="savePasswordButton">
+                            Change Password
                         </button>
 
                     </div>
@@ -998,7 +964,110 @@
 
     <!-- JAVASCRIPT -->
 
-    <script src="student.js"></script>
+    <script src="../api-config.js"></script>
+    <script>
+        (function () {
+            const form = document.getElementById("changePasswordForm");
+            const message = document.getElementById("passwordMessage");
+            const button = document.getElementById("savePasswordButton");
+
+            let user = null;
+            let token = "";
+            try {
+                user = JSON.parse(sessionStorage.getItem("user") || "null");
+                token = sessionStorage.getItem("authToken")
+                    || localStorage.getItem("siknayan_api_token")
+                    || "";
+            } catch (error) {}
+
+            if (!user || !token) {
+                window.location.replace("../index.html");
+                return;
+            }
+
+            ["headerUserName", "editUserName"].forEach((id) => {
+                const element = document.getElementById(id);
+                if (element && user.name) element.textContent = user.name;
+            });
+
+            function showMessage(text, type) {
+                message.textContent = text;
+                message.className = "account-message " + type;
+                message.hidden = false;
+            }
+
+            form.addEventListener("submit", async (event) => {
+                event.preventDefault();
+
+                const current = document.getElementById("currentPassword").value;
+                const next = document.getElementById("newPasswordInput").value;
+                const confirmation = document.getElementById("confirmPasswordInput").value;
+
+                if (!current || !next || !confirmation) {
+                    showMessage("Please fill in all three fields.", "error");
+                    return;
+                }
+                if (next.length < 8) {
+                    showMessage("The new password must be at least 8 characters.", "error");
+                    return;
+                }
+                if (next !== confirmation) {
+                    showMessage("The new passwords do not match.", "error");
+                    return;
+                }
+                if (next === current) {
+                    showMessage("The new password must be different from the current one.", "error");
+                    return;
+                }
+
+                button.disabled = true;
+                button.textContent = "Saving...";
+
+                try {
+                    const response = await fetch(`${window.SIKNAYAN_API_ROOT}/account/password`, {
+                        method: "PUT",
+                        headers: {
+                            Accept: "application/json",
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            current_password: current,
+                            password: next,
+                            password_confirmation: confirmation
+                        })
+                    });
+
+                    if (response.status === 401) {
+                        window.location.replace("../index.html");
+                        return;
+                    }
+
+                    const data = await response.json().catch(() => null);
+
+                    if (!response.ok || !data || data.success === false) {
+                        const firstError = data && data.errors
+                            ? Object.values(data.errors)[0]?.[0]
+                            : null;
+                        throw new Error(firstError || data?.message || "Unable to change your password.");
+                    }
+
+                    form.reset();
+                    showMessage("Password changed. You have been logged out on your other devices.", "success");
+                } catch (error) {
+                    showMessage(
+                        error instanceof TypeError
+                            ? "Unable to reach the server. Please try again."
+                            : error.message,
+                        "error"
+                    );
+                } finally {
+                    button.disabled = false;
+                    button.textContent = "Change Password";
+                }
+            });
+        })();
+    </script>
 
 </body>
 

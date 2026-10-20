@@ -906,7 +906,7 @@
             <a
                 href="profile.html"
                 class="user-link">
-                Macross Arsel
+                <span id="headerUserName">Learner</span>
             </a>
 
         </div>
@@ -1581,6 +1581,17 @@
 
     </script>
 
+
+    <script>
+        // Show the logged-in learner's name in the header.
+        (function () {
+            try {
+                const user = JSON.parse(sessionStorage.getItem("user") || "null");
+                const element = document.getElementById("headerUserName");
+                if (user && user.name && element) element.textContent = user.name;
+            } catch (error) {}
+        })();
+    </script>
 
 </body>
 

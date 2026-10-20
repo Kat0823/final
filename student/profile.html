@@ -828,7 +828,7 @@
             href="profile.html"
             class="user-link">
 
-            Macross Arsel
+            <span id="headerUserName">Learner</span>
 
         </a>
 
@@ -984,9 +984,7 @@
 
                 <div>
 
-                    <h3>
-                        Macross Arsel
-                    </h3>
+                    <h3 id="profileName">Learner</h3>
 
 
                     <p>
@@ -1016,7 +1014,7 @@
 
                         <br>
 
-                        Macross Arsel
+                        <span id="profileFullName">—</span>
 
                     </p>
 
@@ -1029,7 +1027,7 @@
 
                         <br>
 
-                        26-00123
+                        <span id="profileSchoolId">—</span>
 
                     </p>
 
@@ -1049,7 +1047,7 @@
                     <input
                         type="email"
                         id="profileEmail"
-                        value="arsel@gmail.com"
+                        value=""
                         readonly>
 
 
@@ -1085,6 +1083,40 @@
 
 </div>
 
+
+    <script>
+        // Fill in the profile from the account stored at login.
+        (function () {
+            let user = null;
+            try {
+                user = JSON.parse(sessionStorage.getItem("user") || "null");
+            } catch (error) {}
+            if (!user) {
+                window.location.replace("../index.html");
+                return;
+            }
+            const set = (id, value) => {
+                const element = document.getElementById(id);
+                if (element) element.textContent = value || "—";
+            };
+            set("profileName", user.name);
+            set("profileFullName", user.name);
+            set("profileSchoolId", user.school_id);
+            const email = document.getElementById("profileEmail");
+            if (email) email.value = user.email || "No email on file";
+        })();
+    </script>
+
+    <script>
+        // Show the logged-in learner's name in the header.
+        (function () {
+            try {
+                const user = JSON.parse(sessionStorage.getItem("user") || "null");
+                const element = document.getElementById("headerUserName");
+                if (user && user.name && element) element.textContent = user.name;
+            } catch (error) {}
+        })();
+    </script>
 
 </body>
 

@@ -98,6 +98,14 @@ class PasswordController extends Controller
             ], 403);
         }
 
+        return $this->changeOwnPassword($request);
+    }
+
+    // Change password for any logged-in user (all roles)
+    public function changeOwnPassword(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
         $validated = $request->validate([
             'current_password' => ['required', 'string'],
             'password' => [
