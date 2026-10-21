@@ -798,20 +798,24 @@ applySiknayanSystemAdminProfile();
                 ".notification-dropdown-footer"
             );
 
-        bell.setAttribute("aria-haspopup", "true");
-        bell.setAttribute("aria-expanded", "false");
-        bell.setAttribute(
-            "aria-controls",
-            "systemAdminNotificationDropdown"
-        );
+        // The bell opens the Notifications page (the red dot still shows
+        // unread notifications). The dropdown is no longer opened.
+        bell.setAttribute("title", "Open notifications");
 
         bell.addEventListener("click", (event) => {
             event.preventDefault();
             event.stopPropagation();
 
-            setDropdownOpen(
-                notificationDropdown.hidden
+            const onNotificationsPage = /\/notifications\.html$/i.test(
+                window.location.pathname
             );
+
+            if (onNotificationsPage) {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                return;
+            }
+
+            window.location.href = NOTIFICATIONS_PAGE;
         });
 
         notificationDropdown.addEventListener(
