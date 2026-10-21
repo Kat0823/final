@@ -211,6 +211,8 @@
         }
     </style>
 
+    <!-- Header and sidebar shared by all Instructor pages (load last) -->
+    <link rel="stylesheet" href="CSS/shell.css">
 </head>
 
 <body>
@@ -264,7 +266,7 @@
 
                     <img
                         id="headerAvatar"
-                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200"
+                        src="../images/logo.png"
                         alt="Instructor Avatar">
 
                 </div>
@@ -308,7 +310,7 @@
             <div class="view-header">
 
                 <span class="view-label">
-                    View
+                    Instructor Menu
                 </span>
 
                 <button
@@ -317,7 +319,7 @@
                     id="viewToggle"
                     title="Toggle Sidebar">
 
-                    <i class="fa-regular fa-rectangle-list"></i>
+                    <i class="fa-solid fa-angles-left" aria-hidden="true"></i>
 
                 </button>
 
@@ -330,11 +332,9 @@
                     href="dashboard.html"
                     class="nav-item">
 
-                    <i class="fa-solid fa-users"></i>
+                    <i class="fa-solid fa-house" aria-hidden="true"></i>
 
-                    <span>
-                        Learners Progress
-                    </span>
+                    <span>Learner Progress</span>
 
                 </a>
 
@@ -343,11 +343,9 @@
                     href="class.html"
                     class="nav-item">
 
-                    <i class="fa-solid fa-layer-group"></i>
+                    <i class="fa-solid fa-book" aria-hidden="true"></i>
 
-                    <span>
-                        Classes
-                    </span>
+                    <span>Classes</span>
 
                 </a>
 
@@ -356,24 +354,20 @@
                     href="submissions.html"
                     class="nav-item">
 
-                    <i class="fa-regular fa-folder"></i>
+                    <i class="fa-regular fa-folder" aria-hidden="true"></i>
 
-                    <span>
-                        Submission
-                    </span>
+                    <span>Submissions</span>
 
                 </a>
 
 
                 <a
                     href="notification.html"
-                    class="nav-item active">
+                    class="nav-item active" aria-current="page">
 
-                    <i class="fa-regular fa-bell"></i>
+                    <i class="fa-solid fa-bell" aria-hidden="true"></i>
 
-                    <span>
-                        Notification
-                    </span>
+                    <span>Notifications</span>
 
                 </a>
 
@@ -382,11 +376,9 @@
                     href="logout.html"
                     class="nav-item logout-bottom">
 
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
 
-                    <span>
-                        Logout
-                    </span>
+                    <span>Logout</span>
 
                 </a>
 
@@ -621,7 +613,7 @@
 
                             <img
                                 id="avatarPreview"
-                                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200"
+                                src="../images/logo.png"
                                 alt="Instructor Profile Picture">
 
 

@@ -13,6 +13,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
   <link rel="stylesheet" href="../teacher/CSS/logout.css" />
+    <!-- Header and sidebar shared by all Instructor pages (load last) -->
+    <link rel="stylesheet" href="CSS/shell.css">
 </head>
 <body>
 
@@ -31,10 +33,10 @@
        <div class="header-right">
       <div class="user-profile" id="userProfileBtn" style="cursor: pointer;">
         <div class="avatar-ring">
-          <img id="headerAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Macross Arsel Avatar" />
+          <img id="headerAvatar" src="../images/logo.png" alt="Instructor profile photo" />
         </div>
         <div class="user-info">
-          <span class="user-name">Macross Arsel <i class="fa-solid fa-caret-down"></i></span>
+          <span class="user-name"><span id="headerInstructorName">Instructor</span> <i class="fa-solid fa-caret-down"></i></span>
           <span class="user-role">Instructor</span>
         </div>
       </div>
@@ -47,39 +49,39 @@
     <!-- Deep Maroon Sidebar -->
     <aside class="sidebar">
       <div class="view-header">
-        <span class="view-label">View</span>
-        <button class="view-toggle-btn" title="Toggle Layout">
-          <i class="fa-regular fa-rectangle-list"></i>
+        <span class="view-label">Instructor Menu</span>
+        <button id="viewToggle" class="view-toggle-btn" title="Toggle Layout">
+          <i class="fa-solid fa-angles-left" aria-hidden="true"></i>
         </button>
       </div>
 
       <nav class="nav-menu">
         <a href="dashboard.html" class="nav-item">
-          <i class="fa-solid fa-users"></i>
-          <span>Learners Progress</span>
-        </a>
+          <i class="fa-solid fa-house" aria-hidden="true"></i>
+          <span>Learner Progress</span>
+      </a>
 
         <a href="class.html" class="nav-item">
-          <i class="fa-solid fa-layer-group"></i>
+          <i class="fa-solid fa-book" aria-hidden="true"></i>
           <span>Classes</span>
-        </a>
+      </a>
 
         <a href="submissions.html" class="nav-item">
-          <i class="fa-regular fa-folder"></i>
-          <span>Submission</span>
-        </a>
+          <i class="fa-regular fa-folder" aria-hidden="true"></i>
+          <span>Submissions</span>
+      </a>
 
         <a href="notification.html" class="nav-item">
-          <i class="fa-regular fa-bell"></i>
+          <i class="fa-solid fa-bell" aria-hidden="true"></i>
           <span>Notifications</span>
-        </a> 
+      </a> 
       </nav>
 
         <!-- Highlighted Logout Item Pushed To Bottom -->
         <a href="logout.html" class="nav-item active-logout logout-bottom" id="logoutNavItem">
-          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
           <span>Logout</span>
-        </a>
+      </a>
       </nav>
     </aside>
   </div>
@@ -103,7 +105,7 @@
           <!-- Photo Upload Section -->
           <div class="avatar-upload-section">
             <div class="avatar-upload-preview">
-              <img id="avatarPreview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Instructor Profile Picture">
+              <img id="avatarPreview" src="../images/logo.png" alt="Instructor Profile Picture">
               <label for="avatarInput" class="avatar-edit-badge" title="Change Photo">
                 <i class="fa-solid fa-camera"></i>
               </label>
@@ -122,7 +124,7 @@
             </div>
             <div class="profile-form-group">
               <label for="instructorName">Full Name</label>
-              <input type="text" id="instructorName" value="Macross Arsel" disabled class="input-disabled">
+              <input type="text" id="instructorName" value="" disabled class="input-disabled">
             </div>
           </div>
 
@@ -171,7 +173,7 @@
   </div>
   <!-- CONTENT -->
 
-        <main class="content">
+        <main class="content main-content">
 
 
             <div class="title-row">
@@ -206,7 +208,7 @@
 
                     <p>
                         Do you really want to logout from
-                        your student account?
+                        your instructor account?
                     </p>
 
 
@@ -434,5 +436,18 @@
     });
   </script>
 
+    <script>
+        // Show the signed-in instructor's name (saved at login).
+        (function () {
+            try {
+                const user = JSON.parse(sessionStorage.getItem("user") || "null");
+                if (!user || !user.name) return;
+                const header = document.getElementById("headerInstructorName");
+                const field = document.getElementById("instructorName");
+                if (header) header.textContent = user.name;
+                if (field) field.value = user.name;
+            } catch (error) {}
+        })();
+    </script>
 </body>
 </html>

@@ -1,0 +1,368 @@
+/* =========================================================
+   SIKNAYAN - INSTRUCTOR PORTAL
+   HEADER AND SIDEBAR (shell.css)
+
+   One header and sidebar for every Instructor page, with the same
+   look and sizes as the Academic Admin and System Admin portals:
+   green 84px header, 245px maroon sidebar, the same link style.
+   Load this file LAST on each teacher page so it wins over the page's
+   own header/sidebar rules (which had drifted apart page by page).
+
+   Applies on screens wider than 1100px. Narrower screens keep each
+   page's own mobile menu (slide-in sidebar).
+========================================================= */
+
+:root {
+    --shell-green: #08683c;
+    --shell-maroon: #6f0d0d;
+    --shell-white: #ffffff;
+    --shell-header-height: 84px;
+    --shell-sidebar-width: 245px;
+    --shell-sidebar-collapsed: 76px;
+}
+
+/* Colours are set for every screen size (the Submissions page had no
+   colours at all: its colour variables were never defined). */
+.header {
+    background: var(--shell-green);
+    color: var(--shell-white);
+}
+
+.sidebar {
+    background: var(--shell-maroon);
+    color: var(--shell-white);
+}
+
+.sidebar .nav-item,
+.sidebar .nav-item:visited {
+    color: var(--shell-white);
+    text-decoration: none;
+}
+
+@media (min-width: 1101px) {
+
+    /* ---------------- HEADER ---------------- */
+
+    .header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        height: var(--shell-header-height);
+        min-height: var(--shell-header-height);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 0;
+        padding: 0 28px 0 36px;
+        box-shadow: none;
+        border: none;
+    }
+
+    .header .menu-btn {
+        display: none;
+    }
+
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        min-width: 0;
+    }
+
+    .logo-box {
+        width: 56px;
+        height: 56px;
+        padding: 0;
+        border: none;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+        flex-shrink: 0;
+    }
+
+    .logo-box img {
+        width: 56px;
+        height: 56px;
+        object-fit: contain;
+        border: none;
+        border-radius: 0;
+    }
+
+    .header .main-title {
+        font-size: 20px;
+        font-weight: 500;
+        line-height: 1.25;
+        white-space: nowrap;
+        color: var(--shell-white);
+    }
+
+    .header .sub-title {
+        margin-top: 2px;
+        font-size: 17px;
+        font-weight: 400;
+        line-height: 1.25;
+        white-space: nowrap;
+        color: var(--shell-white);
+        opacity: 1;
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        flex-shrink: 0;
+    }
+
+    .header .icon-btn {
+        position: relative;
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border: none;
+        border-radius: 50%;
+        background: transparent;
+        color: var(--shell-white);
+        font-size: 22px;
+        cursor: pointer;
+    }
+
+    .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0;
+        border: none;
+        background: transparent;
+        color: var(--shell-white);
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+    .avatar-ring {
+        width: 46px;
+        height: 46px;
+        padding: 0;
+        border: 2px solid var(--shell-white);
+        border-radius: 50%;
+        background: transparent;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    .avatar-ring img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border: none;
+        border-radius: 50%;
+    }
+
+    .user-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user-name {
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--shell-white);
+    }
+
+    .user-role {
+        margin-top: 2px;
+        font-size: 12px;
+        color: var(--shell-white);
+        opacity: 1;
+    }
+
+    /* ---------------- SIDEBAR ---------------- */
+
+    .sidebar {
+        position: fixed;
+        top: var(--shell-header-height);
+        left: 0;
+        bottom: 0;
+        width: var(--shell-sidebar-width);
+        height: calc(100vh - var(--shell-header-height));
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+        transform: none;
+        box-shadow: none;
+        border: none;
+        border-radius: 0;
+        z-index: 900;
+        transition: width 0.25s ease;
+    }
+
+    .view-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 73px;
+        margin: 0;
+        padding: 18px 30px 10px;
+        border: none;
+    }
+
+    .view-label {
+        font-size: 17px;
+        font-weight: 400;
+        white-space: nowrap;
+        color: var(--shell-white);
+    }
+
+    .view-toggle-btn {
+        width: 38px;
+        height: 38px;
+        display: grid;
+        place-items: center;
+        border: none;
+        background: transparent;
+        color: var(--shell-white);
+        font-size: 20px;
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    .nav-menu {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        min-height: 0;
+        gap: 7px;
+        margin: 0;
+        padding: 8px 14px 14px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .sidebar .nav-item {
+        height: 53px;
+        min-height: 0;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin: 0;
+        padding: 0 18px;
+        border: none;
+        border-radius: 7px;
+        background: transparent;
+        box-shadow: none;
+        font-size: 16px;
+        font-weight: 400;
+        white-space: nowrap;
+        transition: background 0.2s ease, padding 0.25s ease;
+    }
+
+    .sidebar .nav-item > i {
+        width: 29px;
+        font-size: 21px;
+        text-align: center;
+        color: var(--shell-white);
+        flex-shrink: 0;
+    }
+
+    .sidebar .nav-item > span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: var(--shell-white);
+    }
+
+    .sidebar .nav-item:hover {
+        background: rgba(255, 255, 255, 0.09);
+        transform: none;
+    }
+
+    /* !important only to beat the Notifications page's own gold
+       "!important" highlight. */
+    .sidebar .nav-item.active,
+    .sidebar .nav-item.active:hover,
+    .sidebar .nav-item.active-logout {
+        background: rgba(255, 255, 255, 0.14) !important;
+        color: var(--shell-white) !important;
+        border: none;
+        box-shadow: none;
+        font-weight: 400;
+    }
+
+    .sidebar .nav-item.active > i,
+    .sidebar .nav-item.active > span {
+        color: var(--shell-white);
+    }
+
+    /* Logout sits at the bottom, as in the other portals. */
+    .sidebar .logout-bottom {
+        margin-top: auto;
+    }
+
+    /* ---------------- CONTENT ---------------- */
+
+    .main-content {
+        margin-left: var(--shell-sidebar-width);
+        transition: margin-left 0.25s ease;
+    }
+
+    /* ---------------- COLLAPSED ---------------- */
+
+    .sidebar.collapsed {
+        width: var(--shell-sidebar-collapsed);
+    }
+
+    .sidebar.collapsed .view-header {
+        justify-content: center;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .sidebar.collapsed .view-label,
+    .sidebar.collapsed .nav-item > span {
+        display: none;
+    }
+
+    .sidebar.collapsed .nav-menu {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .sidebar.collapsed .nav-item {
+        justify-content: center;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .main-content.expanded,
+    body.sidebar-collapsed .main-content,
+    .sidebar.collapsed ~ .main-content {
+        margin-left: var(--shell-sidebar-collapsed);
+    }
+}
+
+/* Laptop-height windows: compact, so every link fits without
+   scrolling (same rule as the Academic Admin portal). */
+@media (min-width: 1101px) and (max-height: 820px) {
+
+    .view-header {
+        min-height: 48px;
+        padding: 8px 24px 2px;
+    }
+
+    .nav-menu {
+        gap: 3px;
+        padding: 4px 14px 10px;
+    }
+
+    .sidebar .nav-item {
+        height: clamp(34px, calc((100vh - var(--shell-header-height) - 100px) / 6), 53px);
+        font-size: 15px;
+    }
+
+    .sidebar .nav-item > i {
+        font-size: 19px;
+    }
+}

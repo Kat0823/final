@@ -1031,6 +1031,8 @@
             }
         }
     </style>
+    <!-- Header and sidebar shared by all Instructor pages (load last) -->
+    <link rel="stylesheet" href="CSS/shell.css">
 </head>
 
 <body>
@@ -1110,28 +1112,28 @@
         </div>
 
         <nav class="nav-menu">
-            <a href="dashboard.html" class="nav-item active">
-                <i class="fa-solid fa-house"></i>
+            <a href="dashboard.html" class="nav-item active" aria-current="page">
+                <i class="fa-solid fa-house" aria-hidden="true"></i>
                 <span>Learner Progress</span>
             </a>
 
-            <a href="class.html" class="nav-item" aria-current="page">
-                <i class="fa-solid fa-book"></i>
+            <a href="class.html" class="nav-item">
+                <i class="fa-solid fa-book" aria-hidden="true"></i>
                 <span>Classes</span>
             </a>
 
             <a href="submissions.html" class="nav-item">
-                <i class="fa-regular fa-folder"></i>
+                <i class="fa-regular fa-folder" aria-hidden="true"></i>
                 <span>Submissions</span>
             </a>
 
             <a href="notification.html" class="nav-item">
-                <i class="fa-solid fa-bell"></i>
+                <i class="fa-solid fa-bell" aria-hidden="true"></i>
                 <span>Notifications</span>
             </a>
 
             <a href="../index.html" class="nav-item logout-bottom" id="logoutNav">
-                <i class="fa-solid fa-right-from-bracket"></i>
+                <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
                 <span>Logout</span>
             </a>
         </nav>

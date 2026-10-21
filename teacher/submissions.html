@@ -1524,6 +1524,8 @@ body {
 
 </style>
 
+    <!-- Header and sidebar shared by all Instructor pages (load last) -->
+    <link rel="stylesheet" href="CSS/shell.css">
 </head>
 
 
@@ -1605,28 +1607,28 @@ body {
         </div>
 
         <nav class="nav-menu">
-            <a href="dashboard.html" class="nav-item active">
-                <i class="fa-solid fa-house"></i>
+            <a href="dashboard.html" class="nav-item">
+                <i class="fa-solid fa-house" aria-hidden="true"></i>
                 <span>Learner Progress</span>
             </a>
 
-            <a href="class.html" class="nav-item" aria-current="page">
-                <i class="fa-solid fa-book"></i>
+            <a href="class.html" class="nav-item">
+                <i class="fa-solid fa-book" aria-hidden="true"></i>
                 <span>Classes</span>
             </a>
 
-            <a href="submissions.html" class="nav-item">
-                <i class="fa-regular fa-folder"></i>
+            <a href="submissions.html" class="nav-item active" aria-current="page">
+                <i class="fa-regular fa-folder" aria-hidden="true"></i>
                 <span>Submissions</span>
             </a>
 
             <a href="notification.html" class="nav-item">
-                <i class="fa-solid fa-bell"></i>
+                <i class="fa-solid fa-bell" aria-hidden="true"></i>
                 <span>Notifications</span>
             </a>
 
             <a href="../index.html" class="nav-item logout-bottom" id="logoutNav">
-                <i class="fa-solid fa-right-from-bracket"></i>
+                <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
                 <span>Logout</span>
             </a>
         </nav>
@@ -1811,7 +1813,7 @@ body {
 
                     <img
                         id="profileAvatar"
-                        src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=200&q=80"
+                        src="../images/logo.png"
                         alt="Profile Photo">
 
 
@@ -2495,28 +2497,31 @@ function showToast(
 
 function toggleSidebar() {
 
-    sidebar.classList.toggle("collapsed");
+    const collapsed = sidebar.classList.toggle("collapsed");
 
-    mainContent.classList.toggle("expanded");
+    mainContent.classList.toggle("expanded", collapsed);
 
+    const toggleButton = document.getElementById("sidebarToggle");
+    const toggleIcon = toggleButton?.querySelector("i");
 
-    if (
-        sidebar.classList.contains(
-            "collapsed"
-        )
-    ) {
+    if (toggleButton) {
+        toggleButton.setAttribute("aria-expanded", String(!collapsed));
+        toggleButton.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
+        toggleButton.title = collapsed ? "Expand sidebar" : "Collapse sidebar";
+    }
 
-        sidebarToggleIcon.className =
-            "fa-solid fa-chevron-right";
-
-    } else {
-
-        sidebarToggleIcon.className =
-            "fa-solid fa-bars";
-
+    if (toggleIcon) {
+        toggleIcon.className = collapsed
+            ? "fa-solid fa-angles-right"
+            : "fa-solid fa-angles-left";
     }
 
 }
+
+// The collapse button was never connected to toggleSidebar().
+document
+    .getElementById("sidebarToggle")
+    ?.addEventListener("click", toggleSidebar);
 
 
 /* =========================================================
