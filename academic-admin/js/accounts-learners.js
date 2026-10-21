@@ -637,8 +637,9 @@
             account.isActive === false ? "inactive" : "active";
 
         setEditMode();
+        // Status can be changed for every account, including a new one.
         accountStatusInput.disabled =
-            account.passwordSetupComplete !== true;
+            false;
 
         accountModal.hidden = false;
 
@@ -878,9 +879,9 @@
                     requestData.password = password;
                 }
 
-                if (account.passwordSetupComplete) {
-                    requestData.is_active = status === "active";
-                }
+                // Status can be changed for any account, including one
+                // that hasn't signed in yet.
+                requestData.is_active = status === "active";
 
                 const payload = await learnerAccountsApiRequest(
                     `/admin/learners/${encodeURIComponent(account.backendId)}`,
@@ -1362,23 +1363,23 @@ if (account) {
         )
     );
 
-    if (passwordSetupComplete) {
-        actionsCell.appendChild(
-            createActionButton(
-                "Reset",
-                "key-round",
-                () => openResetPasswordModal(account.id)
-            )
-        );
+    // Available for every account, including a new one that hasn't
+    // signed in yet (e.g. a lost temporary password).
+    actionsCell.appendChild(
+        createActionButton(
+            "Reset",
+            "key-round",
+            () => openResetPasswordModal(account.id)
+        )
+    );
 
-        actionsCell.appendChild(
-            createActionButton(
-                accountStatus === "active" ? "Deactivate" : "Activate",
-                accountStatus === "active" ? "user-x" : "user-check",
-                () => toggleAccountStatus(account.id)
-            )
-        );
-    }
+    actionsCell.appendChild(
+        createActionButton(
+            isActive ? "Deactivate" : "Activate",
+            isActive ? "user-x" : "user-check",
+            () => toggleAccountStatus(account.id)
+        )
+    );
 } else if (!learner.backendAccount) {
     actionsCell.appendChild(
         createActionButton(
@@ -1489,8 +1490,8 @@ if (account) {
 
         if (!account) return;
 
-        if (!account.backendId || account.passwordSetupComplete !== true) {
-            alert("Password reset is available only for an active account that has completed setup.");
+        if (!account.backendId) {
+            alert("This learner is not linked to a saved account. Refresh the page and try again.");
             return;
         }
 
@@ -1545,8 +1546,8 @@ if (account) {
         const learnerName =
             getLearnerName(account);
 
-        if (!account.backendId || account.passwordSetupComplete !== true) {
-            alert("Account status can be changed only for a linked account that has completed setup.");
+        if (!account.backendId) {
+            alert("This learner is not linked to a saved account. Refresh the page and try again.");
             return;
         }
 
