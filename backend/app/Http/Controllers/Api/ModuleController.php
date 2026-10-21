@@ -117,6 +117,15 @@ class ModuleController extends Controller
             ? $originalName
             : Str::slug($module->title ?: 'module-material') . ($extension ? '.' . $extension : '');
 
+        // ?disposition=inline lets the browser show the file (View);
+        // otherwise it is sent as a download.
+        if ($request->query('disposition') === 'inline') {
+            return Storage::disk('local')->response($path, $fileName, [
+                'Content-Type' => Storage::disk('local')->mimeType($path) ?: 'application/octet-stream',
+                'X-Content-Type-Options' => 'nosniff',
+            ], 'inline');
+        }
+
         return Storage::disk('local')->download($path, $fileName);
     }
 }

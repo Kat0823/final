@@ -212,6 +212,7 @@ Route::middleware([
         Route::get('/classes/{id}/modules', [AcademicAdminController::class, 'classModules']);
         Route::post('/classes/{id}/modules', [AcademicAdminController::class, 'storeModule']);
         Route::put('/classes/{id}/modules/sync', [AcademicAdminController::class, 'syncClassModules']);
+        Route::put('/module-library/{libraryKey}/material', [AcademicAdminController::class, 'replaceLibraryMaterial']);
         Route::post('/module-files', [AcademicAdminController::class, 'uploadModuleFile']);
         Route::get('/module-files', [AcademicAdminController::class, 'showModuleFile']);
     });

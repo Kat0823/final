@@ -521,6 +521,12 @@
             cursor: wait;
         }
 
+        .material-secondary-button {
+            background: #fff;
+            color: #1f7a4d;
+            border: 1px solid #1f7a4d;
+        }
+
         .material-download-message {
             margin-top: 8px;
             color: #991b1b;
@@ -1069,9 +1075,17 @@
                         module.has_material
                             ? `
                                 <p style="margin-top: 14px;">
-                                    <button type="button" id="downloadMaterialButton" class="material-download-button">
+                                    <strong>Material:</strong>
+                                    ${escapeHtml(module.material_name || "Module file")}
+                                </p>
+                                <p style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 10px;">
+                                    <button type="button" id="viewMaterialButton" class="material-download-button">
+                                        <i class="fa-solid fa-eye"></i>
+                                        View material
+                                    </button>
+                                    <button type="button" id="downloadMaterialButton" class="material-download-button material-secondary-button">
                                         <i class="fa-solid fa-download"></i>
-                                        Download material${module.material_name ? `: ${escapeHtml(module.material_name)}` : ""}
+                                        Download
                                     </button>
                                 </p>
                                 <p id="downloadMaterialMessage" class="material-download-message" role="status" hidden></p>
@@ -1084,6 +1098,10 @@
                     }
 
                 `;
+
+                document
+                    .getElementById("viewMaterialButton")
+                    ?.addEventListener("click", () => viewMaterial());
 
                 document
                     .getElementById("downloadMaterialButton")
@@ -1435,6 +1453,66 @@
            The file is private, so it is fetched with the login token
            and then saved through a temporary link.
         ================================= */
+
+        // Opens the file in a new tab (PDFs and images display there).
+        async function viewMaterial() {
+
+            const message =
+                document.getElementById("downloadMaterialMessage");
+
+            if (message) {
+                message.hidden = true;
+            }
+
+            // Open the tab right away so the browser doesn't block it.
+            const tab = window.open("about:blank", "_blank");
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_BASE_URL}/api/student/modules/${encodeURIComponent(moduleId)}/material?disposition=inline`,
+                        {
+                            headers: {
+                                "Accept": "*/*",
+                                "Authorization": `Bearer ${token}`
+                            }
+                        }
+                    );
+
+                if (!response.ok) {
+                    const data = await response.json().catch(() => null);
+                    throw new Error(
+                        data?.message || "The material could not be opened."
+                    );
+                }
+
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+
+                if (tab) {
+                    tab.location.href = url;
+                } else {
+                    window.location.href = url;
+                }
+
+                setTimeout(() => URL.revokeObjectURL(url), 300000);
+
+            } catch (error) {
+
+                tab?.close();
+
+                if (message) {
+                    message.textContent =
+                        error instanceof TypeError
+                            ? "Unable to reach the server. Please try again."
+                            : error.message;
+                    message.hidden = false;
+                }
+
+            }
+        }
+
 
         async function downloadMaterial(module) {
 

@@ -1077,12 +1077,17 @@ public function uploadModuleFile(Request $request): JsonResponse
     }
 
     $request->validate([
+        // Module materials must open in any browser: PDF or an image.
+        // (Save Word/PowerPoint files as PDF before uploading.)
         'file' => [
             'required',
             'file',
-            'max:51200',
-            'mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,txt,csv,rtf,zip,jpg,jpeg,png',
+            'max:25600',
+            'mimes:pdf,jpg,jpeg,png',
         ],
+    ], [
+        'file.mimes' => 'Upload a PDF or an image (JPG, PNG). Save Word or PowerPoint files as PDF first.',
+        'file.max' => 'The file must be 25 MB or smaller.',
     ]);
 
     $file = $request->file('file');
@@ -1290,6 +1295,36 @@ public function destroyModule(Request $request, int $id): JsonResponse
     return response()->json([
         'success' => true,
         'message' => 'Module deleted successfully.',
+    ]);
+}
+
+/**
+ * A module's file was replaced in the module library: point every one of
+ * this admin's classes that uses the module (same library_key) at the new
+ * file. The old file is kept, so nothing already handed out breaks.
+ */
+public function replaceLibraryMaterial(Request $request, string $libraryKey): JsonResponse
+{
+    if ($response = $this->checkAdmin($request)) {
+        return $response;
+    }
+
+    $validated = $request->validate([
+        'material_path' => array_merge(['required'], array_slice($this->materialPathRules(), 1)),
+        'material_name' => ['nullable', 'string', 'max:255'],
+    ]);
+
+    $updated = Module::where('library_key', $libraryKey)
+        ->whereHas('course', fn ($query) => $query->where('owner_admin_id', $this->adminId($request)))
+        ->update([
+            'material_path' => $validated['material_path'],
+            'material_name' => $validated['material_name'] ?? null,
+            'updated_at' => now(),
+        ]);
+
+    return response()->json([
+        'success' => true,
+        'updated_classes' => $updated,
     ]);
 }
 

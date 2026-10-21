@@ -1418,9 +1418,10 @@
                 file.name || ""
             ).toLowerCase();
 
+        // PDF or an image: every browser can show these.
         const extensionAllowed =
-            name.endsWith(".pdf") ||
-            name.endsWith(".docx");
+            [".pdf", ".jpg", ".jpeg", ".png"]
+                .some(extension => name.endsWith(extension));
 
         const sizeAllowed =
             Number(
@@ -1725,6 +1726,17 @@ if (file) {
     module.filePath = uploadedFile.file_path;
 
     module.version = Number(module.version || 1) + 1;
+
+    // Classes using this module switch to the new file too.
+    try {
+        await replaceFileInClasses(module);
+    } catch (error) {
+        alert(
+            "The new file was saved in the library, but the classes using this module " +
+            "could not be updated: " + error.message +
+            " Open each class's Manage Modules and save to update them."
+        );
+    }
 }
 
             } else {
@@ -1906,6 +1918,79 @@ async function uploadModuleFile(file) {
     }
 
     return payload;
+}
+
+// Point every class that uses this library module at its current file.
+async function replaceFileInClasses(module) {
+    if (!module?.filePath) {
+        return;
+    }
+
+    const response = await fetch(
+        `${MODULE_FILE_API_BASE_URL}/admin/module-library/${encodeURIComponent(module.id)}/material`,
+        {
+            method: "PUT",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${getModuleFileApiToken()}`
+            },
+            body: JSON.stringify({
+                material_path: module.filePath,
+                material_name: module.fileName || null
+            })
+        }
+    );
+
+    const payload = await response.json().catch(() => null);
+
+    if (!response.ok || !payload?.success) {
+        throw new Error(payload?.message || `Request failed (${response.status}).`);
+    }
+
+    return payload.updated_classes;
+}
+
+// Save the stored file to this computer under its original name.
+async function downloadStoredModuleFile(module) {
+    if (!module?.filePath) {
+        alert("This module has no saved file path. Please upload its file again.");
+        return;
+    }
+
+    try {
+        const query = new URLSearchParams({
+            path: module.filePath,
+            name: module.fileName || "module-file"
+        });
+
+        const response = await fetch(
+            `${MODULE_FILE_API_BASE_URL}/admin/module-files?${query}`,
+            {
+                headers: {
+                    Accept: "*/*",
+                    Authorization: `Bearer ${getModuleFileApiToken()}`
+                }
+            }
+        );
+
+        if (!response.ok) {
+            const payload = await response.json().catch(() => null);
+            throw new Error(payload?.message || `Unable to download the file (${response.status}).`);
+        }
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = module.fileName || "module-file";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (error) {
+        alert(error.message || "Unable to download the module file.");
+    }
 }
 
 async function openStoredModuleFile(module) {
@@ -2103,8 +2188,13 @@ async function openStoredModuleFile(module) {
                             href="#"
                             data-open-module-file="true"
                             style="color:#086642; text-decoration:underline; cursor:pointer;"
-                            title="Open uploaded file"
+                            title="View the file"
                         >${escapeHtml(module.fileName || "Open uploaded file")}</a>
+                        <button
+                            type="button"
+                            data-download-module-file="true"
+                            style="margin-left:10px; padding:3px 10px; border:1px solid #086642; border-radius:6px; background:#fff; color:#086642; font-weight:600; cursor:pointer;"
+                        >Download</button>
                       `
                     : escapeHtml(module.fileName || "No file attached")
         }
@@ -2201,6 +2291,11 @@ async function openStoredModuleFile(module) {
 storedFileLink?.addEventListener("click", event => {
     event.preventDefault();
     openStoredModuleFile(module);
+});
+
+overlay.querySelector("[data-download-module-file]")?.addEventListener("click", event => {
+    event.preventDefault();
+    downloadStoredModuleFile(module);
 });
 
         const close =

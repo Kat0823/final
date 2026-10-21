@@ -176,6 +176,90 @@ class ModuleMaterialTest extends TestCase
         $this->actingAs($enrolled)->get($url)->assertOk();
     }
 
+    public function test_only_pdf_and_images_can_be_uploaded(): void
+    {
+        Storage::fake('local');
+        $admin = $this->user('academic_admin', 'ADM-M5');
+
+        foreach (['notes.pdf', 'diagram.png', 'photo.jpg', 'photo.jpeg'] as $name) {
+            $this->upload($admin, $name);
+        }
+
+        foreach (['notes.docx', 'slides.pptx', 'sheet.xlsx', 'archive.zip', 'page.html'] as $name) {
+            $this->actingAs($admin)
+                ->post('/api/admin/module-files', [
+                    'file' => UploadedFile::fake()->createWithContent($name, 'X'),
+                ], ['Accept' => 'application/json'])
+                ->assertStatus(422)
+                ->assertJsonPath('errors.file.0', 'Upload a PDF or an image (JPG, PNG). Save Word or PowerPoint files as PDF first.');
+        }
+    }
+
+    public function test_learner_can_view_the_file_in_the_browser(): void
+    {
+        Storage::fake('local');
+        $admin = $this->user('academic_admin', 'ADM-M6');
+        $learner = $this->user('learner', '24-M0006');
+        $course = $this->course();
+        $course->learners()->attach($learner->id);
+        $path = $this->upload($admin, 'Handout.pdf', '%PDF-1.4 content');
+        $module = Module::create([
+            'course_id' => $course->id, 'title' => 'Handout',
+            'material_path' => $path, 'material_name' => 'Handout.pdf', 'is_published' => true,
+        ]);
+
+        $view = $this->actingAs($learner)
+            ->get("/api/student/modules/{$module->id}/material?disposition=inline")
+            ->assertOk();
+        $this->assertStringStartsWith('inline', $view->headers->get('content-disposition'));
+        $this->assertSame('nosniff', $view->headers->get('x-content-type-options'));
+
+        $download = $this->actingAs($learner)
+            ->get("/api/student/modules/{$module->id}/material")
+            ->assertOk();
+        $this->assertStringStartsWith('attachment', $download->headers->get('content-disposition'));
+    }
+
+    public function test_replacing_a_library_file_updates_every_class_using_it(): void
+    {
+        Storage::fake('local');
+        $admin = $this->user('academic_admin', 'ADM-M7');
+        $other = $this->user('academic_admin', 'ADM-M8');
+        $old = $this->upload($admin, 'v1.pdf', 'VERSION-1');
+        $new = $this->upload($admin, 'v2.pdf', 'VERSION-2');
+
+        $classOne = $this->course(null, $admin);
+        $classTwo = $this->course(null, $admin);
+        $otherAdminsClass = $this->course(null, $other);
+        foreach ([$classOne, $classTwo, $otherAdminsClass] as $class) {
+            Module::create([
+                'course_id' => $class->id, 'library_key' => 'module-shared', 'title' => 'Shared',
+                'material_path' => $old, 'material_name' => 'v1.pdf', 'is_published' => true,
+            ]);
+        }
+
+        $this->actingAs($admin)
+            ->putJson('/api/admin/module-library/module-shared/material', [
+                'material_path' => $new,
+                'material_name' => 'v2.pdf',
+            ])
+            ->assertOk()
+            ->assertJsonPath('updated_classes', 2);
+
+        $this->assertSame(2, Module::where('material_path', $new)->where('material_name', 'v2.pdf')->count());
+        // Another admin's class is not touched; the old file is kept.
+        $this->assertDatabaseHas('modules', ['course_id' => $otherAdminsClass->id, 'material_path' => $old]);
+        Storage::disk('local')->assertExists($old);
+
+        // A display name or a missing file is refused.
+        $this->actingAs($admin)
+            ->putJson('/api/admin/module-library/module-shared/material', ['material_path' => 'v2.pdf'])
+            ->assertStatus(422);
+        $this->actingAs($admin)
+            ->putJson('/api/admin/module-library/module-shared/material', [])
+            ->assertStatus(422);
+    }
+
     public function test_old_records_holding_only_a_display_name_are_not_offered_or_served(): void
     {
         Storage::fake('local');
