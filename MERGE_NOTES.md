@@ -53,7 +53,7 @@ docker compose up --build             # first start installs PHP packages and ru
 docker compose exec backend php artisan db:seed     # first time only: creates ADMIN-001
 ```
 
-Open `http://localhost:8080` for the portals. The API is at `http://localhost:8000/api`. MySQL is reachable from this computer only, on port 3306, for MySQL Workbench. Do not run `db:seed` again later: it resets `ADMIN-001` to the default password.
+Open `http://localhost:8080` for the portals. The API is at `http://localhost:8000/api`. MySQL is reachable from this computer only, on port 3306, for MySQL Workbench. Running `db:seed` again is safe: it never changes an existing `ADMIN-001`.
 
 **Without Docker (XAMPP or any PHP 8.4.1+ with MySQL)**
 
@@ -74,7 +74,9 @@ For a quick run without MySQL, `backend/.env.example` shows the SQLite alternati
 
 If the API is not at `http://localhost:8000`, define `window.SIKNAYAN_API_ORIGIN` before `api-config.js` loads, or edit the default in that file.
 
-The seeder creates one Academic Administrator: school ID `ADMIN-001`, password `admin123`. Change it before anyone else can reach the server. There is no seeder or command for a System Administrator; see "Still to do".
+The seeder creates one Academic Administrator, school ID `ADMIN-001`, with the password in `SIKNAYAN_SEED_ADMIN_PASSWORD` or, if that is empty, a random password it prints once. The account must choose a new password at first login.
+
+Create a System Administrator with `php artisan siknayan:system-admin SYS-0001 --name="Your Name"` (asks for the password; add `--reset` to change it later).
 
 ### What changed in the Docker setup
 
@@ -112,7 +114,7 @@ The full review, with evidence, is in the Siknayan LMS audit document. In priori
 
 1. Deleting a learner, instructor or class permanently erases submissions and grades (foreign keys cascade). Deactivate or soft-delete instead.
 2. Learners and instructors created by hand are marked "password setup complete" with a password the admin typed, so they are never asked to change it. Imported accounts are handled correctly.
-3. Nothing creates a System Administrator. Add a seeder or artisan command that reads the password from `.env`.
+3. ~~Nothing creates a System Administrator.~~ Done: `php artisan siknayan:system-admin`.
 4. Login has no rate limit, tokens never expire, and `.env.example` has `APP_DEBUG=true`.
 5. System Admin: Audit Logs, Backup, Notifications and Profile are not connected to the backend (see the document).
 6. Academic Admin: the Notifications page runs on browser storage and seeds demo events; it never calls the notification API.
