@@ -22,6 +22,34 @@ use Illuminate\Http\Request;
 class AcademicAdminController extends Controller
 {
     /**
+     * A module's material_path must be a file uploaded through
+     * POST /admin/module-files (module-materials/<random>.<ext>) that still
+     * exists. A display name such as "notes.pdf" is refused.
+     */
+    private function materialPathRules(): array
+    {
+        return [
+            'nullable',
+            'string',
+            'max:2048',
+            function (string $attribute, mixed $value, \Closure $fail): void {
+                if ($value === null || $value === '') {
+                    return;
+                }
+
+                if (!Module::isStoredMaterialPath($value)) {
+                    $fail('The module file must be uploaded again; the saved file reference is not valid.');
+                    return;
+                }
+
+                if (!Storage::disk('local')->exists(str_replace('\\', '/', $value))) {
+                    $fail('The module file was not found on the server. Upload it again.');
+                }
+            },
+        ];
+    }
+
+    /**
      * Check if the authenticated user is an Academic Administrator.
      */
     private function checkAdmin(Request $request): ?JsonResponse
@@ -1120,6 +1148,7 @@ public function classModules(Request $request, int $id): JsonResponse
             'title',
             'description',
             'material_path',
+            'material_name',
             'module_order',
             'is_published',
             'created_at',
@@ -1155,7 +1184,8 @@ public function storeModule(Request $request, int $id): JsonResponse
     $validated = $request->validate([
         'title' => ['required', 'string', 'max:255'],
         'description' => ['nullable', 'string'],
-        'material_path' => ['nullable', 'string', 'max:2048'],
+        'material_path' => $this->materialPathRules(),
+        'material_name' => ['nullable', 'string', 'max:255'],
         'module_order' => ['nullable', 'integer', 'min:1'],
         'is_published' => ['nullable', 'boolean'],
     ]);
@@ -1165,6 +1195,7 @@ public function storeModule(Request $request, int $id): JsonResponse
         'title' => $validated['title'],
         'description' => $validated['description'] ?? null,
         'material_path' => $validated['material_path'] ?? null,
+        'material_name' => $validated['material_name'] ?? null,
         'module_order' => $validated['module_order'] ?? 1,
         'is_published' => $validated['is_published'] ?? false,
     ]);
@@ -1194,7 +1225,8 @@ public function updateModule(Request $request, int $id): JsonResponse
     $validated = $request->validate([
         'title' => ['sometimes', 'required', 'string', 'max:255'],
         'description' => ['nullable', 'string'],
-        'material_path' => ['nullable', 'string', 'max:2048'],
+        'material_path' => $this->materialPathRules(),
+        'material_name' => ['nullable', 'string', 'max:255'],
         'module_order' => ['nullable', 'integer', 'min:1'],
         'is_published' => ['nullable', 'boolean'],
     ]);
@@ -1252,7 +1284,8 @@ public function syncClassModules(Request $request, int $id): JsonResponse
         'modules.*.library_key' => ['required', 'string', 'max:255'],
         'modules.*.title' => ['required', 'string', 'max:255'],
         'modules.*.description' => ['nullable', 'string'],
-        'modules.*.material_path' => ['nullable', 'string', 'max:2048'],
+        'modules.*.material_path' => $this->materialPathRules(),
+        'modules.*.material_name' => ['nullable', 'string', 'max:255'],
         'modules.*.module_order' => ['nullable', 'integer', 'min:1'],
         'modules.*.is_published' => ['nullable', 'boolean'],
     ]);
@@ -1303,6 +1336,9 @@ public function syncClassModules(Request $request, int $id): JsonResponse
         $module->material_path =
             $moduleData['material_path'] ?? null;
 
+        $module->material_name =
+            $moduleData['material_name'] ?? null;
+
         $module->module_order =
             $moduleData['module_order'] ?? 1;
 
@@ -1329,6 +1365,7 @@ public function syncClassModules(Request $request, int $id): JsonResponse
             'title',
             'description',
             'material_path',
+            'material_name',
             'module_order',
             'is_published',
             'created_at',

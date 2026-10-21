@@ -303,6 +303,12 @@ class InstructorCourseController extends Controller
                     'material_path' =>
                         $module->material_path,
 
+                    'material_name' =>
+                        $module->material_name,
+
+                    'has_material' =>
+                        $module->has_material,
+
                 ];
 
             }

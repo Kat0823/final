@@ -14,18 +14,31 @@ class Module extends Model
 
     /**
      * The student pages and several controllers read `name`; the column is `title`.
+     * `has_material` tells pages whether a file can be downloaded.
      */
-    protected $appends = ['name'];
+    protected $appends = ['name', 'has_material'];
+
+    /**
+     * The storage location is internal; pages get has_material and
+     * material_name instead.
+     */
+    protected $hidden = ['material_path'];
 
     protected $fillable = [
         'course_id',
         'title',
         'description',
         'material_path',
+        'material_name',
         'module_order',
         'is_published',
         'library_key',
     ];
+
+    /**
+     * Stored materials live on the private disk under this folder.
+     */
+    public const MATERIAL_FOLDER = 'module-materials/';
 
     protected function casts(): array
     {
@@ -38,6 +51,28 @@ class Module extends Model
     public function getNameAttribute(): ?string
     {
         return $this->title;
+    }
+
+    public function getHasMaterialAttribute(): bool
+    {
+        return self::isStoredMaterialPath($this->material_path);
+    }
+
+    /**
+     * True for a path inside the private module-materials folder, e.g.
+     * "module-materials/AbC123.pdf". Rejects display names and "..".
+     */
+    public static function isStoredMaterialPath(?string $path): bool
+    {
+        if ($path === null || $path === '') {
+            return false;
+        }
+
+        $path = str_replace('\\', '/', $path);
+
+        return str_starts_with($path, self::MATERIAL_FOLDER)
+            && !str_contains($path, '..')
+            && strlen($path) > strlen(self::MATERIAL_FOLDER);
     }
 
     public function course(): BelongsTo

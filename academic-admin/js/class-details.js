@@ -3759,7 +3759,14 @@ async function saveManagedModules(selectedIds) {
             description:
                 null,
 
+            // Where the uploaded file is stored (module-materials/...),
+            // not its display name.
             material_path:
+                module.filePath ||
+                null,
+
+            // The original file name, shown to people and used for downloads.
+            material_name:
                 module.fileName ||
                 null,
 

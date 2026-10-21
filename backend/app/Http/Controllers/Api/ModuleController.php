@@ -95,10 +95,7 @@ class ModuleController extends Controller
 
         $path = str_replace('\\', '/', (string) $module->material_path);
 
-        if (
-            !str_starts_with($path, 'module-materials/') ||
-            str_contains($path, '..')
-        ) {
+        if (!Module::isStoredMaterialPath($path)) {
             return response()->json([
                 'success' => false,
                 'message' => 'The material for this module is not available.',
@@ -112,9 +109,13 @@ class ModuleController extends Controller
             ], 404);
         }
 
+        // Download under the original file name when known; otherwise use
+        // the module title. Strip characters that break download headers.
         $extension = pathinfo($path, PATHINFO_EXTENSION);
-        $fileName = Str::slug($module->title ?: 'module-material')
-            . ($extension ? '.' . $extension : '');
+        $originalName = trim(preg_replace('/[\x00-\x1F\x7F"\\\\\/:*?<>|]+/', '_', (string) $module->material_name));
+        $fileName = $originalName !== ''
+            ? $originalName
+            : Str::slug($module->title ?: 'module-material') . ($extension ? '.' . $extension : '');
 
         return Storage::disk('local')->download($path, $fileName);
     }

@@ -502,6 +502,31 @@
 
         }
 
+.material-download-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            border: none;
+            border-radius: 8px;
+            background: #1f7a4d;
+            color: #fff;
+            font: inherit;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .material-download-button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .material-download-message {
+            margin-top: 8px;
+            color: #991b1b;
+            font-size: 14px;
+        }
+
     </style>
 
 </head>
@@ -1040,7 +1065,29 @@
                             : ""
                     }
 
+                    ${
+                        module.has_material
+                            ? `
+                                <p style="margin-top: 14px;">
+                                    <button type="button" id="downloadMaterialButton" class="material-download-button">
+                                        <i class="fa-solid fa-download"></i>
+                                        Download material${module.material_name ? `: ${escapeHtml(module.material_name)}` : ""}
+                                    </button>
+                                </p>
+                                <p id="downloadMaterialMessage" class="material-download-message" role="status" hidden></p>
+                              `
+                            : `
+                                <p style="margin-top: 14px; color: #6b7280;">
+                                    No material is attached to this module.
+                                </p>
+                              `
+                    }
+
                 `;
+
+                document
+                    .getElementById("downloadMaterialButton")
+                    ?.addEventListener("click", () => downloadMaterial(module));
 
 
             } catch (error) {
@@ -1382,6 +1429,82 @@
         /* ================================
            ESCAPE HTML
         ================================= */
+
+        /* ================================
+           DOWNLOAD MODULE MATERIAL
+           The file is private, so it is fetched with the login token
+           and then saved through a temporary link.
+        ================================= */
+
+        async function downloadMaterial(module) {
+
+            const button =
+                document.getElementById("downloadMaterialButton");
+
+            const message =
+                document.getElementById("downloadMaterialMessage");
+
+            const showDownloadMessage = (text) => {
+                if (!message) return;
+                message.textContent = text;
+                message.hidden = !text;
+            };
+
+            if (button) {
+                button.disabled = true;
+            }
+
+            showDownloadMessage("");
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_BASE_URL}/api/student/modules/${encodeURIComponent(moduleId)}/material`,
+                        {
+                            headers: {
+                                "Accept": "application/json",
+                                "Authorization": `Bearer ${token}`
+                            }
+                        }
+                    );
+
+                if (!response.ok) {
+                    const data = await response.json().catch(() => null);
+                    throw new Error(
+                        data?.message || "The material could not be downloaded."
+                    );
+                }
+
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+
+                link.href = url;
+                link.download = module.material_name || `${module.name || "module-material"}`;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+            } catch (error) {
+
+                showDownloadMessage(
+                    error instanceof TypeError
+                        ? "Unable to reach the server. Please try again."
+                        : error.message
+                );
+
+            } finally {
+
+                if (button) {
+                    button.disabled = false;
+                }
+
+            }
+        }
+
 
         function escapeHtml(value) {
 
