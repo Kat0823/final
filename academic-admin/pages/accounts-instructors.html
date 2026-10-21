@@ -19,6 +19,55 @@
 
     <script src="https://unpkg.com/lucide@latest"></script>
 
+    <style>
+        .credential-download {
+            position: relative;
+            display: inline-block;
+        }
+
+        .credential-format-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            right: 0;
+            z-index: 50;
+            min-width: 180px;
+            padding: 6px;
+            background: #fff;
+            border: 1px solid #d9e0dc;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .credential-format-menu[hidden] {
+            display: none;
+        }
+
+        .credential-format-menu button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            padding: 9px 10px;
+            border: none;
+            border-radius: 6px;
+            background: none;
+            color: #1f2937;
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .credential-format-menu button:hover,
+        .credential-format-menu button:focus-visible {
+            background: #eef6f1;
+            outline: none;
+        }
+
+        .credential-format-menu svg {
+            width: 16px;
+            height: 16px;
+        }
+    </style>
 </head>
 
 
@@ -327,25 +376,38 @@
         Import Instructors from Excel
     </button>
 
-    <button
-        type="button"
-        id="downloadInstructorCredentialsBtn"
-        class="primary-action-button"
-        disabled
-    >
-        <i data-lucide="download"></i>
-        Download Credentials
-    </button>
+    <!-- One button; the menu lets the admin pick Excel or PDF. -->
+    <div class="credential-download">
+        <button
+            type="button"
+            id="downloadInstructorCredentialsBtn"
+            class="primary-action-button"
+            aria-haspopup="menu"
+            aria-expanded="false"
+            aria-controls="credentialFormatMenu"
+            disabled
+        >
+            <i data-lucide="download"></i>
+            Download Credentials
+            <i data-lucide="chevron-down"></i>
+        </button>
 
-    <button
-        type="button"
-        id="downloadInstructorCredentialsPdfBtn"
-        class="primary-action-button"
-        disabled
-    >
-        <i data-lucide="file-text"></i>
-        Download Credentials PDF
-    </button>
+        <div
+            id="credentialFormatMenu"
+            class="credential-format-menu"
+            role="menu"
+            hidden
+        >
+            <button type="button" role="menuitem" data-credential-format="excel">
+                <i data-lucide="file-spreadsheet"></i>
+                Excel (.xlsx)
+            </button>
+            <button type="button" role="menuitem" data-credential-format="pdf">
+                <i data-lucide="file-text"></i>
+                PDF
+            </button>
+        </div>
+    </div>
 
     <input
         type="file"

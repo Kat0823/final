@@ -2802,6 +2802,8 @@ function clearInstructorCredentialExports() {
 
     latestInstructorCredentials = [];
 
+    document.getElementById("credentialFormatMenu")?.setAttribute("hidden", "");
+
     if (downloadInstructorCredentialsBtn) {
         downloadInstructorCredentialsBtn.disabled = true;
     }
@@ -3143,18 +3145,49 @@ if (importInstructorsExcelBtn && instructorsExcelFile) {
     instructorsExcelFile.addEventListener("change", importInstructorsFromExcel);
 }
 
-if (downloadInstructorCredentialsBtn) {
-    downloadInstructorCredentialsBtn.addEventListener(
-        "click",
-        downloadInstructorCredentials
-    );
+// One "Download Credentials" button opens a menu: Excel or PDF.
+const credentialFormatMenu =
+    document.getElementById("credentialFormatMenu");
+
+function setCredentialMenuOpen(open) {
+    if (!credentialFormatMenu || !downloadInstructorCredentialsBtn) return;
+    credentialFormatMenu.hidden = !open;
+    downloadInstructorCredentialsBtn.setAttribute("aria-expanded", String(open));
+    if (open) {
+        credentialFormatMenu.querySelector("button")?.focus();
+    }
 }
 
-if (downloadInstructorCredentialsPdfBtn) {
-    downloadInstructorCredentialsPdfBtn.addEventListener(
-        "click",
-        downloadInstructorCredentialsPdf
-    );
+if (downloadInstructorCredentialsBtn && credentialFormatMenu) {
+    downloadInstructorCredentialsBtn.addEventListener("click", event => {
+        event.stopPropagation();
+        setCredentialMenuOpen(credentialFormatMenu.hidden);
+    });
+
+    credentialFormatMenu.addEventListener("click", event => {
+        const option = event.target.closest("[data-credential-format]");
+        if (!option) return;
+        setCredentialMenuOpen(false);
+
+        if (option.dataset.credentialFormat === "pdf") {
+            downloadInstructorCredentialsPdf();
+        } else {
+            downloadInstructorCredentials();
+        }
+    });
+
+    document.addEventListener("click", event => {
+        if (!credentialFormatMenu.hidden && !event.target.closest(".credential-download")) {
+            setCredentialMenuOpen(false);
+        }
+    });
+
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && !credentialFormatMenu.hidden) {
+            setCredentialMenuOpen(false);
+            downloadInstructorCredentialsBtn.focus();
+        }
+    });
 }
     if (
         addButton
