@@ -53,6 +53,23 @@ class AcademicAdminController extends Controller
      * Each Academic Admin manages only the learners, instructors and classes
      * they created (owner_admin_id). These start every such query.
      */
+    /**
+     * Random temporary password from letters and digits that can't be
+     * confused with each other (no 0/O, 1/l/I). The account must replace
+     * it at first login.
+     */
+    private static function temporaryPassword(int $length): string
+    {
+        $alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+        $password = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $password .= $alphabet[random_int(0, strlen($alphabet) - 1)];
+        }
+
+        return $password;
+    }
+
     private function adminId(Request $request): int
     {
         return (int) $request->user()->id;
@@ -1928,7 +1945,8 @@ public function importInstructors(Request $request): JsonResponse
             $results = [];
 
             foreach ($prepared as $row) {
-                $temporaryPassword = bin2hex(random_bytes(8));
+                // 8 characters, easy to read out or type from a printout.
+                $temporaryPassword = self::temporaryPassword(8);
 
                 $instructor = User::create([
                     'owner_admin_id' => auth()->id(),
