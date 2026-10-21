@@ -1461,6 +1461,130 @@ public function syncClassModules(Request $request, int $id): JsonResponse
 }
 
     /**
+     * Rows to import from an uploaded workbook.
+     *
+     * Reads the sheets named in the request's "sheets" list, or only the
+     * active sheet when none are named. Each sheet needs its own header
+     * row with the required columns. Returns ['rows' => [...], 'columns' =>
+     * [...]] where every row is keyed by lower-case column name and has a
+     * "__position": the Excel row number, or "Sheet name!row" when several
+     * sheets are imported. Returns a 422 response for a problem.
+     */
+    private function readImportSheets(
+        Request $request,
+        array $requiredColumns,
+        string $emptyMessage,
+        string $requiredMessage
+    ): array|JsonResponse {
+        $spreadsheet = IOFactory::load($request->file('file')->getRealPath());
+
+        $requested = array_values(array_unique(array_map(
+            fn ($name) => (string) $name,
+            (array) $request->input('sheets', [])
+        )));
+
+        if ($requested === []) {
+            $sheets = [$spreadsheet->getActiveSheet()];
+        } else {
+            $sheets = [];
+
+            foreach ($requested as $name) {
+                $sheet = $spreadsheet->getSheetByName($name);
+
+                if (!$sheet) {
+                    $spreadsheet->disconnectWorksheets();
+
+                    return response()->json([
+                        'success' => false,
+                        'message' => "The workbook has no sheet named \"{$name}\".",
+                    ], 422);
+                }
+
+                $sheets[] = $sheet;
+            }
+        }
+
+        $several = count($sheets) > 1;
+        $rows = [];
+        $columns = [];
+
+        foreach ($sheets as $sheet) {
+            $sheetName = $sheet->getTitle();
+            $cells = $sheet->toArray(null, true, true, true);
+
+            if (count($cells) < 2) {
+                continue; // header only or empty: nothing to import here
+            }
+
+            $headers = array_shift($cells);
+            $map = [];
+
+            foreach ($headers as $column => $header) {
+                $key = preg_replace('/\s+/', ' ', strtolower(trim((string) $header)));
+
+                if ($key !== '') {
+                    $map[$key] = $column;
+                }
+            }
+
+            foreach ($requiredColumns as $required) {
+                if (!isset($map[$required])) {
+                    $spreadsheet->disconnectWorksheets();
+
+                    return response()->json([
+                        'success' => false,
+                        'message' => $several
+                            ? "Sheet \"{$sheetName}\": {$requiredMessage}"
+                            : $requiredMessage,
+                    ], 422);
+                }
+            }
+
+            foreach ($map as $key => $column) {
+                $columns[$key] = $key;
+            }
+
+            foreach ($cells as $index => $cellRow) {
+                $row = ['__position' => $several ? "{$sheetName}!" . ($index + 2) : $index + 2];
+
+                foreach ($map as $key => $column) {
+                    $row[$key] = $cellRow[$column] ?? null;
+                }
+
+                $rows[] = $row;
+            }
+        }
+
+        $spreadsheet->disconnectWorksheets();
+
+        if ($rows === []) {
+            return response()->json([
+                'success' => false,
+                'message' => $emptyMessage,
+            ], 422);
+        }
+
+        return ['rows' => $rows, 'columns' => $columns];
+    }
+
+    /**
+     * Import errors carry "Sheet name!row" when several sheets were read;
+     * split that into "sheet" and "row" for the page.
+     */
+    private function withSheetNames(array $errors): array
+    {
+        return array_map(function (array $error): array {
+            if (is_string($error['row'] ?? null) && str_contains($error['row'], '!')) {
+                $at = strrpos($error['row'], '!');
+                $error['sheet'] = substr($error['row'], 0, $at);
+                $error['row'] = (int) substr($error['row'], $at + 1);
+            }
+
+            return $error;
+        }, $errors);
+    }
+
+    /**
      * Import learner accounts from an Excel .xlsx file.
      * Required columns: Student Name, School ID.
      * Optional columns: Email, Program, Contact.
@@ -1473,44 +1597,25 @@ public function syncClassModules(Request $request, int $id): JsonResponse
 
         $request->validate([
             'file' => ['required', 'file', 'mimes:xlsx', 'max:10240'],
+            'sheets' => ['sometimes', 'array', 'max:50'],
+            'sheets.*' => ['string', 'max:100'],
         ]);
 
         try {
-            $spreadsheet = IOFactory::load(
-                $request->file('file')->getRealPath()
+            // Reads the chosen sheets (or the active one); each row becomes
+            // column name => value, plus where it came from.
+            $sheetData = $this->readImportSheets(
+                $request,
+                ['student name', 'school id'],
+                'The spreadsheet contains no learner records.',
+                'Required columns: Student Name and School ID.'
             );
 
-            $rows = $spreadsheet->getActiveSheet()
-                ->toArray(null, true, true, true);
-
-            $spreadsheet->disconnectWorksheets();
-            unset($spreadsheet);
-
-            if (count($rows) < 2) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'The spreadsheet contains no learner records.',
-                ], 422);
+            if ($sheetData instanceof JsonResponse) {
+                return $sheetData;
             }
 
-            $headers = array_shift($rows);
-            $columns = [];
-
-            foreach ($headers as $column => $header) {
-                $key = strtolower(trim((string) $header));
-                $key = preg_replace('/\s+/', ' ', $key);
-                $columns[$key] = $column;
-            }
-
-            if (
-                !isset($columns['student name']) ||
-                !isset($columns['school id'])
-            ) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Required columns: Student Name and School ID.',
-                ], 422);
-            }
+            ['rows' => $rows, 'columns' => $columns] = $sheetData;
 
             $prepared = [];
             $errors = [];
@@ -1518,7 +1623,7 @@ public function syncClassModules(Request $request, int $id): JsonResponse
             $seenEmails = [];
 
             foreach ($rows as $index => $row) {
-                $excelRow = $index + 2;
+                $excelRow = $row['__position'];
                 $name = trim((string) ($row[$columns['student name']] ?? ''));
                 $schoolId = trim((string) ($row[$columns['school id']] ?? ''));
 
@@ -1629,7 +1734,7 @@ public function syncClassModules(Request $request, int $id): JsonResponse
                 return response()->json([
                     'success' => false,
                     'message' => 'No accounts were created. Fix the spreadsheet errors and try again.',
-                    'errors' => $errors,
+                    'errors' => $this->withSheetNames($errors),
                 ], 422);
             }
 
@@ -1770,44 +1875,25 @@ public function importInstructors(Request $request): JsonResponse
 
     $request->validate([
         'file' => ['required', 'file', 'mimes:xlsx', 'max:10240'],
+        'sheets' => ['sometimes', 'array', 'max:50'],
+        'sheets.*' => ['string', 'max:100'],
     ]);
 
     try {
-        $spreadsheet = IOFactory::load(
-            $request->file('file')->getRealPath()
+        // Reads the chosen sheets (or the active one); each row becomes
+        // column name => value, plus where it came from.
+        $sheetData = $this->readImportSheets(
+            $request,
+            ['instructor name', 'school id'],
+            'The spreadsheet contains no instructor records.',
+            'Required columns: Instructor Name and School ID.'
         );
 
-        $rows = $spreadsheet->getActiveSheet()
-            ->toArray(null, true, true, true);
-
-        $spreadsheet->disconnectWorksheets();
-        unset($spreadsheet);
-
-        if (count($rows) < 2) {
-            return response()->json([
-                'success' => false,
-                'message' => 'The spreadsheet contains no instructor records.',
-            ], 422);
+        if ($sheetData instanceof JsonResponse) {
+            return $sheetData;
         }
 
-        $headers = array_shift($rows);
-        $columns = [];
-
-        foreach ($headers as $column => $header) {
-            $key = strtolower(trim((string) $header));
-            $key = preg_replace('/\s+/', ' ', $key);
-            $columns[$key] = $column;
-        }
-
-        if (
-            !isset($columns['instructor name']) ||
-            !isset($columns['school id'])
-        ) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Required columns: Instructor Name and School ID.',
-            ], 422);
-        }
+        ['rows' => $rows, 'columns' => $columns] = $sheetData;
 
         $prepared = [];
         $errors = [];
@@ -1815,7 +1901,7 @@ public function importInstructors(Request $request): JsonResponse
         $seenEmails = [];
 
         foreach ($rows as $index => $row) {
-            $excelRow = $index + 2;
+            $excelRow = $row['__position'];
 
             $name = trim((string) ($row[$columns['instructor name']] ?? ''));
             $schoolId = trim((string) ($row[$columns['school id']] ?? ''));
@@ -1930,7 +2016,7 @@ public function importInstructors(Request $request): JsonResponse
             return response()->json([
                 'success' => false,
                 'message' => 'No accounts were created. Fix the spreadsheet errors and try again.',
-                'errors' => $errors,
+                'errors' => $this->withSheetNames($errors),
             ], 422);
         }
 

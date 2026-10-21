@@ -2309,3 +2309,168 @@ if (form.hidden) {
 
     refreshIcons();
 })();
+
+
+/* =========================================================
+   CHOOSE WORKSHEETS TO IMPORT
+   ---------------------------------------------------------
+   window.chooseWorkbookSheets(file, { title, help })
+   Resolves with:
+     []            the workbook has one sheet (nothing to choose)
+     ["A", "B"]    the sheets the admin picked
+     null          the admin cancelled
+   Needs SheetJS (window.XLSX) to read the sheet names.
+========================================================= */
+
+window.chooseWorkbookSheets = async function chooseWorkbookSheets(file, options = {}) {
+    if (!window.XLSX) {
+        throw new Error("The Excel library did not load. Check your connection and reload the page.");
+    }
+
+    const workbook = window.XLSX.read(await file.arrayBuffer(), {
+        type: "array",
+        bookSheets: true // names only; faster than reading every cell
+    });
+    const sheetNames = workbook.SheetNames || [];
+
+    if (!sheetNames.length) {
+        throw new Error("The workbook does not contain any worksheets.");
+    }
+
+    if (sheetNames.length === 1) {
+        return [];
+    }
+
+    return new Promise(resolve => {
+        const green = "#086642";
+
+        const overlay = document.createElement("div");
+        overlay.setAttribute("role", "dialog");
+        overlay.setAttribute("aria-modal", "true");
+        overlay.setAttribute("aria-labelledby", "sheetChooserTitle");
+        Object.assign(overlay.style, {
+            position: "fixed", inset: "0", zIndex: "10000",
+            background: "rgba(0,0,0,.55)", display: "flex",
+            alignItems: "center", justifyContent: "center", padding: "20px"
+        });
+
+        const panel = document.createElement("div");
+        Object.assign(panel.style, {
+            background: "#fff", color: "#1f2937", width: "min(560px, 100%)",
+            maxHeight: "85vh", overflowY: "auto", padding: "24px",
+            borderRadius: "12px", boxShadow: "0 12px 40px rgba(0,0,0,.25)"
+        });
+
+        const title = document.createElement("h2");
+        title.id = "sheetChooserTitle";
+        title.textContent = options.title || "Choose worksheets to import";
+        Object.assign(title.style, { margin: "0 0 6px", fontSize: "20px" });
+
+        const help = document.createElement("p");
+        help.textContent = options.help ||
+            "This workbook has more than one worksheet. Choose the ones to import. " +
+            "Each worksheet needs its own header row. The file itself is not changed.";
+        Object.assign(help.style, { margin: "0 0 10px", color: "#4b5563", lineHeight: "1.5" });
+
+        const selectAllLabel = document.createElement("label");
+        Object.assign(selectAllLabel.style, {
+            display: "flex", gap: "10px", alignItems: "center",
+            padding: "10px 0", fontWeight: "600", cursor: "pointer"
+        });
+        const selectAll = document.createElement("input");
+        selectAll.type = "checkbox";
+        selectAllLabel.append(selectAll, document.createTextNode("Select all worksheets"));
+
+        const list = document.createElement("div");
+        Object.assign(list.style, {
+            borderTop: "1px solid #e5e7eb", borderBottom: "1px solid #e5e7eb",
+            margin: "4px 0 18px", padding: "6px 0"
+        });
+
+        const boxes = sheetNames.map(name => {
+            const label = document.createElement("label");
+            Object.assign(label.style, {
+                display: "flex", gap: "10px", alignItems: "center",
+                padding: "8px 0", overflowWrap: "anywhere", cursor: "pointer"
+            });
+            const box = document.createElement("input");
+            box.type = "checkbox";
+            box.checked = true;
+            box.value = name;
+            box.dataset.sheetChoice = "true";
+            label.append(box, document.createTextNode(name));
+            list.append(label);
+            return box;
+        });
+
+        const actions = document.createElement("div");
+        Object.assign(actions.style, {
+            display: "flex", flexWrap: "wrap", gap: "10px", justifyContent: "flex-end"
+        });
+
+        const makeButton = (text, primary) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.textContent = text;
+            Object.assign(button.style, {
+                padding: "10px 14px", borderRadius: "8px", cursor: "pointer",
+                fontWeight: "600", font: "inherit",
+                border: `1px solid ${primary ? green : "#cbd5e1"}`,
+                background: primary ? green : "#fff",
+                color: primary ? "#fff" : "#1f2937"
+            });
+            actions.append(button);
+            return button;
+        };
+
+        const cancelButton = makeButton("Cancel", false);
+        const allButton = makeButton("Import all sheets", false);
+        const selectedButton = makeButton("Import selected", true);
+        selectedButton.dataset.sheetImportSelected = "true";
+        allButton.dataset.sheetImportAll = "true";
+        cancelButton.dataset.sheetCancel = "true";
+
+        const sync = () => {
+            const checked = boxes.filter(box => box.checked).length;
+            selectAll.checked = checked === boxes.length;
+            selectAll.indeterminate = checked > 0 && checked < boxes.length;
+            selectedButton.disabled = checked === 0;
+            selectedButton.style.opacity = checked === 0 ? "0.5" : "1";
+            selectedButton.textContent = checked === boxes.length
+                ? "Import selected"
+                : `Import ${checked} selected`;
+        };
+
+        const finish = value => {
+            document.removeEventListener("keydown", onKeydown);
+            overlay.remove();
+            resolve(value);
+        };
+
+        const onKeydown = event => {
+            if (event.key === "Escape") finish(null);
+        };
+
+        selectAll.addEventListener("change", () => {
+            boxes.forEach(box => { box.checked = selectAll.checked; });
+            sync();
+        });
+        boxes.forEach(box => box.addEventListener("change", sync));
+        cancelButton.addEventListener("click", () => finish(null));
+        allButton.addEventListener("click", () => finish([...sheetNames]));
+        selectedButton.addEventListener("click", () => {
+            const chosen = boxes.filter(box => box.checked).map(box => box.value);
+            if (chosen.length) finish(chosen);
+        });
+        overlay.addEventListener("click", event => {
+            if (event.target === overlay) finish(null);
+        });
+
+        panel.append(title, help, selectAllLabel, list, actions);
+        overlay.append(panel);
+        document.body.append(overlay);
+        document.addEventListener("keydown", onKeydown);
+        sync();
+        boxes[0]?.focus();
+    });
+};

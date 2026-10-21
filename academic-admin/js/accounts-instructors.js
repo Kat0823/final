@@ -94,7 +94,7 @@ async function instructorApiRequest(path, options = {}) {
     if (!response.ok) {
         const validationErrors = Array.isArray(payload?.errors)
             ? payload.errors.map(item =>
-                `Row ${item.row ?? "?"}: ${item.message || "Invalid data."}`
+                `${item.sheet ? `Sheet "${item.sheet}", row` : "Row"} ${item.row ?? "?"}: ${item.message || "Invalid data."}`
             ).join(" ")
             : payload?.errors
                 ? Object.values(payload.errors).flat().join(" ")
@@ -3054,10 +3054,31 @@ async function importInstructorsFromExcel() {
         alert("Please select an .xlsx Excel file.");
         return;
     }
+    // Several worksheets: let the admin choose which to import.
+    let sheets = [];
+
+    try {
+        sheets = await window.chooseWorkbookSheets(file, {
+            help:
+                "This workbook has more than one worksheet. Choose the ones with " +
+                "instructor records. Each needs the headers Instructor Name and School ID."
+        });
+    } catch (error) {
+        alert(error.message || "Could not read the workbook.");
+        instructorsExcelFile.value = "";
+        return;
+    }
+
+    if (sheets === null) {
+        instructorsExcelFile.value = ""; // cancelled
+        return;
+    }
+
     clearInstructorCredentialExports();
 
     const formData = new FormData();
     formData.append("file", file);
+    sheets.forEach(name => formData.append("sheets[]", name));
 
     importInstructorsExcelBtn.disabled = true;
     importInstructorsExcelBtn.textContent = "Importing...";
