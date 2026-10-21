@@ -47,10 +47,16 @@ class SystemAdminAcademicAdminController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'school_id' => ['required', 'string', 'max:255', Rule::unique('users', 'school_id')],
             'email' => ['nullable', 'email', 'max:255', Rule::unique('users', 'email')],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            // Leave empty to have the server generate a temporary password.
+            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'is_active' => ['sometimes', 'boolean'],
             'profile_photo' => ['nullable', 'image', 'mimes:jpeg,png', 'max:2048'],
         ]);
+
+        $generatedPassword = empty($validated['password'])
+            ? self::temporaryPassword()
+            : null;
+        $validated['password'] = $generatedPassword ?? $validated['password'];
 
         $photoPath = $request->file('profile_photo')?->store('profile-photos', 'public');
 
@@ -95,10 +101,62 @@ class SystemAdminAcademicAdminController extends Controller
             throw $error;
         }
 
-        return response()->json([
+        return response()->json(array_filter([
             'success' => true,
             'administrator' => $this->resource($administrator),
-        ], Response::HTTP_CREATED);
+            // Returned once, only when the server generated it.
+            'temporary_password' => $generatedPassword,
+        ], fn ($value) => $value !== null), Response::HTTP_CREATED);
+    }
+
+    /**
+     * Give an Academic Admin a new temporary password (for a forgotten
+     * password). They are logged out everywhere and must choose their own
+     * password at next login. The password is returned once and not stored
+     * anywhere readable.
+     */
+    public function resetPassword(Request $request, int $id): JsonResponse
+    {
+        $administrator = $this->findAcademicAdmin($id);
+        $temporaryPassword = self::temporaryPassword();
+
+        DB::transaction(function () use ($request, $administrator, $temporaryPassword): void {
+            $administrator->forceFill([
+                'password' => $temporaryPassword,
+                'password_setup_complete' => false,
+            ])->save();
+
+            $administrator->tokens()->delete();
+
+            $this->recordAudit(
+                $request->user(),
+                'reset_password',
+                $administrator,
+                ['school_id' => $administrator->school_id]
+            );
+        });
+
+        return response()->json([
+            'success' => true,
+            'administrator' => $this->resource($administrator->fresh()),
+            'temporary_password' => $temporaryPassword,
+        ]);
+    }
+
+    /**
+     * 12 characters from letters and digits that are easy to read aloud
+     * or copy by hand (no 0/O, 1/l/I).
+     */
+    private static function temporaryPassword(): string
+    {
+        $alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+        $password = '';
+
+        for ($i = 0; $i < 12; $i++) {
+            $password .= $alphabet[random_int(0, strlen($alphabet) - 1)];
+        }
+
+        return $password;
     }
 
     public function update(Request $request, int $id): JsonResponse

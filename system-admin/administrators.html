@@ -20,6 +20,50 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
+    <style>
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .checkbox-option input {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--green, #1f7a4d);
+        }
+
+        .reset-password-effects {
+            margin: 12px 0 0;
+            padding-left: 20px;
+            line-height: 1.7;
+            color: var(--muted, #6b7280);
+        }
+
+        .temporary-password-box {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0 12px;
+        }
+
+        .temporary-password-box input {
+            flex: 1;
+            min-width: 0;
+            padding: 10px 12px;
+            border: 1px solid var(--border, #d9e0dc);
+            border-radius: 8px;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 18px;
+            letter-spacing: 1px;
+            background: #f7faf8;
+        }
+
+        .temporary-password-note {
+            line-height: 1.6;
+        }
+    </style>
 </head>
 
 
@@ -577,15 +621,14 @@
                     <div class="form-group">
 
                         <label for="administratorEmail">
-                            Email Address
+                            Email Address <span style="color: var(--muted); font-size: 11px; font-weight: 400;">(Optional)</span>
                         </label>
 
                         <input
                             type="email"
                             id="administratorEmail"
-                            placeholder="Enter email address"
+                            placeholder="Enter email address (optional)"
                             autocomplete="email"
-                            required
                         >
 
                     </div>
@@ -623,9 +666,20 @@
                         </span>
 
                     </div>
+                    <!-- PASSWORD: GENERATED OR TYPED (create only) -->
+                    <div class="form-group" id="generatePasswordGroup">
+                        <label class="checkbox-option" for="generatePassword">
+                            <input type="checkbox" id="generatePassword" checked>
+                            Generate a temporary password (recommended)
+                        </label>
+                        <span class="form-hint">
+                            The password is shown once after the account is created.
+                            Give it to the person privately; they must choose their own
+                            password the first time they log in.
+                        </span>
+                    </div>
 
-
-
+                    <div id="typedPasswordFields" hidden>
                     <!-- PASSWORD -->
 
                     <div class="form-group">
@@ -639,7 +693,6 @@
                             id="administratorPassword"
                             placeholder="Enter password"
                             autocomplete="new-password"
-                            required
                         >
 
                         <span
@@ -666,12 +719,10 @@
                             id="administratorConfirmPassword"
                             placeholder="Confirm password"
                             autocomplete="new-password"
-                            required
                         >
 
                     </div>
-
-
+                    </div>
 
                     <!-- STATUS -->
 
@@ -1071,6 +1122,79 @@
     <!-- =====================================================
          JAVASCRIPT
     ====================================================== -->
+
+
+    <!-- =====================================================
+         RESET PASSWORD (confirm)
+    ====================================================== -->
+
+    <div class="modal-overlay" id="resetPasswordModalOverlay" hidden>
+        <div class="modal delete-modal" role="dialog" aria-modal="true" aria-labelledby="resetPasswordModalTitle">
+            <div class="modal-header">
+                <div>
+                    <h2 id="resetPasswordModalTitle">Reset Password</h2>
+                    <p>For an Academic Admin who forgot their password.</p>
+                </div>
+                <button type="button" class="icon-button modal-close" id="closeResetPasswordModal" aria-label="Close">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <strong id="resetPasswordName">—</strong>
+                    (<span id="resetPasswordSchoolId">—</span>) will get a new temporary password.
+                </p>
+                <ul class="reset-password-effects">
+                    <li>Their current password stops working.</li>
+                    <li>They are logged out on every device.</li>
+                    <li>They must choose their own password at their next login.</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="secondary-button" id="cancelResetPasswordButton">Cancel</button>
+                <button type="button" class="primary-button" id="confirmResetPasswordButton">
+                    <i data-lucide="key-round"></i>
+                    <span>Reset Password</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================
+         TEMPORARY PASSWORD (shown once)
+    ====================================================== -->
+
+    <div class="modal-overlay" id="temporaryPasswordModalOverlay" hidden>
+        <div class="modal delete-modal" role="dialog" aria-modal="true" aria-labelledby="temporaryPasswordModalTitle">
+            <div class="modal-header">
+                <div>
+                    <h2 id="temporaryPasswordModalTitle">Temporary Password</h2>
+                    <p id="temporaryPasswordIntro">Shown only once.</p>
+                </div>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Login ID: <strong id="temporaryPasswordSchoolId">—</strong>
+                </p>
+                <div class="temporary-password-box">
+                    <input type="text" id="temporaryPasswordValue" readonly aria-label="Temporary password" spellcheck="false">
+                    <button type="button" class="secondary-button" id="copyTemporaryPasswordButton">
+                        <i data-lucide="copy"></i>
+                        <span>Copy</span>
+                    </button>
+                </div>
+                <p class="form-hint temporary-password-note">
+                    This password is shown only now and can't be viewed again.
+                    Give it to the person privately (in person or a direct message).
+                    They must choose their own password the first time they log in.
+                    If it's lost, use Reset Password to make a new one.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="primary-button" id="closeTemporaryPasswordButton">Done</button>
+            </div>
+        </div>
+    </div>
 
     <script src="../api-config.js"></script>
     <script src="js/shared.js"></script>

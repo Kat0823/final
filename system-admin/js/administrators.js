@@ -25,9 +25,18 @@
     const pendingDeleteName = document.getElementById("deleteAdministratorName");
     const pendingDeleteEmail = document.getElementById("deleteAdministratorEmail");
     const deleteButton = document.getElementById("confirmDeleteAdministratorButton");
+    const generatePasswordInput = document.getElementById("generatePassword");
+    const generatePasswordGroup = document.getElementById("generatePasswordGroup");
+    const typedPasswordFields = document.getElementById("typedPasswordFields");
+    const resetOverlay = document.getElementById("resetPasswordModalOverlay");
+    const resetButton = document.getElementById("confirmResetPasswordButton");
+    const temporaryOverlay = document.getElementById("temporaryPasswordModalOverlay");
+    const temporaryValue = document.getElementById("temporaryPasswordValue");
+    const copyTemporaryButton = document.getElementById("copyTemporaryPasswordButton");
 
     let administrators = [];
     let pendingDeleteAdministrator = null;
+    let pendingResetAdministrator = null;
     let requestInProgress = false;
     let removeExistingPhoto = false;
     let previousFocus = null;
@@ -156,6 +165,9 @@
                         <button type="button" class="table-action" data-action="edit" data-id="${item.id}" aria-label="Edit ${escapeHtml(item.name)}">
                             <i data-lucide="pencil"></i><span>Edit</span>
                         </button>
+                        <button type="button" class="table-action" data-action="reset" data-id="${item.id}" aria-label="Reset password for ${escapeHtml(item.name)}">
+                            <i data-lucide="key-round"></i><span>Reset Password</span>
+                        </button>
                         <button type="button" class="table-action" data-action="toggle" data-id="${item.id}" aria-label="${item.is_active ? "Deactivate" : "Activate"} ${escapeHtml(item.name)}">
                             <i data-lucide="${item.is_active ? "user-round-x" : "user-round-check"}"></i>
                             <span>${item.is_active ? "Deactivate" : "Activate"}</span>
@@ -238,6 +250,24 @@
         }
     }
 
+    // Create form: either the server generates the temporary password
+    // (default) or the System Admin types one.
+    function syncPasswordMode() {
+        const creating = !idInput.value;
+        const generate = generatePasswordInput ? generatePasswordInput.checked : false;
+
+        if (generatePasswordGroup) generatePasswordGroup.hidden = !creating;
+        if (typedPasswordFields) typedPasswordFields.hidden = !creating || generate;
+
+        const typed = creating && !generate;
+        passwordInput.required = typed;
+        confirmPasswordInput.required = typed;
+        if (!typed) {
+            passwordInput.value = "";
+            confirmPasswordInput.value = "";
+        }
+    }
+
     function openCreateModal() {
         form.reset();
         idInput.value = "";
@@ -246,11 +276,11 @@
         photoInput.value = "";
         renderPhotoPreview(null, false);
         statusInput.value = "active";
-        passwordInput.required = true;
-        confirmPasswordInput.required = true;
+        if (generatePasswordInput) generatePasswordInput.checked = true;
+        syncPasswordMode();
         document.getElementById("administratorModalTitle").textContent = "Create Academic Administrator";
         document.getElementById("administratorModalDescription").textContent = "Enter the account details below.";
-        document.getElementById("passwordHint").textContent = "Minimum of 8 characters.";
+        document.getElementById("passwordHint").textContent = "Minimum of 8 characters. They must change it at first login.";
         saveButtonText.textContent = "Create Account";
         openModal(modalOverlay, schoolIdInput);
     }
@@ -267,11 +297,10 @@
         statusInput.value = administrator.is_active ? "active" : "inactive";
         removeExistingPhoto = false;
         photoInput.value = "";
-        passwordInput.required = false;
-        confirmPasswordInput.required = false;
+        // Passwords aren't edited here; use Reset Password in the table.
+        syncPasswordMode();
         document.getElementById("administratorModalTitle").textContent = "Edit Academic Administrator";
-        document.getElementById("administratorModalDescription").textContent = "Update the account details below.";
-        document.getElementById("passwordHint").textContent = "Leave password fields blank; passwords are not changed here.";
+        document.getElementById("administratorModalDescription").textContent = "Update the account details below. To give a new password, use Reset Password.";
         saveButtonText.textContent = "Save Changes";
         renderPhotoPreview(administrator.profile_photo_url, true);
         openModal(modalOverlay, firstNameInput);
@@ -300,8 +329,12 @@
 
         if (!idInput.value) {
             data.append("school_id", schoolIdInput.value.trim());
-            data.append("password", passwordInput.value);
-            data.append("password_confirmation", confirmPasswordInput.value);
+
+            // Leaving the password out asks the server to generate one.
+            if (!generatePasswordInput?.checked) {
+                data.append("password", passwordInput.value);
+                data.append("password_confirmation", confirmPasswordInput.value);
+            }
         }
         return data;
     }
@@ -310,7 +343,9 @@
         event.preventDefault();
         if (requestInProgress) return;
 
-        if (passwordInput.value !== confirmPasswordInput.value && !idInput.value) {
+        const typingPassword = !idInput.value && !generatePasswordInput?.checked;
+
+        if (typingPassword && passwordInput.value !== confirmPasswordInput.value) {
             setMessage("Passwords do not match.", "error");
             return;
         }
@@ -332,6 +367,14 @@
             closeEditModal();
             await loadAdministrators();
             setMessage(editing ? "Academic Admin account updated." : "Academic Admin account created.");
+
+            if (!editing && payload.temporary_password) {
+                showTemporaryPassword(
+                    payload.administrator,
+                    payload.temporary_password,
+                    "Account created. Give this temporary password to the new Academic Admin."
+                );
+            }
         } catch (error) {
             setMessage(error.message || "Unable to save the account.", "error");
         } finally {
@@ -396,6 +439,81 @@
         }
     }
 
+    /* Reset password: confirm, then show the new temporary password once. */
+
+    function openResetModal(administrator) {
+        pendingResetAdministrator = administrator;
+        document.getElementById("resetPasswordName").textContent = administrator.name || "—";
+        document.getElementById("resetPasswordSchoolId").textContent = administrator.school_id || "—";
+        openModal(resetOverlay, document.getElementById("cancelResetPasswordButton"));
+    }
+
+    function closeResetModal() {
+        pendingResetAdministrator = null;
+        closeModal(resetOverlay);
+    }
+
+    async function resetPassword() {
+        if (!pendingResetAdministrator || requestInProgress) return;
+        const administrator = pendingResetAdministrator;
+        requestInProgress = true;
+        resetButton.disabled = true;
+        try {
+            const payload = await apiRequest(
+                `/system-admin/academic-administrators/${encodeURIComponent(administrator.id)}/reset-password`,
+                { method: "POST" }
+            );
+            if (!payload.success || !payload.temporary_password) {
+                throw new Error("The password reset was not confirmed.");
+            }
+            resetOverlay.hidden = true;
+            pendingResetAdministrator = null;
+            await loadAdministrators();
+            setMessage(`Password reset for ${administrator.name}.`);
+            showTemporaryPassword(
+                payload.administrator || administrator,
+                payload.temporary_password,
+                `New temporary password for ${administrator.name}. Their old password no longer works.`
+            );
+        } catch (error) {
+            setMessage(error.message || "Unable to reset the password.", "error");
+        } finally {
+            requestInProgress = false;
+            resetButton.disabled = false;
+        }
+    }
+
+    function showTemporaryPassword(administrator, password, intro) {
+        document.getElementById("temporaryPasswordIntro").textContent = intro;
+        document.getElementById("temporaryPasswordSchoolId").textContent = administrator?.school_id || "—";
+        temporaryValue.value = password;
+        copyTemporaryButton.querySelector("span").textContent = "Copy";
+        previousFocus = document.activeElement;
+        temporaryOverlay.hidden = false;
+        temporaryValue.focus();
+        temporaryValue.select();
+        window.refreshIcons?.();
+    }
+
+    function closeTemporaryPassword() {
+        // Clear it from the page so it isn't left on screen.
+        temporaryValue.value = "";
+        closeModal(temporaryOverlay);
+    }
+
+    async function copyTemporaryPassword() {
+        const label = copyTemporaryButton.querySelector("span");
+        try {
+            await navigator.clipboard.writeText(temporaryValue.value);
+            label.textContent = "Copied";
+        } catch (error) {
+            // Clipboard blocked: leave it selected so Ctrl+C works.
+            temporaryValue.focus();
+            temporaryValue.select();
+            label.textContent = "Press Ctrl+C";
+        }
+    }
+
     async function toggleStatus(administrator) {
         if (requestInProgress) return;
         requestInProgress = true;
@@ -445,6 +563,9 @@
             case "edit":
                 openEditModal(administrator);
                 break;
+            case "reset":
+                openResetModal(administrator);
+                break;
             case "toggle":
                 void toggleStatus(administrator);
                 break;
@@ -467,9 +588,22 @@
         closeModal(deleteOverlay);
     });
     deleteButton?.addEventListener("click", () => void deleteAdministrator());
+    generatePasswordInput?.addEventListener("change", syncPasswordMode);
+    document.getElementById("closeResetPasswordModal")?.addEventListener("click", closeResetModal);
+    document.getElementById("cancelResetPasswordButton")?.addEventListener("click", closeResetModal);
+    resetButton?.addEventListener("click", () => void resetPassword());
+    copyTemporaryButton?.addEventListener("click", () => void copyTemporaryPassword());
+    document.getElementById("closeTemporaryPasswordButton")?.addEventListener("click", closeTemporaryPassword);
 
     document.addEventListener("keydown", event => {
         if (event.key !== "Escape") return;
+        // The temporary password dialog closes only with Done, so it
+        // isn't dismissed by accident before it's been copied.
+        if (!temporaryOverlay.hidden) return;
+        if (!resetOverlay.hidden) {
+            closeResetModal();
+            return;
+        }
         if (!modalOverlay.hidden) closeEditModal();
         else if (!viewOverlay.hidden) closeModal(viewOverlay);
         else if (!deleteOverlay.hidden) {

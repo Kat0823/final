@@ -93,6 +93,7 @@ Route::middleware([
             Route::post('/academic-administrators', [SystemAdminAcademicAdminController::class, 'store']);
             Route::put('/academic-administrators/{id}', [SystemAdminAcademicAdminController::class, 'update']);
             Route::delete('/academic-administrators/{id}', [SystemAdminAcademicAdminController::class, 'destroy']);
+            Route::post('/academic-administrators/{id}/reset-password', [SystemAdminAcademicAdminController::class, 'resetPassword']);
         });
 
 

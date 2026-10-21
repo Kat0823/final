@@ -102,6 +102,8 @@ function describeAuditEntry(entry) {
             return `Activated Academic Admin account ${target}`;
         case "deactivate":
             return `Deactivated Academic Admin account ${target}`;
+        case "reset_password":
+            return `Reset the password for Academic Admin account ${target}${schoolId}`;
         case "update": {
             const changes = Object.entries(details).map(([field, change]) => {
                 const label = AUDIT_FIELD_LABELS[field] || field;
@@ -263,6 +265,7 @@ function formatAction(action) {
         update: "Update",
         activate: "Activate",
         deactivate: "Deactivate",
+        reset_password: "Password Reset",
         delete: "Delete",
         backup: "Backup"
     };
