@@ -1556,6 +1556,26 @@ select:focus-visible {
         22px;
 
     overflow-y: auto;
+
+    /* Take the space left between header and footer, and scroll
+       inside it when the content is taller. */
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+/* Header and footer stay visible; only the body scrolls. */
+.modal-header,
+.modal-footer {
+    flex-shrink: 0;
+}
+
+/* Some dialogs wrap body and footer in a <form>; make it part of the
+   modal's column layout so the body can scroll. */
+.modal > form {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
 }
 
 
@@ -1592,6 +1612,19 @@ select:focus-visible {
 
 .form-group:last-child {
 
+    margin-bottom: 0;
+}
+
+/* Fields inside a row: the row provides the spacing below. */
+.form-row {
+    margin-bottom: 16px;
+}
+
+.form-row > .form-group {
+    margin-bottom: 0;
+}
+
+.form-row:last-child {
     margin-bottom: 0;
 }
 
