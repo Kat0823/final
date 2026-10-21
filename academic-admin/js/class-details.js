@@ -7,7 +7,10 @@ const CLASS_DETAILS_API_TOKEN_KEY =
 
 function getClassDetailsApiToken() {
 
+    // This tab's own sign-in comes first: the shared copy is replaced
+    // when someone signs in or out as another user in a different tab.
     return (
+        sessionStorage.getItem("authToken") ||
         window.SIKNAYAN_API_TOKEN ||
         localStorage.getItem(
             CLASS_DETAILS_API_TOKEN_KEY

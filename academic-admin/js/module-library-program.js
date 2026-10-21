@@ -1872,7 +1872,10 @@ version: 1
     const MODULE_FILE_API_BASE_URL = window.SIKNAYAN_API_ROOT;
 
 function getModuleFileApiToken() {
+    // This tab's own sign-in comes first: the shared copy is replaced
+    // when someone signs in or out as another user in a different tab.
     return (
+        sessionStorage.getItem("authToken") ||
         window.SIKNAYAN_API_TOKEN ||
         localStorage.getItem("siknayan_api_token") ||
         localStorage.getItem("token") ||
