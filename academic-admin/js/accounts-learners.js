@@ -1314,18 +1314,6 @@
             programCell.textContent =
                 learner.program ||
                 "—";
-
-            const lastLoginCell =
-                document.createElement("td");
-
-            lastLoginCell.textContent =
-                account
-                    ? (
-                        account.lastLogin ||
-                        "Never"
-                    )
-                    : "—";
-
             const statusCell =
                 document.createElement("td");
 
@@ -1441,11 +1429,6 @@ if (account) {
             row.appendChild(
                 programCell
             );
-
-            row.appendChild(
-                lastLoginCell
-            );
-
             row.appendChild(
                 statusCell
             );

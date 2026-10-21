@@ -1970,23 +1970,6 @@ let instructorCredentialsExpiryTimer = null;
                 }
 
 
-
-                /* -----------------------------------------
-                   LAST LOGIN
-                ----------------------------------------- */
-
-                const lastLoginCell =
-                    document.createElement(
-                        "td"
-                    );
-
-
-                lastLoginCell.textContent =
-                    account?.lastLogin ||
-                    "â€”";
-
-
-
                 /* -----------------------------------------
                    STATUS
                 ----------------------------------------- */
@@ -2190,11 +2173,6 @@ let instructorCredentialsExpiryTimer = null;
                 row.appendChild(
                     classesCell
                 );
-
-                row.appendChild(
-                    lastLoginCell
-                );
-
                 row.appendChild(
                     statusCell
                 );
