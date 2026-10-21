@@ -76,6 +76,13 @@ Route::middleware([
             Route::get('/dashboard', [SystemAdminController::class, 'dashboard']);
             Route::get('/audit-logs', [SystemAdminController::class, 'auditLogs']);
 
+            // Notifications (same handlers as the Academic Admin's; own records only)
+            Route::get('/notifications', [NotificationController::class, 'adminIndex']);
+            Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead']);
+            Route::patch('/notifications/{id}/read', [NotificationController::class, 'markRead']);
+            Route::patch('/notifications/{id}/unread', [NotificationController::class, 'markUnread']);
+            Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
+
             Route::get('/academic-administrators', [SystemAdminAcademicAdminController::class, 'index']);
             Route::post('/academic-administrators', [SystemAdminAcademicAdminController::class, 'store']);
             Route::put('/academic-administrators/{id}', [SystemAdminAcademicAdminController::class, 'update']);
@@ -151,6 +158,7 @@ Route::middleware([
 
         // Notifications
         Route::get('/notifications', [NotificationController::class, 'adminIndex']);
+        Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead']);
         Route::patch('/notifications/{id}/read', [NotificationController::class, 'markRead']);
         Route::patch('/notifications/{id}/unread', [NotificationController::class, 'markUnread']);
         Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);

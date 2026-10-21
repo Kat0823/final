@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Support\AdminNotifier;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -61,8 +62,13 @@ class AuthController extends Controller
         );
 
         if (!$user || !$passwordValid) {
-            RateLimiter::hit($accountKey, self::LOCKOUT_SECONDS);
+            $attempts = RateLimiter::hit($accountKey, self::LOCKOUT_SECONDS);
             RateLimiter::hit($ipKey, self::LOCKOUT_SECONDS);
+
+            // Tell the admins once, on the attempt that starts the lockout.
+            if ($user && $attempts === self::MAX_ATTEMPTS_PER_ACCOUNT) {
+                AdminNotifier::accountLocked($user, self::LOCKOUT_SECONDS);
+            }
 
             return response()->json([
                 'success' => false,

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\SystemAdminAuditLog;
 use App\Models\User;
+use App\Support\AdminNotifier;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -81,6 +82,8 @@ class SystemAdminAcademicAdminController extends Controller
                         'is_active' => $administrator->is_active,
                     ]
                 );
+
+                AdminNotifier::academicAdminAccountChanged('create', $administrator, $request->user());
 
                 return $administrator;
             });
@@ -190,6 +193,8 @@ class SystemAdminAcademicAdminController extends Controller
                         $administrator,
                         $changes
                     );
+
+                    AdminNotifier::academicAdminAccountChanged($action, $administrator, $request->user());
                 }
 
                 return $administrator;
@@ -260,6 +265,8 @@ class SystemAdminAcademicAdminController extends Controller
             );
             $administrator->tokens()->delete();
             $administrator->delete();
+
+            AdminNotifier::academicAdminAccountChanged('delete', $administrator, $request->user());
         });
 
         if ($oldPhotoPath && str_starts_with($oldPhotoPath, 'profile-photos/')) {

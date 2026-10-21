@@ -45,6 +45,8 @@ class NotificationController extends Controller
         $notifications = $request->user()
             ->notifications()
             ->latest()
+            ->latest('id')
+            ->limit(200)
             ->get();
 
         return response()->json([
@@ -190,17 +192,39 @@ class NotificationController extends Controller
         ]);
     }
 
+    // Academic Admins and System Admins share these endpoints; each only
+    // ever sees and changes their own notifications.
     private function checkAdmin(Request $request): ?JsonResponse
     {
         if (!$request->user() ||
-            $request->user()->role !== 'academic_admin') {
+            !in_array($request->user()->role, ['academic_admin', 'system_admin'], true)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Only Academic Administrators can access this resource.',
+                'message' => 'Only administrators can access this resource.',
             ], 403);
         }
 
         return null;
+    }
+
+    /**
+     * Mark all of an admin's notifications as read.
+     */
+    public function markAllRead(Request $request): JsonResponse
+    {
+        if ($response = $this->checkAdmin($request)) {
+            return $response;
+        }
+
+        $request->user()
+            ->notifications()
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'All notifications marked as read.',
+        ]);
     }
 
     private function findOwnedNotification(

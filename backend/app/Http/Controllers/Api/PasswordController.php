@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Support\AdminNotifier;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -72,6 +73,8 @@ class PasswordController extends Controller
             'password' => Hash::make($validated['password']),
             'password_setup_complete' => true,
         ]);
+
+        AdminNotifier::accountSetupCompleted($user);
 
         // Issue a replacement token so the user stays logged in.
         $newToken = $user->createToken('auth_token')->plainTextToken;

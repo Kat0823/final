@@ -7,6 +7,7 @@ use App\Models\Grade;
 use App\Models\Notification;
 use App\Models\Progress;
 use App\Models\Submission;
+use App\Support\AdminNotifier;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -287,6 +288,15 @@ class GradeController extends Controller
 
                     'is_read' => false,
                 ]);
+
+                AdminNotifier::submissionGraded(
+                    $instructor,
+                    $submission->learner,
+                    $submission->module->title,
+                    $submission->module->course->name,
+                    $validated['score'],
+                    $validated['max_score']
+                );
             }
 
 
