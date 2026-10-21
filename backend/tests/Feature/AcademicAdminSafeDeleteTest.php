@@ -15,23 +15,32 @@ class AcademicAdminSafeDeleteTest extends TestCase
 {
     use RefreshDatabase;
 
+    private ?User $admin = null;
+
+    // Learners and instructors belong to this test's Academic Admin.
     private function user(string $role): User
     {
         return User::factory()->create([
             'role' => $role,
             'school_id' => fake()->unique()->numerify('SD-#####'),
             'is_active' => true,
+            'owner_admin_id' => $role === 'academic_admin' ? null : $this->admin()->id,
         ]);
     }
 
     private function admin(): User
     {
-        return $this->user('academic_admin');
+        return $this->admin ??= User::factory()->create([
+            'role' => 'academic_admin',
+            'school_id' => fake()->unique()->numerify('SD-ADM-#####'),
+            'is_active' => true,
+        ]);
     }
 
     private function classWithModule(?User $instructor = null): array
     {
         $course = Course::create([
+            'owner_admin_id' => $this->admin()->id,
             'name' => 'Safe Delete Course',
             'code' => 'SAFE-' . fake()->unique()->numberBetween(100, 999),
             'instructor_id' => $instructor?->id,

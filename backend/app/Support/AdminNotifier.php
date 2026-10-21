@@ -37,7 +37,8 @@ class AdminNotifier
             'academic_admin',
             'Account Now in Use',
             self::describe($user) . ' set their own password and can now use their account.',
-            self::TYPE_ACCOUNT_SETUP
+            self::TYPE_ACCOUNT_SETUP,
+            $user->owner_admin_id
         );
     }
 
@@ -47,14 +48,16 @@ class AdminNotifier
         string $moduleTitle,
         string $courseName,
         float|int|string $score,
-        float|int|string $maxScore
+        float|int|string $maxScore,
+        ?int $ownerAdminId = null
     ): void {
         self::notifyRole(
             'academic_admin',
             'Activity Graded',
             "{$instructor->name} graded {$learner->name}'s \"{$moduleTitle}\" in {$courseName}: "
                 . self::number($score) . '/' . self::number($maxScore) . '.',
-            self::TYPE_GRADE
+            self::TYPE_GRADE,
+            $ownerAdminId
         );
     }
 
@@ -74,7 +77,8 @@ class AdminNotifier
             $recipientRole,
             'Account Locked',
             self::describe($user) . " was locked for {$seconds} seconds after too many failed login attempts.",
-            self::TYPE_ACCOUNT_LOCKED
+            self::TYPE_ACCOUNT_LOCKED,
+            $recipientRole === 'academic_admin' ? $user->owner_admin_id : null
         );
     }
 
@@ -102,12 +106,26 @@ class AdminNotifier
         );
     }
 
-    private static function notifyRole(string $role, string $title, string $message, string $type): void
-    {
-        $recipientIds = User::query()
+    /**
+     * Notifies every active account with the role, or only $onlyUserId
+     * (the Academic Admin who owns the record) when one is given and active.
+     */
+    private static function notifyRole(
+        string $role,
+        string $title,
+        string $message,
+        string $type,
+        ?int $onlyUserId = null
+    ): void {
+        $recipients = User::query()
             ->where('role', $role)
-            ->where('is_active', true)
-            ->pluck('id');
+            ->where('is_active', true);
+
+        if ($onlyUserId !== null && (clone $recipients)->whereKey($onlyUserId)->exists()) {
+            $recipients->whereKey($onlyUserId);
+        }
+
+        $recipientIds = $recipients->pluck('id');
 
         $now = now();
 

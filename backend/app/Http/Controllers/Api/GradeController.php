@@ -295,7 +295,8 @@ class GradeController extends Controller
                     $submission->module->title,
                     $submission->module->course->name,
                     $validated['score'],
-                    $validated['max_score']
+                    $validated['max_score'],
+                    $submission->module->course->owner_admin_id
                 );
             }
 

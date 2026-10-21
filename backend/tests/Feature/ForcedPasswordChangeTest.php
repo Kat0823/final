@@ -123,6 +123,7 @@ class ForcedPasswordChangeTest extends TestCase
     {
         $admin = $this->user('academic_admin', true, 'ADM-0004');
         $learner = $this->user('learner', true, '24-00004');
+        $learner->update(['owner_admin_id' => $admin->id]);
         $learner->createToken('old-session');
 
         $this->actingAs($admin)
@@ -140,6 +141,7 @@ class ForcedPasswordChangeTest extends TestCase
     {
         $admin = $this->user('academic_admin', true, 'ADM-0005');
         $learner = $this->user('learner', true, '24-00005');
+        $learner->update(['owner_admin_id' => $admin->id]);
         $learner->createToken('session');
 
         $this->actingAs($admin)

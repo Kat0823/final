@@ -28,6 +28,7 @@ class AcademicAdminAccountManagementTest extends TestCase
         $admin = $this->admin();
         $learner = User::factory()->create([
             'role' => 'learner',
+            'owner_admin_id' => $admin->id,
             'school_id' => '24-12345',
             'password_setup_complete' => true,
         ]);
@@ -62,6 +63,7 @@ class AcademicAdminAccountManagementTest extends TestCase
         $admin = $this->admin();
         $instructor = User::factory()->create([
             'role' => 'instructor',
+            'owner_admin_id' => $admin->id,
             'school_id' => 'INS-00001',
             'password_setup_complete' => true,
         ]);
@@ -204,9 +206,11 @@ class AcademicAdminAccountManagementTest extends TestCase
         $admin = $this->admin();
         $learner = User::factory()->create([
             'role' => 'learner',
+            'owner_admin_id' => $admin->id,
             'school_id' => '24-12345',
         ]);
         $course = Course::create([
+            'owner_admin_id' => $admin->id,
             'name' => 'Dashboard Test Course',
             'code' => 'DASH-101',
             'is_active' => true,
@@ -244,15 +248,18 @@ class AcademicAdminAccountManagementTest extends TestCase
         $admin = $this->admin();
         $learner = User::factory()->create([
             'role' => 'learner',
+            'owner_admin_id' => $admin->id,
             'school_id' => '24-12345',
             'program' => 'ETEEAP',
         ]);
         $instructor = User::factory()->create([
             'role' => 'instructor',
+            'owner_admin_id' => $admin->id,
             'school_id' => '99-00002',
             'program' => 'ETEEAP',
         ]);
         $course = Course::create([
+            'owner_admin_id' => $admin->id,
             'name' => 'Reports Test Course',
             'code' => 'RPT-101',
             'subject_code' => 'RPT101',
@@ -284,6 +291,7 @@ class AcademicAdminAccountManagementTest extends TestCase
     {
         $admin = $this->admin();
         $course = Course::create([
+            'owner_admin_id' => $admin->id,
             'name' => 'Delete Test Course',
             'code' => 'DEL-101',
             'is_active' => true,

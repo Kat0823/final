@@ -20,6 +20,8 @@ class Course extends Model
     'description',
     'instructor_id',
     'is_active',
+    // The Academic Admin who manages this class.
+    'owner_admin_id',
 ];
 
     public function instructor(): BelongsTo

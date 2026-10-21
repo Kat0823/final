@@ -5,6 +5,84 @@
 
 
 /* =========================================================
+   PER-ADMIN BROWSER STORAGE
+   ---------------------------------------------------------
+   Each Academic Admin manages their own learners, classes and
+   module library. Pages keep copies of these in the browser under
+   keys starting with "siknayan_academic_admin_". Those keys are
+   stored separately for each signed-in admin (key + "::admin-<id>"),
+   so another admin using the same browser starts with their own,
+   empty data, and nothing is deleted at logout.
+
+   Data saved before this change belongs to ADMIN-001 (the account
+   that created it) and is moved to that admin's storage the first
+   time ADMIN-001 signs in on this browser.
+========================================================= */
+
+(function separateAdminBrowserStorage() {
+    const PREFIX = "siknayan_academic_admin_";
+    const NOT_SEPARATED = new Set([
+        "siknayan_academic_admin_sidebar_collapsed" // a display preference
+    ]);
+    const LEGACY_OWNER_SCHOOL_ID = "ADMIN-001";
+
+    let user = null;
+    try {
+        user = JSON.parse(sessionStorage.getItem("user") || "null");
+    } catch (error) {
+        user = null;
+    }
+
+    if (!user || !user.id) {
+        return;
+    }
+
+    const store = window.localStorage;
+    const proto = Object.getPrototypeOf(store);
+    const original = {
+        getItem: proto.getItem,
+        setItem: proto.setItem,
+        removeItem: proto.removeItem,
+        key: proto.key
+    };
+    const suffix = `::admin-${user.id}`;
+
+    const isSeparated = (key) =>
+        typeof key === "string" &&
+        key.startsWith(PREFIX) &&
+        !key.includes("::admin-") &&
+        !NOT_SEPARATED.has(key);
+
+    // One-time move of pre-separation data to its owner.
+    if (user.school_id === LEGACY_OWNER_SCHOOL_ID) {
+        const legacyKeys = [];
+        for (let i = 0; i < store.length; i++) {
+            const key = original.key.call(store, i);
+            if (isSeparated(key)) {
+                legacyKeys.push(key);
+            }
+        }
+        legacyKeys.forEach((key) => {
+            if (original.getItem.call(store, key + suffix) === null) {
+                original.setItem.call(store, key + suffix, original.getItem.call(store, key));
+            }
+            original.removeItem.call(store, key);
+        });
+    }
+
+    proto.getItem = function (key) {
+        return original.getItem.call(this, this === store && isSeparated(key) ? key + suffix : key);
+    };
+    proto.setItem = function (key, value) {
+        return original.setItem.call(this, this === store && isSeparated(key) ? key + suffix : key, value);
+    };
+    proto.removeItem = function (key) {
+        return original.removeItem.call(this, this === store && isSeparated(key) ? key + suffix : key);
+    };
+})();
+
+
+/* =========================================================
    ICONS
 ========================================================= */
 

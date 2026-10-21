@@ -24,6 +24,8 @@ class User extends Authenticatable
         'password_setup_complete',
         'is_active',
         'profile_photo_path',
+        // For learners and instructors: the Academic Admin who manages them.
+        'owner_admin_id',
     ];
 
     protected $hidden = [

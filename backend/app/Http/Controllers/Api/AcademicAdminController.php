@@ -50,6 +50,26 @@ class AcademicAdminController extends Controller
     }
 
     /**
+     * Each Academic Admin manages only the learners, instructors and classes
+     * they created (owner_admin_id). These start every such query.
+     */
+    private function adminId(Request $request): int
+    {
+        return (int) $request->user()->id;
+    }
+
+    private function ownedUsers(Request $request, string $role)
+    {
+        return User::where('role', $role)
+            ->where('owner_admin_id', $this->adminId($request));
+    }
+
+    private function ownedClasses(Request $request)
+    {
+        return Course::where('owner_admin_id', $this->adminId($request));
+    }
+
+    /**
      * Check if the authenticated user is an Academic Administrator.
      */
     private function checkAdmin(Request $request): ?JsonResponse
@@ -78,11 +98,12 @@ class AcademicAdminController extends Controller
         return response()->json([
             'success' => true,
             'statistics' => [
-                'learners' => User::where('role', 'learner')->count(),
-                'instructors' => User::where('role', 'instructor')->count(),
-                'classes' => Course::count(),
-                'active_classes' => Course::where('is_active', true)->count(),
+                'learners' => $this->ownedUsers($request, 'learner')->count(),
+                'instructors' => $this->ownedUsers($request, 'instructor')->count(),
+                'classes' => $this->ownedClasses($request)->count(),
+                'active_classes' => $this->ownedClasses($request)->where('is_active', true)->count(),
                 'awaiting_grade' => Submission::where('status', 'submitted')
+                    ->whereHas('module.course', fn ($query) => $query->where('owner_admin_id', $this->adminId($request)))
                     ->whereDoesntHave('grade')
                     ->count(),
             ],
@@ -95,7 +116,7 @@ class AcademicAdminController extends Controller
             return $response;
         }
 
-        $classes = Course::with([
+        $classes = $this->ownedClasses($request)->with([
             'instructor:id,name,program,is_active',
             'learners:id,name,school_id,program,is_active,role',
             'modules.progress',
@@ -176,7 +197,7 @@ class AcademicAdminController extends Controller
             ];
         }
 
-        $learners = User::where('role', 'learner')
+        $learners = $this->ownedUsers($request, 'learner')
             ->with('progress')
             ->latest()
             ->get([
@@ -210,7 +231,7 @@ class AcademicAdminController extends Controller
                 ];
             });
 
-        $instructors = User::where('role', 'instructor')
+        $instructors = $this->ownedUsers($request, 'instructor')
             ->latest()
             ->get([
                 'id',
@@ -303,7 +324,7 @@ $user->save();
         return $response;
     }
 
-    $learners = User::where('role', 'learner')
+    $learners = $this->ownedUsers($request, 'learner')
         ->with([
             'courses.modules',
             'progress',
@@ -412,6 +433,7 @@ $validated = $request->validate([
 ]);
 
 $learner = User::create([
+    'owner_admin_id' => $this->adminId($request),
     'name' => $validated['name'],
     'email' => $validated['email'] ?? null,
     'school_id' => $validated['school_id'],
@@ -449,7 +471,7 @@ $learner = User::create([
             return $response;
         }
 
-        $learner = User::where('role', 'learner')->find($id);
+        $learner = $this->ownedUsers($request, 'learner')->find($id);
 
         if (!$learner) {
             return response()->json([
@@ -527,7 +549,7 @@ $learner = User::create([
             return $response;
         }
 
-        $learner = User::where('role', 'learner')->find($id);
+        $learner = $this->ownedUsers($request, 'learner')->find($id);
 
         if (!$learner) {
             return response()->json([
@@ -565,7 +587,7 @@ $learner = User::create([
             return $response;
         }
 
-        $instructors = User::where('role', 'instructor')
+        $instructors = $this->ownedUsers($request, 'instructor')
             ->latest()
             ->get([
                 'id',
@@ -605,6 +627,7 @@ $learner = User::create([
         ]);
 
         $instructor = User::create([
+            'owner_admin_id' => $this->adminId($request),
             'name' => $validated['name'],
             'email' => $validated['email'],
             'school_id' => $validated['school_id'],
@@ -643,7 +666,7 @@ $learner = User::create([
             return $response;
         }
 
-        $instructor = User::where('role', 'instructor')->find($id);
+        $instructor = $this->ownedUsers($request, 'instructor')->find($id);
 
         if (!$instructor) {
             return response()->json([
@@ -731,7 +754,7 @@ $learner = User::create([
             return $response;
         }
 
-        $instructor = User::where('role', 'instructor')->find($id);
+        $instructor = $this->ownedUsers($request, 'instructor')->find($id);
 
         if (!$instructor) {
             return response()->json([
@@ -769,7 +792,7 @@ $learner = User::create([
             return $response;
         }
 
-        $classes = Course::with([
+        $classes = $this->ownedClasses($request)->with([
             'instructor:id,name,school_id',
             'learners:id,name,school_id',
         ])
@@ -804,14 +827,16 @@ public function storeClass(Request $request): JsonResponse
         'instructor_id' => [
             'nullable',
             'integer',
-            Rule::exists('users', 'id')->where(function ($query) {
-                $query->where('role', 'instructor');
+            Rule::exists('users', 'id')->where(function ($query) use ($request) {
+                $query->where('role', 'instructor')
+                    ->where('owner_admin_id', $this->adminId($request));
             }),
         ],
         'is_active' => ['sometimes', 'boolean'],
     ]);
 
     $class = Course::create([
+        'owner_admin_id' => $this->adminId($request),
         'name' => $validated['name'],
         'code' => $validated['code'],
         'subject_code' => $validated['subject_code'] ?? null,
@@ -841,7 +866,7 @@ public function updateClass(Request $request, int $id): JsonResponse
         return $response;
     }
 
-    $class = Course::find($id);
+    $class = $this->ownedClasses($request)->find($id);
 
     if (!$class) {
         return response()->json([
@@ -867,8 +892,9 @@ public function updateClass(Request $request, int $id): JsonResponse
         'instructor_id' => [
             'nullable',
             'integer',
-            Rule::exists('users', 'id')->where(function ($query) {
-                $query->where('role', 'instructor');
+            Rule::exists('users', 'id')->where(function ($query) use ($request) {
+                $query->where('role', 'instructor')
+                    ->where('owner_admin_id', $this->adminId($request));
             }),
         ],
 
@@ -897,7 +923,7 @@ public function destroyClass(Request $request, int $id): JsonResponse
         return $response;
     }
 
-    $class = Course::find($id);
+    $class = $this->ownedClasses($request)->find($id);
 
     if (!$class) {
         return response()->json([
@@ -936,7 +962,7 @@ public function classLearners(Request $request, int $id): JsonResponse
         return $response;
     }
 
-    $class = Course::with([
+    $class = $this->ownedClasses($request)->with([
         'learners:id,name,email,school_id,program'
     ])->find($id);
 
@@ -965,7 +991,7 @@ public function enrollLearner(Request $request, int $id): JsonResponse
         return $response;
     }
 
-    $class = Course::find($id);
+    $class = $this->ownedClasses($request)->find($id);
 
     if (!$class) {
         return response()->json([
@@ -978,8 +1004,9 @@ public function enrollLearner(Request $request, int $id): JsonResponse
         'learner_id' => [
             'required',
             'integer',
-            Rule::exists('users', 'id')->where(function ($query) {
-                $query->where('role', 'learner');
+            Rule::exists('users', 'id')->where(function ($query) use ($request) {
+                $query->where('role', 'learner')
+                    ->where('owner_admin_id', $this->adminId($request));
             }),
         ],
     ]);
@@ -1016,7 +1043,7 @@ public function removeLearner(
         return $response;
     }
 
-    $class = Course::find($id);
+    $class = $this->ownedClasses($request)->find($id);
 
     if (!$class) {
         return response()->json([
@@ -1129,7 +1156,7 @@ public function classModules(Request $request, int $id): JsonResponse
         return $response;
     }
 
-    $class = Course::find($id);
+    $class = $this->ownedClasses($request)->find($id);
 
     if (!$class) {
         return response()->json([
@@ -1172,7 +1199,7 @@ public function storeModule(Request $request, int $id): JsonResponse
         return $response;
     }
 
-    $class = Course::find($id);
+    $class = $this->ownedClasses($request)->find($id);
 
     if (!$class) {
         return response()->json([
@@ -1213,7 +1240,8 @@ public function updateModule(Request $request, int $id): JsonResponse
         return $response;
     }
 
-    $module = Module::find($id);
+    $module = Module::whereHas('course', fn ($query) => $query->where('owner_admin_id', $this->adminId($request)))
+        ->find($id);
 
     if (!$module) {
         return response()->json([
@@ -1247,7 +1275,8 @@ public function destroyModule(Request $request, int $id): JsonResponse
         return $response;
     }
 
-    $module = Module::find($id);
+    $module = Module::whereHas('course', fn ($query) => $query->where('owner_admin_id', $this->adminId($request)))
+        ->find($id);
 
     if (!$module) {
         return response()->json([
@@ -1270,7 +1299,7 @@ public function syncClassModules(Request $request, int $id): JsonResponse
         return $response;
     }
 
-    $class = Course::find($id);
+    $class = $this->ownedClasses($request)->find($id);
 
     if (!$class) {
         return response()->json([
@@ -1567,6 +1596,7 @@ public function syncClassModules(Request $request, int $id): JsonResponse
                     $temporaryPassword = bin2hex(random_bytes(8));
 
                     $learner = User::create([
+                        'owner_admin_id' => auth()->id(),
                         'name' => $row['name'],
                         'school_id' => $row['school_id'],
                         'email' => $row['email'],
@@ -1866,6 +1896,7 @@ public function importInstructors(Request $request): JsonResponse
                 $temporaryPassword = bin2hex(random_bytes(8));
 
                 $instructor = User::create([
+                    'owner_admin_id' => auth()->id(),
                     'name' => $row['name'],
                     'school_id' => $row['school_id'],
                     'email' => $row['email'],

@@ -23,9 +23,10 @@ class ModuleMaterialTest extends TestCase
         ]);
     }
 
-    private function course(?User $instructor = null): Course
+    private function course(?User $instructor = null, ?User $owner = null): Course
     {
         return Course::create([
+            'owner_admin_id' => $owner?->id,
             'name' => 'Programming 1',
             'code' => 'PROG-' . fake()->unique()->numberBetween(100, 999),
             'instructor_id' => $instructor?->id,
@@ -49,7 +50,7 @@ class ModuleMaterialTest extends TestCase
     {
         Storage::fake('local');
         $admin = $this->user('academic_admin', 'ADM-M1');
-        $course = $this->course();
+        $course = $this->course(null, $admin);
         $path = $this->upload($admin);
 
         $this->assertStringStartsWith('module-materials/', $path);
@@ -80,7 +81,7 @@ class ModuleMaterialTest extends TestCase
     {
         Storage::fake('local');
         $admin = $this->user('academic_admin', 'ADM-M2');
-        $course = $this->course();
+        $course = $this->course(null, $admin);
 
         $sync = fn (?string $path) => $this->actingAs($admin)
             ->putJson("/api/admin/classes/{$course->id}/modules/sync", [

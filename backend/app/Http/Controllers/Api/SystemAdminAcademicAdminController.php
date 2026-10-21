@@ -294,6 +294,18 @@ class SystemAdminAcademicAdminController extends Controller
             return $this->lastActiveAdministratorResponse();
         }
 
+        // They manage learners, instructors or classes: deleting them would
+        // leave those records without an administrator.
+        if (
+            User::where('owner_admin_id', $administrator->id)->exists()
+            || \App\Models\Course::where('owner_admin_id', $administrator->id)->exists()
+        ) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This Academic Admin still manages learners, instructors or classes and cannot be deleted. Deactivate the account instead.',
+            ], Response::HTTP_CONFLICT);
+        }
+
         if (
             $administrator->courses()->exists()
             || $administrator->instructedCourses()->exists()
