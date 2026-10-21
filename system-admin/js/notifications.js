@@ -1,68 +1,12 @@
 /* =========================================================
    SIKNAYAN - SYSTEM ADMINISTRATOR
    NOTIFICATIONS
-   Frontend prototype using localStorage
+   Shows the System Admin's notifications from the server, through
+   the shared store in shared.js (window.SiknayanSystemAdminNotifications).
 ========================================================= */
 
-const NOTIFICATION_STORAGE_KEY =
-    "siknayan_system_admin_notifications";
-
-/* =========================================================
-   SAMPLE NOTIFICATIONS
-   These are illustrative examples, not real events.
-========================================================= */
-
-const DEFAULT_NOTIFICATIONS = [
-    {
-        id: "security-signins",
-        category: "security",
-        title: "Repeated failed sign-ins",
-        description:
-            "This illustrative security alert represents multiple unsuccessful sign-in attempts. In the connected system, recorded authentication events would be evaluated before generating this notification.",
-        recommendation:
-            "Review the relevant audit records and investigate the sign-in attempts.",
-        severity: "High",
-        timestamp: "2026-10-09T10:30:00",
-        read: false,
-        icon: "shield-alert",
-        href: "audit-logs.html",
-        actionLabel: "Open Audit Logs"
-    },
-    {
-        id: "backup-failed",
-        category: "backups",
-        title: "Backup failed",
-        description:
-            "This illustrative alert represents a scheduled database backup that did not complete successfully.",
-        recommendation:
-            "Review the backup configuration and investigate the failed backup job.",
-        severity: "High",
-        timestamp: "2026-10-09T09:15:00",
-        read: false,
-        icon: "database-backup",
-        href: "backup.html",
-        actionLabel: "Open Data Backup"
-    },
-    {
-        id: "account-updated",
-        category: "accounts",
-        title: "Administrator account updated",
-        description:
-            "This illustrative notification represents a change to an administrator account's details.",
-        recommendation:
-            "Review the account change in the Academic Administrators section if further verification is needed.",
-        severity: "Low",
-        timestamp: "2026-10-08T15:45:00",
-        read: true,
-        icon: "user-round-check",
-        href: "administrators.html",
-        actionLabel: "Open Administrators"
-    }
-];
-
-/* =========================================================
-   DOM REFERENCES
-========================================================= */
+const notificationStore =
+    window.SiknayanSystemAdminNotifications;
 
 const notificationList =
     document.getElementById("notificationList");
@@ -113,80 +57,13 @@ const detailRecommendation =
    STATE
 ========================================================= */
 
-let notifications = loadNotifications();
+let notifications = [];
 
 let activeFilter = "all";
 
 let selectedNotificationId =
     notifications[0]?.id || null;
 
-/* =========================================================
-   STORAGE
-========================================================= */
-
-function loadNotifications() {
-    try {
-        const stored =
-            localStorage.getItem(NOTIFICATION_STORAGE_KEY);
-
-        if (!stored) {
-            localStorage.setItem(
-                NOTIFICATION_STORAGE_KEY,
-                JSON.stringify(DEFAULT_NOTIFICATIONS)
-            );
-
-            return DEFAULT_NOTIFICATIONS.map(
-                notification => ({ ...notification })
-            );
-        }
-
-        const parsed = JSON.parse(stored);
-
-        if (!Array.isArray(parsed)) {
-            throw new Error("Stored notifications must be an array.");
-        }
-
-        return parsed.filter(
-            notification =>
-                notification &&
-                typeof notification.id === "string" &&
-                typeof notification.title === "string"
-        );
-
-    } catch (error) {
-        console.error(
-            "Unable to load notifications:",
-            error
-        );
-
-        return DEFAULT_NOTIFICATIONS.map(
-            notification => ({ ...notification })
-        );
-    }
-}
-
-function saveNotifications() {
-    try {
-        localStorage.setItem(
-            NOTIFICATION_STORAGE_KEY,
-            JSON.stringify(notifications)
-        );
-
-        return true;
-
-    } catch (error) {
-        console.error(
-            "Unable to save notifications:",
-            error
-        );
-
-        alert(
-            "The notification change could not be saved in this browser."
-        );
-
-        return false;
-    }
-}
 
 /* =========================================================
    HELPERS
@@ -558,8 +435,7 @@ function selectNotification(id) {
     selectedNotificationId = id;
 
     if (!notification.read) {
-        notification.read = true;
-        saveNotifications();
+        notificationStore?.markRead(id);
     }
 
     renderNotificationList();
@@ -635,9 +511,7 @@ if (markNotificationReadButton) {
                 return;
             }
 
-            notification.read = true;
-            saveNotifications();
-            renderNotificationList();
+            notificationStore?.markRead(notification.id);
         }
     );
 }
@@ -658,12 +532,7 @@ if (markAllReadButton) {
                 return;
             }
 
-            notifications.forEach(notification => {
-                notification.read = true;
-            });
-
-            saveNotifications();
-            renderNotificationList();
+            notificationStore?.markAllRead();
         }
     );
 }
@@ -672,6 +541,33 @@ if (markAllReadButton) {
    INITIALIZE
 ========================================================= */
 
+window.addEventListener(
+    "siknayan:notifications-updated",
+    () => {
+        notifications = notificationStore?.getAll() || [];
+        renderNotificationList();
+        updateUnreadIndicator();
+    }
+);
+
 renderNotificationList();
 updateUnreadIndicator();
 refreshIcons();
+
+if (!notificationStore) {
+    console.error("Notifications: shared.js did not load the notification store.");
+} else {
+    notificationStore.ready()
+        .then(list => {
+            notifications = list;
+            selectedNotificationId = list[0]?.id || null;
+            renderNotificationList();
+            updateUnreadIndicator();
+        })
+        .catch(error => {
+            if (notificationCount) {
+                notificationCount.textContent =
+                    `Unable to load notifications: ${error.message}`;
+            }
+        });
+}

@@ -149,13 +149,9 @@
                 <div>
                     <h2>Notifications</h2>
                     <p>
-                        Security alerts and important system events.
+                        Account lockouts and changes to Academic Admin accounts.
                     </p>
                 </div>
-
-                <span class="notification-demo-badge">
-                    SAMPLE DATA
-                </span>
             </section>
 
             <!-- NOTIFICATION FILTERS -->
@@ -258,115 +254,6 @@
                         aria-label="Notification list"
                     >
 
-                        <!-- SAMPLE SECURITY NOTIFICATION -->
-                        <button
-                            type="button"
-                            class="notification-list-item is-selected is-unread"
-                            data-notification-id="security-signins"
-                            data-category="security"
-                            aria-pressed="true"
-                        >
-                            <span class="notification-list-icon security-icon">
-                                <i data-lucide="shield-alert"></i>
-                            </span>
-
-                            <span class="notification-list-content">
-                                <span class="notification-list-meta">
-                                    <span>Security</span>
-                                    <span class="notification-unread-label">
-                                        Unread
-                                    </span>
-                                </span>
-
-                                <strong>Repeated failed sign-ins</strong>
-
-                                <span class="notification-list-description">
-                                    Sample scenario: multiple unsuccessful
-                                    sign-in attempts were recorded.
-                                </span>
-
-                                <time datetime="2026-10-09T10:30:00">
-                                    Oct 9, 2026 · 10:30 AM
-                                </time>
-                            </span>
-
-                            <span
-                                class="notification-unread-dot"
-                                aria-label="Unread"
-                            ></span>
-                        </button>
-
-                        <!-- SAMPLE BACKUP NOTIFICATION -->
-                        <button
-                            type="button"
-                            class="notification-list-item is-unread"
-                            data-notification-id="backup-failed"
-                            data-category="backups"
-                            aria-pressed="false"
-                        >
-                            <span class="notification-list-icon backup-icon">
-                                <i data-lucide="database-backup"></i>
-                            </span>
-
-                            <span class="notification-list-content">
-                                <span class="notification-list-meta">
-                                    <span>Backups</span>
-                                    <span class="notification-unread-label">
-                                        Unread
-                                    </span>
-                                </span>
-
-                                <strong>Backup failed</strong>
-
-                                <span class="notification-list-description">
-                                    Sample scenario: a scheduled database
-                                    backup did not complete successfully.
-                                </span>
-
-                                <time datetime="2026-10-09T09:15:00">
-                                    Oct 9, 2026 · 9:15 AM
-                                </time>
-                            </span>
-
-                            <span
-                                class="notification-unread-dot"
-                                aria-label="Unread"
-                            ></span>
-                        </button>
-
-                        <!-- SAMPLE ACCOUNT NOTIFICATION -->
-                        <button
-                            type="button"
-                            class="notification-list-item"
-                            data-notification-id="account-updated"
-                            data-category="accounts"
-                            aria-pressed="false"
-                        >
-                            <span class="notification-list-icon account-icon">
-                                <i data-lucide="user-round-check"></i>
-                            </span>
-
-                            <span class="notification-list-content">
-                                <span class="notification-list-meta">
-                                    <span>Accounts</span>
-                                    <span class="notification-read-label">
-                                        Read
-                                    </span>
-                                </span>
-
-                                <strong>Administrator account updated</strong>
-
-                                <span class="notification-list-description">
-                                    Sample scenario: an administrator's
-                                    account details were changed.
-                                </span>
-
-                                <time datetime="2026-10-08T15:45:00">
-                                    Oct 8, 2026 · 3:45 PM
-                                </time>
-                            </span>
-                        </button>
-
                     </div>
 
                     <!-- EMPTY STATE, USED BY JAVASCRIPT -->
@@ -420,10 +307,6 @@
 
                             <span class="notification-status-tag" id="detailStatus">
                                 Unread
-                            </span>
-
-                            <span class="notification-sample-tag">
-                                Sample event
                             </span>
                         </div>
 
@@ -488,11 +371,6 @@
                 </section>
 
             </section>
-
-            <p class="notifications-prototype-note">
-                Notifications shown here are illustrative sample data.
-                They do not represent live security detections or system events.
-            </p>
 
         </main>
     </div>

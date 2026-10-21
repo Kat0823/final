@@ -356,82 +356,181 @@ applySiknayanSystemAdminProfile();
 
 /* =========================================================
    GLOBAL NOTIFICATION BELL
-   Sample notifications are stored in browser localStorage.
+   Shows the System Admin's notifications from the server.
 ========================================================= */
 
 (function initializeSystemAdminNotifications() {
     "use strict";
 
-    const STORAGE_KEY =
-        "siknayan_system_admin_notifications";
+    // Earlier versions kept sample notifications in the browser.
+    try {
+        localStorage.removeItem("siknayan_system_admin_notifications");
+    } catch (error) {}
 
     const NOTIFICATIONS_PAGE = "notifications.html";
     const MAX_DROPDOWN_ITEMS = 4;
 
     /*
-       These are demonstration notifications only.
-       They do not represent live security or backup monitoring.
+       Notifications come from GET /api/system-admin/notifications.
+       This store is shared with the Notifications page through
+       window.SiknayanSystemAdminNotifications, so the bell and the page
+       always agree.
     */
 
-    const DEFAULT_NOTIFICATIONS = [
-        {
-            id: "security-signins",
+    const SERVER_TYPES = {
+        account_locked: {
             category: "security",
             categoryLabel: "Security",
-            title: "Repeated failed sign-ins",
-            message:
-                "Multiple failed sign-in attempts were recorded. Review the audit logs.",
-            description:
-                "Multiple failed sign-in attempts were recorded. Review the audit logs.",
-            severity: "high",
-            priority: "high",
-            time: "10 minutes ago",
-            timestamp: new Date(
-                Date.now() - 10 * 60 * 1000
-            ).toISOString(),
-            read: false,
-            href: "audit-logs.html",
-            icon: "shield-alert"
+            severity: "High",
+            icon: "shield-alert",
+            href: "administrators.html",
+            actionLabel: "Open Administrators",
+            recommendation:
+                "If the account owner didn't expect this, check with them. The account unlocks automatically after a minute."
         },
-        {
-            id: "backup-failed",
-            category: "backups",
-            categoryLabel: "Backups",
-            title: "Backup failed",
-            message:
-                "A sample backup operation failed. Review the backup configuration and history.",
-            description:
-                "A sample backup operation failed. Review the backup configuration and history.",
-            severity: "high",
-            priority: "high",
-            time: "30 minutes ago",
-            timestamp: new Date(
-                Date.now() - 30 * 60 * 1000
-            ).toISOString(),
-            read: false,
-            href: "backup.html",
-            icon: "database"
-        },
-        {
-            id: "account-updated",
+        admin_account: {
             category: "accounts",
             categoryLabel: "Accounts",
-            title: "Administrator account updated",
-            message:
-                "A sample administrator account update is available for review.",
-            description:
-                "A sample administrator account update is available for review.",
-            severity: "low",
-            priority: "low",
-            time: "1 hour ago",
-            timestamp: new Date(
-                Date.now() - 60 * 60 * 1000
-            ).toISOString(),
-            read: true,
-            href: "administrators.html",
-            icon: "user-cog"
+            severity: "Medium",
+            icon: "user-cog",
+            href: "audit-logs.html",
+            actionLabel: "Open Audit Logs",
+            recommendation:
+                "Review the change in the Audit Logs if it needs to be verified."
         }
-    ];
+    };
+
+    let cachedNotifications = [];
+    let loadPromise = null;
+
+    function toNotification(record) {
+        const known = SERVER_TYPES[record.type] || {
+            category: "system",
+            categoryLabel: "System",
+            severity: "Medium",
+            icon: "bell",
+            href: NOTIFICATIONS_PAGE,
+            actionLabel: "View details",
+            recommendation: ""
+        };
+
+        return {
+            id: String(record.id),
+            title: record.title || "Notification",
+            message: record.message || "",
+            description: record.message || "",
+            timestamp: record.created_at,
+            read: record.is_read === true,
+            ...known
+        };
+    }
+
+    function getApiToken() {
+        try {
+            return sessionStorage.getItem("authToken") ||
+                localStorage.getItem("siknayan_api_token") ||
+                "";
+        } catch (error) {
+            return "";
+        }
+    }
+
+    async function notificationApi(path, method = "GET") {
+        const response = await fetch(
+            `${window.SIKNAYAN_API_ROOT}/system-admin/notifications${path}`,
+            {
+                method,
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${getApiToken()}`
+                }
+            }
+        );
+
+        const data = await response.json().catch(() => null);
+
+        if (!response.ok || !data || data.success === false) {
+            throw new Error(
+                data?.message || `The server returned an error (${response.status}).`
+            );
+        }
+
+        return data;
+    }
+
+    function announceChange() {
+        window.dispatchEvent(
+            new CustomEvent("siknayan:notifications-updated")
+        );
+    }
+
+    function loadFromServer() {
+        loadPromise = notificationApi("")
+            .then((data) => {
+                cachedNotifications = Array.isArray(data.notifications)
+                    ? data.notifications.map(toNotification)
+                    : [];
+                announceChange();
+                return cachedNotifications;
+            })
+            .catch((error) => {
+                console.warn("Unable to load System Admin notifications.", error);
+                cachedNotifications = [];
+                announceChange();
+                throw error;
+            });
+
+        return loadPromise;
+    }
+
+    // Mark one notification read on screen, then on the server.
+    async function markReadOnServer(id) {
+        const notification = cachedNotifications.find(
+            (item) => item.id === String(id)
+        );
+
+        if (!notification || notification.read) {
+            return;
+        }
+
+        notification.read = true;
+        announceChange();
+
+        try {
+            await notificationApi(`/${encodeURIComponent(id)}/read`, "PATCH");
+        } catch (error) {
+            console.warn("Unable to mark the notification as read.", error);
+            notification.read = false;
+            announceChange();
+        }
+    }
+
+    async function markAllReadOnServer() {
+        const changed = cachedNotifications.filter((item) => !item.read);
+
+        if (changed.length === 0) {
+            return;
+        }
+
+        changed.forEach((item) => { item.read = true; });
+        announceChange();
+
+        try {
+            await notificationApi("/read-all", "POST");
+        } catch (error) {
+            console.warn("Unable to mark all notifications as read.", error);
+            changed.forEach((item) => { item.read = false; });
+            announceChange();
+        }
+    }
+
+    window.SiknayanSystemAdminNotifications = {
+        // Resolves with the list once loaded (rejects if loading failed).
+        ready: () => loadPromise || loadFromServer(),
+        getAll: () => cachedNotifications,
+        markRead: markReadOnServer,
+        markAllRead: markAllReadOnServer
+    };
 
     let notificationWrapper = null;
     let notificationDropdown = null;
@@ -439,117 +538,8 @@ applySiknayanSystemAdminProfile();
     let notificationSummary = null;
     let notificationViewAll = null;
 
-    
     function getNotifications() {
-        const detailsById = {
-            "security-signins": {
-                severity: "High",
-                recommendation:
-                    "Review the relevant audit records and investigate the sign-in attempts.",
-                actionLabel: "Open Audit Logs"
-            },
-            "backup-failed": {
-                severity: "High",
-                recommendation:
-                    "Review the backup configuration and investigate the failed backup job.",
-                actionLabel: "Open Data Backup"
-            },
-            "account-updated": {
-                severity: "Low",
-                recommendation:
-                    "Review the account change in the Academic Administrators section if further verification is needed.",
-                actionLabel: "Open Administrators"
-            }
-        };
-
-        let shouldSave = false;
-
-        try {
-            const stored = localStorage.getItem(STORAGE_KEY);
-
-            let parsed;
-
-            if (stored === null) {
-                parsed = DEFAULT_NOTIFICATIONS.map(
-                    item => ({ ...item })
-                );
-                shouldSave = true;
-            } else {
-                parsed = JSON.parse(stored);
-            }
-
-            if (!Array.isArray(parsed)) {
-                throw new Error("Invalid notification data.");
-            }
-
-            const normalized = parsed.map(item => {
-                const source =
-                    item && typeof item === "object" ? item : {};
-
-                const defaults = detailsById[source.id] || {};
-
-                const rawSeverity = String(
-                    source.severity || defaults.severity || "Medium"
-                ).toLowerCase();
-
-                const severity =
-                    rawSeverity === "high" ? "High" :
-                    rawSeverity === "medium" ? "Medium" :
-                    rawSeverity === "low" ? "Low" : "Medium";
-
-                const recommendation =
-                    source.recommendation ||
-                    defaults.recommendation || "";
-
-                const actionLabel =
-                    source.actionLabel ||
-                    defaults.actionLabel ||
-                    "View details";
-
-                if (
-                    source.severity !== severity ||
-                    source.recommendation !== recommendation ||
-                    source.actionLabel !== actionLabel
-                ) {
-                    shouldSave = true;
-                }
-
-                return {
-                    ...source,
-                    severity,
-                    recommendation,
-                    actionLabel
-                };
-            });
-
-            if (shouldSave) {
-                saveNotifications(normalized);
-            }
-
-            return normalized;
-
-        } catch (error) {
-            console.warn("Unable to load notifications:", error);
-
-            return DEFAULT_NOTIFICATIONS.map(
-                item => ({ ...item })
-            );
-        }
-    }
-
-
-    function saveNotifications(notifications) {
-        try {
-            localStorage.setItem(
-                STORAGE_KEY,
-                JSON.stringify(notifications)
-            );
-        } catch (error) {
-            console.warn(
-                "Unable to save System Admin notifications.",
-                error
-            );
-        }
+        return cachedNotifications;
     }
 
     function isUnread(notification) {
@@ -599,9 +589,28 @@ applySiknayanSystemAdminProfile();
     }
 
     function getTimeLabel(notification) {
-        return notification.time ||
-            notification.dateLabel ||
-            "Recent";
+        const date = new Date(notification.timestamp);
+
+        if (Number.isNaN(date.getTime())) {
+            return "Recent";
+        }
+
+        const minutes = Math.round((Date.now() - date.getTime()) / 60000);
+
+        if (minutes < 1) return "Just now";
+        if (minutes < 60) return `${minutes} minute${minutes === 1 ? "" : "s"} ago`;
+
+        const hours = Math.round(minutes / 60);
+        if (hours < 24) return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+
+        const days = Math.round(hours / 24);
+        if (days < 7) return `${days} day${days === 1 ? "" : "s"} ago`;
+
+        return date.toLocaleDateString(undefined, {
+            month: "short",
+            day: "numeric",
+            year: "numeric"
+        });
     }
 
     function syncNotificationDots(notifications) {
@@ -673,7 +682,6 @@ applySiknayanSystemAdminProfile();
                     <h3>Notifications</h3>
                     <p class="notification-dropdown-summary"></p>
                 </div>
-                <span class="notification-sample-label">SAMPLE</span>
             </div>
 
             <div class="notification-dropdown-list"></div>
@@ -763,27 +771,7 @@ applySiknayanSystemAdminProfile();
     }
 
     function markNotificationRead(id) {
-        const notifications = getNotifications();
-
-        const updated = notifications.map((notification) => {
-            if (notification.id !== id) {
-                return notification;
-            }
-
-            return {
-                ...notification,
-                read: true,
-                ...(Object.prototype.hasOwnProperty.call(
-                    notification,
-                    "isRead"
-                ) ? { isRead: true } : {})
-            };
-        });
-
-        saveNotifications(updated);
-
-        syncNotificationDots(updated);
-        renderDropdown();
+        markReadOnServer(id);
     }
 
     function renderDropdown() {
@@ -905,26 +893,15 @@ applySiknayanSystemAdminProfile();
     function initialize() {
         createDropdown();
 
+        // Load even when this page has no bell (the Notifications page
+        // reads the same store).
+        loadFromServer().catch(() => {});
+
         if (!notificationWrapper) return;
 
-        const notifications = getNotifications();
-
-        syncNotificationDots(notifications);
         renderDropdown();
     }
 
-    /*
-       Refresh if notification status changes in another browser tab.
-    */
-
-    window.addEventListener("storage", (event) => {
-        if (event.key !== STORAGE_KEY) return;
-
-        const notifications = getNotifications();
-
-        syncNotificationDots(notifications);
-        renderDropdown();
-    });
 
     /*
        Other page scripts may dispatch this event after changing
