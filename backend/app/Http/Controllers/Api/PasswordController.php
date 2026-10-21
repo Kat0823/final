@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Support\AdminNotifier;
+use App\Support\AuditLog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -75,6 +76,7 @@ class PasswordController extends Controller
         ]);
 
         AdminNotifier::accountSetupCompleted($user);
+        AuditLog::self($user, AuditLog::PASSWORD_SETUP, $request);
 
         // Issue a replacement token so the user stays logged in.
         $newToken = $user->createToken('auth_token')->plainTextToken;
@@ -140,6 +142,8 @@ class PasswordController extends Controller
         $user->tokens()
             ->when($currentTokenId, fn ($query) => $query->whereKeyNot($currentTokenId))
             ->delete();
+
+        AuditLog::self($user, AuditLog::PASSWORD_CHANGE, $request);
 
         return response()->json([
             'success' => true,

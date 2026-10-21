@@ -56,20 +56,36 @@ class SystemAdminController extends Controller
      */
     public function auditLogs(): JsonResponse
     {
-        $logs = SystemAdminAuditLog::query()
+        $entries = SystemAdminAuditLog::query()
             ->latest('id')
             ->limit(self::AUDIT_LOG_LIMIT)
-            ->get()
-            ->map(fn (SystemAdminAuditLog $log): array => [
+            ->get();
+
+        // Current roles of actors, for older entries that didn't store one.
+        $actorRoles = User::query()
+            ->whereIn('id', $entries->pluck('actor_id')->filter()->unique())
+            ->pluck('role', 'id');
+
+        $logs = $entries->map(function (SystemAdminAuditLog $log) use ($actorRoles): array {
+            $details = is_array($log->details) ? $log->details : [];
+            $actorRole = $details['actor_role'] ?? $actorRoles[$log->actor_id] ?? null;
+            $ip = $details['ip'] ?? null;
+            unset($details['actor_role'], $details['ip']);
+
+            return [
                 'id' => $log->id,
                 'action' => $log->action,
+                'module' => self::AUDIT_MODULES[$log->action] ?? 'Academic Admin Accounts',
                 'actor_id' => $log->actor_id,
                 'actor_name' => $log->actor_name,
+                'actor_role' => $actorRole,
                 'target_id' => $log->target_id,
                 'target_name' => $log->target_name,
-                'details' => $log->details,
+                'ip' => $ip,
+                'details' => $details,
                 'created_at' => $log->created_at?->toIso8601String(),
-            ]);
+            ];
+        });
 
         return response()->json([
             'success' => true,
@@ -79,4 +95,17 @@ class SystemAdminController extends Controller
     }
 
     private const AUDIT_LOG_LIMIT = 1000;
+
+    // Which part of the system each action belongs to (the page's Module
+    // column). Anything not listed is an Academic Admin account change.
+    private const AUDIT_MODULES = [
+        'login' => 'Sign-in',
+        'login_failed' => 'Sign-in',
+        'login_blocked' => 'Sign-in',
+        'account_locked' => 'Sign-in',
+        'logout' => 'Sign-in',
+        'profile_update' => 'Own Account',
+        'password_change' => 'Own Account',
+        'password_setup' => 'Own Account',
+    ];
 }

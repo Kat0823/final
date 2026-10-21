@@ -88,12 +88,65 @@ function formatAuditValue(value) {
     return String(value);
 }
 
+const AUDIT_ROLE_LABELS = {
+    system_admin: "System Administrator",
+    academic_admin: "Academic Administrator",
+    instructor: "Instructor",
+    learner: "Learner"
+};
+
+// "name: Old → New; changed profile photo"
+function describeChanges(changes) {
+    return Object.entries(changes || {}).map(([field, change]) => {
+        const label = AUDIT_FIELD_LABELS[field] || field;
+
+        if (field === "profile_photo") {
+            return change && change.removed
+                ? "removed profile photo"
+                : "changed profile photo";
+        }
+
+        if (change && typeof change === "object" && "from" in change) {
+            return `${label}: ${formatAuditValue(change.from)} → ${formatAuditValue(change.to)}`;
+        }
+
+        return label;
+    });
+}
+
 function describeAuditEntry(entry) {
     const target = entry.target_name || "an account";
     const details = entry.details || {};
     const schoolId = details.school_id ? ` (${details.school_id})` : "";
+    const fromIp = entry.ip ? ` from ${entry.ip}` : "";
 
     switch (String(entry.action || "").toLowerCase()) {
+        case "login":
+            return details.first_login
+                ? `Signed in with a temporary password${fromIp}`
+                : `Signed in${fromIp}`;
+        case "logout":
+            return `Signed out${fromIp}`;
+        case "login_failed":
+            return details.account_exists
+                ? `Wrong password for ${target}${schoolId}${fromIp}`
+                : `Sign-in attempt with unknown ID "${details.school_id || target}"${fromIp}`;
+        case "login_blocked":
+            return `Sign-in refused: account is deactivated${fromIp}`;
+        case "account_locked": {
+            const role = AUDIT_ROLE_LABELS[details.target_role] || "Account";
+            return `${role} ${target}${schoolId} locked for ${details.seconds || 60} seconds after repeated failed sign-ins${fromIp}`;
+        }
+        case "password_setup":
+            return "Replaced the temporary password with their own";
+        case "password_change":
+            return "Changed their own password";
+        case "profile_update": {
+            const changes = describeChanges(details.changes);
+            return changes.length
+                ? `Updated own profile: ${changes.join("; ")}`
+                : "Updated own profile";
+        }
         case "create":
             return `Created Academic Admin account ${target}${schoolId}`;
         case "delete":
@@ -105,21 +158,7 @@ function describeAuditEntry(entry) {
         case "reset_password":
             return `Reset the password for Academic Admin account ${target}${schoolId}`;
         case "update": {
-            const changes = Object.entries(details).map(([field, change]) => {
-                const label = AUDIT_FIELD_LABELS[field] || field;
-
-                if (field === "profile_photo") {
-                    return change && change.removed
-                        ? "removed profile photo"
-                        : "changed profile photo";
-                }
-
-                if (change && typeof change === "object" && "from" in change) {
-                    return `${label}: ${formatAuditValue(change.from)} → ${formatAuditValue(change.to)}`;
-                }
-
-                return label;
-            });
+            const changes = describeChanges(details);
 
             return changes.length
                 ? `Updated ${target}: ${changes.join("; ")}`
@@ -135,9 +174,9 @@ function toAuditRow(entry) {
         id: entry.id,
         timestamp: entry.created_at,
         actorName: entry.actor_name || "—",
-        actorRole: "System Administrator",
+        actorRole: AUDIT_ROLE_LABELS[entry.actor_role] || "—",
         action: entry.action,
-        module: "Academic Admin Accounts",
+        module: entry.module || "Academic Admin Accounts",
         details: describeAuditEntry(entry)
     };
 }
@@ -259,8 +298,14 @@ function formatAction(action) {
     }
 
     const labels = {
-        login: "Login",
-        logout: "Logout",
+        login: "Sign-in",
+        logout: "Sign-out",
+        login_failed: "Failed Sign-in",
+        login_blocked: "Sign-in Refused",
+        account_locked: "Account Locked",
+        password_setup: "Password Set",
+        password_change: "Password Change",
+        profile_update: "Profile Update",
         create: "Create",
         update: "Update",
         activate: "Activate",

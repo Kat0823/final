@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Support\AdminNotifier;
+use App\Support\AuditLog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -65,9 +66,37 @@ class AuthController extends Controller
             $attempts = RateLimiter::hit($accountKey, self::LOCKOUT_SECONDS);
             RateLimiter::hit($ipKey, self::LOCKOUT_SECONDS);
 
+            // Audit: the person trying is unknown, so the actor is "Unknown".
+            AuditLog::record(
+                null,
+                AuditLog::LOGIN_FAILED,
+                $user,
+                [
+                    'school_id' => Str::limit(trim($validated['school_id']), 100, ''),
+                    'account_exists' => (bool) $user,
+                    'attempt' => $attempts,
+                ],
+                $request,
+                'Unknown',
+                $user?->name ?? Str::limit(trim($validated['school_id']), 100, '')
+            );
+
             // Tell the admins once, on the attempt that starts the lockout.
             if ($user && $attempts === self::MAX_ATTEMPTS_PER_ACCOUNT) {
                 AdminNotifier::accountLocked($user, self::LOCKOUT_SECONDS);
+
+                AuditLog::record(
+                    null,
+                    AuditLog::ACCOUNT_LOCKED,
+                    $user,
+                    [
+                        'school_id' => $user->school_id,
+                        'target_role' => $user->role,
+                        'seconds' => self::LOCKOUT_SECONDS,
+                    ],
+                    $request,
+                    'System'
+                );
             }
 
             return response()->json([
@@ -79,6 +108,8 @@ class AuthController extends Controller
         RateLimiter::clear($accountKey);
 
         if (!$user->is_active) {
+            AuditLog::self($user, AuditLog::LOGIN_BLOCKED, $request, ['reason' => 'deactivated']);
+
             return response()->json([
                 'success' => false,
                 'message' => 'This account is deactivated. Please contact your administrator.',
@@ -87,6 +118,10 @@ class AuthController extends Controller
 
         // Create an authentication token
         $token = $user->createToken('siknayan-login')->plainTextToken;
+
+        AuditLog::self($user, AuditLog::LOGIN, $request, [
+            'first_login' => !$user->password_setup_complete,
+        ]);
 
         // Return login information
         return response()->json([
@@ -121,6 +156,8 @@ class AuthController extends Controller
         } else {
             $currentAccessToken?->delete();
         }
+
+        AuditLog::self($request->user(), AuditLog::LOGOUT, $request);
 
         return response()->json([
             'success' => true,

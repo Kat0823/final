@@ -413,35 +413,27 @@
                         <select
                             id="auditAction"
                         >
-
-                            <option value="">
-                                All Actions
-                            </option>
-
-                            <option value="create">
-                                Create
-                            </option>
-
-                            <option value="update">
-                                Update
-                            </option>
-
-                            <option value="activate">
-                                Activate
-                            </option>
-
-                            <option value="deactivate">
-                                Deactivate
-                            </option>
-
-                            <option value="reset_password">
-                                Password Reset
-                            </option>
-
-                            <option value="delete">
-                                Delete
-                            </option>
-
+                            <option value="">All Actions</option>
+                            <optgroup label="Sign-in">
+                                <option value="login">Sign-in</option>
+                                <option value="logout">Sign-out</option>
+                                <option value="login_failed">Failed Sign-in</option>
+                                <option value="login_blocked">Sign-in Refused</option>
+                                <option value="account_locked">Account Locked</option>
+                            </optgroup>
+                            <optgroup label="Own account">
+                                <option value="profile_update">Profile Update</option>
+                                <option value="password_change">Password Change</option>
+                                <option value="password_setup">Password Set</option>
+                            </optgroup>
+                            <optgroup label="Academic Admin accounts">
+                                <option value="create">Create</option>
+                                <option value="update">Update</option>
+                                <option value="activate">Activate</option>
+                                <option value="deactivate">Deactivate</option>
+                                <option value="reset_password">Password Reset</option>
+                                <option value="delete">Delete</option>
+                            </optgroup>
                         </select>
 
                     </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Support\AuditLog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -44,6 +45,7 @@ class SystemAdminProfileController extends Controller
         ]);
 
         $oldPhotoPath = $user->profile_photo_path;
+        $before = ['name' => $user->name, 'email' => $user->email];
 
         $user->name = $validated['name'];
         $user->email = $validated['email'] ?? null;
@@ -55,6 +57,20 @@ class SystemAdminProfileController extends Controller
         }
 
         $user->save();
+
+        // Audit only what actually changed (from -> to); photos as a flag.
+        $changes = [];
+        foreach ($before as $field => $old) {
+            if ($old !== $user->{$field}) {
+                $changes[$field] = ['from' => $old, 'to' => $user->{$field}];
+            }
+        }
+        if ($user->profile_photo_path !== $oldPhotoPath) {
+            $changes['profile_photo'] = $user->profile_photo_path ? ['changed' => true] : ['removed' => true];
+        }
+        if ($changes !== []) {
+            AuditLog::self($user, AuditLog::PROFILE_UPDATE, $request, ['changes' => $changes]);
+        }
 
         if (
             $oldPhotoPath

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\SystemAdminAuditLog;
 use App\Models\User;
 use App\Support\AdminNotifier;
+use App\Support\AuditLog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -383,13 +383,7 @@ class SystemAdminAcademicAdminController extends Controller
         User $target,
         array $details
     ): void {
-        SystemAdminAuditLog::create([
-            'actor_id' => $actor->id,
-            'actor_name' => $actor->name,
-            'action' => $action,
-            'target_id' => $target->id,
-            'target_name' => $target->name,
-            'details' => $details,
-        ]);
+        // Adds the actor's role and the request's IP address.
+        AuditLog::record($actor, $action, $target, $details, request());
     }
 }
