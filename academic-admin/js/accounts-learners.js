@@ -1363,23 +1363,43 @@ if (account) {
         )
     );
 
-    // Available for every account, including a new one that hasn't
-    // signed in yet (e.g. a lost temporary password).
-    actionsCell.appendChild(
-        createActionButton(
-            "Reset",
-            "key-round",
-            () => openResetPasswordModal(account.id)
-        )
-    );
+    // Actions depend on the account's state:
+    //   Inactive   -> Activate
+    //   Not Set Up -> New Temporary Password (never signed in)
+    //   Active     -> Reset Password, Deactivate
+    if (!isActive) {
+        actionsCell.appendChild(
+            createActionButton(
+                "Activate",
+                "user-check",
+                () => toggleAccountStatus(account.id)
+            )
+        );
+    } else if (!passwordSetupComplete) {
+        actionsCell.appendChild(
+            createActionButton(
+                "New Temporary Password",
+                "key-round",
+                () => openResetPasswordModal(account.id)
+            )
+        );
+    } else {
+        actionsCell.appendChild(
+            createActionButton(
+                "Reset Password",
+                "key-round",
+                () => openResetPasswordModal(account.id)
+            )
+        );
 
-    actionsCell.appendChild(
-        createActionButton(
-            isActive ? "Deactivate" : "Activate",
-            isActive ? "user-x" : "user-check",
-            () => toggleAccountStatus(account.id)
-        )
-    );
+        actionsCell.appendChild(
+            createActionButton(
+                "Deactivate",
+                "user-x",
+                () => toggleAccountStatus(account.id)
+            )
+        );
+    }
 } else if (!learner.backendAccount) {
     actionsCell.appendChild(
         createActionButton(
@@ -1460,6 +1480,14 @@ if (account) {
 
         resetPasswordDescription.textContent =
             `Generate a new temporary password for ${getLearnerName(account)}.`;
+
+        // Wording follows the account's state.
+        const resetHeading = resetPasswordModal.querySelector("h2, h3");
+        if (resetHeading) {
+            resetHeading.textContent = account.passwordSetupComplete === true
+                ? "Reset Password"
+                : "New Temporary Password";
+        }
 
         resetPasswordValue.value =
             generateTemporaryPassword();

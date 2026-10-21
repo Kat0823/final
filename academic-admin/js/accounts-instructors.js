@@ -529,28 +529,19 @@ let instructorCredentialsExpiryTimer = null;
 
     function generateTemporaryPassword() {
 
+        // 8 characters, no look-alikes (0/O/o, 1/l/I), secure random.
         const characters =
-            "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+            "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+
+        const random = new Uint32Array(8);
+        window.crypto.getRandomValues(random);
 
         let password =
             "";
 
-
-        for (
-            let index = 0;
-            index < 10;
-            index++
-        ) {
-
-            password +=
-                characters[
-                    Math.floor(
-                        Math.random() *
-                        characters.length
-                    )
-                ];
-
-        }
+        random.forEach(value => {
+            password += characters[value % characters.length];
+        });
 
 
         return password;
@@ -2118,23 +2109,43 @@ let instructorCredentialsExpiryTimer = null;
                     );
 
 
-                    // Available for every account, including a new one
-                    // that hasn't signed in yet (e.g. a lost temporary password).
-                    actionsCell.appendChild(
-                        createActionButton(
-                            "Reset",
-                            "key-round",
-                            () => openResetPasswordModal(account.id)
-                        )
-                    );
+                    // Actions depend on the account's state:
+                    //   Inactive   -> Activate
+                    //   Not Set Up -> New Temporary Password (never signed in)
+                    //   Active     -> Reset Password, Deactivate
+                    if (account.isActive === false) {
+                        actionsCell.appendChild(
+                            createActionButton(
+                                "Activate",
+                                "user-check",
+                                () => toggleAccountStatus(account.id)
+                            )
+                        );
+                    } else if (account.passwordSetupComplete !== true) {
+                        actionsCell.appendChild(
+                            createActionButton(
+                                "New Temporary Password",
+                                "key-round",
+                                () => openResetPasswordModal(account.id)
+                            )
+                        );
+                    } else {
+                        actionsCell.appendChild(
+                            createActionButton(
+                                "Reset Password",
+                                "key-round",
+                                () => openResetPasswordModal(account.id)
+                            )
+                        );
 
-                    actionsCell.appendChild(
-                        createActionButton(
-                            account.isActive !== false ? "Deactivate" : "Activate",
-                            account.isActive !== false ? "user-x" : "user-check",
-                            () => toggleAccountStatus(account.id)
-                        )
-                    );
+                        actionsCell.appendChild(
+                            createActionButton(
+                                "Deactivate",
+                                "user-x",
+                                () => toggleAccountStatus(account.id)
+                            )
+                        );
+                    }
 
 
                     actionsCell.appendChild(
@@ -2293,6 +2304,14 @@ let instructorCredentialsExpiryTimer = null;
 
         resetPasswordDescription.textContent =
             `Generate a new temporary password for ${instructorName}.`;
+
+        // Wording follows the account's state.
+        const resetHeading = resetPasswordModal.querySelector("h2, h3");
+        if (resetHeading) {
+            resetHeading.textContent = account.passwordSetupComplete === true
+                ? "Reset Password"
+                : "New Temporary Password";
+        }
 
 
         resetPasswordValue.value =
