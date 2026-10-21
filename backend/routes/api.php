@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Middleware\EnsureAccountIsActive;
 use App\Http\Middleware\EnsurePasswordSetupComplete;
+use App\Http\Middleware\EnsureRole;
 use App\Http\Middleware\EnsureSystemAdmin;
 
 use App\Http\Controllers\Api\AuthController;
@@ -101,21 +102,25 @@ Route::middleware([
     |--------------------------------------------------------------------------
     */
 
-    Route::post('/student/setup-password', [PasswordController::class, 'setup']);
+    // Every /student route is for learners only (checked here once, on top
+    // of any checks inside the controllers).
+    Route::middleware(EnsureRole::class . ':learner')->group(function () {
+        Route::post('/student/setup-password', [PasswordController::class, 'setup']);
 
-    Route::get('/student/courses', [StudentController::class, 'courses']);
-    Route::get('/student/courses/{courseId}', [StudentController::class, 'course']);
+        Route::get('/student/courses', [StudentController::class, 'courses']);
+        Route::get('/student/courses/{courseId}', [StudentController::class, 'course']);
 
-    Route::get('/student/modules/{moduleId}', [ModuleController::class, 'show']);
-    Route::get('/student/modules/{moduleId}/material', [ModuleController::class, 'material']);
+        Route::get('/student/modules/{moduleId}', [ModuleController::class, 'show']);
+        Route::get('/student/modules/{moduleId}/material', [ModuleController::class, 'material']);
 
-    Route::post('/student/submissions', [SubmissionController::class, 'store']);
+        Route::post('/student/submissions', [SubmissionController::class, 'store']);
 
-    Route::get('/student/grades', [GradeController::class, 'index']);
+        Route::get('/student/grades', [GradeController::class, 'index']);
 
-    Route::get('/student/notifications', [NotificationController::class, 'index']);
-    Route::post('/student/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
-    Route::post('/student/notifications/{notificationId}/read', [NotificationController::class, 'markAsRead']);
+        Route::get('/student/notifications', [NotificationController::class, 'index']);
+        Route::post('/student/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+        Route::post('/student/notifications/{notificationId}/read', [NotificationController::class, 'markAsRead']);
+    });
 
 
     /*
