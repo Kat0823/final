@@ -130,30 +130,34 @@ Route::middleware([
     |--------------------------------------------------------------------------
     */
 
-    Route::post('/instructor/setup-password', [PasswordController::class, 'setupInstructor']);
+    // Every /instructor route is for instructors only (checked here once,
+    // on top of any checks inside the controllers).
+    Route::middleware(EnsureRole::class . ':instructor')->group(function () {
+        Route::post('/instructor/setup-password', [PasswordController::class, 'setupInstructor']);
 
-    Route::get('/instructor/dashboard', [InstructorDashboardController::class, 'index']);
+        Route::get('/instructor/dashboard', [InstructorDashboardController::class, 'index']);
 
-    // Classes and their modules
-    Route::get('/instructor/classes', [InstructorCourseController::class, 'index']);
-    Route::get('/instructor/classes/{courseId}', [InstructorCourseController::class, 'show']);
-    Route::post('/instructor/classes/{courseId}/modules', [InstructorModuleController::class, 'store']);
-    Route::put('/instructor/modules/{moduleId}', [InstructorModuleController::class, 'update']);
+        // Classes and their modules
+        Route::get('/instructor/classes', [InstructorCourseController::class, 'index']);
+        Route::get('/instructor/classes/{courseId}', [InstructorCourseController::class, 'show']);
+        Route::post('/instructor/classes/{courseId}/modules', [InstructorModuleController::class, 'store']);
+        Route::put('/instructor/modules/{moduleId}', [InstructorModuleController::class, 'update']);
 
-    // Submissions and grading
-    Route::get('/instructor/submissions', [InstructorController::class, 'submissions']);
-    Route::get('/instructor/submissions/{submissionId}/file', [InstructorController::class, 'file']);
-    Route::post('/instructor/submissions/{submissionId}/grade', [GradeController::class, 'store']);
+        // Submissions and grading
+        Route::get('/instructor/submissions', [InstructorController::class, 'submissions']);
+        Route::get('/instructor/submissions/{submissionId}/file', [InstructorController::class, 'file']);
+        Route::post('/instructor/submissions/{submissionId}/grade', [GradeController::class, 'store']);
 
-    // Notifications
-    Route::get('/instructor/notifications', [InstructorNotificationController::class, 'index']);
-    Route::post('/instructor/notifications/read-all', [InstructorNotificationController::class, 'markAllAsRead']);
-    Route::post('/instructor/notifications/{notificationId}/read', [InstructorNotificationController::class, 'markAsRead']);
+        // Notifications
+        Route::get('/instructor/notifications', [InstructorNotificationController::class, 'index']);
+        Route::post('/instructor/notifications/read-all', [InstructorNotificationController::class, 'markAllAsRead']);
+        Route::post('/instructor/notifications/{notificationId}/read', [InstructorNotificationController::class, 'markAsRead']);
 
-    // Profile
-    Route::get('/instructor/profile', [InstructorProfileController::class, 'show']);
-    Route::put('/instructor/profile', [InstructorProfileController::class, 'update']);
-    Route::post('/instructor/profile/password', [InstructorProfileController::class, 'changePassword']);
+        // Profile
+        Route::get('/instructor/profile', [InstructorProfileController::class, 'show']);
+        Route::put('/instructor/profile', [InstructorProfileController::class, 'update']);
+        Route::post('/instructor/profile/password', [InstructorProfileController::class, 'changePassword']);
+    });
 
 
     /*

@@ -137,8 +137,10 @@ class InstructorProfileController extends Controller
             'password' => $validated['new_password'],
         ]);
 
-        // Log out every other session; keep the one making this request.
-        $currentTokenId = $instructor->currentAccessToken()?->id;
+        // Log out every other session; keep the one making this request
+        // (a stored login token; other kinds of login have no id).
+        $current = $instructor->currentAccessToken();
+        $currentTokenId = $current instanceof \Laravel\Sanctum\PersonalAccessToken ? $current->id : null;
         $instructor->tokens()
             ->when($currentTokenId, fn ($query) => $query->whereKeyNot($currentTokenId))
             ->delete();

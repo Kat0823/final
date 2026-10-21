@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Submission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Storage;
 
 class InstructorController extends Controller
@@ -457,6 +457,9 @@ class InstructorController extends Controller
         |--------------------------------------------------------------------------
         */
 
+        // Characters that would break the download header become "_".
+        $safeName = preg_replace('#[\x00-\x1F\x7F"/\\\\]+#', '_', $fileName) ?: 'submission';
+
         return response()->file(
 
             $filePath,
@@ -467,9 +470,10 @@ class InstructorController extends Controller
                     $mimeType,
 
                 'Content-Disposition' =>
-                    'inline; filename="' .
-                    addslashes($fileName) .
-                    '"',
+                    'inline; filename="' . $safeName . '"',
+
+                'X-Content-Type-Options' =>
+                    'nosniff',
 
             ]
 

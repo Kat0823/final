@@ -137,8 +137,10 @@ class PasswordController extends Controller
         $user->password = Hash::make($validated['password']);
         $user->save();
 
-        // Log out every other session; keep the one making this request.
-        $currentTokenId = $user->currentAccessToken()?->id;
+        // Log out every other session; keep the one making this request
+        // (a stored login token; other kinds of login have no id).
+        $current = $user->currentAccessToken();
+        $currentTokenId = $current instanceof \Laravel\Sanctum\PersonalAccessToken ? $current->id : null;
         $user->tokens()
             ->when($currentTokenId, fn ($query) => $query->whereKeyNot($currentTokenId))
             ->delete();
