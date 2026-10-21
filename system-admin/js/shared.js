@@ -22,7 +22,8 @@ function clearSiknayanAuthenticationState() {
         "userRole",
         "userName",
         "firstLogin",
-        "firstLoginVerified"
+        "firstLoginVerified",
+        "siknayan_system_admin_profile_cache"
     ].forEach((key) => sessionStorage.removeItem(key));
 
     [
@@ -261,50 +262,74 @@ if (sidebarProfileName) {
    Demo persistence is browser-local until a backend exists.
 ========================================================= */
 
-const SIKNAYAN_SYSTEM_ADMIN_PROFILE_KEY =
-    "siknayan_system_admin_profile";
+/*
+   The profile comes from GET /api/system-admin/profile. A copy is kept
+   in sessionStorage only so the header shows the right name instantly
+   on the next page; the server is the source of truth.
+*/
+
+const SIKNAYAN_SYSTEM_ADMIN_PROFILE_CACHE_KEY =
+    "siknayan_system_admin_profile_cache";
+
+// Earlier versions saved an editable profile in the browser only.
+try {
+    localStorage.removeItem("siknayan_system_admin_profile");
+} catch (error) {}
+
+const SYSTEM_ADMIN_PROFILE_DEFAULTS = {
+    fullName: "System Administrator",
+    username: "",
+    email: "",
+    photo: ""
+};
+
+function toSystemAdminProfile(serverProfile) {
+    return {
+        fullName: serverProfile?.name || SYSTEM_ADMIN_PROFILE_DEFAULTS.fullName,
+        username: serverProfile?.school_id || "",
+        email: serverProfile?.email || "",
+        photo: serverProfile?.profile_photo_url || ""
+    };
+}
 
 function getSiknayanSystemAdminProfile() {
-    const defaults = {
-        fullName: "Arcana",
-        username: "admin",
-        email: "",
-        photo: ""
-    };
-
     try {
-        const saved = JSON.parse(
-            localStorage.getItem(
-                SIKNAYAN_SYSTEM_ADMIN_PROFILE_KEY
-            ) || "{}"
+        const cached = JSON.parse(
+            sessionStorage.getItem(SIKNAYAN_SYSTEM_ADMIN_PROFILE_CACHE_KEY) || "null"
         );
 
-        const profile = {
-            ...defaults,
-            ...(saved && typeof saved === "object" ? saved : {})
-        };
-
-        const savedName =
-            String(profile.fullName || "").trim();
-
-        if (
-            !savedName ||
-            savedName === "System Administrator"
-        ) {
-            profile.fullName = "Arcana";
+        if (cached && typeof cached === "object") {
+            return { ...SYSTEM_ADMIN_PROFILE_DEFAULTS, ...cached };
         }
+    } catch (error) {}
 
-        return profile;
-    } catch (error) {
-        return defaults;
-    }
+    // Fall back to the name stored at login.
+    try {
+        const user = JSON.parse(sessionStorage.getItem("user") || "null");
+
+        if (user) {
+            return toSystemAdminProfile(user);
+        }
+    } catch (error) {}
+
+    return { ...SYSTEM_ADMIN_PROFILE_DEFAULTS };
+}
+
+function rememberSiknayanSystemAdminProfile(profile) {
+    try {
+        sessionStorage.setItem(
+            SIKNAYAN_SYSTEM_ADMIN_PROFILE_CACHE_KEY,
+            JSON.stringify(profile)
+        );
+    } catch (error) {}
 }
 
 function applySiknayanSystemAdminProfile(
     profile = getSiknayanSystemAdminProfile()
 ) {
     const name =
-        String(profile.fullName || "Arcana").trim() || "Arcana";
+        String(profile.fullName || "").trim() ||
+        SYSTEM_ADMIN_PROFILE_DEFAULTS.fullName;
 
     const photo =
         typeof profile.photo === "string" ? profile.photo : "";
@@ -342,14 +367,60 @@ function applySiknayanSystemAdminProfile(
         });
 }
 
-window.SIKNAYAN_SYSTEM_ADMIN_PROFILE_KEY =
-    SIKNAYAN_SYSTEM_ADMIN_PROFILE_KEY;
+// Loads the profile from the server, updates the header, and tells the
+// page (siknayan:profile-updated). Resolves with the profile.
+function loadSiknayanSystemAdminProfile() {
+    if (!systemAdminToken || !window.SIKNAYAN_API_ROOT) {
+        return Promise.reject(new Error("Not signed in."));
+    }
+
+    return fetch(`${window.SIKNAYAN_API_ROOT}/system-admin/profile`, {
+        headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${systemAdminToken}`
+        }
+    })
+        .then(async (response) => {
+            const data = await response.json().catch(() => null);
+
+            if (!response.ok || !data?.success) {
+                throw new Error(
+                    data?.message || `The server returned an error (${response.status}).`
+                );
+            }
+
+            const profile = toSystemAdminProfile(data.profile);
+            setSiknayanSystemAdminProfile(profile);
+            return profile;
+        });
+}
+
+function setSiknayanSystemAdminProfile(profile) {
+    rememberSiknayanSystemAdminProfile(profile);
+    applySiknayanSystemAdminProfile(profile);
+    window.dispatchEvent(
+        new CustomEvent("siknayan:profile-updated", { detail: profile })
+    );
+}
 
 window.getSiknayanSystemAdminProfile =
     getSiknayanSystemAdminProfile;
 
 window.applySiknayanSystemAdminProfile =
     applySiknayanSystemAdminProfile;
+
+window.setSiknayanSystemAdminProfile =
+    setSiknayanSystemAdminProfile;
+
+window.toSiknayanSystemAdminProfile =
+    toSystemAdminProfile;
+
+window.SIKNAYAN_SYSTEM_ADMIN_PROFILE_READY =
+    loadSiknayanSystemAdminProfile();
+
+window.SIKNAYAN_SYSTEM_ADMIN_PROFILE_READY.catch((error) => {
+    console.warn("Unable to load the System Admin profile.", error);
+});
 
 applySiknayanSystemAdminProfile();
 

@@ -1,0 +1,86 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
+
+/**
+ * The logged-in System Administrator's own profile. Routes sit behind the
+ * EnsureSystemAdmin middleware. The login ID (school_id) is read-only here.
+ */
+class SystemAdminProfileController extends Controller
+{
+    public function show(Request $request): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'profile' => $this->resource($request->user()),
+        ]);
+    }
+
+    /**
+     * Multipart form: name, email (optional), photo (optional file),
+     * remove_photo (optional boolean).
+     */
+    public function update(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+                Rule::unique('users', 'email')->ignore($user->id),
+            ],
+            'photo' => ['nullable', 'image', 'mimes:jpeg,png,webp', 'max:2048'],
+            'remove_photo' => ['sometimes', 'boolean'],
+        ]);
+
+        $oldPhotoPath = $user->profile_photo_path;
+
+        $user->name = $validated['name'];
+        $user->email = $validated['email'] ?? null;
+
+        if ($request->hasFile('photo')) {
+            $user->profile_photo_path = $request->file('photo')->store('profile-photos', 'public');
+        } elseif ($request->boolean('remove_photo')) {
+            $user->profile_photo_path = null;
+        }
+
+        $user->save();
+
+        if (
+            $oldPhotoPath
+            && $oldPhotoPath !== $user->profile_photo_path
+            && str_starts_with($oldPhotoPath, 'profile-photos/')
+        ) {
+            Storage::disk('public')->delete($oldPhotoPath);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profile updated.',
+            'profile' => $this->resource($user),
+        ]);
+    }
+
+    private function resource(User $user): array
+    {
+        return [
+            'name' => $user->name,
+            'email' => $user->email,
+            'school_id' => $user->school_id,
+            'role' => $user->role,
+            'profile_photo_url' => $user->profile_photo_path
+                ? url(Storage::disk('public')->url($user->profile_photo_path))
+                : null,
+        ];
+    }
+}

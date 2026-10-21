@@ -24,6 +24,7 @@ use App\Http\Controllers\Api\InstructorProfileController;
 
 use App\Http\Controllers\Api\AcademicAdminController;
 use App\Http\Controllers\Api\SystemAdminController;
+use App\Http\Controllers\Api\SystemAdminProfileController;
 use App\Http\Controllers\Api\SystemAdminAcademicAdminController;
 
 /*
@@ -75,6 +76,10 @@ Route::middleware([
 
             Route::get('/dashboard', [SystemAdminController::class, 'dashboard']);
             Route::get('/audit-logs', [SystemAdminController::class, 'auditLogs']);
+
+            // Own profile (POST so the form can include a photo file)
+            Route::get('/profile', [SystemAdminProfileController::class, 'show']);
+            Route::post('/profile', [SystemAdminProfileController::class, 'update']);
 
             // Notifications (same handlers as the Academic Admin's; own records only)
             Route::get('/notifications', [NotificationController::class, 'adminIndex']);

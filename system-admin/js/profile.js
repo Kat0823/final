@@ -1,9 +1,10 @@
 /* =========================================================
    SIKNAYAN - SYSTEM ADMINISTRATOR PROFILE
-   Prototype interactions; account changes are browser-local only.
+   Profile changes are saved to the server
+   (POST /api/system-admin/profile); passwords are changed with
+   PUT /api/account/password.
 ========================================================= */
 
-const profileStorageKey = window.SIKNAYAN_SYSTEM_ADMIN_PROFILE_KEY || "siknayan_system_admin_profile";
 const editProfileButton = document.getElementById("editProfileButton");
 const profileEditForm = document.getElementById("profileEditForm");
 const cancelProfileEditButton = document.getElementById("cancelProfileEditButton");
@@ -12,6 +13,7 @@ const profileUsernameInput = document.getElementById("profileUsernameInput");
 const profileEmailInput = document.getElementById("profileEmailInput");
 const profileDetails = document.getElementById("profileDetails");
 const profileDisplayName = document.getElementById("profileDisplayName");
+const profileDisplayUsername = document.getElementById("profileDisplayUsername");
 const profileDisplayEmail = document.getElementById("profileDisplayEmail");
 const profilePageAvatar = document.getElementById("profilePageAvatar");
 const profilePhotoInput = document.getElementById("profilePhotoInput");
@@ -20,10 +22,13 @@ const profileEditStatus = document.getElementById("profileEditStatus");
 const passwordChangeForm = document.getElementById("passwordChangeForm");
 const passwordFormStatus = document.getElementById("passwordFormStatus");
 
+const MIN_NEW_PASSWORD_LENGTH = 15;
+
 let currentProfile = window.getSiknayanSystemAdminProfile
     ? window.getSiknayanSystemAdminProfile()
-    : { fullName: "Arcana", username: "admin", email: "", photo: "" };
-let pendingPhoto = currentProfile.photo || "";
+    : { fullName: "System Administrator", username: "", email: "", photo: "" };
+let pendingPhotoFile = null;
+let pendingPhotoPreview = "";
 let editingProfile = false;
 
 function showProfileStatus(element, message, type = "info") {
@@ -40,18 +45,60 @@ function clearProfileStatus(element) {
     delete element.dataset.status;
 }
 
+function getApiToken() {
+    try {
+        return sessionStorage.getItem("authToken") ||
+            localStorage.getItem("siknayan_api_token") ||
+            "";
+    } catch (error) {
+        return "";
+    }
+}
+
+// Sends a request and returns the JSON body; throws with the server's
+// first validation message when the request is refused.
+async function profileApi(path, options = {}) {
+    const response = await fetch(`${window.SIKNAYAN_API_ROOT}${path}`, {
+        ...options,
+        headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${getApiToken()}`,
+            ...(options.headers || {})
+        }
+    });
+
+    if (response.status === 401) {
+        window.location.replace("../index.html");
+        throw new Error("Your session has ended. Please log in again.");
+    }
+
+    const data = await response.json().catch(() => null);
+
+    if (!response.ok || !data || data.success === false) {
+        const firstError = data?.errors
+            ? Object.values(data.errors)[0]?.[0]
+            : null;
+        throw new Error(firstError || data?.message || `The server returned an error (${response.status}).`);
+    }
+
+    return data;
+}
+
 function safeApplyProfile(profile) {
     if (typeof window.applySiknayanSystemAdminProfile === "function") {
         window.applySiknayanSystemAdminProfile(profile);
     }
     if (profileDisplayName) {
-        profileDisplayName.textContent = profile.fullName || "Arcana";
+        profileDisplayName.textContent = profile.fullName || "System Administrator";
+    }
+    if (profileDisplayUsername) {
+        profileDisplayUsername.textContent = profile.username || "—";
     }
     if (profileDisplayEmail) {
         profileDisplayEmail.textContent = profile.email || "Not set";
     }
     if (profileUsernameInput) {
-        profileUsernameInput.value = profile.username || "admin";
+        profileUsernameInput.value = profile.username || "";
     }
     if (profilePageAvatar) {
         profilePageAvatar.src = profile.photo || profilePageAvatar.dataset.defaultSrc || "../images/macross.jpg";
@@ -66,16 +113,30 @@ function setEditMode(enabled) {
     if (chooseProfilePhotoButton) chooseProfilePhotoButton.hidden = !enabled;
 
     if (enabled) {
-        profileFullNameInput.value = currentProfile.fullName || "Arcana";
+        profileFullNameInput.value = currentProfile.fullName || "";
         profileEmailInput.value = currentProfile.email || "";
-        if (profileUsernameInput) profileUsernameInput.value = currentProfile.username || "admin";
-        pendingPhoto = currentProfile.photo || "";
+        if (profileUsernameInput) profileUsernameInput.value = currentProfile.username || "";
+        pendingPhotoFile = null;
+        pendingPhotoPreview = "";
         clearProfileStatus(profileEditStatus);
         profileFullNameInput.focus();
     }
 }
 
 safeApplyProfile(currentProfile);
+
+// The header script loads the real profile; show it when it arrives,
+// unless the form is open (don't overwrite what's being typed).
+window.addEventListener("siknayan:profile-updated", (event) => {
+    currentProfile = event.detail;
+    if (!editingProfile) {
+        safeApplyProfile(currentProfile);
+    }
+});
+
+window.SIKNAYAN_SYSTEM_ADMIN_PROFILE_READY?.catch((error) => {
+    showProfileStatus(profileEditStatus, `Unable to load your profile: ${error.message}`, "error");
+});
 
 if (editProfileButton) {
     editProfileButton.addEventListener("click", () => setEditMode(true));
@@ -84,7 +145,8 @@ if (editProfileButton) {
 if (cancelProfileEditButton) {
     cancelProfileEditButton.addEventListener("click", () => {
         profileEditForm.reset();
-        pendingPhoto = currentProfile.photo || "";
+        pendingPhotoFile = null;
+        pendingPhotoPreview = "";
         if (profilePhotoInput) profilePhotoInput.value = "";
         safeApplyProfile(currentProfile);
         setEditMode(false);
@@ -102,23 +164,26 @@ if (profilePhotoInput && profilePageAvatar) {
         if (!file) return;
 
         const acceptedTypes = ["image/jpeg", "image/png", "image/webp"];
+
         if (!acceptedTypes.includes(file.type)) {
             showProfileStatus(profileEditStatus, "Choose a JPG, PNG, or WebP image.", "error");
             profilePhotoInput.value = "";
             return;
         }
 
-        if (file.size > 1024 * 1024) {
-            showProfileStatus(profileEditStatus, "Choose an image no larger than 1 MB.", "error");
+        if (file.size > 2 * 1024 * 1024) {
+            showProfileStatus(profileEditStatus, "Choose an image no larger than 2 MB.", "error");
             profilePhotoInput.value = "";
             return;
         }
 
+        pendingPhotoFile = file;
+
         const reader = new FileReader();
         reader.addEventListener("load", () => {
-            pendingPhoto = String(reader.result || "");
-            profilePageAvatar.src = pendingPhoto;
-            showProfileStatus(profileEditStatus, "Photo selected. Choose Save Changes to keep it in this browser.", "info");
+            pendingPhotoPreview = String(reader.result || "");
+            profilePageAvatar.src = pendingPhotoPreview;
+            showProfileStatus(profileEditStatus, "Photo selected. Choose Save Changes to keep it.", "info");
         });
         reader.addEventListener("error", () => {
             showProfileStatus(profileEditStatus, "The selected image could not be read.", "error");
@@ -128,7 +193,7 @@ if (profilePhotoInput && profilePageAvatar) {
 }
 
 if (profileEditForm) {
-    profileEditForm.addEventListener("submit", (event) => {
+    profileEditForm.addEventListener("submit", async (event) => {
         event.preventDefault();
         clearProfileStatus(profileEditStatus);
 
@@ -141,26 +206,45 @@ if (profileEditForm) {
             profileFullNameInput.setCustomValidity("");
             return;
         }
+
         if (!profileEditForm.reportValidity()) return;
 
-        const nextProfile = {
-            fullName,
-            username: currentProfile.username || "admin",
-            email,
-            photo: pendingPhoto || ""
-        };
+        const body = new FormData();
+        body.append("name", fullName);
+        body.append("email", email);
+        if (pendingPhotoFile) body.append("photo", pendingPhotoFile);
+
+        const submitButton = profileEditForm.querySelector('[type="submit"]');
+        if (submitButton) submitButton.disabled = true;
+        showProfileStatus(profileEditStatus, "Saving...", "info");
 
         try {
-            localStorage.setItem(profileStorageKey, JSON.stringify(nextProfile));
-        } catch (error) {
-            showProfileStatus(profileEditStatus, "The profile could not be saved in this browser. Try a smaller photo.", "error");
-            return;
-        }
+            const data = await profileApi("/system-admin/profile", {
+                method: "POST",
+                body
+            });
 
-        currentProfile = nextProfile;
-        safeApplyProfile(currentProfile);
-        setEditMode(false);
-        showProfileStatus(profileEditStatus, "Profile changes saved in this browser. Connect the backend to save them to the account for all users and devices.", "info");
+            currentProfile = window.toSiknayanSystemAdminProfile
+                ? window.toSiknayanSystemAdminProfile(data.profile)
+                : currentProfile;
+
+            pendingPhotoFile = null;
+            pendingPhotoPreview = "";
+            if (profilePhotoInput) profilePhotoInput.value = "";
+
+            setEditMode(false);
+
+            if (window.setSiknayanSystemAdminProfile) {
+                window.setSiknayanSystemAdminProfile(currentProfile);
+            }
+            safeApplyProfile(currentProfile);
+
+            showProfileStatus(profileEditStatus, "Profile saved.", "success");
+        } catch (error) {
+            showProfileStatus(profileEditStatus, `Couldn't save your profile: ${error.message}`, "error");
+        } finally {
+            if (submitButton) submitButton.disabled = false;
+        }
     });
 }
 
@@ -169,7 +253,6 @@ document.querySelectorAll("[data-password-toggle]").forEach((button) => {
     button.addEventListener("click", () => {
         const input = document.getElementById(button.dataset.passwordToggle);
         if (!input) return;
-
         const reveal = input.type === "password";
         input.type = reveal ? "text" : "password";
         button.setAttribute("aria-label", `${reveal ? "Hide" : "Show"} ${input.labels?.[0]?.textContent?.toLowerCase() || "password"}`);
@@ -193,7 +276,7 @@ if (passwordChangeForm) {
         }, 0);
     });
 
-    passwordChangeForm.addEventListener("submit", (event) => {
+    passwordChangeForm.addEventListener("submit", async (event) => {
         event.preventDefault();
         clearProfileStatus(passwordFormStatus);
 
@@ -206,8 +289,8 @@ if (passwordChangeForm) {
             return;
         }
 
-        if (Array.from(newPassword).length < 15) {
-            showProfileStatus(passwordFormStatus, "Use at least 15 characters. Long passphrases and spaces are allowed.", "error");
+        if (Array.from(newPassword).length < MIN_NEW_PASSWORD_LENGTH) {
+            showProfileStatus(passwordFormStatus, `Use at least ${MIN_NEW_PASSWORD_LENGTH} characters. Long passphrases and spaces are allowed.`, "error");
             return;
         }
 
@@ -216,11 +299,36 @@ if (passwordChangeForm) {
             return;
         }
 
-        showProfileStatus(
-            passwordFormStatus,
-            "The fields are valid, but the password cannot actually be changed until backend authentication is connected.",
-            "info"
-        );
+        if (newPassword === currentPassword) {
+            showProfileStatus(passwordFormStatus, "The new password must be different from the current one.", "error");
+            return;
+        }
+
+        const submitButton = passwordChangeForm.querySelector('[type="submit"]');
+        if (submitButton) submitButton.disabled = true;
+        showProfileStatus(passwordFormStatus, "Changing password...", "info");
+
+        try {
+            await profileApi("/account/password", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    current_password: currentPassword,
+                    password: newPassword,
+                    password_confirmation: confirmNewPassword
+                })
+            });
+
+            passwordChangeForm.reset();
+            // reset clears the status shortly after; show success after that.
+            window.setTimeout(() => {
+                showProfileStatus(passwordFormStatus, "Password changed. Your other sessions were logged out.", "success");
+            }, 10);
+        } catch (error) {
+            showProfileStatus(passwordFormStatus, error.message, "error");
+        } finally {
+            if (submitButton) submitButton.disabled = false;
+        }
     });
 }
 

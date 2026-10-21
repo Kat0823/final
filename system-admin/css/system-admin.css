@@ -3927,7 +3927,8 @@ select:focus-visible {
     color: #9A3328;
 }
 
-.profile-inline-status[data-status="info"] {
+.profile-inline-status[data-status="info"],
+.profile-inline-status[data-status="success"] {
     background: var(--green-light);
     border-color: #D5E8DC;
     color: var(--green-dark);
