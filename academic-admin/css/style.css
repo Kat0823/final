@@ -10610,3 +10610,65 @@ body:has(.instructor-accounts-page) .instructor-accounts-page .learner-accounts-
     display: none !important;
 }
 
+/* =========================================
+   SIDEBAR ON SHORTER SCREENS
+
+   On laptop-height windows the sidebar (View row, profile, 7 links
+   and Logout) was taller than the space below the header and
+   scrolled. Below 820px of window height it becomes compact, and the
+   link height follows the window so all 8 items fit:
+     (window - header - fixed parts) / 8, between 34px and 53px.
+   Taller screens keep the original look.
+========================================= */
+
+@media (max-height: 820px) {
+
+    .sidebar-top {
+        min-height: 48px;
+        padding: 8px 24px 2px;
+    }
+
+    .sidebar-toggle {
+        width: 34px;
+        height: 34px;
+    }
+
+    .sidebar-toggle svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .sidebar-profile {
+        min-height: 0;
+        gap: 10px;
+        padding: 4px 24px 10px;
+    }
+
+    .sidebar-avatar {
+        width: 38px;
+        height: 38px;
+    }
+
+    .sidebar-profile-name {
+        font-size: 18px;
+    }
+
+    .sidebar-nav {
+        gap: 3px;
+        padding: 4px 14px;
+    }
+
+    .nav-item {
+        height: clamp(34px, calc((100vh - var(--header-height) - 160px) / 8), 53px);
+        font-size: 15px;
+    }
+
+    .nav-item svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .sidebar-bottom {
+        padding: 4px 14px 10px;
+    }
+}
