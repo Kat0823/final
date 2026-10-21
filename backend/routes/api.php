@@ -142,6 +142,7 @@ Route::middleware([
         Route::get('/instructor/classes/{courseId}', [InstructorCourseController::class, 'show']);
         Route::post('/instructor/classes/{courseId}/modules', [InstructorModuleController::class, 'store']);
         Route::put('/instructor/modules/{moduleId}', [InstructorModuleController::class, 'update']);
+        Route::get('/instructor/modules/{moduleId}/material', [InstructorModuleController::class, 'material']);
 
         // Submissions and grading
         Route::get('/instructor/submissions', [InstructorController::class, 'submissions']);

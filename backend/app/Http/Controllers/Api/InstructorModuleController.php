@@ -11,6 +11,29 @@ use Illuminate\Validation\Rule;
 
 class InstructorModuleController extends Controller
 {
+    /**
+     * View or download a module's file. Only for modules in the
+     * instructor's own active classes (published or not).
+     */
+    public function material(Request $request, int $moduleId)
+    {
+        $module = Module::where('id', $moduleId)
+            ->whereHas('course', function ($query) use ($request) {
+                $query->where('instructor_id', $request->user()->id)
+                    ->where('is_active', true);
+            })
+            ->first();
+
+        if (!$module) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Module not found.',
+            ], 404);
+        }
+
+        return ModuleController::sendMaterial($request, $module);
+    }
+
     public function store(
         Request $request,
         int $courseId

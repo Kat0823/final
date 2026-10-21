@@ -93,6 +93,23 @@ class ModuleController extends Controller
             ], 403);
         }
 
+        return self::sendMaterial($request, $module);
+    }
+
+    /**
+     * Send a module's stored file: shown in the browser with
+     * ?disposition=inline, otherwise downloaded. Callers check access
+     * first (learners: enrolled; instructors: their own class).
+     */
+    public static function sendMaterial(Request $request, Module $module)
+    {
+        if (!$module->material_path) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No material is attached to this module.',
+            ], 404);
+        }
+
         $path = str_replace('\\', '/', (string) $module->material_path);
 
         if (!Module::isStoredMaterialPath($path)) {

@@ -594,6 +594,42 @@
             font-size: 12px;
         }
 
+        .material-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .material-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .material-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 14px;
+            border: 1px solid var(--green);
+            border-radius: 6px;
+            background: #fff;
+            color: var(--green);
+            font: inherit;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .material-btn.primary {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .material-btn:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
         /* LEARNER TABLE */
         .table-wrapper {
             width: 100%;
@@ -1730,10 +1766,23 @@
                         <div class="module-description">${escapeHtml(description)}</div>
                         ${
                             hasMaterial
-                                ? `<span class="module-material">
-                                       <i class="fa-solid fa-paperclip"></i>
-                                       Material attached
-                                   </span>`
+                                ? `<div class="material-row">
+                                       <span class="module-material">
+                                           <i class="fa-solid fa-paperclip"></i>
+                                           ${escapeHtml(module.material_name || "Material attached")}
+                                       </span>
+                                       <div class="material-actions">
+                                           <button type="button" class="material-btn primary"
+                                               data-material-action="view" data-module-id="${escapeHtml(module.id)}">
+                                               <i class="fa-solid fa-eye" aria-hidden="true"></i> View
+                                           </button>
+                                           <button type="button" class="material-btn"
+                                               data-material-action="download" data-module-id="${escapeHtml(module.id)}"
+                                               data-file-name="${escapeHtml(module.material_name || title)}">
+                                               <i class="fa-solid fa-download" aria-hidden="true"></i> Download
+                                           </button>
+                                       </div>
+                                   </div>`
                                 : `<span class="not-available">No material attached.</span>`
                         }
                     </div>`;
@@ -1741,6 +1790,70 @@
                 container.appendChild(card);
             });
         }
+
+        /* MODULE MATERIAL: VIEW / DOWNLOAD
+           The file is private, so it is fetched with the login token and
+           then opened (View) or saved (Download) from the browser. */
+        async function fetchMaterial(moduleId, inline) {
+            let response;
+            try {
+                response = await fetch(
+                    `${API_BASE_URL}/instructor/modules/${encodeURIComponent(moduleId)}/material` +
+                        (inline ? "?disposition=inline" : ""),
+                    { headers: { ...getAuthHeaders(), "Accept": "*/*" } }
+                );
+            } catch (error) {
+                throw new Error("Cannot connect to the server. Check that your API is running.");
+            }
+
+            if (response.status === 401) {
+                handleUnauthorized();
+                throw new Error("Unauthorized");
+            }
+
+            if (!response.ok) {
+                const data = await response.json().catch(() => null);
+                throw new Error(data?.message || "The material could not be opened.");
+            }
+
+            return response.blob();
+        }
+
+        $("modulesContainer").addEventListener("click", async event => {
+            const button = event.target.closest("[data-material-action]");
+            if (!button) return;
+
+            const moduleId = button.dataset.moduleId;
+            const isView = button.dataset.materialAction === "view";
+
+            // Open the tab right away so the browser doesn't block it.
+            const tab = isView ? window.open("about:blank", "_blank") : null;
+            button.disabled = true;
+
+            try {
+                const blob = await fetchMaterial(moduleId, isView);
+                const url = URL.createObjectURL(blob);
+
+                if (isView) {
+                    if (tab) tab.location.href = url;
+                    else window.location.href = url;
+                } else {
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.download = button.dataset.fileName || "module-material";
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                }
+
+                setTimeout(() => URL.revokeObjectURL(url), 300000);
+            } catch (error) {
+                tab?.close();
+                if (error.message !== "Unauthorized") showToast(error.message, "error");
+            } finally {
+                button.disabled = false;
+            }
+        });
 
         /* LEARNERS */
         function renderLearners(learners) {
@@ -1877,7 +1990,7 @@
                 $("instructorEmail").value = user.email || "";
                 $("instructorPhone").value = user.contact || user.phone || "";
 
-                $("headerUserName").textContent = user.name || "Instructor";
+                $("headerInstructorName").textContent = user.name || "Instructor";
 
             } catch (error) {
                 console.error("Profile loading error:", error);
@@ -2008,7 +2121,7 @@
                     );
                 }
 
-                $("headerUserName").textContent = name;
+                $("headerInstructorName").textContent = name;
                 showToast("Profile updated successfully.", "success");
 
                 closeProfileModal();

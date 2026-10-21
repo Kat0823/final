@@ -67,6 +67,34 @@ class InstructorPortalTest extends TestCase
         return Submission::firstOrFail();
     }
 
+    public function test_module_material_view_and_download(): void
+    {
+        Storage::disk('local')->put('module-materials/abc.pdf', '%PDF-1.4 lesson');
+        $this->module->update([
+            'material_path' => 'module-materials/abc.pdf',
+            'material_name' => 'Lesson 1.pdf',
+            'is_published' => false, // drafts too: it's the instructor's own class
+        ]);
+        $url = "/api/instructor/modules/{$this->module->id}/material";
+
+        $view = $this->actingAs($this->instructor)->get($url . '?disposition=inline');
+        $view->assertOk();
+        $this->assertStringStartsWith('inline', $view->headers->get('Content-Disposition'));
+
+        $download = $this->actingAs($this->instructor)->get($url);
+        $download->assertOk();
+        $this->assertStringStartsWith('attachment', $download->headers->get('Content-Disposition'));
+        $this->assertStringContainsString('Lesson 1.pdf', $download->headers->get('Content-Disposition'));
+
+        // Another instructor's class, and learners, are refused.
+        $this->actingAs($this->otherInstructor)->getJson($url)->assertNotFound();
+        $this->actingAs($this->learner)->getJson($url)->assertForbidden();
+
+        // A module with no file says so.
+        $this->module->update(['material_path' => null]);
+        $this->actingAs($this->instructor)->getJson($url)->assertNotFound();
+    }
+
     public function test_dashboard(): void
     {
         $this->actingAs($this->instructor)->getJson('/api/instructor/dashboard')
