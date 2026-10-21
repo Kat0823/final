@@ -208,8 +208,100 @@
         null;
 
 
-    let notificationState =
-        loadNotificationState();
+    // Read/deleted flags for this page view. The server is the source of
+    // truth; this mirrors it so the page can update instantly.
+    let notificationState = {
+        read: {},
+        deleted: {}
+    };
+
+
+    /* =====================================================
+       SERVER NOTIFICATIONS
+       -----------------------------------------------------
+       Loaded from GET /api/admin/notifications. Read,
+       unread and delete are sent back to the server.
+    ===================================================== */
+
+    let serverEvents = [];
+
+    const SERVER_TYPES = {
+        grade: { category: "grading", icon: "clipboard-check" },
+        account_setup: { category: "status", icon: "user-check" },
+        account_locked: { category: "security", icon: "lock" }
+    };
+
+    function getApiToken() {
+        try {
+            return sessionStorage.getItem("authToken")
+                || localStorage.getItem("siknayan_api_token")
+                || "";
+        } catch (error) {
+            return "";
+        }
+    }
+
+    async function notificationApi(path, method = "GET") {
+        const response = await fetch(
+            `${window.SIKNAYAN_API_ROOT}/admin/notifications${path}`,
+            {
+                method,
+                headers: {
+                    Accept: "application/json",
+                    Authorization: `Bearer ${getApiToken()}`
+                }
+            }
+        );
+
+        if (response.status === 401) {
+            window.location.replace("../../index.html");
+            throw new Error("Your session has ended. Please log in again.");
+        }
+
+        const data = await response.json().catch(() => null);
+
+        if (!response.ok || !data || data.success === false) {
+            throw new Error(
+                data?.message || `The server returned an error (${response.status}).`
+            );
+        }
+
+        return data;
+    }
+
+    function toEvent(record) {
+        const known = SERVER_TYPES[record.type] || { category: "system", icon: "bell" };
+
+        return {
+            id: String(record.id),
+            type: record.type || "system",
+            category: known.category,
+            icon: known.icon,
+            title: record.title,
+            message: record.message,
+            createdAt: record.created_at,
+            priority: record.type === "account_locked" ? "high" : "normal"
+        };
+    }
+
+    function showLoadError(message) {
+        if (footerText) {
+            footerText.textContent = message;
+        }
+    }
+
+    // Change state on screen first, then tell the server. If the server
+    // refuses, put the screen back the way it was.
+    async function syncChange(ids, request, undo) {
+        try {
+            await Promise.all(ids.map(request));
+        } catch (error) {
+            console.error("Notifications: unable to save change.", error);
+            undo();
+            render();
+            showLoadError(`Couldn't save that change: ${error.message}`);
+        }
+    }
 
 
 
@@ -341,28 +433,7 @@
 
 
     function saveNotificationState() {
-
-        try {
-
-            localStorage.setItem(
-
-                STATE_STORAGE_KEY,
-
-                JSON.stringify(
-                    notificationState
-                )
-
-            );
-
-        } catch (error) {
-
-            console.error(
-                "Notifications: unable to save notification state.",
-                error
-            );
-
-        }
-
+        // Read/deleted state lives on the server now; nothing to store here.
     }
 
 
@@ -1182,43 +1253,8 @@
     ===================================================== */
 
     function ensureDemoEvents() {
-
-        if (
-            !NotificationEvents ||
-            typeof NotificationEvents.getAll !==
-                "function" ||
-            typeof NotificationEvents.create !==
-                "function"
-        ) {
-
-            return;
-
-        }
-
-
-        const existing =
-            NotificationEvents.getAll();
-
-
-        if (
-            existing.length > 0
-        ) {
-
-            return;
-
-        }
-
-
-        DEMO_EVENTS.forEach(
-            event => {
-
-                NotificationEvents.create(
-                    event
-                );
-
-            }
-        );
-
+        // Demo notifications are no longer created; the page shows the
+        // administrator's real notifications from the server.
     }
 
 
@@ -1228,20 +1264,7 @@
     ===================================================== */
 
     function loadEvents() {
-
-        if (
-            !NotificationEvents ||
-            typeof NotificationEvents.getAll !==
-                "function"
-        ) {
-
-            return [];
-
-        }
-
-
-        return NotificationEvents.getAll();
-
+        return serverEvents;
     }
 
 
@@ -1591,16 +1614,17 @@
     function markRead(
         id
     ) {
-
-        notificationState.read[
-            id
-        ] = true;
-
-
-        saveNotificationState();
-
+        const wasRead = Boolean(notificationState.read[id]);
+        notificationState.read[id] = true;
         render();
 
+        syncChange(
+            [id],
+            item => notificationApi(`/${encodeURIComponent(item)}/read`, "PATCH"),
+            () => {
+                if (!wasRead) delete notificationState.read[id];
+            }
+        );
     }
 
 
@@ -1608,16 +1632,17 @@
     function markUnread(
         id
     ) {
-
-        delete notificationState.read[
-            id
-        ];
-
-
-        saveNotificationState();
-
+        const wasRead = Boolean(notificationState.read[id]);
+        delete notificationState.read[id];
         render();
 
+        syncChange(
+            [id],
+            item => notificationApi(`/${encodeURIComponent(item)}/unread`, "PATCH"),
+            () => {
+                if (wasRead) notificationState.read[id] = true;
+            }
+        );
     }
 
 
@@ -1625,32 +1650,28 @@
     function deleteNotification(
         id
     ) {
+        const wasPreviewed = selectedNotificationId === id;
 
-        notificationState.deleted[
-            id
-        ] = true;
+        notificationState.deleted[id] = true;
+        selectedIds.delete(id);
 
-
-        selectedIds.delete(
-            id
-        );
-
-
-        if (
-            selectedNotificationId ===
-            id
-        ) {
-
-            selectedNotificationId =
-                null;
-
+        if (wasPreviewed) {
+            selectedNotificationId = null;
         }
-
-
-        saveNotificationState();
 
         render();
 
+        syncChange(
+            [id],
+            item => notificationApi(`/${encodeURIComponent(item)}`, "DELETE"),
+            () => {
+                delete notificationState.deleted[id];
+
+                if (wasPreviewed) {
+                    selectedNotificationId = id;
+                }
+            }
+        );
     }
 
 
@@ -1851,9 +1872,9 @@
 
 
         setCount(
-            "tabSubmissionCount",
+            "tabSecurityCount",
             countUnreadByCategory(
-                "submission"
+                "security"
             )
         );
 
@@ -1913,8 +1934,8 @@
             category
         ) {
 
-            case "submission":
-                return "Submission";
+            case "security":
+                return "Security";
 
             case "grading":
                 return "Grading";
@@ -1946,8 +1967,8 @@
             notification.category
         ) {
 
-            case "submission":
-                return "notification-visual-submission";
+            case "security":
+                return "notification-visual-system";
 
             case "grading":
                 return "notification-visual-grading";
@@ -3224,26 +3245,21 @@
     markSelectedReadButton?.addEventListener(
         "click",
         () => {
+            const ids = Array.from(selectedIds)
+                .filter(id => !notificationState.read[id]);
 
-            selectedIds.forEach(
-                id => {
-
-                    notificationState
-                        .read[id] =
-                        true;
-
-                }
-            );
-
+            ids.forEach(id => {
+                notificationState.read[id] = true;
+            });
 
             selectedIds.clear();
-
-
-            saveNotificationState();
-
-
             render();
 
+            syncChange(
+                ids,
+                item => notificationApi(`/${encodeURIComponent(item)}/read`, "PATCH"),
+                () => ids.forEach(id => delete notificationState.read[id])
+            );
         }
     );
 
@@ -3256,28 +3272,24 @@
     markAllReadButton?.addEventListener(
         "click",
         () => {
+            const ids = notifications
+                .map(notification => notification.id)
+                .filter(id => !notificationState.read[id]);
 
-            notifications.forEach(
-                notification => {
-
-                    notificationState
-                        .read[
-                            notification.id
-                        ] =
-                        true;
-
-                }
-            );
-
+            ids.forEach(id => {
+                notificationState.read[id] = true;
+            });
 
             selectedIds.clear();
-
-
-            saveNotificationState();
-
-
             render();
 
+            if (ids.length) {
+                syncChange(
+                    ["all"],
+                    () => notificationApi("/read-all", "POST"),
+                    () => ids.forEach(id => delete notificationState.read[id])
+                );
+            }
         }
     );
 
@@ -3290,39 +3302,28 @@
     deleteSelectedButton?.addEventListener(
         "click",
         () => {
+            const ids = Array.from(selectedIds);
 
-            selectedIds.forEach(
-                id => {
-
-                    notificationState
-                        .deleted[id] =
-                        true;
-
-                }
-            );
-
+            ids.forEach(id => {
+                notificationState.deleted[id] = true;
+            });
 
             selectedIds.clear();
 
-
             if (
                 selectedNotificationId &&
-                notificationState.deleted[
-                    selectedNotificationId
-                ]
+                notificationState.deleted[selectedNotificationId]
             ) {
-
-                selectedNotificationId =
-                    null;
-
+                selectedNotificationId = null;
             }
-
-
-            saveNotificationState();
-
 
             render();
 
+            syncChange(
+                ids,
+                item => notificationApi(`/${encodeURIComponent(item)}`, "DELETE"),
+                () => ids.forEach(id => delete notificationState.deleted[id])
+            );
         }
     );
 
@@ -3425,78 +3426,104 @@
        INITIALIZATION
     ===================================================== */
 
-    ensureDemoEvents();
+    async function initializeFromServer() {
+        try {
+            const data = await notificationApi("");
+            const records = Array.isArray(data.notifications)
+                ? data.notifications
+                : [];
 
+            serverEvents = records.map(toEvent);
+            notificationState = { read: {}, deleted: {} };
 
-    notifications =
-        loadEvents()
-
-            .map(
-                normalizeEvent
-            )
-
-            .filter(
-                notification =>
-
-                    notification.id &&
-
-                    !isDeleted(
-                        notification
-                    )
-
-            )
-
-            .sort(
-                (
-                    first,
-                    second
-                ) => {
-
-                    const firstTime =
-                        parseDate(
-                            first.createdAt
-                        )?.getTime() ||
-                        0;
-
-
-                    const secondTime =
-                        parseDate(
-                            second.createdAt
-                        )?.getTime() ||
-                        0;
-
-
-                    return (
-                        secondTime -
-                        firstTime
-                    );
-
+            records.forEach(record => {
+                if (record.is_read) {
+                    notificationState.read[String(record.id)] = true;
                 }
-            );
+            });
+        } catch (error) {
+            console.error("Notifications: unable to load from the server.", error);
+            serverEvents = [];
+            render();
+            showLoadError(`Unable to load notifications: ${error.message}`);
+            return;
+        }
 
 
-    if (
-        notifications.length > 0
-    ) {
 
-        const firstUnread =
-            notifications.find(
-                notification =>
-                    !isRead(
-                        notification
-                    )
-            );
+        notifications =
+            loadEvents()
+
+                .map(
+                    normalizeEvent
+                )
+
+                .filter(
+                    notification =>
+
+                        notification.id &&
+
+                        !isDeleted(
+                            notification
+                        )
+
+                )
+
+                .sort(
+                    (
+                        first,
+                        second
+                    ) => {
+
+                        const firstTime =
+                            parseDate(
+                                first.createdAt
+                            )?.getTime() ||
+                            0;
 
 
-        selectedNotificationId =
-            (
-                firstUnread ||
-                notifications[0]
-            ).id;
+                        const secondTime =
+                            parseDate(
+                                second.createdAt
+                            )?.getTime() ||
+                            0;
 
+
+                        return (
+                            secondTime -
+                            firstTime
+                        );
+
+                    }
+                );
+
+
+        if (
+            notifications.length > 0
+        ) {
+
+            const firstUnread =
+                notifications.find(
+                    notification =>
+                        !isRead(
+                            notification
+                        )
+                );
+
+
+            selectedNotificationId =
+                (
+                    firstUnread ||
+                    notifications[0]
+                ).id;
+
+        }
+
+
+        render();
     }
 
 
-    render();
+    initializeFromServer();
 
 })();
