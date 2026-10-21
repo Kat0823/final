@@ -341,21 +341,36 @@ function applySiknayanSystemAdminProfile(
             ".profile-page-name"
         )
         .forEach((element) => {
-            element.textContent = name;
-
+            // Sidebar shows the first name, as in the Academic Admin portal.
             if (
                 element.classList.contains("sidebar-profile-name")
             ) {
+                element.textContent = name.split(/\s+/)[0] || name;
                 element.setAttribute("title", name);
+                return;
             }
+
+            element.textContent = name;
+        });
+
+    // Header and sidebar: show a photo only when one was uploaded (as in
+    // the Academic Admin portal). The My Profile page keeps its default.
+    document
+        .querySelectorAll(".profile-avatar, .sidebar-avatar")
+        .forEach((image) => {
+            if (photo) {
+                image.src = photo;
+                image.style.visibility = "visible";
+            } else {
+                image.removeAttribute("src");
+                image.style.visibility = "hidden";
+            }
+
+            image.alt = `${name} profile photo`;
         });
 
     document
-        .querySelectorAll(
-            ".profile-avatar, " +
-            ".sidebar-avatar, " +
-            ".profile-page-avatar"
-        )
+        .querySelectorAll(".profile-page-avatar")
         .forEach((image) => {
             if (!image.dataset.defaultSrc) {
                 image.dataset.defaultSrc =

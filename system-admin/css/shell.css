@@ -1,0 +1,672 @@
+/* =========================================================
+   SIKNAYAN - SYSTEM ADMINISTRATOR
+   HEADER AND SIDEBAR (shell.css)
+
+   Same header and sidebar as the Academic Admin portal: the rules
+   below are copied from academic-admin/css/style.css. Load this file
+   AFTER system-admin.css on every System Admin page.
+
+   To give the System Admin its own sidebar colour again, change
+   --aa-maroon (sidebar background) below, e.g. back to #263238.
+========================================================= */
+
+:root {
+    --aa-green-dark: #075732;
+    --aa-green-light: #effcf7;
+    --aa-green: #08683c;
+    --aa-maroon-dark: #5b0808;
+    --aa-maroon: #6f0d0d;
+    --aa-white: #ffffff;
+    --aa-border-light: #edf0ee;
+    --aa-border: #d8d8d8;
+    --aa-text: #181818;
+    --aa-muted: #696969;
+}
+
+
+/* =========================================
+   TOP HEADER
+   FIXED
+========================================= */
+
+.topbar {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    z-index: 1000;
+
+    width: 100%;
+    height: var(--header-height);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 28px 0 36px;
+
+    background: var(--aa-green);
+    color: var(--aa-white);
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================
+   BRAND
+========================================= */
+
+.brand {
+
+    display: flex;
+    align-items: center;
+
+    gap: 16px;
+
+    min-width: 0;
+}
+
+
+.brand-logo {
+
+    width: 56px;
+    height: 56px;
+
+    object-fit: contain;
+
+    flex-shrink: 0;
+}
+
+
+.brand-text {
+    min-width: 0;
+}
+
+
+.brand-text h1 {
+
+    font-size: 20px;
+    font-weight: 500;
+
+    white-space: nowrap;
+}
+
+
+.brand-text p {
+
+    margin-top: 2px;
+
+    font-size: 17px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================
+   TOPBAR RIGHT
+========================================= */
+
+.topbar-right {
+
+    display: flex;
+    align-items: center;
+
+    gap: 24px;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================
+   NOTIFICATION BUTTON
+========================================= */
+
+.icon-button {
+
+    position: relative;
+
+    width: 42px;
+    height: 42px;
+
+    display: grid;
+    place-items: center;
+
+    border: none;
+    background: transparent;
+
+    color: white;
+
+    cursor: pointer;
+}
+
+
+.icon-button svg {
+
+    width: 27px;
+    height: 27px;
+}
+
+
+.notification-dot {
+
+    position: absolute;
+
+    top: 7px;
+    right: 7px;
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #ff6b6b;
+}
+
+
+/* =========================================
+   PROFILE
+========================================= */
+
+.profile {
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+}
+
+/* Header profile trigger: preserves the existing header layout */
+#profileHeaderButton {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+}
+
+#profileHeaderButton:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 5px;
+    border-radius: 6px;
+}
+
+
+
+.profile-avatar {
+
+    width: 46px;
+    height: 46px;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+
+    border: 2px solid white;
+
+    flex-shrink: 0;
+}
+
+
+.profile-info {
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+.profile-info strong {
+
+    font-size: 16px;
+    font-weight: 500;
+}
+
+
+.profile-info span {
+
+    margin-top: 2px;
+
+    font-size: 12px;
+}
+
+
+.profile-chevron {
+
+    width: 16px;
+    height: 16px;
+}
+
+
+/* =========================================
+   APPLICATION LAYOUT
+
+   Header is fixed, so the application
+   begins below it.
+========================================= */
+
+.app-layout {
+
+    display: flex;
+    align-items: flex-start;
+
+    width: 100%;
+
+    min-height: calc(100vh - var(--header-height));
+
+    margin-top: var(--header-height);
+
+    position: relative;
+}
+
+
+/* =========================================
+   SIDEBAR
+
+   Fixed below the header.
+========================================= */
+
+.sidebar {
+
+    position: fixed;
+
+    top: var(--header-height);
+    left: 0;
+    bottom: 0;
+
+    width: var(--sidebar-width);
+    height: calc(100vh - var(--header-height));
+
+    display: flex;
+    flex-direction: column;
+
+    background: var(--aa-maroon);
+    color: white;
+
+    flex-shrink: 0;
+
+    overflow: hidden;
+
+    transition: width 0.25s ease;
+
+    z-index: 900;
+}
+
+
+/* =========================================
+   SIDEBAR TOP
+========================================= */
+
+.sidebar-top {
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    min-height: 73px;
+
+    padding: 18px 30px 10px;
+}
+
+
+.sidebar-view-text {
+
+    font-size: 17px;
+
+    white-space: nowrap;
+}
+
+
+.sidebar-toggle {
+
+    width: 38px;
+    height: 38px;
+
+    display: grid;
+    place-items: center;
+
+    border: none;
+    background: transparent;
+
+    color: white;
+
+    cursor: pointer;
+
+    flex-shrink: 0;
+}
+
+
+.sidebar-toggle svg {
+
+    width: 28px;
+    height: 28px;
+}
+
+
+/* =========================================
+   SIDEBAR PROFILE
+========================================= */
+
+.sidebar-profile {
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    min-height: 94px;
+
+    padding: 12px 30px 20px;
+
+    flex-shrink: 0;
+}
+
+
+.sidebar-avatar {
+
+    width: 48px;
+    height: 48px;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+
+    border: 2px solid white;
+
+    flex-shrink: 0;
+}
+
+
+.sidebar-profile-name {
+
+    font-size: 23px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================
+   SIDEBAR NAVIGATION
+========================================= */
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+
+    flex: 1 1 auto;
+    min-height: 0;
+
+    gap: 7px;
+
+    padding: 8px 14px;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    scrollbar-width: thin;
+}
+
+
+/* =========================================
+   NAVIGATION ITEMS
+========================================= */
+
+.nav-item {
+
+    height: 53px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 0 18px;
+
+    border-radius: 7px;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 16px;
+
+    white-space: nowrap;
+
+    transition:
+        background 0.2s ease,
+        padding 0.25s ease;
+}
+
+
+.nav-item svg {
+
+    width: 29px;
+    height: 29px;
+
+    flex-shrink: 0;
+}
+
+
+.nav-item:hover {
+
+    background: rgba(255, 255, 255, 0.09);
+}
+
+
+.nav-item.active {
+
+    background: rgba(255, 255, 255, 0.14);
+}
+
+
+/* =========================================
+   LOGOUT AREA
+========================================= */
+
+.sidebar-bottom {
+
+    margin-top: auto;
+
+    padding: 14px;
+
+    flex-shrink: 0;
+}
+
+
+.logout:hover {
+
+    background: rgba(255, 255, 255, 0.09);
+}
+
+
+/* =========================================
+   COLLAPSED SIDEBAR
+========================================= */
+
+.sidebar.collapsed {
+
+    width: var(--sidebar-collapsed);
+}
+
+
+.sidebar.collapsed .sidebar-top {
+
+    justify-content: center;
+
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+
+.sidebar.collapsed .sidebar-view-text {
+
+    display: none;
+}
+
+
+.sidebar.collapsed .sidebar-profile {
+
+    justify-content: center;
+
+    padding-left: 0;
+    padding-right: 0;
+}
+
+
+.sidebar.collapsed .sidebar-profile-name {
+
+    display: none;
+}
+
+
+.sidebar.collapsed .sidebar-nav {
+
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+
+.sidebar.collapsed .nav-item {
+
+    justify-content: center;
+
+    padding-left: 0;
+    padding-right: 0;
+}
+
+
+.sidebar.collapsed .nav-label {
+
+    display: none;
+}
+
+
+.sidebar.collapsed .sidebar-bottom {
+
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+/* Move content when sidebar collapses */
+
+.sidebar.collapsed + .main-content {
+
+    margin-left: var(--sidebar-collapsed);
+}
+
+@media (max-width: 1000px) {
+
+    .profile-info,
+    .profile-chevron {
+
+        display: none;
+    }
+
+}
+
+/* =========================================
+   SIDEBAR ON SHORTER SCREENS
+
+   On laptop-height windows the sidebar (View row, profile, 7 links
+   and Logout) was taller than the space below the header and
+   scrolled. Below 820px of window height it becomes compact, and the
+   link height follows the window so all 8 items fit:
+     (window - header - fixed parts) / 8, between 34px and 53px.
+   Taller screens keep the original look.
+========================================= */
+
+@media (max-height: 820px) {
+
+    .sidebar-top {
+        min-height: 48px;
+        padding: 8px 24px 2px;
+    }
+
+    .sidebar-toggle {
+        width: 34px;
+        height: 34px;
+    }
+
+    .sidebar-toggle svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .sidebar-profile {
+        min-height: 0;
+        gap: 10px;
+        padding: 4px 24px 10px;
+    }
+
+    .sidebar-avatar {
+        width: 38px;
+        height: 38px;
+    }
+
+    .sidebar-profile-name {
+        font-size: 18px;
+    }
+
+    .sidebar-nav {
+        gap: 3px;
+        padding: 4px 14px;
+    }
+
+    .nav-item {
+        height: clamp(34px, calc((100vh - var(--header-height) - 160px) / 8), 53px);
+        font-size: 15px;
+    }
+
+    .nav-item svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .sidebar-bottom {
+        padding: 4px 14px 10px;
+    }
+}
+
+
+/* =========================================================
+   NEUTRALISE SYSTEM-ADMIN-ONLY EXTRAS
+   (rules in system-admin.css that the copy above doesn't replace)
+========================================================= */
+
+.sidebar-profile {
+    border-bottom: none;
+}
+
+.nav-item:not(.active):hover {
+    background: rgba(255, 255, 255, 0.09);
+}
+
+.nav-item.active,
+.nav-item.active:hover {
+    background: rgba(255, 255, 255, 0.14);
+    box-shadow: none;
+}
+
+/* The header profile is a link to My Profile here. */
+.profile {
+    color: var(--aa-white);
+    text-decoration: none;
+}
+
+/* The System Admin styles made the sidebar name bold. */
+.sidebar-profile-name {
+    font-weight: 400;
+}
+
+/* Kept from the System Admin portal: long names end with "...". */
+.sidebar-profile-name,
+.nav-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
