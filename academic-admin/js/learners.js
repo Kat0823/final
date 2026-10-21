@@ -1507,15 +1507,6 @@ function updateLearnerModules(
                 learner?.status
             );
 
-
-        const lastActivity =
-            String(
-                learner?.lastActivity ??
-                learner?.lastLogin ??
-                "—"
-            );
-
-
         return `
 
             <tr
@@ -1571,12 +1562,6 @@ function updateLearnerModules(
                     </span>
 
                 </td>
-
-
-                <td>
-                    ${escapeHtml(lastActivity)}
-                </td>
-
             </tr>
 
         `;
