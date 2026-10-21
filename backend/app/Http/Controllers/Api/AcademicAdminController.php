@@ -635,7 +635,8 @@ $learner = User::create([
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            // Optional: instructors can be added without an email address.
+            'email' => ['nullable', 'email', 'max:255', 'unique:users,email'],
             'school_id' => ['required', 'string', 'max:255', 'unique:users,school_id'],
             'program' => ['nullable', 'string', 'max:255'],
             'contact' => ['nullable', 'string', 'max:255'],
@@ -646,7 +647,7 @@ $learner = User::create([
         $instructor = User::create([
             'owner_admin_id' => $this->adminId($request),
             'name' => $validated['name'],
-            'email' => $validated['email'],
+            'email' => $validated['email'] ?? null,
             'school_id' => $validated['school_id'],
             'program' => $validated['program'] ?? null,
             'contact' => $validated['contact'] ?? null,
@@ -697,7 +698,7 @@ $learner = User::create([
 
             'email' => [
                 'sometimes',
-                'required',
+                'nullable',
                 'email',
                 'max:255',
                 Rule::unique('users', 'email')->ignore($instructor->id),
@@ -719,7 +720,8 @@ $learner = User::create([
 
         $updateData = [
             'name' => $validated['name'] ?? $instructor->name,
-            'email' => $validated['email'] ?? $instructor->email,
+            // Sent empty: remove the email. Not sent: keep it.
+            'email' => array_key_exists('email', $validated) ? $validated['email'] : $instructor->email,
             'school_id' => $validated['school_id'] ?? $instructor->school_id,
             'program' => array_key_exists('program', $validated)
                 ? $validated['program']

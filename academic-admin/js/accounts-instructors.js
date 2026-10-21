@@ -1326,8 +1326,9 @@ let instructorCredentialsExpiryTimer = null;
         statusGroup.hidden =
             false;
 
+        // Status can be changed for every account, including a new one.
         accountStatusInput.disabled =
-            account.passwordSetupComplete !== true;
+            false;
 
         accountModal.hidden =
             false;
@@ -1417,14 +1418,13 @@ let instructorCredentialsExpiryTimer = null;
 
 
         /*
-         * Instructor ID, name, and email are always required.
-         * Password is required only when creating a new
+         * Instructor ID and name are always required; email is
+         * optional. Password is required only when creating a new
          * instructor account. Laravel handles hashing.
          */
         if (
             !instructorId ||
             !instructorName ||
-            !email ||
             (!isEditing && !password)
         ) {
 
@@ -1434,6 +1434,12 @@ let instructorCredentialsExpiryTimer = null;
 
             return;
 
+        }
+
+
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            alert("Please enter a valid email address, or leave it blank.");
+            return;
         }
 
 
@@ -1524,12 +1530,13 @@ let instructorCredentialsExpiryTimer = null;
                         instructorName,
 
                     email:
-                        email
-                };
+                        email || null,
 
-                if (account.passwordSetupComplete) {
-                    requestData.is_active = status === "active";
-                }
+                    // Status can be changed for any account, including
+                    // one that hasn't signed in yet.
+                    is_active:
+                        status === "active"
+                };
 
 
                 /*
@@ -1613,7 +1620,7 @@ let instructorCredentialsExpiryTimer = null;
                                     instructorName,
 
                                 email:
-                                    email,
+                                    email || null,
 
                                 school_id:
                                     instructorId,
@@ -1675,8 +1682,8 @@ let instructorCredentialsExpiryTimer = null;
             return;
         }
 
-        if (!account.backendId || account.passwordSetupComplete !== true) {
-            alert("Account status can be changed only for a linked account that has completed setup.");
+        if (!account.backendId) {
+            alert("This instructor is not linked to a saved account. Refresh the page and try again.");
             return;
         }
 
@@ -2111,23 +2118,23 @@ let instructorCredentialsExpiryTimer = null;
                     );
 
 
-                    if (account.passwordSetupComplete) {
-                        actionsCell.appendChild(
-                            createActionButton(
-                                "Reset",
-                                "key-round",
-                                () => openResetPasswordModal(account.id)
-                            )
-                        );
+                    // Available for every account, including a new one
+                    // that hasn't signed in yet (e.g. a lost temporary password).
+                    actionsCell.appendChild(
+                        createActionButton(
+                            "Reset",
+                            "key-round",
+                            () => openResetPasswordModal(account.id)
+                        )
+                    );
 
-                        actionsCell.appendChild(
-                            createActionButton(
-                                account.isActive !== false ? "Deactivate" : "Activate",
-                                account.isActive !== false ? "user-x" : "user-check",
-                                () => toggleAccountStatus(account.id)
-                            )
-                        );
-                    }
+                    actionsCell.appendChild(
+                        createActionButton(
+                            account.isActive !== false ? "Deactivate" : "Activate",
+                            account.isActive !== false ? "user-x" : "user-check",
+                            () => toggleAccountStatus(account.id)
+                        )
+                    );
 
 
                     actionsCell.appendChild(
@@ -2362,9 +2369,9 @@ let instructorCredentialsExpiryTimer = null;
     const backendId =
         account.backendId;
 
-    if (!backendId || account.passwordSetupComplete !== true) {
+    if (!backendId) {
         alert(
-            "Password reset is available only for a linked account that has completed setup."
+            "This instructor is not linked to a saved account. Refresh the page and try again."
         );
         return;
     }
