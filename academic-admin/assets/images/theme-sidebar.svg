@@ -12,14 +12,16 @@
   </defs>
 
   <!-- Sun -->
-  <circle cx="198" cy="56" r="16" fill="#e2ac2f" fill-opacity="0.85"/>
+  <circle cx="198" cy="56" r="16" fill="#f0bf45" fill-opacity="0.95"/>
 
   <!-- Mountains -->
-  <path fill="#8c1a1f" fill-opacity="0.55" d="M0 120 L50 62 L95 100 L150 48 L205 96 L245 70 L245 170 L0 170 Z"/>
-  <path fill="#5b0a0f" fill-opacity="0.7" d="M0 138 L40 104 L85 128 L135 90 L185 126 L245 100 L245 170 L0 170 Z"/>
+  <path fill="#b8333a" fill-opacity="0.85" d="M0 120 L50 62 L95 100 L150 48 L205 96 L245 70 L245 170 L0 170 Z"/>
+  <path fill="#7d151b" fill-opacity="0.95" d="M0 138 L40 104 L85 128 L135 90 L185 126 L245 100 L245 170 L0 170 Z"/>
+
+  <path fill="none" stroke="#f0bf45" stroke-opacity="0.55" stroke-width="1.2" d="M0 120 L50 62 L95 100 L150 48 L205 96 L245 70"/>
 
   <!-- Pines -->
-  <g fill="#3f0609" fill-opacity="0.85">
+  <g fill="#400609" fill-opacity="0.95">
     <use href="#pine" transform="translate(28 108) scale(0.9)"/>
     <use href="#pine" transform="translate(44 112) scale(0.7)"/>
     <use href="#pine" transform="translate(118 100)"/>

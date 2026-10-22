@@ -775,36 +775,6 @@
 
 
     /* =====================================================
-       BANNER DATE AND TIME
-    ===================================================== */
-
-    function updateDashboardClock() {
-        const now = new Date();
-        const date = document.getElementById("dashboardDate");
-        const time = document.getElementById("dashboardTime");
-
-        if (date) {
-            date.dateTime = now.toISOString().slice(0, 10);
-            date.textContent = now.toLocaleDateString("en-US", {
-                month: "long",
-                day: "numeric",
-                year: "numeric"
-            });
-        }
-
-        if (time) {
-            time.textContent = now.toLocaleTimeString("en-US", {
-                hour: "numeric",
-                minute: "2-digit"
-            });
-        }
-    }
-
-    updateDashboardClock();
-    window.setInterval(updateDashboardClock, 30000);
-
-
-    /* =====================================================
        RENDER ACTIVE CLASSES
     ===================================================== */
 
