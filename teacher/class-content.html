@@ -848,6 +848,156 @@
             border-color: #b42318;
         }
 
+        /* Label read by screen readers only */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            white-space: nowrap;
+        }
+
+        /* Replies under an announcement */
+        .ann-replies {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .ann-replies-title {
+            margin-bottom: 8px;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .ann-reply {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 10px;
+            padding: 9px 0;
+        }
+
+        .ann-reply + .ann-reply {
+            border-top: 1px dashed var(--border);
+        }
+
+        .ann-reply-avatar {
+            width: 30px;
+            height: 30px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: #e3f3ea;
+            color: var(--green);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .ann-reply.instructor .ann-reply-avatar {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .ann-reply-head {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px 8px;
+            color: var(--text);
+            font-size: 12px;
+        }
+
+        .ann-reply-head time {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .ann-reply-tag {
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: #e3f3ea;
+            color: var(--green);
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .ann-reply-text {
+            margin-top: 3px;
+            color: var(--text);
+            font-size: 13px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .ann-reply-remove {
+            align-self: start;
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: 6px;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+        }
+
+        .ann-reply-remove:hover {
+            background: #fdecea;
+            color: #b42318;
+        }
+
+        .ann-reply-form {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .ann-reply-form textarea {
+            flex: 1;
+            min-height: 38px;
+            max-height: 140px;
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font: inherit;
+            font-size: 13px;
+            resize: vertical;
+        }
+
+        .ann-reply-form textarea:focus {
+            outline: 2px solid rgba(8, 107, 60, 0.25);
+            border-color: var(--green);
+        }
+
+        .ann-reply-form button {
+            align-self: flex-end;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 14px;
+            border: 0;
+            border-radius: 6px;
+            background: var(--green);
+            color: #fff;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .ann-reply-form button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .ann-reply-error {
+            margin-top: 6px;
+            color: #b42318;
+            font-size: 12px;
+        }
+
         /* EMPTY STATES */
         .empty-state {
             padding: 35px 20px;
@@ -2084,9 +2234,109 @@
                             </div>
                         </div>
                         <p class="announcement-text">${escapeHtml(item.message)}</p>
+                        ${renderReplies(item)}
                     </article>`;
             }).join("");
         }
+
+        /* Replies from learners (and the instructor) under each announcement */
+        function renderReplies(item) {
+            const replies = Array.isArray(item.replies) ? item.replies : [];
+            const initials = name => String(name || "?").trim().split(/\s+/).slice(0, 2)
+                .map(part => part.charAt(0).toUpperCase()).join("") || "?";
+
+            return `
+                <div class="ann-replies">
+                    <p class="ann-replies-title">${replies.length ? `${replies.length} repl${replies.length === 1 ? "y" : "ies"}` : "No replies yet"}</p>
+                    ${replies.map(reply => {
+                        const isInstructor = reply.author?.role === "instructor";
+                        return `
+                            <div class="ann-reply${isInstructor ? " instructor" : ""}">
+                                <span class="ann-reply-avatar" aria-hidden="true">${escapeHtml(initials(reply.author?.name))}</span>
+                                <div>
+                                    <div class="ann-reply-head">
+                                        <strong>${escapeHtml(reply.is_mine ? "You" : reply.author?.name || "Former member")}</strong>
+                                        ${isInstructor ? '<span class="ann-reply-tag">Instructor</span>' : ""}
+                                        <time datetime="${escapeHtml(reply.created_at)}">${escapeHtml(formatAnnouncementDate(reply.created_at))}</time>
+                                    </div>
+                                    <p class="ann-reply-text">${escapeHtml(reply.message)}</p>
+                                </div>
+                                <button type="button" class="ann-reply-remove" data-reply-remove="${escapeHtml(reply.id)}"
+                                    title="Remove reply" aria-label="Remove reply by ${escapeHtml(reply.author?.name || "member")}">
+                                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                </button>
+                            </div>`;
+                    }).join("")}
+                    <form class="ann-reply-form" data-reply-form="${escapeHtml(item.id)}" novalidate>
+                        <label class="visually-hidden" for="annReply-${escapeHtml(item.id)}">Reply to ${escapeHtml(item.title)}</label>
+                        <textarea id="annReply-${escapeHtml(item.id)}" rows="1" maxlength="2000" placeholder="Reply to your learners..."></textarea>
+                        <button type="submit"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Reply</button>
+                    </form>
+                    <p class="ann-reply-error" hidden></p>
+                </div>`;
+        }
+
+        $("announcementList").addEventListener("submit", async event => {
+            const form = event.target.closest("[data-reply-form]");
+            if (!form) return;
+            event.preventDefault();
+
+            const box = form.querySelector("textarea");
+            const button = form.querySelector("button");
+            const error = form.parentElement.querySelector(".ann-reply-error");
+            const message = box.value.trim();
+            error.hidden = true;
+
+            if (!message) {
+                error.textContent = "Please write your reply.";
+                error.hidden = false;
+                box.focus();
+                return;
+            }
+
+            button.disabled = true;
+            try {
+                await apiRequest(
+                    `${API_BASE_URL}/instructor/announcements/${encodeURIComponent(form.dataset.replyForm)}/replies`,
+                    { method: "POST", headers: getAuthHeaders(true), body: JSON.stringify({ message }) }
+                );
+                showToast("Reply posted.");
+                await loadAnnouncements();
+            } catch (replyError) {
+                button.disabled = false;
+                if (replyError.message !== "Unauthorized") {
+                    error.textContent = replyError.message;
+                    error.hidden = false;
+                }
+            }
+        });
+
+        // Enter sends, Shift+Enter makes a new line.
+        $("announcementList").addEventListener("keydown", event => {
+            if (event.key === "Enter" && !event.shiftKey && event.target.matches(".ann-reply-form textarea")) {
+                event.preventDefault();
+                event.target.form.requestSubmit();
+            }
+        });
+
+        $("announcementList").addEventListener("click", async event => {
+            const button = event.target.closest("[data-reply-remove]");
+            if (!button) return;
+            if (!window.confirm("Remove this reply? Learners will no longer see it.")) return;
+
+            button.disabled = true;
+            try {
+                await apiRequest(
+                    `${API_BASE_URL}/instructor/announcement-replies/${encodeURIComponent(button.dataset.replyRemove)}`,
+                    { method: "DELETE", headers: getAuthHeaders() }
+                );
+                showToast("Reply removed.");
+                await loadAnnouncements();
+            } catch (removeError) {
+                button.disabled = false;
+                if (removeError.message !== "Unauthorized") showToast(removeError.message, "error");
+            }
+        });
 
         function resetAnnouncementForm() {
             editingAnnouncementId = null;

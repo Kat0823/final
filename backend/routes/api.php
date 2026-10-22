@@ -7,6 +7,7 @@ use App\Http\Middleware\EnsurePasswordSetupComplete;
 use App\Http\Middleware\EnsureRole;
 use App\Http\Middleware\EnsureSystemAdmin;
 
+use App\Http\Controllers\Api\AnnouncementReplyController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PasswordController;
 use App\Http\Controllers\Api\PasswordResetController;
@@ -129,6 +130,10 @@ Route::middleware([
         // Own profile (email and contact; password via /account/password)
         Route::get('/student/profile', [StudentProfileController::class, 'show']);
         Route::put('/student/profile', [StudentProfileController::class, 'update']);
+
+        // Replies to class announcements
+        Route::post('/student/announcements/{announcementId}/replies', [AnnouncementReplyController::class, 'studentStore'])->middleware('throttle:20,1');
+        Route::delete('/student/announcement-replies/{replyId}', [AnnouncementReplyController::class, 'studentDestroy']);
         Route::post('/student/profile/photo', [StudentProfileController::class, 'uploadPhoto']);
 
         Route::get('/student/grades', [GradeController::class, 'index']);
@@ -164,6 +169,8 @@ Route::middleware([
         Route::post('/instructor/classes/{courseId}/announcements', [InstructorAnnouncementController::class, 'store']);
         Route::put('/instructor/announcements/{announcementId}', [InstructorAnnouncementController::class, 'update']);
         Route::delete('/instructor/announcements/{announcementId}', [InstructorAnnouncementController::class, 'destroy']);
+        Route::post('/instructor/announcements/{announcementId}/replies', [AnnouncementReplyController::class, 'instructorStore']);
+        Route::delete('/instructor/announcement-replies/{replyId}', [AnnouncementReplyController::class, 'instructorDestroy']);
 
         // Submissions and grading
         Route::get('/instructor/submissions', [InstructorController::class, 'submissions']);

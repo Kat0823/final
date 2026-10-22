@@ -113,6 +113,131 @@
             overflow-wrap: anywhere;
         }
 
+        /* Replies under an announcement */
+        .replies {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .replies-title {
+            margin-bottom: 10px;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .reply {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 10px;
+            padding: 10px 0;
+        }
+
+        .reply + .reply {
+            border-top: 1px dashed var(--border-light);
+        }
+
+        .reply-avatar {
+            width: 32px;
+            height: 32px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: var(--green-soft);
+            color: var(--green);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .reply.instructor .reply-avatar {
+            background: var(--green);
+            color: var(--white);
+        }
+
+        .reply-head {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px 8px;
+            font-size: 13px;
+        }
+
+        .reply-head time {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .reply-text {
+            margin-top: 3px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .reply-delete {
+            align-self: start;
+            width: 30px;
+            height: 30px;
+            border: none;
+            border-radius: 6px;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+        }
+
+        .reply-delete:hover {
+            background: var(--danger-soft);
+            color: var(--danger);
+        }
+
+        .reply-delete:focus-visible {
+            outline: 2px solid var(--green);
+        }
+
+        .reply-form {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .reply-form textarea {
+            flex: 1;
+            min-height: 42px;
+            max-height: 160px;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            line-height: 1.4;
+            resize: vertical;
+        }
+
+        .reply-form textarea:focus {
+            outline: 2px solid rgba(8, 104, 60, 0.22);
+            border-color: var(--green);
+        }
+
+        .reply-form .btn {
+            align-self: flex-end;
+        }
+
+        .reply-error {
+            margin-top: 6px;
+            color: var(--danger);
+            font-size: 12px;
+        }
+
+        @media (max-width: 520px) {
+            .reply-form {
+                flex-direction: column;
+            }
+
+            .reply-form .btn {
+                align-self: stretch;
+            }
+        }
+
         @media (max-width: 700px) {
             .module {
                 grid-template-columns: auto 1fr;
@@ -260,16 +385,125 @@
                     return;
                 }
 
+                announcements = items;
                 $("announcementList").innerHTML = items.map(item => {
                     const edited = item.updated_at && item.updated_at !== item.created_at;
+                    const replies = Array.isArray(item.replies) ? item.replies : [];
                     return `
-                        <article class="announcement">
+                        <article class="announcement" data-announcement="${escape(item.id)}">
                             <h3>${escape(item.title)}</h3>
                             <p class="meta">${escape(item.instructor?.name || "Instructor")} · ${escape(formatDate(item.created_at))}${edited ? " · edited" : ""}</p>
                             <p class="text">${escape(item.message)}</p>
+
+                            <div class="replies">
+                                <p class="replies-title">${replies.length ? `${replies.length} repl${replies.length === 1 ? "y" : "ies"}` : "No replies yet"}</p>
+                                ${replies.map(renderReply).join("")}
+                                <form class="reply-form" data-reply-form="${escape(item.id)}" novalidate>
+                                    <label class="visually-hidden" for="reply-${escape(item.id)}">Reply to ${escape(item.title)}</label>
+                                    <textarea id="reply-${escape(item.id)}" rows="1" maxlength="2000"
+                                        placeholder="Write a reply..."></textarea>
+                                    <button class="btn small" type="submit">
+                                        <i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Reply
+                                    </button>
+                                </form>
+                                <p class="reply-error" hidden></p>
+                            </div>
                         </article>`;
                 }).join("");
             }
+
+            function initialsOf(name) {
+                return String(name || "?").trim().split(/\s+/).slice(0, 2)
+                    .map(part => part.charAt(0).toUpperCase()).join("") || "?";
+            }
+
+            function renderReply(reply) {
+                const isInstructor = reply.author?.role === "instructor";
+                return `
+                    <div class="reply${isInstructor ? " instructor" : ""}">
+                        <span class="reply-avatar" aria-hidden="true">${escape(initialsOf(reply.author?.name))}</span>
+                        <div>
+                            <div class="reply-head">
+                                <strong>${escape(reply.is_mine ? "You" : reply.author?.name || "Former member")}</strong>
+                                ${isInstructor ? '<span class="badge green">Instructor</span>' : ""}
+                                <time datetime="${escape(reply.created_at)}">${escape(formatDate(reply.created_at))}</time>
+                            </div>
+                            <p class="reply-text">${escape(reply.message)}</p>
+                        </div>
+                        ${reply.is_mine
+                            ? `<button class="reply-delete" type="button" data-delete-reply="${escape(reply.id)}"
+                                    title="Delete my reply" aria-label="Delete my reply">
+                                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                               </button>`
+                            : "<span></span>"}
+                    </div>`;
+            }
+
+            let announcements = [];
+
+            // Post a reply
+            $("announcementList").addEventListener("submit", async event => {
+                const form = event.target.closest("[data-reply-form]");
+                if (!form) return;
+                event.preventDefault();
+
+                const box = form.querySelector("textarea");
+                const button = form.querySelector("button");
+                const error = form.parentElement.querySelector(".reply-error");
+                const message = box.value.trim();
+                error.hidden = true;
+
+                if (!message) {
+                    error.textContent = "Please write your reply.";
+                    error.hidden = false;
+                    box.focus();
+                    return;
+                }
+
+                button.disabled = true;
+                try {
+                    const data = await api(`/student/announcements/${encodeURIComponent(form.dataset.replyForm)}/replies`, {
+                        method: "POST",
+                        body: { message }
+                    });
+                    const item = announcements.find(a => String(a.id) === form.dataset.replyForm);
+                    if (item) item.replies = [...(item.replies || []), data.reply];
+                    renderAnnouncements(announcements);
+                    window.Portal.toast("Reply posted.");
+                } catch (postError) {
+                    error.textContent = postError.message;
+                    error.hidden = false;
+                    button.disabled = false;
+                }
+            });
+
+            // Enter sends, Shift+Enter makes a new line.
+            $("announcementList").addEventListener("keydown", event => {
+                if (event.key === "Enter" && !event.shiftKey && event.target.matches(".reply-form textarea")) {
+                    event.preventDefault();
+                    event.target.form.requestSubmit();
+                }
+            });
+
+            // Delete my reply
+            $("announcementList").addEventListener("click", async event => {
+                const button = event.target.closest("[data-delete-reply]");
+                if (!button) return;
+                if (!window.confirm("Delete your reply?")) return;
+
+                button.disabled = true;
+                try {
+                    await api(`/student/announcement-replies/${encodeURIComponent(button.dataset.deleteReply)}`, { method: "DELETE" });
+                    announcements.forEach(item => {
+                        item.replies = (item.replies || []).filter(reply => String(reply.id) !== button.dataset.deleteReply);
+                    });
+                    renderAnnouncements(announcements);
+                    window.Portal.toast("Reply deleted.");
+                } catch (deleteError) {
+                    button.disabled = false;
+                    window.Portal.toast(deleteError.message, "error");
+                }
+            });
 
             $("moduleList").addEventListener("click", event => {
                 const view = event.target.closest("[data-view]");

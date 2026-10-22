@@ -72,7 +72,7 @@ class StudentController extends Controller
                     ->orderBy('id'),
                 // Newest first, with who posted it.
                 'announcements' => fn ($query) => $query
-                    ->with('instructor:id,name')
+                    ->with(['instructor:id,name', 'replies.user:id,name,role'])
                     ->latest()
                     ->latest('id'),
             ])
@@ -109,6 +109,9 @@ class StudentController extends Controller
                     'instructor' => self::person($announcement->instructor),
                     'created_at' => $announcement->created_at,
                     'updated_at' => $announcement->updated_at,
+                    'replies' => $announcement->replies
+                        ->map(fn ($reply) => $reply->toViewArray($learner))
+                        ->values(),
                 ])->values(),
             ],
         ]);

@@ -25,13 +25,24 @@ class InstructorAnnouncementController extends Controller
             return $this->classNotFound();
         }
 
+        $instructor = $request->user();
+
         return response()->json([
             'success' => true,
             'announcements' => $course->announcements()
-                ->with('instructor:id,name')
+                ->with(['instructor:id,name', 'replies.user:id,name,role'])
                 ->latest()
                 ->latest('id')
-                ->get(),
+                ->get()
+                ->map(function ($announcement) use ($instructor) {
+                    $data = $announcement->only(['id', 'course_id', 'title', 'message', 'created_at', 'updated_at']);
+                    $data['instructor'] = $announcement->instructor?->only(['id', 'name']);
+                    $data['replies'] = $announcement->replies
+                        ->map(fn ($reply) => $reply->toViewArray($instructor))
+                        ->values();
+                    return $data;
+                })
+                ->values(),
         ]);
     }
 
