@@ -44,9 +44,10 @@ use App\Http\Controllers\Api\SystemAdminAcademicAdminController;
 // Login (all roles)
 Route::post('/login', [AuthController::class, 'login']);
 
-// Forgot password (all roles): email a one-time reset link, then set a
-// new password with it. Limited per address to stop abuse.
+// Forgot password (all roles): email a 5-digit code, check it, then set
+// a new password. Limited per address to stop abuse.
 Route::post('/password/forgot', [PasswordResetController::class, 'forgot'])->middleware('throttle:5,1');
+Route::post('/password/verify-code', [PasswordResetController::class, 'verifyCode'])->middleware('throttle:10,1');
 Route::post('/password/reset', [PasswordResetController::class, 'reset'])->middleware('throttle:10,1');
 
 

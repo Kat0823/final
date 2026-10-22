@@ -142,9 +142,9 @@ function describeAuditEntry(entry) {
         case "password_change":
             return "Changed their own password";
         case "password_reset_request":
-            return `Asked for a password reset link by email${fromIp}`;
+            return `Asked for a password reset code by email${fromIp}`;
         case "password_reset_email":
-            return `Reset their password with the emailed link${fromIp}`;
+            return `Reset their password with the emailed code${fromIp}`;
         case "profile_update": {
             const changes = describeChanges(details.changes);
             return changes.length
@@ -309,7 +309,7 @@ function formatAction(action) {
         account_locked: "Account Locked",
         password_setup: "Password Set",
         password_change: "Password Change",
-        password_reset_request: "Reset Link Sent",
+        password_reset_request: "Reset Code Sent",
         password_reset_email: "Password Reset by Email",
         profile_update: "Profile Update",
         create: "Create",
