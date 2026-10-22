@@ -100,13 +100,6 @@
             </div>
         </div>
 
-        <div class="stats">
-            <div class="stat"><span>Classes</span><strong id="statClasses">-</strong></div>
-            <div class="stat"><span>Graded modules</span><strong id="statGraded">-</strong></div>
-            <div class="stat"><span>Average score</span><strong id="statAverage">-</strong></div>
-            <div class="stat"><span>Highest score</span><strong id="statHighest">-</strong></div>
-        </div>
-
         <section class="card">
             <div class="filters">
                 <div class="field">
@@ -187,15 +180,6 @@
                 const classId = $("classFilter").value;
                 const status = $("statusFilter").value;
                 const shownClasses = classes.filter(item => !classId || String(item.id) === classId);
-
-                // Summary for what is shown.
-                const graded = shownClasses.flatMap(item => item.modules).filter(module => statusOf(module) === "graded");
-                const percents = graded.map(percentOf).filter(value => value !== null);
-                const avg = average(percents);
-                $("statClasses").textContent = shownClasses.length;
-                $("statGraded").textContent = graded.length;
-                $("statAverage").textContent = avg === null ? "-" : `${avg.toFixed(1)}%`;
-                $("statHighest").textContent = percents.length ? `${Math.max(...percents)}%` : "-";
 
                 if (classes.length === 0) {
                     $("gradeRows").innerHTML = `

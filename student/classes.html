@@ -153,13 +153,6 @@
             </div>
         </div>
 
-        <div class="stats" id="stats" hidden>
-            <div class="stat"><span>Classes</span><strong id="statClasses">0</strong></div>
-            <div class="stat"><span>Modules</span><strong id="statModules">0</strong></div>
-            <div class="stat"><span>Submitted</span><strong id="statSubmitted">0</strong></div>
-            <div class="stat"><span>Graded</span><strong id="statGraded">0</strong></div>
-        </div>
-
         <div class="toolbar" id="toolbar" hidden>
             <label class="search">
                 <span class="visually-hidden">Search classes</span>
@@ -254,12 +247,6 @@
                     const data = await api("/student/courses");
                     classes = Array.isArray(data.courses) ? data.courses : [];
 
-                    const sum = key => classes.reduce((total, item) => total + (item[key] || 0), 0);
-                    $("statClasses").textContent = classes.length;
-                    $("statModules").textContent = sum("module_count");
-                    $("statSubmitted").textContent = sum("submitted_count");
-                    $("statGraded").textContent = sum("graded_count");
-                    $("stats").hidden = classes.length === 0;
                     $("toolbar").hidden = classes.length === 0;
                     $("classSummary").textContent = classes.length
                         ? `You are enrolled in ${classes.length} class${classes.length === 1 ? "" : "es"}.`
