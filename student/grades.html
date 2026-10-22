@@ -8,94 +8,51 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="css/portal.css">
     <style>
-        .section-title {
-            margin: 4px 0 12px;
-            font-size: 17px;
-        }
-
-        .class-summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 14px;
-            margin-bottom: 22px;
-        }
-
-        .class-tile {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding: 18px;
-            border: 1px solid var(--border-light);
-            border-left: 4px solid var(--green);
-            border-radius: 10px;
-            background: var(--white);
-            box-shadow: var(--shadow);
-            color: inherit;
-            font: inherit;
-            text-align: left;
-            cursor: pointer;
-        }
-
-        .class-tile:hover {
-            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
-        }
-
-        .class-tile.selected {
-            border-color: var(--green);
-            background: #f6fcf8;
-        }
-
-        .class-tile:focus-visible {
-            outline: 2px solid var(--green);
-            outline-offset: 2px;
-        }
-
-        .class-tile .code {
-            color: var(--green);
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .class-tile h3 {
-            font-size: 15px;
-            line-height: 1.35;
-        }
-
-        .class-tile .meta {
-            color: var(--muted);
-            font-size: 12px;
-        }
-
-        .class-tile .numbers {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            gap: 10px;
-            margin-top: auto;
-        }
-
-        .class-tile .average {
-            font-size: 24px;
-            font-weight: 700;
-        }
-
-        .class-tile .average.none {
-            color: var(--muted);
-            font-size: 14px;
-            font-weight: 600;
-        }
-
         .filters {
             display: flex;
             flex-wrap: wrap;
             align-items: flex-end;
-            justify-content: space-between;
             gap: 12px;
             margin-bottom: 16px;
         }
 
         .filters .field {
             min-width: 240px;
+        }
+
+        /* One heading row per class, then its modules. */
+        tr.class-row td {
+            padding-top: 16px;
+            border-bottom: 2px solid var(--green-soft);
+            background: #f6fbf8;
+        }
+
+        .class-name {
+            color: var(--text);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .class-name:hover {
+            color: var(--green);
+            text-decoration: underline;
+        }
+
+        .class-meta {
+            display: block;
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 400;
+        }
+
+        .class-average {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .module-cell {
+            padding-left: 28px !important;
         }
 
         .module-link {
@@ -114,9 +71,15 @@
         }
 
         .feedback-cell {
-            max-width: 320px;
+            max-width: 300px;
             white-space: pre-wrap;
             overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 700px) {
+            .module-cell {
+                padding-left: 14px !important;
+            }
         }
     </style>
 </head>
@@ -125,23 +88,15 @@
         <div class="page-header">
             <div>
                 <h2>Grades</h2>
-                <p>Scores and feedback from your instructors, by class.</p>
+                <p>Your classes and modules, with scores and feedback from your instructors.</p>
             </div>
         </div>
 
         <div class="stats">
             <div class="stat"><span>Classes</span><strong id="statClasses">-</strong></div>
-            <div class="stat"><span>Graded activities</span><strong id="statCount">-</strong></div>
+            <div class="stat"><span>Graded modules</span><strong id="statGraded">-</strong></div>
             <div class="stat"><span>Average score</span><strong id="statAverage">-</strong></div>
             <div class="stat"><span>Highest score</span><strong id="statHighest">-</strong></div>
-        </div>
-
-        <h3 class="section-title">My classes</h3>
-        <div class="class-summary" id="classSummary">
-            <div class="card state" style="grid-column: 1 / -1">
-                <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
-                <h3>Loading your classes</h3>
-            </div>
         </div>
 
         <section class="card">
@@ -152,17 +107,23 @@
                         <option value="">All classes</option>
                     </select>
                 </div>
-                <a class="btn secondary small" id="openClassLink" href="classes.html" hidden>
-                    <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Open class
-                </a>
+                <div class="field">
+                    <label for="statusFilter">Status</label>
+                    <select id="statusFilter">
+                        <option value="">All modules</option>
+                        <option value="graded">Graded</option>
+                        <option value="submitted">Waiting for grade</option>
+                        <option value="none">Not submitted</option>
+                    </select>
+                </div>
             </div>
 
             <div class="table-wrap">
                 <table class="data">
                     <thead>
                         <tr>
-                            <th scope="col">Module</th>
-                            <th scope="col">Class</th>
+                            <th scope="col">Class / Module</th>
+                            <th scope="col">Status</th>
                             <th scope="col">Score</th>
                             <th scope="col">Feedback</th>
                             <th scope="col">Graded</th>
@@ -186,109 +147,109 @@
             if (!window.Portal) return;
             const { api, escape, formatDate } = window.Portal;
             const $ = id => document.getElementById(id);
-            let classes = [];
-            let grades = [];
+            let classes = [];   // each with its modules (and the learner's submission/grade)
 
-            const average = list => {
-                const values = list.map(item => Number(item.percentage)).filter(value => !Number.isNaN(value));
-                return values.length ? values.reduce((a, b) => a + b, 0) / values.length : null;
+            const statusOf = module => {
+                const submission = module.my_submission;
+                if (!submission) return "none";
+                return submission.grade ? "graded" : "submitted";
             };
 
-            function badgeFor(percentage) {
-                if (percentage === null || percentage === undefined) return "";
-                const tone = percentage >= 75 ? "green" : percentage >= 50 ? "amber" : "red";
-                return `<span class="badge ${tone}">${escape(Number(percentage))}%</span>`;
+            const percentOf = module => {
+                const value = Number(module.my_submission?.grade?.percentage);
+                return Number.isNaN(value) || module.my_submission?.grade?.percentage == null ? null : value;
+            };
+
+            const average = values => values.length ? values.reduce((a, b) => a + b, 0) / values.length : null;
+
+            function badge(module) {
+                const status = statusOf(module);
+                if (status === "graded") return '<span class="badge green"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Graded</span>';
+                if (status === "submitted") return '<span class="badge"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> Waiting for grade</span>';
+                return '<span class="badge amber"><i class="fa-regular fa-clock" aria-hidden="true"></i> Not submitted</span>';
             }
 
-            function gradesFor(classId) {
-                return grades.filter(item => !classId || String(item.course?.id) === String(classId));
+            function percentBadge(percent) {
+                if (percent === null) return "";
+                const tone = percent >= 75 ? "green" : percent >= 50 ? "amber" : "red";
+                return `<span class="badge ${tone}">${escape(percent)}%</span>`;
             }
 
-            function renderSummary() {
-                const selected = $("classFilter").value;
-
-                if (classes.length === 0) {
-                    $("classSummary").innerHTML = `
-                        <div class="card state" style="grid-column: 1 / -1">
-                            <i class="fa-solid fa-book-open" aria-hidden="true"></i>
-                            <h3>You are not enrolled in any class yet</h3>
-                        </div>`;
-                    return;
-                }
-
-                $("classSummary").innerHTML = classes.map(item => {
-                    const mine = gradesFor(item.id);
-                    const avg = average(mine);
-                    const total = item.module_count || 0;
-                    return `
-                        <button type="button" class="class-tile${String(item.id) === selected ? " selected" : ""}"
-                            data-class="${escape(item.id)}" aria-pressed="${String(item.id) === selected}"
-                            title="Show grades for ${escape(item.name)}">
-                            <span class="code">${escape(item.code || item.subject_code || "CLASS")}</span>
-                            <h3>${escape(item.name)}</h3>
-                            <span class="meta">${escape(item.instructor?.name || "No instructor assigned")}</span>
-                            <span class="numbers">
-                                <span class="meta">${mine.length} of ${total} module${total === 1 ? "" : "s"} graded</span>
-                                ${avg === null
-                                    ? '<span class="average none">No grades yet</span>'
-                                    : `<span class="average">${avg.toFixed(1)}%</span>`}
-                            </span>
-                        </button>`;
-                }).join("");
-            }
-
-            function renderTable() {
+            function render() {
                 const classId = $("classFilter").value;
-                const shown = gradesFor(classId);
-                const avg = average(shown);
-                const percents = shown.map(item => Number(item.percentage)).filter(value => !Number.isNaN(value));
+                const status = $("statusFilter").value;
+                const shownClasses = classes.filter(item => !classId || String(item.id) === classId);
 
-                $("statCount").textContent = shown.length;
+                // Summary for what is shown.
+                const graded = shownClasses.flatMap(item => item.modules).filter(module => statusOf(module) === "graded");
+                const percents = graded.map(percentOf).filter(value => value !== null);
+                const avg = average(percents);
+                $("statClasses").textContent = shownClasses.length;
+                $("statGraded").textContent = graded.length;
                 $("statAverage").textContent = avg === null ? "-" : `${avg.toFixed(1)}%`;
                 $("statHighest").textContent = percents.length ? `${Math.max(...percents)}%` : "-";
-                $("openClassLink").hidden = !classId;
-                $("openClassLink").href = classId ? `modules.html?course=${encodeURIComponent(classId)}` : "classes.html";
 
-                if (shown.length === 0) {
+                if (classes.length === 0) {
                     $("gradeRows").innerHTML = `
                         <tr><td colspan="5">
                             <div class="state">
-                                <i class="fa-solid fa-chart-column" aria-hidden="true"></i>
-                                <h3>No grades yet</h3>
-                                <p>Grades appear here after your instructor checks your submitted activities.</p>
+                                <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+                                <h3>You are not enrolled in any class yet</h3>
                             </div>
                         </td></tr>`;
                     return;
                 }
 
-                $("gradeRows").innerHTML = shown.map(item => `
-                    <tr>
-                        <td>
-                            <a class="module-link" href="submission.html?module=${encodeURIComponent(item.module?.id)}">${escape(item.module?.name || "Module")}</a>
-                            <div class="muted">${escape(item.file_name || "")}</div>
-                        </td>
-                        <td>
-                            ${escape(item.course?.name || "")}
-                            <div class="muted">${escape(item.course?.code || "")}</div>
-                        </td>
-                        <td>
-                            <strong>${escape(Number(item.score))} / ${escape(Number(item.max_score))}</strong>
-                            <div style="margin-top: 4px">${badgeFor(item.percentage)}</div>
-                        </td>
-                        <td class="feedback-cell">${item.feedback ? escape(item.feedback) : '<span class="muted">No feedback</span>'}
-                            <div class="muted">${escape(item.instructor || "")}</div>
-                        </td>
-                        <td>${escape(formatDate(item.graded_at, false))}</td>
-                    </tr>`).join("");
-            }
+                const rows = shownClasses.map(item => {
+                    const modules = item.modules.filter(module => !status || statusOf(module) === status);
+                    const classPercents = item.modules.map(percentOf).filter(value => value !== null);
+                    const classAvg = average(classPercents);
+                    const gradedCount = item.modules.filter(module => statusOf(module) === "graded").length;
 
-            function render() {
-                renderSummary();
-                renderTable();
+                    const head = `
+                        <tr class="class-row">
+                            <td colspan="2">
+                                <a class="class-name" href="modules.html?course=${encodeURIComponent(item.id)}">${escape(item.name)}</a>
+                                <span class="class-meta">${escape([item.code, item.instructor?.name].filter(Boolean).join(" · "))}</span>
+                            </td>
+                            <td colspan="3" class="class-average">
+                                ${classAvg === null
+                                    ? '<span class="muted">No grades yet</span>'
+                                    : `<strong>${classAvg.toFixed(1)}%</strong> <span class="muted">average</span>`}
+                                <span class="class-meta">${gradedCount} of ${item.modules.length} module${item.modules.length === 1 ? "" : "s"} graded</span>
+                            </td>
+                        </tr>`;
+
+                    if (item.error) {
+                        return head + `<tr><td colspan="5" class="module-cell muted">Unable to load this class's modules. ${escape(item.error)}</td></tr>`;
+                    }
+
+                    if (modules.length === 0) {
+                        return head + `<tr><td colspan="5" class="module-cell muted">${item.modules.length ? "No modules match this status." : "No modules published yet."}</td></tr>`;
+                    }
+
+                    return head + modules.map(module => {
+                        const grade = module.my_submission?.grade;
+                        return `
+                            <tr>
+                                <td class="module-cell">
+                                    <a class="module-link" href="submission.html?module=${encodeURIComponent(module.id)}">${escape(module.title)}</a>
+                                    ${module.my_submission?.file_name ? `<div class="muted">${escape(module.my_submission.file_name)}</div>` : ""}
+                                </td>
+                                <td>${badge(module)}</td>
+                                <td>${grade
+                                    ? `<strong>${escape(Number(grade.score))} / ${escape(Number(grade.max_score))}</strong><div style="margin-top: 4px">${percentBadge(percentOf(module))}</div>`
+                                    : '<span class="muted">—</span>'}</td>
+                                <td class="feedback-cell">${grade?.feedback ? escape(grade.feedback) : '<span class="muted">—</span>'}</td>
+                                <td>${grade ? escape(formatDate(grade.graded_at, false)) : '<span class="muted">—</span>'}</td>
+                            </tr>`;
+                    }).join("");
+                }).join("");
+
+                $("gradeRows").innerHTML = rows;
             }
 
             function showError(error) {
-                $("classSummary").innerHTML = "";
                 $("gradeRows").innerHTML = `
                     <tr><td colspan="5">
                         <div class="state">
@@ -303,23 +264,25 @@
 
             async function load() {
                 try {
-                    // Classes and grades together, so every class shows
-                    // even before it has any grades.
-                    const [classData, gradeData] = await Promise.all([
-                        api("/student/courses"),
-                        api("/student/grades")
-                    ]);
-                    classes = Array.isArray(classData.courses) ? classData.courses : [];
-                    grades = Array.isArray(gradeData.grades) ? gradeData.grades : [];
+                    // The class list, then each class with its modules and
+                    // this learner's submission and grade for each module.
+                    const { courses } = await api("/student/courses");
+                    const list = Array.isArray(courses) ? courses : [];
 
-                    $("statClasses").textContent = classes.length;
+                    classes = await Promise.all(list.map(async item => {
+                        try {
+                            const { course } = await api(`/student/courses/${encodeURIComponent(item.id)}`);
+                            return { ...item, modules: course.modules || [] };
+                        } catch (error) {
+                            return { ...item, modules: [], error: error.message };
+                        }
+                    }));
 
                     const previous = $("classFilter").value;
                     $("classFilter").innerHTML = '<option value="">All classes</option>' + classes
                         .map(item => `<option value="${escape(item.id)}">${escape(item.name)}${item.code ? ` (${escape(item.code)})` : ""}</option>`)
                         .join("");
-                    const fromLink = new URLSearchParams(window.location.search).get("course");
-                    const wanted = previous || fromLink || "";
+                    const wanted = previous || new URLSearchParams(window.location.search).get("course") || "";
                     if (classes.some(item => String(item.id) === String(wanted))) $("classFilter").value = wanted;
 
                     render();
@@ -329,15 +292,7 @@
             }
 
             $("classFilter").addEventListener("change", render);
-
-            $("classSummary").addEventListener("click", event => {
-                const tile = event.target.closest("[data-class]");
-                if (!tile) return;
-                const filter = $("classFilter");
-                filter.value = filter.value === tile.dataset.class ? "" : tile.dataset.class;
-                render();
-            });
-
+            $("statusFilter").addEventListener("change", render);
             load();
         })();
     </script>
