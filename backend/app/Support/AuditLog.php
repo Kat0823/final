@@ -24,6 +24,8 @@ class AuditLog
     public const PROFILE_UPDATE = 'profile_update';
     public const PASSWORD_CHANGE = 'password_change';
     public const PASSWORD_SETUP = 'password_setup';
+    public const PASSWORD_RESET_REQUEST = 'password_reset_request';
+    public const PASSWORD_RESET_EMAIL = 'password_reset_email';
 
     public static function record(
         ?User $actor,

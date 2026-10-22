@@ -9,6 +9,7 @@ use App\Http\Middleware\EnsureSystemAdmin;
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PasswordController;
+use App\Http\Controllers\Api\PasswordResetController;
 
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\StudentProfileController;
@@ -42,6 +43,11 @@ use App\Http\Controllers\Api\SystemAdminAcademicAdminController;
 
 // Login (all roles)
 Route::post('/login', [AuthController::class, 'login']);
+
+// Forgot password (all roles): email a one-time reset link, then set a
+// new password with it. Limited per address to stop abuse.
+Route::post('/password/forgot', [PasswordResetController::class, 'forgot'])->middleware('throttle:5,1');
+Route::post('/password/reset', [PasswordResetController::class, 'reset'])->middleware('throttle:10,1');
 
 
 /*

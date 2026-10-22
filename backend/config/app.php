@@ -55,6 +55,12 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
 
     /*
+    | The website's address (where index.html is served). Used for links in
+    | emails, such as "reset your password".
+    */
+    'frontend_url' => env('FRONTEND_URL', 'http://127.0.0.1:5501'),
+
+    /*
     |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
