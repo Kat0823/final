@@ -27,9 +27,9 @@ class PasswordResetTest extends TestCase
         ]);
     }
 
-    private function requestLink(string $login)
+    private function requestLink(string $email)
     {
-        return $this->postJson('/api/password/forgot', ['login' => $login]);
+        return $this->postJson('/api/password/forgot', ['email' => $email]);
     }
 
     private function tokenFor(User $user): string
@@ -44,26 +44,31 @@ class PasswordResetTest extends TestCase
         return $token;
     }
 
-    public function test_link_is_emailed_by_school_id_or_email(): void
+    public function test_link_is_emailed_to_the_account_email(): void
     {
-        $this->requestLink('24-rs001')->assertOk()->assertJsonPath('success', true);
+        $this->requestLink('Ana@Example.com')->assertOk()->assertJsonPath('success', true);
         Notification::assertSentTo($this->learner, ResetPasswordLink::class);
         $this->assertDatabaseHas('system_admin_audit_logs', ['action' => 'password_reset_request', 'target_id' => $this->learner->id]);
     }
 
-    public function test_same_answer_when_no_account_or_no_email_or_inactive(): void
+    public function test_same_answer_when_no_account_or_inactive(): void
     {
-        $noEmail = User::factory()->create(['role' => 'learner', 'school_id' => '24-RS002', 'email' => null, 'is_active' => true]);
         $inactive = User::factory()->create(['role' => 'learner', 'school_id' => '24-RS003', 'email' => 'x@example.com', 'is_active' => false]);
 
-        $expected = $this->requestLink('24-RS001')->json('message');
+        $expected = $this->requestLink('ana@example.com')->json('message');
 
-        foreach (['nobody-here', '24-RS002', '24-RS003'] as $login) {
-            $this->requestLink($login)->assertOk()->assertJsonPath('message', $expected);
+        foreach (['nobody@example.com', 'x@example.com'] as $email) {
+            $this->requestLink($email)->assertOk()->assertJsonPath('message', $expected);
         }
 
-        Notification::assertNotSentTo($noEmail, ResetPasswordLink::class);
         Notification::assertNotSentTo($inactive, ResetPasswordLink::class);
+    }
+
+    public function test_only_an_email_address_is_accepted(): void
+    {
+        $this->requestLink('24-RS001')->assertStatus(422)->assertJsonValidationErrors('email');
+        $this->requestLink('')->assertStatus(422)->assertJsonValidationErrors('email');
+        Notification::assertNothingSent();
     }
 
     public function test_reset_sets_the_new_password_and_signs_out_everywhere(): void
@@ -94,7 +99,7 @@ class PasswordResetTest extends TestCase
 
     public function test_wrong_token_short_or_mismatched_password_are_refused(): void
     {
-        $this->requestLink('24-RS001');
+        $this->requestLink('ana@example.com');
         $token = $this->tokenFor($this->learner);
 
         $this->postJson('/api/password/reset', [
@@ -120,7 +125,7 @@ class PasswordResetTest extends TestCase
         $admin = User::factory()->create([
             'role' => 'system_admin', 'school_id' => 'SYS-RS', 'email' => 'sys@example.com', 'is_active' => true,
         ]);
-        $this->requestLink('SYS-RS');
+        $this->requestLink('sys@example.com');
         $token = $this->tokenFor($admin);
 
         $this->postJson('/api/password/reset', [
@@ -137,8 +142,8 @@ class PasswordResetTest extends TestCase
     public function test_requests_are_rate_limited(): void
     {
         for ($i = 0; $i < 5; $i++) {
-            $this->requestLink('nobody')->assertOk();
+            $this->requestLink('nobody@example.com')->assertOk();
         }
-        $this->requestLink('nobody')->assertStatus(429);
+        $this->requestLink('nobody@example.com')->assertStatus(429);
     }
 }

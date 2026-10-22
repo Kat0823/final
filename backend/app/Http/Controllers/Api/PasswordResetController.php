@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\Password;
 /**
  * "Forgot password" by email, for every role.
  *
- * 1. POST /api/password/forgot  {login: school ID or email}
- *    Emails a one-time link (60 minutes) when an active account with an
- *    email address matches. The answer is the same either way, so the
+ * 1. POST /api/password/forgot  {email}
+ *    Emails a one-time link (60 minutes) when an active account has
+ *    that email address. The answer is the same either way, so the
  *    page can't be used to find out which accounts exist.
  * 2. POST /api/password/reset   {token, email, password, password_confirmation}
  *    Sets the new password and signs the account out everywhere.
@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Password;
 class PasswordResetController extends Controller
 {
     private const SENT_MESSAGE =
-        'If an account with an email address matches, a reset link has been sent to it. '
+        'If an account uses this email address, a reset link has been sent to it. '
         . 'Check your inbox (and spam folder). The link expires in 60 minutes.';
 
     private const INVALID_LINK =
@@ -33,21 +33,16 @@ class PasswordResetController extends Controller
     public function forgot(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'login' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255'],
         ], [
-            'login.required' => 'Please enter your School ID or email address.',
+            'email.required' => 'Please enter your email address.',
+            'email.email' => 'Please enter a valid email address.',
         ]);
 
-        $login = trim($validated['login']);
+        // Matched without regard to capital letters.
+        $user = User::whereRaw('LOWER(email) = ?', [mb_strtolower(trim($validated['email']))])->first();
 
-        $user = User::query()
-            ->where(function ($query) use ($login) {
-                $query->whereRaw('LOWER(school_id) = ?', [mb_strtolower($login)])
-                    ->orWhereRaw('LOWER(email) = ?', [mb_strtolower($login)]);
-            })
-            ->first();
-
-        if ($user && $user->is_active && filled($user->email)) {
+        if ($user && $user->is_active) {
             try {
                 $status = Password::broker()->sendResetLink(
                     ['email' => $user->email],
