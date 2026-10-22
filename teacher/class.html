@@ -1749,7 +1749,7 @@ window.addEventListener("resize", function () {
    NOTIFICATIONS AND LOGOUT
    ========================================= */
 
-// The bell is handled by js/bell.js.
+// The bell is handled by js/header.js.
 
 logoutNav.addEventListener("click", function (event) {
     event.preventDefault();
@@ -1789,7 +1789,9 @@ if (!getAuthToken()) {
 }
 </script>
 
-    <!-- Notification bell: opens Notifications, red dot for unread -->
-    <script src="js/bell.js"></script>
+    <!-- Header like the Academic Admin portal; bell opens Notifications, red dot for unread -->
+    <script src="js/header.js"></script>
+    <!-- Sidebar toggle like the Academic Admin portal (remembers the choice) -->
+    <script src="js/sidebar.js"></script>
 </body>
 </html>

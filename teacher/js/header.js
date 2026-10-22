@@ -1,8 +1,9 @@
 /* =========================================================
    SIKNAYAN - INSTRUCTOR PORTAL
-   NOTIFICATION BELL (bell.js)
+   HEADER (header.js)
 
-   Loaded on every Instructor page. It:
+   Loaded on every Instructor page so the header matches the Academic
+   Admin portal's (same outlined bell and chevron icons). It:
    - adds the bell to the header where a page doesn't have one,
    - opens the Notifications page when the bell is clicked,
    - shows a red dot while there are unread notifications.
@@ -25,6 +26,27 @@
         }
     }
 
+    // Same drawings as the admin's Lucide "bell" and "chevron-down" icons.
+    const BELL_ICON =
+        '<svg class="header-svg bell-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" ' +
+        'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+        'stroke-linejoin="round" aria-hidden="true" focusable="false">' +
+        '<path d="M10.268 21a2 2 0 0 0 3.464 0"></path>' +
+        '<path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg>';
+
+    const CHEVRON_ICON =
+        '<svg class="header-svg profile-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" ' +
+        'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+        'stroke-linejoin="round" aria-hidden="true" focusable="false">' +
+        '<path d="m6 9 6 6 6-6"></path></svg>';
+
+    function addChevron() {
+        const profile = document.querySelector(".header .user-profile");
+        if (profile && !profile.querySelector(".profile-chevron")) {
+            profile.insertAdjacentHTML("beforeend", CHEVRON_ICON);
+        }
+    }
+
     function createBell() {
         const button = document.createElement("button");
         button.type = "button";
@@ -32,7 +54,7 @@
         button.id = "notificationsBtn";
         button.title = "Notifications";
         button.setAttribute("aria-label", "Notifications");
-        button.innerHTML = '<i class="fa-solid fa-bell" aria-hidden="true"></i>';
+        button.innerHTML = BELL_ICON;
         return button;
     }
 
@@ -45,6 +67,12 @@
         if (!bell) {
             bell = createBell();
             headerRight.insertBefore(bell, headerRight.firstChild);
+        }
+
+        // Outlined bell like the admin's (the page's solid icon is removed).
+        bell.querySelectorAll("i").forEach(icon => icon.remove());
+        if (!bell.querySelector(".bell-icon")) {
+            bell.insertAdjacentHTML("afterbegin", BELL_ICON);
         }
 
         if (!bell.querySelector(".notification-dot")) {
@@ -102,6 +130,7 @@
     }
 
     function start() {
+        addChevron();
         const bell = setUpBell();
         if (!bell) return;
 
