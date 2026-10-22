@@ -445,23 +445,24 @@ refreshIcons();
             align-items: center;
             justify-content: center;
             padding: 20px;
-            background: rgba(15, 23, 42, 0.45);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
+            background: rgba(0, 0, 0, 0.45);
         }
 
         #sikLogoutOverlay.open {
             display: flex;
         }
 
+        /* Same box as the System Admin and learner portals. */
         .sik-logout-card {
-            width: 100%;
-            max-width: 420px;
-            padding: 32px;
-            border-radius: 18px;
+            width: min(100% - 32px, 420px);
+            padding: 24px;
+            border: 1px solid #d8d8d8;
+            border-radius: 10px;
             background: #ffffff;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.22);
+            color: #181818;
+            text-align: left;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+            font-family: Arial, Helvetica, sans-serif;
             animation: sikLogoutAppear 0.2s ease-out;
         }
 
@@ -476,85 +477,70 @@ refreshIcons();
             }
         }
 
-        .sik-logout-icon {
-            width: 64px;
-            height: 64px;
-            margin: 0 auto 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: #e8f5ee;
-            color: #0a7549;
-        }
-
-        .sik-logout-icon svg {
-            width: 30px;
-            height: 30px;
-        }
-
         .sik-logout-card h2 {
-            margin: 0 0 12px;
-            color: #202124;
-            font-size: 23px;
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
         }
 
         .sik-logout-card p {
-            margin: 0 0 26px;
-            color: #667085;
-            font-size: 15px;
-            line-height: 1.6;
+            margin: 10px 0 0;
+            color: #696969;
+            font-size: 14px;
         }
 
         .sik-logout-actions {
             display: flex;
-            gap: 12px;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 24px;
         }
 
         .sik-logout-actions button {
-            flex: 1;
-            min-height: 46px;
-            padding: 12px 16px;
-            border: 1px solid #d0d5dd;
-            border-radius: 9px;
+            min-height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 0 15px;
+            border-radius: 6px;
             font: inherit;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
         }
 
+        .sik-logout-actions svg {
+            width: 16px;
+            height: 16px;
+        }
+
         #sikLogoutCancel {
+            border: 1px solid #d8d8d8;
             background: #ffffff;
-            color: #344054;
+            color: #444444;
         }
 
         #sikLogoutCancel:hover {
-            background: #f2f4f7;
+            border-color: #c4cbc7;
+            background: #f7f9f8;
         }
 
         #sikLogoutConfirm {
-            border-color: #0a7549;
-            background: #0a7549;
+            border: 1px solid #a32929;
+            background: #a32929;
             color: #ffffff;
         }
 
         #sikLogoutConfirm:hover {
-            background: #075b3b;
+            border-color: #8c2020;
+            background: #8c2020;
         }
 
-        #sikLogoutConfirm:disabled {
+        #sikLogoutConfirm:disabled,
+        #sikLogoutCancel:disabled {
             cursor: wait;
-            opacity: 0.7;
-        }
-
-        @media (max-width: 420px) {
-            .sik-logout-card {
-                padding: 26px 20px;
-            }
-
-            .sik-logout-actions {
-                flex-direction: column-reverse;
-            }
+            opacity: 0.65;
         }
     `;
 
@@ -570,18 +556,13 @@ refreshIcons();
         "aria-labelledby",
         "sikLogoutTitle"
     );
+    logoutOverlay.setAttribute("aria-describedby", "sikLogoutMessage");
 
     logoutOverlay.innerHTML = `
         <section class="sik-logout-card">
-            <div class="sik-logout-icon">
-                <i data-lucide="log-out"></i>
-            </div>
-
             <h2 id="sikLogoutTitle">Confirm Logout</h2>
 
-            <p>
-                Are you sure you want to log out of your account?
-            </p>
+            <p id="sikLogoutMessage">Are you sure you want to log out?</p>
 
             <div class="sik-logout-actions">
                 <button type="button" id="sikLogoutCancel">
@@ -589,7 +570,8 @@ refreshIcons();
                 </button>
 
                 <button type="button" id="sikLogoutConfirm">
-                    Yes, Log Out
+                    <i data-lucide="log-out"></i>
+                    Logout
                 </button>
             </div>
         </section>
@@ -665,7 +647,7 @@ refreshIcons();
     // Confirm logout and clear saved authentication information.
     confirmButton.addEventListener("click", function () {
         confirmButton.disabled = true;
-        confirmButton.textContent = "Logging out...";
+        cancelButton.disabled = true;
 
         // Revoke the token on the server first (api-config.js provides this).
         if (window.siknayanLogout) {
