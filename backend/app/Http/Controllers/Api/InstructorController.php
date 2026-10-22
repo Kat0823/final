@@ -56,7 +56,7 @@ class InstructorController extends Controller
 
             'module.course',
 
-            'grade',
+            'grade.items',
 
         ])
         ->whereHas(
@@ -287,6 +287,15 @@ class InstructorController extends Controller
                                     $submission
                                         ->grade
                                         ->feedback,
+
+                                // Scoring card rows (empty for a single score).
+                                'items' =>
+                                    $submission
+                                        ->grade
+                                        ->items
+                                        ->map
+                                        ->toCardArray()
+                                        ->values(),
 
                             ]
 

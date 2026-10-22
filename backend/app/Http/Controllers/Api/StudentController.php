@@ -156,6 +156,8 @@ class StudentController extends Controller
                     : null,
                 'feedback' => $grade->feedback,
                 'graded_at' => $grade->graded_at,
+                // Scoring card rows (empty for a single score).
+                'items' => $grade->items->map->toCardArray()->values(),
             ] : null,
         ];
     }
@@ -167,7 +169,7 @@ class StudentController extends Controller
     {
         return Submission::where('learner_id', $learner->id)
             ->whereIn('module_id', $moduleIds)
-            ->with('grade')
+            ->with('grade.items')
             ->get()
             ->keyBy('module_id');
     }

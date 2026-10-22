@@ -27,7 +27,8 @@ class GradeController extends Controller
         $grades = $learner->submissions()
             ->with([
                 'module.course',
-                'grade.instructor'
+                'grade.instructor',
+                'grade.items',
             ])
             ->whereHas('grade')
             ->latest('submitted_at')
@@ -68,6 +69,8 @@ class GradeController extends Controller
                     'percentage' => round($percentage, 2),
 
                     'feedback' => $grade->feedback,
+                    // Scoring card rows (empty for a single score).
+                    'items' => $grade->items->map->toCardArray()->values(),
 
                     'instructor' => $grade->instructor
                         ? $grade->instructor->name
@@ -95,25 +98,82 @@ class GradeController extends Controller
         $submissionId
     ): JsonResponse {
 
-        $validated = $request->validate([
-            'score' => [
-                'required',
-                'numeric',
-                'min:0',
-            ],
+        /*
+        |--------------------------------------------------------------------------
+        | Scoring card or a single score
+        |--------------------------------------------------------------------------
+        |
+        | A submission is one compiled file that can hold several activities.
+        | With "items", each activity gets its own row (title, score, over)
+        | and the grade stores the totals. Without "items", a single score
+        | and maximum are accepted as before.
+        |
+        */
 
-            'max_score' => [
-                'required',
-                'numeric',
-                'min:1',
-            ],
+        $items = null;
 
-            'feedback' => [
-                'nullable',
-                'string',
-                'max:2000',
-            ],
-        ]);
+        if ($request->has('items')) {
+            $validated = $request->validate([
+                'items' => ['required', 'array', 'min:1', 'max:30'],
+                'items.*.title' => ['required', 'string', 'max:150'],
+                'items.*.score' => ['required', 'numeric', 'min:0', 'max:100000'],
+                'items.*.max_score' => ['required', 'numeric', 'gt:0', 'max:100000'],
+                'feedback' => ['nullable', 'string', 'max:2000'],
+            ], [
+                'items.required' => 'Add at least one activity to the scoring card.',
+                'items.max' => 'A scoring card can have up to 30 activities.',
+                'items.*.title.required' => 'Every activity needs a title.',
+                'items.*.score.required' => 'Every activity needs a score.',
+                'items.*.max_score.required' => 'Every activity needs the total it is scored over.',
+                'items.*.max_score.gt' => 'The total of an activity must be greater than zero.',
+            ]);
+
+            $items = collect($validated['items'])->values()->map(fn ($item, $index) => [
+                'title' => trim($item['title']),
+                'score' => round((float) $item['score'], 2),
+                'max_score' => round((float) $item['max_score'], 2),
+                'position' => $index,
+            ]);
+
+            foreach ($items as $item) {
+                if ($item['title'] === '') {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Every activity needs a title.',
+                    ], 422);
+                }
+
+                if ($item['score'] > $item['max_score']) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => "The score of \"{$item['title']}\" cannot be greater than {$item['max_score']}.",
+                    ], 422);
+                }
+            }
+
+            $validated['score'] = round($items->sum('score'), 2);
+            $validated['max_score'] = round($items->sum('max_score'), 2);
+        } else {
+            $validated = $request->validate([
+                'score' => [
+                    'required',
+                    'numeric',
+                    'min:0',
+                ],
+
+                'max_score' => [
+                    'required',
+                    'numeric',
+                    'min:1',
+                ],
+
+                'feedback' => [
+                    'nullable',
+                    'string',
+                    'max:2000',
+                ],
+            ]);
+        }
 
         $instructor = $request->user();
 
@@ -194,7 +254,8 @@ class GradeController extends Controller
         $result = DB::transaction(function () use (
             $validated,
             $submission,
-            $instructor
+            $instructor,
+            $items
         ) {
 
             /*
@@ -227,6 +288,15 @@ class GradeController extends Controller
                     'graded_at' => now(),
                 ]
             );
+
+            /*
+            | Replace the scoring card rows (a single score clears them).
+            */
+            $grade->items()->delete();
+
+            if ($items) {
+                $grade->items()->createMany($items->all());
+            }
 
 
             /*
@@ -316,7 +386,7 @@ class GradeController extends Controller
                     ? 'Submission graded successfully.'
                     : 'Grade updated successfully.',
 
-            'grade' => $result['grade'],
+            'grade' => $result['grade']->load('items'),
         ]);
     }
 }

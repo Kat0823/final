@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Grade extends Model
 {
@@ -28,6 +29,12 @@ class Grade extends Model
     public function submission(): BelongsTo
     {
         return $this->belongsTo(Submission::class);
+    }
+
+    /** The scoring card rows, in the order the instructor entered them. */
+    public function items(): HasMany
+    {
+        return $this->hasMany(GradeItem::class)->orderBy('position')->orderBy('id');
     }
 
     public function instructor(): BelongsTo

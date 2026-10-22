@@ -142,6 +142,39 @@
             color: var(--muted);
         }
 
+        .score-breakdown {
+            width: 100%;
+            margin-top: 12px;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .score-breakdown th,
+        .score-breakdown td {
+            padding: 8px 4px;
+            border-bottom: 1px solid var(--border-light);
+            text-align: left;
+        }
+
+        .score-breakdown thead th {
+            color: var(--muted);
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .score-breakdown td:last-child,
+        .score-breakdown th:last-child {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .score-breakdown tfoot th,
+        .score-breakdown tfoot td {
+            border-bottom: none;
+            color: var(--green);
+            font-weight: 700;
+        }
+
         .feedback {
             margin-top: 12px;
             padding: 14px;
@@ -339,6 +372,19 @@
                             ${grade.percentage !== null ? `<span>${escape(Number(grade.percentage))}%</span>` : ""}
                         </div>
                         <p style="color: var(--muted); font-size: 13px">Graded ${escape(formatDate(grade.graded_at))}</p>
+                        ${Array.isArray(grade.items) && grade.items.length ? `
+                            <table class="score-breakdown">
+                                <caption class="visually-hidden">Score for each activity</caption>
+                                <thead><tr><th scope="col">Activity</th><th scope="col">Score</th></tr></thead>
+                                <tbody>
+                                    ${grade.items.map(item => `
+                                        <tr>
+                                            <td>${escape(item.title)}</td>
+                                            <td>${escape(Number(item.score))} / ${escape(Number(item.max_score))}</td>
+                                        </tr>`).join("")}
+                                </tbody>
+                                <tfoot><tr><th scope="row">Total</th><td>${escape(Number(grade.score))} / ${escape(Number(grade.max_score))}</td></tr></tfoot>
+                            </table>` : ""}
                         ${grade.feedback
                             ? `<div class="feedback"><strong>Feedback</strong><br>${escape(grade.feedback)}</div>`
                             : '<p style="margin-top: 12px; color: var(--muted)">No feedback was given.</p>'}`;
