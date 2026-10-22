@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 /**
  * The learner's own profile. Name, school ID and program are managed by
  * the Academic Admin; the learner can update their email and contact
- * number. Passwords change through PUT /api/account/password.
+ * number and profile picture. Passwords change through
+ * PUT /api/account/password.
  */
 class StudentProfileController extends Controller
 {
@@ -51,6 +53,33 @@ class StudentProfileController extends Controller
         ]);
     }
 
+    /**
+     * Upload or replace the profile picture (JPG, PNG or WEBP, up to
+     * 2 MB), the same way the Academic Admin's works.
+     */
+    public function uploadPhoto(Request $request): JsonResponse
+    {
+        $request->validate([
+            'photo' => ['required', 'image', 'mimes:jpeg,png,webp', 'max:2048'],
+        ]);
+
+        $learner = $request->user();
+        $oldPath = $learner->profile_photo_path;
+
+        $learner->profile_photo_path = $request->file('photo')->store('profile-photos', 'public');
+        $learner->save();
+
+        if ($oldPath && str_starts_with($oldPath, 'profile-photos/')) {
+            Storage::disk('public')->delete($oldPath);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profile picture updated successfully.',
+            'user' => $this->profile($learner->fresh()),
+        ]);
+    }
+
     private function profile(User $learner): array
     {
         return [
@@ -61,6 +90,9 @@ class StudentProfileController extends Controller
             'email' => $learner->email,
             'contact' => $learner->contact,
             'role' => $learner->role,
+            'profile_photo_url' => $learner->profile_photo_path
+                ? url(Storage::disk('public')->url($learner->profile_photo_path))
+                : null,
             'class_count' => $learner->courses()->where('is_active', true)->count(),
             'created_at' => $learner->created_at,
         ];

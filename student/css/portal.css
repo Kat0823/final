@@ -889,3 +889,472 @@ table.data tbody tr:hover {
         font-size: 14px;
     }
 }
+
+/* ---------------- MY PROFILE POP-UP (same as the Academic Admin) ---------------- */
+
+.profile-avatar {
+    overflow: hidden;
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.lp-profile-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+    overflow-y: auto;
+}
+
+.lp-profile-overlay.open {
+    display: flex;
+}
+
+.lp-profile-modal {
+    position: relative;
+    width: 100%;
+    max-width: 650px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    border-radius: 18px;
+    background: var(--white);
+    box-shadow: 0 20px 65px rgba(0, 0, 0, 0.25);
+    animation: lpProfileIn 0.2s ease-out;
+}
+
+@keyframes lpProfileIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.lp-profile-close {
+    position: absolute;
+    top: 13px;
+    right: 13px;
+    z-index: 2;
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: var(--white);
+    color: #333;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.lp-profile-cover {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 28px 60px 28px 28px;
+    background: linear-gradient(125deg, #0a7549, #075b3b);
+    color: var(--white);
+}
+
+.lp-profile-photo {
+    width: 90px;
+    height: 90px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 90px;
+    overflow: hidden;
+    border-radius: 50%;
+    background: #e7f4ed;
+    color: #086642;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.lp-profile-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.lp-profile-cover h2 {
+    margin-bottom: 8px;
+    font-size: 23px;
+    overflow-wrap: anywhere;
+}
+
+.lp-profile-cover p {
+    margin-bottom: 10px;
+    color: #e0f2e9;
+    line-height: 1.5;
+}
+
+.lp-profile-role {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #e0f2e9;
+    font-size: 14px;
+}
+
+.lp-profile-photo-upload {
+    padding: 16px 28px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f8fbf9;
+}
+
+.lp-profile-photo-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 16px;
+}
+
+.lp-profile-photo-actions > span {
+    color: #344054;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.lp-change-photo,
+.lp-upload-photo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #087443;
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.lp-change-photo:hover,
+.lp-upload-photo:hover {
+    background: #065c36;
+}
+
+.lp-change-photo:focus-within,
+.lp-upload-photo:focus-visible,
+.lp-profile-close:focus-visible,
+.lp-profile-button:focus-visible,
+.lp-profile-change:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+.lp-upload-photo:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.lp-photo-name {
+    color: #344054;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.lp-message {
+    margin-top: 10px;
+    color: #667085;
+    font-size: 14px;
+}
+
+.lp-message:empty {
+    display: none;
+}
+
+.lp-message.error {
+    color: #b42318;
+}
+
+.lp-message.success {
+    color: var(--green);
+}
+
+.lp-profile-body {
+    padding: 26px 28px;
+}
+
+.lp-profile-body > .lp-message {
+    margin: 0 0 16px;
+}
+
+.lp-profile-body h3 {
+    margin-bottom: 20px;
+    font-size: 19px;
+}
+
+.lp-profile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 25px;
+}
+
+.lp-profile-field label,
+.lp-profile-field .label {
+    display: block;
+    margin-bottom: 7px;
+    color: #667085;
+    font-size: 14px;
+}
+
+.lp-profile-field p {
+    font-size: 16px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.lp-profile-field input,
+.lp-password-form input {
+    width: 100%;
+    min-height: 42px;
+    padding: 0 12px;
+    border: 1px solid #d0d5dd;
+    border-radius: 9px;
+    background: var(--white);
+    color: var(--text);
+    font-size: 15px;
+}
+
+.lp-profile-field input:focus,
+.lp-password-form input:focus {
+    outline: none;
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(8, 104, 60, 0.1);
+}
+
+.lp-profile-note {
+    margin-top: 14px;
+    color: #667085;
+    font-size: 13px;
+}
+
+.lp-profile-security {
+    margin-top: 26px;
+    padding-top: 24px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.lp-profile-security-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.lp-profile-security-icon {
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: #f2f4f7;
+    color: #344054;
+    font-size: 19px;
+}
+
+.lp-profile-security-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.lp-profile-security-info h4 {
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+
+.lp-profile-security-info p {
+    color: #667085;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.lp-profile-change {
+    padding: 8px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: #086642;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.lp-profile-change:hover {
+    background: var(--green-light);
+}
+
+.lp-profile-status {
+    color: #087443;
+    font-weight: 600;
+}
+
+.lp-password-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: -4px 0 22px;
+    padding: 18px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #fafbfa;
+}
+
+.lp-password-form label {
+    display: block;
+    margin-bottom: 6px;
+    color: #344054;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.lp-password-input {
+    position: relative;
+}
+
+.lp-password-input input {
+    padding-right: 42px;
+}
+
+.lp-password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: #667085;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.lp-password-toggle:hover {
+    background: var(--green-light);
+    color: var(--green);
+}
+
+.lp-password-form .lp-message {
+    margin-top: 0;
+}
+
+.lp-password-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.lp-password-buttons span {
+    color: #667085;
+    font-size: 12px;
+}
+
+.lp-password-buttons div {
+    display: flex;
+    gap: 10px;
+}
+
+.lp-profile-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 22px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.lp-profile-button {
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 12px;
+    border: 1px solid #d0d5dd;
+    border-radius: 11px;
+    background: var(--white);
+    color: #202124;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.lp-profile-button:hover {
+    border-color: #086642;
+    background: #f8fbf9;
+}
+
+.lp-profile-button.primary {
+    border-color: #087443;
+    background: #087443;
+    color: var(--white);
+    font-weight: 600;
+}
+
+.lp-profile-button.primary:hover {
+    border-color: #065c36;
+    background: #065c36;
+}
+
+.lp-profile-button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+@media (max-width: 600px) {
+    .lp-profile-overlay {
+        padding: 12px;
+    }
+
+    .lp-profile-modal {
+        max-height: calc(100vh - 24px);
+    }
+
+    .lp-profile-cover {
+        gap: 13px;
+        padding: 22px 44px 22px 16px;
+    }
+
+    .lp-profile-photo {
+        width: 65px;
+        height: 65px;
+        flex-basis: 65px;
+        font-size: 22px;
+    }
+
+    .lp-profile-cover h2 {
+        font-size: 18px;
+    }
+
+    .lp-profile-cover p {
+        font-size: 13px;
+    }
+
+    .lp-profile-photo-upload {
+        padding: 16px;
+    }
+
+    .lp-profile-body {
+        padding: 22px 17px;
+    }
+
+    .lp-profile-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .lp-profile-actions {
+        grid-template-columns: 1fr;
+    }
+}

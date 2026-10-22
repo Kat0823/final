@@ -168,6 +168,29 @@ class LearnerPortalTest extends TestCase
             ->assertOk()->assertJsonPath('user.email', null);
     }
 
+    public function test_profile_photo_upload_replaces_the_old_one(): void
+    {
+        Storage::fake('public');
+
+        $first = $this->actingAs($this->learner)->post('/api/student/profile/photo', [
+            'photo' => UploadedFile::fake()->image('me.jpg', 200, 200),
+        ], ['Accept' => 'application/json'])->assertOk();
+
+        $oldPath = $this->learner->fresh()->profile_photo_path;
+        Storage::disk('public')->assertExists($oldPath);
+        $this->assertNotNull($first->json('user.profile_photo_url'));
+
+        $this->actingAs($this->learner)->post('/api/student/profile/photo', [
+            'photo' => UploadedFile::fake()->image('new.png', 200, 200),
+        ], ['Accept' => 'application/json'])->assertOk();
+        Storage::disk('public')->assertMissing($oldPath);
+
+        // Not an image: refused.
+        $this->actingAs($this->learner)->post('/api/student/profile/photo', [
+            'photo' => UploadedFile::fake()->createWithContent('x.pdf', '%PDF-1.4'),
+        ], ['Accept' => 'application/json'])->assertStatus(422);
+    }
+
     public function test_notifications_list_and_mark_read(): void
     {
         $note = Notification::create(['user_id' => $this->learner->id, 'title' => 'Hi', 'message' => 'x', 'type' => 'announcement', 'is_read' => false]);

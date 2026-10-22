@@ -122,6 +122,7 @@ Route::middleware([
         // Own profile (email and contact; password via /account/password)
         Route::get('/student/profile', [StudentProfileController::class, 'show']);
         Route::put('/student/profile', [StudentProfileController::class, 'update']);
+        Route::post('/student/profile/photo', [StudentProfileController::class, 'uploadPhoto']);
 
         Route::get('/student/grades', [GradeController::class, 'index']);
 

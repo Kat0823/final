@@ -8,15 +8,94 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="css/portal.css">
     <style>
+        .section-title {
+            margin: 4px 0 12px;
+            font-size: 17px;
+        }
+
+        .class-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .class-tile {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 18px;
+            border: 1px solid var(--border-light);
+            border-left: 4px solid var(--green);
+            border-radius: 10px;
+            background: var(--white);
+            box-shadow: var(--shadow);
+            color: inherit;
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .class-tile:hover {
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+        }
+
+        .class-tile.selected {
+            border-color: var(--green);
+            background: #f6fcf8;
+        }
+
+        .class-tile:focus-visible {
+            outline: 2px solid var(--green);
+            outline-offset: 2px;
+        }
+
+        .class-tile .code {
+            color: var(--green);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .class-tile h3 {
+            font-size: 15px;
+            line-height: 1.35;
+        }
+
+        .class-tile .meta {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .class-tile .numbers {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .class-tile .average {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .class-tile .average.none {
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
         .filters {
             display: flex;
             flex-wrap: wrap;
+            align-items: flex-end;
+            justify-content: space-between;
             gap: 12px;
             margin-bottom: 16px;
         }
 
         .filters .field {
-            min-width: 220px;
+            min-width: 240px;
         }
 
         .module-link {
@@ -46,14 +125,23 @@
         <div class="page-header">
             <div>
                 <h2>Grades</h2>
-                <p>Scores and feedback from your instructors.</p>
+                <p>Scores and feedback from your instructors, by class.</p>
             </div>
         </div>
 
         <div class="stats">
+            <div class="stat"><span>Classes</span><strong id="statClasses">-</strong></div>
             <div class="stat"><span>Graded activities</span><strong id="statCount">-</strong></div>
             <div class="stat"><span>Average score</span><strong id="statAverage">-</strong></div>
             <div class="stat"><span>Highest score</span><strong id="statHighest">-</strong></div>
+        </div>
+
+        <h3 class="section-title">My classes</h3>
+        <div class="class-summary" id="classSummary">
+            <div class="card state" style="grid-column: 1 / -1">
+                <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+                <h3>Loading your classes</h3>
+            </div>
         </div>
 
         <section class="card">
@@ -64,6 +152,9 @@
                         <option value="">All classes</option>
                     </select>
                 </div>
+                <a class="btn secondary small" id="openClassLink" href="classes.html" hidden>
+                    <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Open class
+                </a>
             </div>
 
             <div class="table-wrap">
@@ -89,12 +180,19 @@
 
     <script src="../api-config.js"></script>
     <script src="js/portal.js"></script>
+    <script src="js/profile-modal.js"></script>
     <script>
         (function () {
             if (!window.Portal) return;
             const { api, escape, formatDate } = window.Portal;
             const $ = id => document.getElementById(id);
+            let classes = [];
             let grades = [];
+
+            const average = list => {
+                const values = list.map(item => Number(item.percentage)).filter(value => !Number.isNaN(value));
+                return values.length ? values.reduce((a, b) => a + b, 0) / values.length : null;
+            };
 
             function badgeFor(percentage) {
                 if (percentage === null || percentage === undefined) return "";
@@ -102,19 +200,54 @@
                 return `<span class="badge ${tone}">${escape(Number(percentage))}%</span>`;
             }
 
-            function updateStats(list) {
-                const percents = list.map(item => Number(item.percentage)).filter(value => !Number.isNaN(value));
-                $("statCount").textContent = list.length;
-                $("statAverage").textContent = percents.length
-                    ? `${(percents.reduce((a, b) => a + b, 0) / percents.length).toFixed(1)}%`
-                    : "-";
-                $("statHighest").textContent = percents.length ? `${Math.max(...percents)}%` : "-";
+            function gradesFor(classId) {
+                return grades.filter(item => !classId || String(item.course?.id) === String(classId));
             }
 
-            function render() {
+            function renderSummary() {
+                const selected = $("classFilter").value;
+
+                if (classes.length === 0) {
+                    $("classSummary").innerHTML = `
+                        <div class="card state" style="grid-column: 1 / -1">
+                            <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+                            <h3>You are not enrolled in any class yet</h3>
+                        </div>`;
+                    return;
+                }
+
+                $("classSummary").innerHTML = classes.map(item => {
+                    const mine = gradesFor(item.id);
+                    const avg = average(mine);
+                    const total = item.module_count || 0;
+                    return `
+                        <button type="button" class="class-tile${String(item.id) === selected ? " selected" : ""}"
+                            data-class="${escape(item.id)}" aria-pressed="${String(item.id) === selected}"
+                            title="Show grades for ${escape(item.name)}">
+                            <span class="code">${escape(item.code || item.subject_code || "CLASS")}</span>
+                            <h3>${escape(item.name)}</h3>
+                            <span class="meta">${escape(item.instructor?.name || "No instructor assigned")}</span>
+                            <span class="numbers">
+                                <span class="meta">${mine.length} of ${total} module${total === 1 ? "" : "s"} graded</span>
+                                ${avg === null
+                                    ? '<span class="average none">No grades yet</span>'
+                                    : `<span class="average">${avg.toFixed(1)}%</span>`}
+                            </span>
+                        </button>`;
+                }).join("");
+            }
+
+            function renderTable() {
                 const classId = $("classFilter").value;
-                const shown = grades.filter(item => !classId || String(item.course?.id) === classId);
-                updateStats(shown);
+                const shown = gradesFor(classId);
+                const avg = average(shown);
+                const percents = shown.map(item => Number(item.percentage)).filter(value => !Number.isNaN(value));
+
+                $("statCount").textContent = shown.length;
+                $("statAverage").textContent = avg === null ? "-" : `${avg.toFixed(1)}%`;
+                $("statHighest").textContent = percents.length ? `${Math.max(...percents)}%` : "-";
+                $("openClassLink").hidden = !classId;
+                $("openClassLink").href = classId ? `modules.html?course=${encodeURIComponent(classId)}` : "classes.html";
 
                 if (shown.length === 0) {
                     $("gradeRows").innerHTML = `
@@ -149,35 +282,62 @@
                     </tr>`).join("");
             }
 
+            function render() {
+                renderSummary();
+                renderTable();
+            }
+
+            function showError(error) {
+                $("classSummary").innerHTML = "";
+                $("gradeRows").innerHTML = `
+                    <tr><td colspan="5">
+                        <div class="state">
+                            <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                            <h3>Unable to load your grades</h3>
+                            <p>${escape(error.message)}</p>
+                            <button class="btn" type="button" id="retryButton">Try again</button>
+                        </div>
+                    </td></tr>`;
+                $("retryButton").addEventListener("click", load);
+            }
+
             async function load() {
                 try {
-                    const data = await api("/student/grades");
-                    grades = Array.isArray(data.grades) ? data.grades : [];
+                    // Classes and grades together, so every class shows
+                    // even before it has any grades.
+                    const [classData, gradeData] = await Promise.all([
+                        api("/student/courses"),
+                        api("/student/grades")
+                    ]);
+                    classes = Array.isArray(classData.courses) ? classData.courses : [];
+                    grades = Array.isArray(gradeData.grades) ? gradeData.grades : [];
 
-                    const classes = new Map();
-                    grades.forEach(item => item.course && classes.set(String(item.course.id), item.course));
-                    $("classFilter").innerHTML = '<option value="">All classes</option>' +
-                        [...classes.values()]
-                            .sort((a, b) => String(a.name).localeCompare(String(b.name)))
-                            .map(course => `<option value="${escape(course.id)}">${escape(course.name)}</option>`)
-                            .join("");
+                    $("statClasses").textContent = classes.length;
+
+                    const previous = $("classFilter").value;
+                    $("classFilter").innerHTML = '<option value="">All classes</option>' + classes
+                        .map(item => `<option value="${escape(item.id)}">${escape(item.name)}${item.code ? ` (${escape(item.code)})` : ""}</option>`)
+                        .join("");
+                    const fromLink = new URLSearchParams(window.location.search).get("course");
+                    const wanted = previous || fromLink || "";
+                    if (classes.some(item => String(item.id) === String(wanted))) $("classFilter").value = wanted;
 
                     render();
                 } catch (error) {
-                    $("gradeRows").innerHTML = `
-                        <tr><td colspan="5">
-                            <div class="state">
-                                <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
-                                <h3>Unable to load your grades</h3>
-                                <p>${escape(error.message)}</p>
-                                <button class="btn" type="button" id="retryButton">Try again</button>
-                            </div>
-                        </td></tr>`;
-                    $("retryButton").addEventListener("click", load);
+                    showError(error);
                 }
             }
 
             $("classFilter").addEventListener("change", render);
+
+            $("classSummary").addEventListener("click", event => {
+                const tile = event.target.closest("[data-class]");
+                if (!tile) return;
+                const filter = $("classFilter");
+                filter.value = filter.value === tile.dataset.class ? "" : tile.dataset.class;
+                render();
+            });
+
             load();
         })();
     </script>
