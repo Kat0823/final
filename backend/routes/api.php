@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\GradeController;
 use App\Http\Controllers\Api\NotificationController;
 
 use App\Http\Controllers\Api\InstructorController;
+use App\Http\Controllers\Api\InstructorAnnouncementController;
 use App\Http\Controllers\Api\InstructorDashboardController;
 use App\Http\Controllers\Api\InstructorCourseController;
 use App\Http\Controllers\Api\InstructorModuleController;
@@ -143,6 +144,12 @@ Route::middleware([
         Route::post('/instructor/classes/{courseId}/modules', [InstructorModuleController::class, 'store']);
         Route::put('/instructor/modules/{moduleId}', [InstructorModuleController::class, 'update']);
         Route::get('/instructor/modules/{moduleId}/material', [InstructorModuleController::class, 'material']);
+
+        // Class announcements
+        Route::get('/instructor/classes/{courseId}/announcements', [InstructorAnnouncementController::class, 'index']);
+        Route::post('/instructor/classes/{courseId}/announcements', [InstructorAnnouncementController::class, 'store']);
+        Route::put('/instructor/announcements/{announcementId}', [InstructorAnnouncementController::class, 'update']);
+        Route::delete('/instructor/announcements/{announcementId}', [InstructorAnnouncementController::class, 'destroy']);
 
         // Submissions and grading
         Route::get('/instructor/submissions', [InstructorController::class, 'submissions']);

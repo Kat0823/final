@@ -34,7 +34,13 @@ class StudentController extends Controller
                 'modules' => function ($query) {
                     $query->where('is_published', true)
                         ->orderBy('module_order');
-                }
+                },
+                // Newest first, with who posted it.
+                'announcements' => function ($query) {
+                    $query->with('instructor:id,name')
+                        ->latest()
+                        ->latest('id');
+                },
             ])
             ->where('courses.id', $courseId)
             ->where('courses.is_active', true)

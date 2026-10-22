@@ -727,6 +727,127 @@
             line-height: 1.7;
         }
 
+        .announcement-form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .announcement-form label {
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .announcement-form input,
+        .announcement-form textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font: inherit;
+            font-size: 13px;
+            color: var(--text);
+            resize: vertical;
+        }
+
+        .announcement-form input:focus,
+        .announcement-form textarea:focus {
+            outline: 2px solid rgba(8, 107, 60, 0.25);
+            border-color: var(--green);
+        }
+
+        .announcement-error {
+            color: #b42318;
+            font-size: 12px;
+        }
+
+        .announcement-form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .announcement-form-actions button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .announcement-form-actions button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .announcement-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .announcement-item {
+            padding: 16px 18px;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--green);
+            border-radius: 8px;
+            background: #fbfdfb;
+        }
+
+        .announcement-item-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .announcement-item h3 {
+            color: var(--text);
+            font-size: 15px;
+        }
+
+        .announcement-meta {
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .announcement-text {
+            margin-top: 10px;
+            color: var(--text);
+            font-size: 13px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .announcement-actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .announcement-actions button {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: #fff;
+            color: var(--muted);
+            cursor: pointer;
+        }
+
+        .announcement-actions button:hover {
+            color: var(--green);
+            border-color: var(--green);
+        }
+
+        .announcement-actions button.delete:hover {
+            color: #b42318;
+            border-color: #b42318;
+        }
+
         /* EMPTY STATES */
         .empty-state {
             padding: 35px 20px;
@@ -1312,6 +1433,7 @@
                 <button class="tab-btn" data-tab="announcementsPanel" type="button">
                     <i class="fa-solid fa-bullhorn"></i>
                     Announcements
+                    <span class="tab-badge" id="announcementsBadge">0</span>
                 </button>
             </div>
 
@@ -1374,11 +1496,43 @@
             <!-- ANNOUNCEMENTS -->
             <section class="tab-panel" id="announcementsPanel">
                 <div class="content-panel">
-                    <div class="announcement-box">
-                        <i class="fa-solid fa-bullhorn"></i>
-                        <h3>No announcements available</h3>
-                        <p>Announcements for this class will appear here when available.</p>
+                    <div class="section-header">
+                        <div>
+                            <h2 id="announcementFormTitle">Post an Announcement</h2>
+                            <p>Every learner in this class is notified.</p>
+                        </div>
                     </div>
+
+                    <form id="announcementForm" class="announcement-form" novalidate>
+                        <label for="announcementTitle">Title</label>
+                        <input type="text" id="announcementTitle" maxlength="150"
+                            placeholder="e.g. Quiz on Friday" required>
+
+                        <label for="announcementMessage">Message</label>
+                        <textarea id="announcementMessage" rows="4" maxlength="5000"
+                            placeholder="Write the details for your learners..." required></textarea>
+
+                        <p class="announcement-error" id="announcementError" hidden></p>
+
+                        <div class="announcement-form-actions">
+                            <button type="button" class="btn-cancel" id="announcementCancel" hidden>Cancel</button>
+                            <button type="submit" class="btn-save" id="announcementSubmit">
+                                <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                                <span>Post Announcement</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="content-panel">
+                    <div class="section-header">
+                        <div>
+                            <h2>Announcements</h2>
+                            <p id="announcementSummary">Loading announcements...</p>
+                        </div>
+                    </div>
+
+                    <div id="announcementList" class="announcement-list"></div>
                 </div>
             </section>
         </div>
@@ -1621,6 +1775,7 @@
                 renderCourse(courseData);
                 renderModules(courseData.modules || []);
                 renderLearners(courseData.learners || []);
+                loadAnnouncements();
 
             } catch (error) {
                 console.error("Error loading class:", error);
@@ -1852,6 +2007,177 @@
                 if (error.message !== "Unauthorized") showToast(error.message, "error");
             } finally {
                 button.disabled = false;
+            }
+        });
+
+        /* ANNOUNCEMENTS */
+        let announcements = [];
+        let editingAnnouncementId = null;
+
+        function formatAnnouncementDate(value) {
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return "";
+            return date.toLocaleString("en-PH", {
+                month: "short", day: "numeric", year: "numeric",
+                hour: "numeric", minute: "2-digit"
+            });
+        }
+
+        async function loadAnnouncements() {
+            try {
+                const data = await apiRequest(
+                    `${API_BASE_URL}/instructor/classes/${encodeURIComponent(courseId)}/announcements`,
+                    { headers: getAuthHeaders() }
+                );
+                announcements = Array.isArray(data.announcements) ? data.announcements : [];
+                renderAnnouncements();
+            } catch (error) {
+                if (error.message === "Unauthorized") return;
+                $("announcementSummary").textContent = "Unable to load announcements.";
+                $("announcementList").innerHTML = `
+                    <div class="announcement-box">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <h3>Unable to load announcements</h3>
+                        <p>${escapeHtml(error.message)}</p>
+                    </div>`;
+            }
+        }
+
+        function renderAnnouncements() {
+            const list = $("announcementList");
+            const count = announcements.length;
+
+            $("announcementsBadge").textContent = count;
+            $("announcementSummary").textContent =
+                `${count} announcement${count === 1 ? "" : "s"} in this class`;
+
+            if (count === 0) {
+                list.innerHTML = `
+                    <div class="announcement-box">
+                        <i class="fa-solid fa-bullhorn"></i>
+                        <h3>No announcements yet</h3>
+                        <p>Post one above and your learners will be notified.</p>
+                    </div>`;
+                return;
+            }
+
+            list.innerHTML = announcements.map(item => {
+                const edited = item.updated_at && item.updated_at !== item.created_at;
+                return `
+                    <article class="announcement-item">
+                        <div class="announcement-item-head">
+                            <div>
+                                <h3>${escapeHtml(item.title)}</h3>
+                                <p class="announcement-meta">
+                                    ${escapeHtml(formatAnnouncementDate(item.created_at))}${edited ? " · edited" : ""}
+                                </p>
+                            </div>
+                            <div class="announcement-actions">
+                                <button type="button" data-announcement-edit="${escapeHtml(item.id)}"
+                                    title="Edit" aria-label="Edit announcement">
+                                    <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="delete" data-announcement-delete="${escapeHtml(item.id)}"
+                                    title="Delete" aria-label="Delete announcement">
+                                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="announcement-text">${escapeHtml(item.message)}</p>
+                    </article>`;
+            }).join("");
+        }
+
+        function resetAnnouncementForm() {
+            editingAnnouncementId = null;
+            $("announcementForm").reset();
+            $("announcementError").hidden = true;
+            $("announcementFormTitle").textContent = "Post an Announcement";
+            $("announcementSubmit").querySelector("span").textContent = "Post Announcement";
+            $("announcementCancel").hidden = true;
+        }
+
+        $("announcementForm").addEventListener("submit", async event => {
+            event.preventDefault();
+
+            const title = $("announcementTitle").value.trim();
+            const message = $("announcementMessage").value.trim();
+            const errorBox = $("announcementError");
+
+            if (!title || !message) {
+                errorBox.textContent = "Please enter both a title and a message.";
+                errorBox.hidden = false;
+                return;
+            }
+
+            errorBox.hidden = true;
+            const submit = $("announcementSubmit");
+            submit.disabled = true;
+
+            const isEdit = editingAnnouncementId !== null;
+            const url = isEdit
+                ? `${API_BASE_URL}/instructor/announcements/${encodeURIComponent(editingAnnouncementId)}`
+                : `${API_BASE_URL}/instructor/classes/${encodeURIComponent(courseId)}/announcements`;
+
+            try {
+                await apiRequest(url, {
+                    method: isEdit ? "PUT" : "POST",
+                    headers: getAuthHeaders(true),
+                    body: JSON.stringify({ title, message })
+                });
+
+                showToast(isEdit ? "Announcement updated." : "Announcement posted. Your learners were notified.");
+                resetAnnouncementForm();
+                await loadAnnouncements();
+            } catch (error) {
+                if (error.message !== "Unauthorized") {
+                    errorBox.textContent = error.message;
+                    errorBox.hidden = false;
+                }
+            } finally {
+                submit.disabled = false;
+            }
+        });
+
+        $("announcementCancel").addEventListener("click", resetAnnouncementForm);
+
+        $("announcementList").addEventListener("click", async event => {
+            const editButton = event.target.closest("[data-announcement-edit]");
+            const deleteButton = event.target.closest("[data-announcement-delete]");
+
+            if (editButton) {
+                const item = announcements.find(a => String(a.id) === editButton.dataset.announcementEdit);
+                if (!item) return;
+
+                editingAnnouncementId = item.id;
+                $("announcementTitle").value = item.title;
+                $("announcementMessage").value = item.message;
+                $("announcementFormTitle").textContent = "Edit Announcement";
+                $("announcementSubmit").querySelector("span").textContent = "Save Changes";
+                $("announcementCancel").hidden = false;
+                $("announcementError").hidden = true;
+                $("announcementForm").scrollIntoView({ behavior: "smooth", block: "center" });
+                $("announcementTitle").focus();
+                return;
+            }
+
+            if (deleteButton) {
+                const id = deleteButton.dataset.announcementDelete;
+                if (!window.confirm("Delete this announcement? Learners will no longer see it.")) return;
+
+                deleteButton.disabled = true;
+                try {
+                    await apiRequest(
+                        `${API_BASE_URL}/instructor/announcements/${encodeURIComponent(id)}`,
+                        { method: "DELETE", headers: getAuthHeaders() }
+                    );
+                    if (String(editingAnnouncementId) === id) resetAnnouncementForm();
+                    showToast("Announcement deleted.");
+                    await loadAnnouncements();
+                } catch (error) {
+                    deleteButton.disabled = false;
+                    if (error.message !== "Unauthorized") showToast(error.message, "error");
+                }
             }
         });
 
