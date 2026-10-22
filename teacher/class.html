@@ -1749,9 +1749,7 @@ window.addEventListener("resize", function () {
    NOTIFICATIONS AND LOGOUT
    ========================================= */
 
-document.getElementById("notificationsBtn").addEventListener("click", function () {
-    window.location.href = "notification.html";
-});
+// The bell is handled by js/bell.js.
 
 logoutNav.addEventListener("click", function (event) {
     event.preventDefault();
@@ -1791,5 +1789,7 @@ if (!getAuthToken()) {
 }
 </script>
 
+    <!-- Notification bell: opens Notifications, red dot for unread -->
+    <script src="js/bell.js"></script>
 </body>
 </html>

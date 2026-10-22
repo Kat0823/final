@@ -366,3 +366,33 @@
         font-size: 19px;
     }
 }
+
+/* ---------------- NOTIFICATION BELL (js/bell.js) ---------------- */
+
+.header .icon-btn {
+    position: relative;
+    border: none;
+    background: transparent;
+    color: var(--shell-white);
+    cursor: pointer;
+}
+
+.header .icon-btn:hover,
+.header .icon-btn[aria-current="page"] {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.header .icon-btn .notification-dot {
+    position: absolute;
+    top: 8px;
+    right: 9px;
+    width: 9px;
+    height: 9px;
+    border: 2px solid var(--shell-green);
+    border-radius: 50%;
+    background: #ff6b6b;
+}
+
+.header .icon-btn .notification-dot[hidden] {
+    display: none;
+}

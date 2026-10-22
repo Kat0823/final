@@ -1718,10 +1718,7 @@
                 }
             });
 
-            /* Notifications */
-            $("notificationsBtn").addEventListener("click", () => {
-                window.location.href = "notification.html";
-            });
+            /* Notifications: the bell is handled by js/bell.js. */
 
             /* UPDATED SIDEBAR TOGGLE */
             function updateSidebarToggle() {
@@ -1891,5 +1888,7 @@
         })();
     </script>
 
+    <!-- Notification bell: opens Notifications, red dot for unread -->
+    <script src="js/bell.js"></script>
 </body>
 </html>
