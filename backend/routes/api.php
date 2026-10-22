@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PasswordController;
 
 use App\Http\Controllers\Api\StudentController;
+use App\Http\Controllers\Api\StudentProfileController;
 use App\Http\Controllers\Api\ModuleController;
 use App\Http\Controllers\Api\SubmissionController;
 use App\Http\Controllers\Api\GradeController;
@@ -116,6 +117,11 @@ Route::middleware([
         Route::get('/student/modules/{moduleId}/material', [ModuleController::class, 'material']);
 
         Route::post('/student/submissions', [SubmissionController::class, 'store']);
+        Route::get('/student/submissions/{submissionId}/file', [ModuleController::class, 'submissionFile']);
+
+        // Own profile (email and contact; password via /account/password)
+        Route::get('/student/profile', [StudentProfileController::class, 'show']);
+        Route::put('/student/profile', [StudentProfileController::class, 'update']);
 
         Route::get('/student/grades', [GradeController::class, 'index']);
 

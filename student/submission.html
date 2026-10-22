@@ -1,1631 +1,475 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <title>Submit Activity - MPSU ETEEAP LMS</title>
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module | MPSU ETEEAP LMS</title>
+    <link rel="icon" href="../images/logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="css/portal.css">
     <style>
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+            gap: 18px;
+            align-items: start;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            background: white;
-            color: #222;
+        .layout .card + .card {
+            margin-top: 0;
         }
 
-        a {
-            text-decoration: none;
-        }
-
-
-        /* =========================
-           HEADER
-        ========================= */
-
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-
-            width: 100%;
-            height: 84px;
-
-            background: #086b3c;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            padding: 0 38px;
-
-            color: white;
-
-            z-index: 1000;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .header-logo {
-            width: 58px;
-            height: 58px;
-            object-fit: contain;
-        }
-
-        .brand-title {
-            font-size: 23px;
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-
-        .brand-subtitle {
-            font-size: 14px;
-        }
-
-        .user-link {
-            color: white;
-            text-decoration: none;
-        }
-
-        .user-link:hover {
-            text-decoration: underline;
-        }
-
-
-        /* =========================
-           MAIN
-        ========================= */
-
-        .main {
-            display: flex;
-            min-height: 100vh;
-
-            padding-top: 84px;
-        }
-
-
-        /* =========================
-           SIDEBAR
-        ========================= */
-
-        .sidebar {
-            position: fixed;
-
-            top: 84px;
-            left: 0;
-
-            width: 270px;
-            height: calc(100vh - 84px);
-
-            background: #086b3c;
-
-            padding: 25px 12px;
-
+        .stack {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            gap: 18px;
         }
 
-        .view {
-            height: 60px;
+        .description {
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
 
-            padding: 0 24px;
-
+        .file-row {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-
-            color: white;
-
-            font-size: 20px;
+            gap: 12px;
+            padding: 14px 16px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            background: #fafcfb;
         }
-
-        .menu {
-            width: 100%;
-            height: 47px;
-
-            display: flex;
-            align-items: center;
-
-            gap: 20px;
-
-            padding: 0 25px;
-
-            margin-bottom: 5px;
-
-            border-radius: 9px;
-
-            color: white;
-
-            font-size: 18px;
-
-            text-decoration: none;
-        }
-
-        .menu:hover {
-            background: rgba(255, 255, 255, 0.10);
-        }
-
-        .menu.active {
-            background: #ffd34e;
-            color: #222;
-        }
-
-        .menu i {
-            width: 22px;
-            text-align: center;
-        }
-
-        .sidebar-bottom {
-            margin-top: auto;
-        }
-
-
-        /* =========================
-           CONTENT
-        ========================= */
-
-        .content {
-            margin-left: 270px;
-
-            width: calc(100% - 270px);
-
-            min-height: calc(100vh - 84px);
-
-            padding: 35px 40px;
-        }
-
-
-        /* =========================
-           BACK BUTTON
-        ========================= */
-
-        .back-button {
-            display: inline-flex;
-
-            align-items: center;
-
-            gap: 8px;
-
-            color: #086b3c;
-
-            margin-bottom: 20px;
-
-            font-size: 15px;
-        }
-
-        .back-button:hover {
-            text-decoration: underline;
-        }
-
-
-        /* =========================
-           PAGE TITLE
-        ========================= */
-
-        .content h1 {
-            font-size: 30px;
-
-            margin-bottom: 25px;
-        }
-
-
-        /* =========================
-           MODULE INFORMATION
-        ========================= */
-
-        .module-info {
-            border: 2px solid #35a36b;
-
-            border-radius: 9px;
-
-            padding: 22px;
-
-            margin-bottom: 25px;
-
-            background: white;
-        }
-
-        .module-info h2 {
-            font-size: 22px;
-
-            margin-bottom: 8px;
-
-            color: #086b3c;
-        }
-
-        .module-info p {
-            color: #666;
-
-            line-height: 1.5;
-        }
-
-
-        /* =========================
-           FORM
-        ========================= */
-
-        .submission-form {
-            border: 2px solid #35a36b;
-
-            border-radius: 9px;
-
-            padding: 25px;
-
-            max-width: 800px;
-
-            background: white;
-        }
-
-        .form-group {
-            margin-bottom: 22px;
-        }
-
-        .form-group label {
-            display: block;
-
-            font-weight: bold;
-
-            margin-bottom: 8px;
-        }
-
-        .file-input {
-            width: 100%;
-
-            border: 1px solid #bbb;
-
-            border-radius: 6px;
-
-            padding: 12px;
-
-            background: #fafafa;
-
-            cursor: pointer;
-        }
-
-        textarea {
-            width: 100%;
-
-            min-height: 130px;
-
-            resize: vertical;
-
-            border: 1px solid #bbb;
-
-            border-radius: 6px;
-
-            padding: 12px;
-
-            font-family: Arial, sans-serif;
-
-            font-size: 15px;
-        }
-
-        textarea:focus,
-        .file-input:focus {
-            outline: none;
-
-            border-color: #086b3c;
-        }
-
-
-        /* =========================
-           FILE NAME
-        ========================= */
 
         .file-name {
-            margin-top: 8px;
-
-            color: #666;
-
-            font-size: 14px;
-
-            line-height: 1.5;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
         }
 
-
-        /* =========================
-           BUTTON
-        ========================= */
-
-        .submit-button {
-            border: none;
-
-            background: #086b3c;
-
-            color: white;
-
-            padding: 12px 22px;
-
-            border-radius: 6px;
-
-            font-size: 15px;
-
-            cursor: pointer;
+        .file-name i {
+            color: var(--green);
+            font-size: 24px;
         }
 
-        .submit-button:hover {
-            background: #064d2c;
-        }
-
-        .submit-button:disabled {
-            background: #999;
-
-            cursor: not-allowed;
-        }
-
-
-        /* =========================
-           MESSAGE
-        ========================= */
-
-        .message {
-            display: none;
-
-            padding: 12px 15px;
-
-            border-radius: 6px;
-
-            margin-bottom: 20px;
-
-            font-size: 14px;
-        }
-
-        .message.success {
+        .file-name strong {
             display: block;
-
-            background: #dff3e7;
-
-            color: #176b3a;
+            overflow-wrap: anywhere;
         }
 
-        .message.error {
-            display: block;
-
-            background: #f8dddd;
-
-            color: #9b2525;
+        .file-name span {
+            color: var(--muted);
+            font-size: 12px;
         }
 
-
-        /* =========================
-           MOBILE
-        ========================= */
-
-        @media (max-width: 650px) {
-
-            .header {
-                position: relative;
-
-                height: auto;
-
-                min-height: 75px;
-
-                padding: 10px 15px;
-            }
-
-            .header-logo {
-                width: 45px;
-                height: 45px;
-            }
-
-            .brand-title {
-                font-size: 16px;
-            }
-
-            .brand-subtitle {
-                font-size: 10px;
-            }
-
-            .header-right {
-                display: none;
-            }
-
-            .main {
-                padding-top: 0;
-
-                display: block;
-            }
-
-            .sidebar {
-                position: relative;
-
-                top: auto;
-                left: auto;
-
-                width: 100%;
-
-                height: auto;
-
-                display: flex;
-
-                flex-direction: row;
-
-                overflow-x: auto;
-
-                padding: 8px;
-            }
-
-            .view {
-                display: none;
-            }
-
-            .menu {
-                min-width: 105px;
-
-                justify-content: center;
-
-                font-size: 13px;
-
-                padding: 10px;
-
-                margin: 0 3px;
-            }
-
-            .sidebar-bottom {
-                margin-top: 0;
-            }
-
-            .content {
-                margin-left: 0;
-
-                width: 100%;
-
-                padding: 20px 15px;
-            }
-
-            .content h1 {
-                font-size: 25px;
-            }
-
-            .submission-form {
-                padding: 18px;
-            }
-
+        .file-actions {
+            display: flex;
+            gap: 8px;
         }
 
-.material-download-button {
-            display: inline-flex;
+        .dropzone {
+            display: flex;
+            flex-direction: column;
             align-items: center;
             gap: 8px;
-            padding: 9px 16px;
-            border: none;
-            border-radius: 8px;
-            background: #1f7a4d;
-            color: #fff;
-            font: inherit;
-            font-weight: 600;
+            padding: 28px 16px;
+            border: 2px dashed #b9d6c5;
+            border-radius: 10px;
+            background: #f8fcfa;
+            color: var(--muted);
+            text-align: center;
             cursor: pointer;
         }
 
-        .material-download-button:disabled {
-            opacity: 0.6;
-            cursor: wait;
+        .dropzone.dragging,
+        .dropzone:hover {
+            border-color: var(--green);
+            background: var(--green-soft);
         }
 
-        .material-secondary-button {
-            background: #fff;
-            color: #1f7a4d;
-            border: 1px solid #1f7a4d;
+        .dropzone:focus-within {
+            outline: 2px solid var(--green);
+            outline-offset: 2px;
         }
 
-        .material-download-message {
-            margin-top: 8px;
-            color: #991b1b;
-            font-size: 14px;
+        .dropzone i {
+            color: var(--green);
+            font-size: 30px;
         }
 
+        .dropzone strong {
+            color: var(--text);
+        }
+
+        .chosen {
+            color: var(--green);
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 10px 16px;
+            margin-top: 14px;
+            font-size: 13px;
+        }
+
+        .details dt {
+            color: var(--muted);
+        }
+
+        .details dd {
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+        }
+
+        .score {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .score strong {
+            color: var(--green);
+            font-size: 36px;
+        }
+
+        .score span {
+            color: var(--muted);
+        }
+
+        .feedback {
+            margin-top: 12px;
+            padding: 14px;
+            border-radius: 8px;
+            background: var(--green-light);
+            line-height: 1.6;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 1000px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
-
 </head>
+<body data-page="classes">
+    <main class="main-content" id="main">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="classes.html">Classes</a>
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            <a href="classes.html" id="crumbClass">Class</a>
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            <span id="crumbModule">Module</span>
+        </nav>
 
-
-<body>
-
-
-    <!-- =========================
-         HEADER
-    ========================== -->
-
-    <header class="header">
-
-        <div class="header-left">
-
-            <img
-                src="../images/logo.png"
-                class="header-logo"
-                alt="MPSU Logo">
-
+        <div class="page-header">
             <div>
-
-                <div class="brand-title">
-                    MPSU ETEEAP LMS
-                </div>
-
-                <div class="brand-subtitle">
-                    Mountain Province State University
-                </div>
-
+                <h2 id="moduleTitle">Loading module...</h2>
+                <p id="moduleSubtitle"></p>
             </div>
-
+            <span id="statusBadge"></span>
         </div>
 
-
-        <div class="header-right">
-
-            <a
-                href="profile.html"
-                class="user-link"
-                id="userName">
-
-                Learner
-
-            </a>
-
+        <div id="content">
+            <div class="card state">
+                <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+                <h3>Loading module</h3>
+            </div>
         </div>
-
-    </header>
-
-
-
-    <!-- =========================
-         MAIN
-    ========================== -->
-
-    <div class="main">
-
-
-        <!-- =========================
-             SIDEBAR
-        ========================== -->
-
-        <aside class="sidebar">
-
-            <div>
-
-                <div class="view">
-
-                    <span>
-                        View
-                    </span>
-
-                    <i class="fa-solid fa-table-columns"></i>
-
-                </div>
-
-
-                <a
-                    href="classes.html"
-                    class="menu active">
-
-                    <i class="fa-regular fa-folder"></i>
-
-                    <span>
-                        Classes
-                    </span>
-
-                </a>
-
-
-                <a
-                    href="grades.html"
-                    class="menu">
-
-                    <i class="fa-solid fa-chart-column"></i>
-
-                    <span>
-                        Grades
-                    </span>
-
-                </a>
-
-
-                <a
-                    href="notification.html"
-                    class="menu">
-
-                    <i class="fa-regular fa-bell"></i>
-
-                    <span>
-                        Notifications
-                    </span>
-
-                </a>
-
-
-                <a
-                    href="profile.html"
-                    class="menu">
-
-                    <i class="fa-regular fa-user"></i>
-
-                    <span>
-                        Profile
-                    </span>
-
-                </a>
-
-            </div>
-
-
-            <div class="sidebar-bottom">
-
-                <a
-                    href="logout.html"
-                    class="menu">
-
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
-
-                    <span>
-                        Logout
-                    </span>
-
-                </a>
-
-            </div>
-
-        </aside>
-
-
-
-        <!-- =========================
-             CONTENT
-        ========================== -->
-
-        <main class="content">
-
-
-            <a
-                href="javascript:history.back()"
-                class="back-button">
-
-                <i class="fa-solid fa-arrow-left"></i>
-
-                Back
-
-            </a>
-
-
-            <h1>
-                Submit Activity
-            </h1>
-
-
-            <!-- MODULE INFORMATION -->
-
-            <div
-                class="module-info"
-                id="moduleInfo">
-
-                Loading module...
-
-            </div>
-
-
-            <!-- MESSAGE -->
-
-            <div
-                id="message"
-                class="message">
-            </div>
-
-
-            <!-- SUBMISSION FORM -->
-
-            <form
-                id="submissionForm"
-                class="submission-form">
-
-
-                <div class="form-group">
-
-                    <label for="file">
-
-                        Upload File
-
-                    </label>
-
-
-                    <input
-                        type="file"
-                        id="file"
-                        name="file"
-                        class="file-input"
-                        accept=".pdf,.doc,.docx"
-                        required>
-
-
-                    <div
-                        class="file-name"
-                        id="fileName">
-
-                        Accepted formats:
-                        PDF, DOC, DOCX
-                        (maximum 10 MB)
-
+    </main>
+
+    <template id="layoutTemplate">
+        <div class="layout">
+            <div class="stack">
+                <section class="card">
+                    <div class="card-title">
+                        <div>
+                            <h3>Module material</h3>
+                            <p>Read or download the learning material for this module.</p>
+                        </div>
+                    </div>
+                    <div id="description"></div>
+                    <div id="material"></div>
+                </section>
+
+                <section class="card" id="submitCard" hidden>
+                    <div class="card-title">
+                        <div>
+                            <h3>Submit your activity</h3>
+                            <p>One file: PDF, DOC or DOCX, up to 10 MB. You can submit once.</p>
+                        </div>
                     </div>
 
-                </div>
+                    <form id="submitForm" novalidate>
+                        <label class="dropzone" id="dropzone">
+                            <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
+                            <strong>Click to choose a file or drag it here</strong>
+                            <span>PDF, DOC or DOCX · Maximum 10 MB</span>
+                            <span class="chosen" id="chosenFile"></span>
+                            <input type="file" id="fileInput" accept=".pdf,.doc,.docx" class="visually-hidden">
+                        </label>
 
+                        <div class="field" style="margin-top: 16px">
+                            <label for="comment">Comment for your instructor (optional)</label>
+                            <textarea id="comment" rows="3" maxlength="2000" placeholder="Anything your instructor should know"></textarea>
+                        </div>
 
+                        <p class="form-message error" id="submitError" hidden></p>
 
-                <div class="form-group">
+                        <div class="form-actions">
+                            <button class="btn" type="submit" id="submitButton">
+                                <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                                <span>Submit activity</span>
+                            </button>
+                        </div>
+                    </form>
+                </section>
+            </div>
 
-                    <label for="comment">
+            <div class="stack">
+                <section class="card" id="mySubmissionCard" hidden>
+                    <div class="card-title">
+                        <div>
+                            <h3>Your submission</h3>
+                        </div>
+                    </div>
+                    <div id="mySubmission"></div>
+                </section>
 
-                        Comment
-
-                        <span
-                            style="font-weight: normal;">
-
-                            (Optional)
-
-                        </span>
-
-                    </label>
-
-
-                    <textarea
-                        id="comment"
-                        name="comment"
-                        placeholder="Add a comment about your submission..."></textarea>
-
-                </div>
-
-
-
-                <button
-                    type="submit"
-                    class="submit-button"
-                    id="submitButton">
-
-                    <i class="fa-solid fa-upload"></i>
-
-                    Submit Activity
-
-                </button>
-
-
-            </form>
-
-        </main>
-
-    </div>
-
-
+                <section class="card" id="gradeCard">
+                    <div class="card-title">
+                        <div>
+                            <h3>Grade</h3>
+                        </div>
+                    </div>
+                    <div id="grade"></div>
+                </section>
+            </div>
+        </div>
+    </template>
 
     <script src="../api-config.js"></script>
-<script>
+    <script src="js/portal.js"></script>
+    <script>
+        (function () {
+            if (!window.Portal) return;
+            const { api, escape, formatDate, openFile, toast } = window.Portal;
+            const $ = id => document.getElementById(id);
+            const params = new URLSearchParams(window.location.search);
+            const moduleId = params.get("module") || params.get("module_id") || params.get("id");
 
-        /* ================================
-           API
-        ================================= */
+            const MAX_SIZE = 10 * 1024 * 1024;
+            const ALLOWED = ["pdf", "doc", "docx"];
+            let chosenFile = null;
+            let currentModule = null;
 
-        const API_BASE_URL = window.SIKNAYAN_API_ORIGIN;
-
-
-        /* ================================
-           GET MODULE ID
-        ================================= */
-
-        const params =
-            new URLSearchParams(
-                window.location.search
-            );
-
-        const moduleId =
-            params.get("module");
-
-
-        /* ================================
-           GET AUTH TOKEN
-        ================================= */
-
-        const token =
-            sessionStorage.getItem(
-                "authToken"
-            );
-
-
-        /* ================================
-           GET USER INFORMATION
-        ================================= */
-
-        const savedUser =
-            sessionStorage.getItem(
-                "user"
-            );
-
-        const userName =
-            document.getElementById(
-                "userName"
-            );
-
-
-        if (savedUser) {
-
-            try {
-
-                const user =
-                    JSON.parse(savedUser);
-
-                userName.textContent =
-                    user.name || "Learner";
-
-            } catch (error) {
-
-                userName.textContent =
-                    "Learner";
-
+            function fileRow(icon, name, sub, actions) {
+                return `
+                    <div class="file-row">
+                        <div class="file-name">
+                            <i class="${icon}" aria-hidden="true"></i>
+                            <div><strong>${escape(name)}</strong>${sub ? `<span>${escape(sub)}</span>` : ""}</div>
+                        </div>
+                        <div class="file-actions">${actions}</div>
+                    </div>`;
             }
 
-        }
-
-
-        /* ================================
-           GET ELEMENTS
-        ================================= */
-
-        const moduleInfo =
-            document.getElementById(
-                "moduleInfo"
-            );
-
-        const form =
-            document.getElementById(
-                "submissionForm"
-            );
-
-        const message =
-            document.getElementById(
-                "message"
-            );
-
-        const submitButton =
-            document.getElementById(
-                "submitButton"
-            );
-
-        const fileInput =
-            document.getElementById(
-                "file"
-            );
-
-        const fileName =
-            document.getElementById(
-                "fileName"
-            );
-
-        const commentInput =
-            document.getElementById(
-                "comment"
-            );
-
-
-        /* ================================
-           LOGIN CHECK
-        ================================= */
-
-        if (!token) {
-
-            window.location.href =
-                "../index.html";
-
-        }
-
-
-        /* ================================
-           MODULE ID CHECK
-        ================================= */
-
-        if (!moduleId) {
-
-            showMessage(
-                "Module ID is missing.",
-                "error"
-            );
-
-            moduleInfo.innerHTML = `
-                <strong>
-                    Unable to open module.
-                </strong>
-
-                <p style="margin-top: 8px;">
-                    No module was selected.
-                </p>
-            `;
-
-            form.style.display = "none";
-
-        } else {
-
-            loadModule();
-
-        }
-
-
-        /* ================================
-           LOAD MODULE
-        ================================= */
-
-        async function loadModule() {
-
-            try {
-
-                const response =
-                    await fetch(
-                        `${API_BASE_URL}/api/student/modules/${moduleId}`,
-                        {
-                            method: "GET",
-
-                            headers: {
-                                "Accept":
-                                    "application/json",
-
-                                "Authorization":
-                                    `Bearer ${token}`
-                            }
-                        }
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                /* =========================
-                   SESSION EXPIRED
-                ========================== */
-
-                if (
-                    response.status === 401
-                ) {
-
-                    sessionStorage.clear();
-
-                    window.location.href =
-                        "../index.html";
-
-                    return;
-
-                }
-
-
-                /* =========================
-                   OTHER ERROR
-                ========================== */
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        data.message ||
-                        "Unable to load module."
-                    );
-
-                }
-
-
-                /* =========================
-                   MODULE DATA
-                ========================== */
-
-                const module =
-                    data.module;
-
-
-                if (!module) {
-
-                    throw new Error(
-                        "Module information was not found."
-                    );
-
-                }
-
-
-                moduleInfo.innerHTML = `
-
-                    <h2>
-                        ${escapeHtml(
-                            module.name
-                        )}
-                    </h2>
-
-                    <p>
-                        ${escapeHtml(
-                            module.description ||
-                            "No description available."
-                        )}
-                    </p>
-
-                    ${
-                        module.course
-                            ? `
-                                <p style="margin-top: 10px;">
-                                    <strong>
-                                        Course:
-                                    </strong>
-
-                                    ${escapeHtml(
-                                        module.course.name
-                                    )}
-                                </p>
-                              `
-                            : ""
-                    }
-
-                    ${
-                        module.has_material
-                            ? `
-                                <p style="margin-top: 14px;">
-                                    <strong>Material:</strong>
-                                    ${escapeHtml(module.material_name || "Module file")}
-                                </p>
-                                <p style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 10px;">
-                                    <button type="button" id="viewMaterialButton" class="material-download-button">
-                                        <i class="fa-solid fa-eye"></i>
-                                        View material
-                                    </button>
-                                    <button type="button" id="downloadMaterialButton" class="material-download-button material-secondary-button">
-                                        <i class="fa-solid fa-download"></i>
-                                        Download
-                                    </button>
-                                </p>
-                                <p id="downloadMaterialMessage" class="material-download-message" role="status" hidden></p>
-                              `
-                            : `
-                                <p style="margin-top: 14px; color: #6b7280;">
-                                    No material is attached to this module.
-                                </p>
-                              `
-                    }
-
-                `;
-
-                document
-                    .getElementById("viewMaterialButton")
-                    ?.addEventListener("click", () => viewMaterial());
-
-                document
-                    .getElementById("downloadMaterialButton")
-                    ?.addEventListener("click", () => downloadMaterial(module));
-
-
-            } catch (error) {
-
-                moduleInfo.innerHTML = `
-
-                    <strong>
-                        Unable to load module.
-                    </strong>
-
-                    <p style="margin-top: 8px;">
-                        ${escapeHtml(
-                            error.message
-                        )}
-                    </p>
-
-                `;
-
-                form.style.display =
-                    "none";
-
+            function fileButtons(kind) {
+                return `
+                    <button class="btn secondary small" type="button" data-file="${kind}" data-inline="1">
+                        <i class="fa-solid fa-eye" aria-hidden="true"></i> View
+                    </button>
+                    <button class="btn secondary small" type="button" data-file="${kind}">
+                        <i class="fa-solid fa-download" aria-hidden="true"></i> Download
+                    </button>`;
             }
 
-        }
+            function render(module) {
+                currentModule = module;
+                const submission = module.my_submission;
+                const grade = submission?.grade;
 
+                document.title = `${module.title} | MPSU ETEEAP LMS`;
+                $("moduleTitle").textContent = module.title;
+                $("crumbModule").textContent = module.title;
+                $("crumbClass").textContent = module.course?.name || "Class";
+                $("crumbClass").href = `modules.html?course=${encodeURIComponent(module.course_id)}`;
+                $("moduleSubtitle").textContent = [
+                    module.course?.name,
+                    module.course?.instructor?.name && `Instructor: ${module.course.instructor.name}`
+                ].filter(Boolean).join(" · ");
 
-        /* ================================
-           FILE SELECTION
-        ================================= */
+                $("statusBadge").innerHTML = !submission
+                    ? '<span class="badge amber"><i class="fa-regular fa-clock" aria-hidden="true"></i> Not submitted</span>'
+                    : grade
+                        ? '<span class="badge green"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Graded</span>'
+                        : '<span class="badge"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Submitted</span>';
 
-        fileInput.addEventListener(
-            "change",
-            function () {
+                $("content").innerHTML = $("layoutTemplate").innerHTML;
 
-                if (
-                    fileInput.files &&
-                    fileInput.files.length > 0
-                ) {
+                $("description").innerHTML = module.description
+                    ? `<p class="description" style="margin-bottom: 16px">${escape(module.description)}</p>`
+                    : "";
 
-                    const file =
-                        fileInput.files[0];
+                $("material").innerHTML = module.has_material
+                    ? fileRow("fa-solid fa-file-lines", module.material_name || "Module material", "Learning material", fileButtons("material"))
+                    : '<div class="state" style="padding: 20px"><i class="fa-solid fa-file-circle-xmark" aria-hidden="true"></i><p>No material is attached to this module yet.</p></div>';
 
+                $("submitCard").hidden = Boolean(submission);
+                $("mySubmissionCard").hidden = !submission;
 
-                    /* Check file size */
+                if (submission) {
+                    $("mySubmission").innerHTML = `
+                        ${fileRow("fa-solid fa-file-arrow-up", submission.file_name || "Submitted file", `Submitted ${formatDate(submission.submitted_at)}`, fileButtons("submission"))}
+                        ${submission.comment ? `<dl class="details"><dt>Your comment</dt><dd>${escape(submission.comment)}</dd></dl>` : ""}`;
+                }
 
-                    if (
-                        file.size >
-                        10 * 1024 * 1024
-                    ) {
-
-                        fileName.textContent =
-                            "File is larger than 10 MB.";
-
-                        fileName.style.color =
-                            "#9b2525";
-
-                        fileInput.value =
-                            "";
-
-                        return;
-
-                    }
-
-
-                    fileName.textContent =
-                        `Selected file: ${file.name}`;
-
-                    fileName.style.color =
-                        "#666";
-
+                if (grade) {
+                    $("grade").innerHTML = `
+                        <div class="score">
+                            <strong>${escape(Number(grade.score))} / ${escape(Number(grade.max_score))}</strong>
+                            ${grade.percentage !== null ? `<span>${escape(Number(grade.percentage))}%</span>` : ""}
+                        </div>
+                        <p style="color: var(--muted); font-size: 13px">Graded ${escape(formatDate(grade.graded_at))}</p>
+                        ${grade.feedback
+                            ? `<div class="feedback"><strong>Feedback</strong><br>${escape(grade.feedback)}</div>`
+                            : '<p style="margin-top: 12px; color: var(--muted)">No feedback was given.</p>'}`;
                 } else {
-
-                    fileName.textContent =
-                        "Accepted formats: PDF, DOC, DOCX (maximum 10 MB)";
-
+                    $("grade").innerHTML = `
+                        <div class="state" style="padding: 20px">
+                            <i class="fa-solid fa-hourglass-half" aria-hidden="true"></i>
+                            <p>${submission ? "Your instructor hasn't graded this activity yet." : "Submit your activity to receive a grade."}</p>
+                        </div>`;
                 }
 
+                if (!submission) setUpForm();
             }
-        );
 
+            /* File buttons (material and own submission) */
+            document.addEventListener("click", event => {
+                const button = event.target.closest("[data-file]");
+                if (!button || !currentModule) return;
+                const inline = button.dataset.inline === "1";
 
-        /* ================================
-           SUBMIT FORM
-        ================================= */
+                if (button.dataset.file === "material") {
+                    openFile(`/student/modules/${encodeURIComponent(currentModule.id)}/material`, {
+                        inline, fileName: currentModule.material_name || currentModule.title
+                    });
+                } else if (currentModule.my_submission) {
+                    openFile(`/student/submissions/${encodeURIComponent(currentModule.my_submission.id)}/file`, {
+                        inline, fileName: currentModule.my_submission.file_name || "submission"
+                    });
+                }
+            });
 
-        form.addEventListener(
-            "submit",
-            async function (event) {
+            /* Submit form */
+            function chooseFile(file) {
+                const error = $("submitError");
+                error.hidden = true;
+                chosenFile = null;
+                $("chosenFile").textContent = "";
+                if (!file) return;
 
-                event.preventDefault();
-
-
-                /* =========================
-                   CHECK FILE
-                ========================== */
-
-                const file =
-                    fileInput.files[0];
-
-
-                if (!file) {
-
-                    showMessage(
-                        "Please select a file.",
-                        "error"
-                    );
-
+                const extension = file.name.split(".").pop().toLowerCase();
+                if (!ALLOWED.includes(extension)) {
+                    error.textContent = "Please choose a PDF, DOC or DOCX file.";
+                    error.hidden = false;
                     return;
-
+                }
+                if (file.size > MAX_SIZE) {
+                    error.textContent = "The file is larger than 10 MB.";
+                    error.hidden = false;
+                    return;
                 }
 
+                chosenFile = file;
+                $("chosenFile").textContent = `${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+            }
 
-                /* =========================
-                   CHECK FILE SIZE
-                ========================== */
+            function setUpForm() {
+                const dropzone = $("dropzone");
 
-                if (
-                    file.size >
-                    10 * 1024 * 1024
-                ) {
+                $("fileInput").addEventListener("change", event => chooseFile(event.target.files[0]));
 
-                    showMessage(
-                        "The file must not be larger than 10 MB.",
-                        "error"
-                    );
+                ["dragenter", "dragover"].forEach(type => dropzone.addEventListener(type, event => {
+                    event.preventDefault();
+                    dropzone.classList.add("dragging");
+                }));
+                ["dragleave", "drop"].forEach(type => dropzone.addEventListener(type, event => {
+                    event.preventDefault();
+                    dropzone.classList.remove("dragging");
+                }));
+                dropzone.addEventListener("drop", event => chooseFile(event.dataTransfer.files[0]));
 
+                $("submitForm").addEventListener("submit", async event => {
+                    event.preventDefault();
+                    const error = $("submitError");
+
+                    if (!chosenFile) {
+                        error.textContent = "Please choose the file to submit.";
+                        error.hidden = false;
+                        return;
+                    }
+
+                    if (!window.confirm(`Submit "${chosenFile.name}"? You can only submit once.`)) return;
+
+                    const button = $("submitButton");
+                    button.disabled = true;
+                    button.querySelector("span").textContent = "Submitting...";
+
+                    const form = new FormData();
+                    form.append("module_id", currentModule.id);
+                    form.append("file", chosenFile);
+                    const comment = $("comment").value.trim();
+                    if (comment) form.append("comment", comment);
+
+                    try {
+                        await api("/student/submissions", { method: "POST", body: form });
+                        toast("Activity submitted. Your instructor has been notified.");
+                        await load();
+                    } catch (submitError) {
+                        error.textContent = submitError.message;
+                        error.hidden = false;
+                        button.disabled = false;
+                        button.querySelector("span").textContent = "Submit activity";
+                    }
+                });
+            }
+
+            function showError(message) {
+                $("moduleTitle").textContent = "Module not available";
+                $("crumbModule").textContent = "Not available";
+                $("content").innerHTML = `
+                    <div class="card state">
+                        <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                        <h3>Unable to open this module</h3>
+                        <p>${escape(message)}</p>
+                        <a class="btn" href="classes.html">Back to my classes</a>
+                    </div>`;
+            }
+
+            async function load() {
+                if (!moduleId) {
+                    showError("No module was selected.");
                     return;
-
                 }
-
-
-                /* =========================
-                   CHECK FILE TYPE
-                ========================== */
-
-                const allowedTypes = [
-                    "application/pdf",
-                    "application/msword",
-                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                ];
-
-
-                if (
-                    !allowedTypes.includes(
-                        file.type
-                    )
-                ) {
-
-                    showMessage(
-                        "Only PDF, DOC, and DOCX files are allowed.",
-                        "error"
-                    );
-
-                    return;
-
-                }
-
-
-                /* =========================
-                   DISABLE BUTTON
-                ========================== */
-
-                submitButton.disabled =
-                    true;
-
-                submitButton.innerHTML = `
-
-                    <i
-                        class="fa-solid fa-spinner fa-spin">
-                    </i>
-
-                    Uploading...
-
-                `;
-
-
-                /* =========================
-                   CREATE FORM DATA
-                ========================== */
-
-                const formData =
-                    new FormData();
-
-
-                formData.append(
-                    "module_id",
-                    moduleId
-                );
-
-
-                formData.append(
-                    "file",
-                    file
-                );
-
-
-                formData.append(
-                    "comment",
-                    commentInput.value.trim()
-                );
-
-
                 try {
-
-                    /* =====================
-                       SEND TO LARAVEL
-                    ====================== */
-
-                    const response =
-                        await fetch(
-                            `${API_BASE_URL}/api/student/submissions`,
-                            {
-                                method: "POST",
-
-                                headers: {
-                                    "Accept":
-                                        "application/json",
-
-                                    "Authorization":
-                                        `Bearer ${token}`
-                                },
-
-                                body: formData
-                            }
-                        );
-
-
-                    const data =
-                        await response.json();
-
-
-                    /* =====================
-                       SESSION EXPIRED
-                    ====================== */
-
-                    if (
-                        response.status === 401
-                    ) {
-
-                        sessionStorage.clear();
-
-                        window.location.href =
-                            "../index.html";
-
-                        return;
-
-                    }
-
-
-                    /* =====================
-                       SERVER ERROR
-                    ====================== */
-
-                    if (!response.ok) {
-
-                        throw new Error(
-                            data.message ||
-                            "Submission failed."
-                        );
-
-                    }
-
-
-                    /* =====================
-                       SUCCESS
-                    ====================== */
-
-                    showMessage(
-                        "Your activity has been submitted successfully.",
-                        "success"
-                    );
-
-
-                    form.reset();
-
-
-                    fileName.textContent =
-                        "Submission completed successfully.";
-
-
-                    submitButton.innerHTML = `
-
-                        <i
-                            class="fa-solid fa-check">
-                        </i>
-
-                        Submitted
-
-                    `;
-
-
+                    const { module } = await api(`/student/modules/${encodeURIComponent(moduleId)}`);
+                    render(module);
                 } catch (error) {
-
-                    showMessage(
-                        error.message ||
-                        "Something went wrong while submitting your activity.",
-                        "error"
-                    );
-
-
-                    submitButton.disabled =
-                        false;
-
-
-                    submitButton.innerHTML = `
-
-                        <i
-                            class="fa-solid fa-upload">
-                        </i>
-
-                        Submit Activity
-
-                    `;
-
+                    showError(error.message);
                 }
-
-            }
-        );
-
-
-        /* ================================
-           SHOW MESSAGE
-        ================================= */
-
-        function showMessage(
-            text,
-            type
-        ) {
-
-            message.textContent =
-                text;
-
-            message.className =
-                `message ${type}`;
-
-        }
-
-
-        /* ================================
-           ESCAPE HTML
-        ================================= */
-
-        /* ================================
-           DOWNLOAD MODULE MATERIAL
-           The file is private, so it is fetched with the login token
-           and then saved through a temporary link.
-        ================================= */
-
-        // Opens the file in a new tab (PDFs and images display there).
-        async function viewMaterial() {
-
-            const message =
-                document.getElementById("downloadMaterialMessage");
-
-            if (message) {
-                message.hidden = true;
             }
 
-            // Open the tab right away so the browser doesn't block it.
-            const tab = window.open("about:blank", "_blank");
-
-            try {
-
-                const response =
-                    await fetch(
-                        `${API_BASE_URL}/api/student/modules/${encodeURIComponent(moduleId)}/material?disposition=inline`,
-                        {
-                            headers: {
-                                "Accept": "*/*",
-                                "Authorization": `Bearer ${token}`
-                            }
-                        }
-                    );
-
-                if (!response.ok) {
-                    const data = await response.json().catch(() => null);
-                    throw new Error(
-                        data?.message || "The material could not be opened."
-                    );
-                }
-
-                const blob = await response.blob();
-                const url = URL.createObjectURL(blob);
-
-                if (tab) {
-                    tab.location.href = url;
-                } else {
-                    window.location.href = url;
-                }
-
-                setTimeout(() => URL.revokeObjectURL(url), 300000);
-
-            } catch (error) {
-
-                tab?.close();
-
-                if (message) {
-                    message.textContent =
-                        error instanceof TypeError
-                            ? "Unable to reach the server. Please try again."
-                            : error.message;
-                    message.hidden = false;
-                }
-
-            }
-        }
-
-
-        async function downloadMaterial(module) {
-
-            const button =
-                document.getElementById("downloadMaterialButton");
-
-            const message =
-                document.getElementById("downloadMaterialMessage");
-
-            const showDownloadMessage = (text) => {
-                if (!message) return;
-                message.textContent = text;
-                message.hidden = !text;
-            };
-
-            if (button) {
-                button.disabled = true;
-            }
-
-            showDownloadMessage("");
-
-            try {
-
-                const response =
-                    await fetch(
-                        `${API_BASE_URL}/api/student/modules/${encodeURIComponent(moduleId)}/material`,
-                        {
-                            headers: {
-                                "Accept": "application/json",
-                                "Authorization": `Bearer ${token}`
-                            }
-                        }
-                    );
-
-                if (!response.ok) {
-                    const data = await response.json().catch(() => null);
-                    throw new Error(
-                        data?.message || "The material could not be downloaded."
-                    );
-                }
-
-                const blob = await response.blob();
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement("a");
-
-                link.href = url;
-                link.download = module.material_name || `${module.name || "module-material"}`;
-                document.body.appendChild(link);
-                link.click();
-                link.remove();
-
-                setTimeout(() => URL.revokeObjectURL(url), 1000);
-
-            } catch (error) {
-
-                showDownloadMessage(
-                    error instanceof TypeError
-                        ? "Unable to reach the server. Please try again."
-                        : error.message
-                );
-
-            } finally {
-
-                if (button) {
-                    button.disabled = false;
-                }
-
-            }
-        }
-
-
-        function escapeHtml(value) {
-
-            if (
-                value === null ||
-                value === undefined
-            ) {
-
-                return "";
-            }
-
-
-            return String(value)
-
-                .replace(
-                    /&/g,
-                    "&amp;"
-                )
-
-                .replace(
-                    /</g,
-                    "&lt;"
-                )
-
-                .replace(
-                    />/g,
-                    "&gt;"
-                )
-
-                .replace(
-                    /"/g,
-                    "&quot;"
-                )
-
-                .replace(
-                    /'/g,
-                    "&#039;"
-                );
-
-        }
-
+            load();
+        })();
     </script>
-
 </body>
-
 </html>

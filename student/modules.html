@@ -1,1270 +1,321 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <title>Course Modules - MPSU ETEEAP LMS</title>
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class | MPSU ETEEAP LMS</title>
+    <link rel="icon" href="../images/logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="css/portal.css">
     <style>
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background: white;
-            color: #222;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-
-        /* ================================
-           HEADER
-        ================================= */
-
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-
-            width: 100%;
-            height: 84px;
-
-            background: #086b3c;
-
+        .class-info {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            padding: 0 38px;
-
-            color: white;
-
-            z-index: 1000;
+            flex-wrap: wrap;
+            gap: 10px 22px;
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 13px;
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .header-logo {
-            width: 58px;
-            height: 58px;
-            object-fit: contain;
-        }
-
-        .header-titles {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .brand-title {
-            font-size: 23px;
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-
-        .brand-subtitle {
-            font-size: 14px;
-        }
-
-        .user-link {
-            color: white;
-            text-decoration: underline;
-            font-size: 16px;
-        }
-
-        .user-link:hover {
-            color: #ffd34e;
-        }
-
-
-        /* ================================
-           MAIN
-        ================================= */
-
-        .main {
-            display: flex;
-
-            min-height: 100vh;
-
-            padding-top: 84px;
-        }
-
-
-        /* ================================
-           SIDEBAR
-        ================================= */
-
-        .sidebar {
-            position: fixed;
-
-            top: 84px;
-            left: 0;
-
-            width: 270px;
-            height: calc(100vh - 84px);
-
-            background: #086b3c;
-
-            padding: 25px 12px;
-
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-
-            overflow-y: auto;
-        }
-
-        .sidebar-top {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .view {
-            height: 60px;
-
-            padding: 0 24px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            color: white;
-
-            font-size: 20px;
-
-            margin-bottom: 10px;
-        }
-
-        .view i {
-            font-size: 22px;
-        }
-
-        .menu {
-            width: 100%;
-            height: 47px;
-
-            display: flex;
-            align-items: center;
-
-            gap: 20px;
-
-            padding: 0 25px;
-
-            margin-bottom: 5px;
-
-            border-radius: 9px;
-
-            color: white;
-
-            font-size: 18px;
-
-            text-decoration: none;
-        }
-
-        .menu:hover {
-            background: rgba(255,255,255,0.10);
-        }
-
-        .menu.active {
-            background: #ffd34e;
-            color: #222;
-        }
-
-        .menu i {
-            width: 22px;
-            text-align: center;
-        }
-
-        .sidebar-bottom {
-            margin-top: auto;
-        }
-
-
-        /* ================================
-           CONTENT
-        ================================= */
-
-        .content {
-            margin-left: 270px;
-
-            width: calc(100% - 270px);
-
-            padding: 35px 40px;
-
-            min-height: calc(100vh - 84px);
-        }
-
-
-        /* ================================
-           BACK BUTTON
-        ================================= */
-
-        .back-button {
+        .class-info span {
             display: inline-flex;
-
             align-items: center;
-
-            gap: 8px;
-
-            color: #086b3c;
-
-            font-size: 15px;
-
-            margin-bottom: 20px;
+            gap: 7px;
         }
 
-        .back-button:hover {
+        .module-list,
+        .announcement-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .module {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 18px;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            background: var(--white);
+            box-shadow: var(--shadow);
+        }
+
+        .unit {
+            width: 46px;
+            height: 46px;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            background: var(--green-soft);
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        .module h3 {
+            font-size: 16px;
+        }
+
+        .module h3 a {
+            text-decoration: none;
+        }
+
+        .module h3 a:hover {
+            color: var(--green);
             text-decoration: underline;
         }
 
-
-        /* ================================
-           COURSE HEADER
-        ================================= */
-
-        .course-header {
-            width: 100%;
-
-            border: 2px solid #35a36b;
-
-            border-radius: 9px;
-
-            padding: 25px;
-
-            margin-bottom: 30px;
-
-            box-shadow:
-                0 2px 5px rgba(0,0,0,0.10);
-        }
-
-        .course-header h1 {
-            font-size: 30px;
-
-            margin-bottom: 8px;
-        }
-
-        .course-code {
-            color: #086b3c;
-
-            font-size: 16px;
-
-            font-weight: bold;
-
-            margin-bottom: 8px;
-        }
-
-        .course-program {
-            color: #666;
-
-            margin-bottom: 12px;
-        }
-
-        .course-description {
-            color: #555;
-
+        .module p {
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 13px;
             line-height: 1.5;
         }
 
-        .instructor {
-            margin-top: 15px;
-
-            color: #555;
-        }
-
-        .instructor i {
-            color: #086b3c;
-
-            margin-right: 6px;
-        }
-
-
-        /* ================================
-           MODULE TITLE
-        ================================= */
-
-        .section-title {
-            font-size: 24px;
-
-            margin-bottom: 18px;
-        }
-
-
-        /* ================================
-           MODULE LIST
-        ================================= */
-
-        .modules {
+        .module-tags {
             display: flex;
-
-            flex-direction: column;
-
-            gap: 15px;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
         }
 
-        .module-card {
-            width: 100%;
-
-            border: 2px solid #35a36b;
-
-            border-radius: 9px;
-
-            padding: 20px;
-
+        .module-actions {
             display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 20px;
-
-            background: white;
-
-            box-shadow:
-                0 2px 5px rgba(0,0,0,0.08);
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 8px;
         }
 
-        .module-card:hover {
-            background: #fbfdfc;
+        .announcement {
+            padding: 16px 18px;
+            border: 1px solid var(--border-light);
+            border-left: 4px solid var(--green);
+            border-radius: 8px;
+            background: var(--white);
+            box-shadow: var(--shadow);
         }
 
-        .module-left {
-            display: flex;
-
-            align-items: flex-start;
-
-            gap: 15px;
-
-            flex: 1;
+        .announcement h3 {
+            font-size: 15px;
         }
 
-        .module-icon {
-            width: 45px;
-            height: 45px;
-
-            flex-shrink: 0;
-
-            background: #086b3c;
-
-            color: white;
-
-            border-radius: 7px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .announcement .meta {
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 12px;
         }
 
-        .module-info h3 {
-            font-size: 19px;
-
-            margin-bottom: 7px;
+        .announcement .text {
+            margin-top: 10px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
         }
 
-        .module-info p {
-            color: #666;
-
-            font-size: 14px;
-
-            line-height: 1.4;
-        }
-
-
-        /* ================================
-           MODULE BUTTON
-        ================================= */
-
-        .module-button {
-            background: #086b3c;
-
-            color: white;
-
-            border: none;
-
-            padding: 10px 17px;
-
-            border-radius: 6px;
-
-            cursor: pointer;
-
-            font-size: 14px;
-
-            white-space: nowrap;
-        }
-
-        .module-button:hover {
-            background: #064d2c;
-        }
-
-
-        /* ================================
-           LOADING
-        ================================= */
-
-        .loading,
-        .empty-state,
-        .error-state {
-            width: 100%;
-
-            text-align: center;
-
-            padding: 50px 20px;
-
-            color: #777;
-        }
-
-        .loading i,
-        .empty-state i,
-        .error-state i {
-            display: block;
-
-            font-size: 40px;
-
-            color: #086b3c;
-
-            margin-bottom: 15px;
-        }
-
-        .empty-state h3,
-        .error-state h3 {
-            color: #222;
-
-            margin-bottom: 10px;
-        }
-
-        .empty-state p,
-        .error-state p {
-            margin-bottom: 15px;
-        }
-
-        .error-state button {
-            background: #086b3c;
-
-            color: white;
-
-            border: none;
-
-            padding: 10px 18px;
-
-            border-radius: 6px;
-
-            cursor: pointer;
-        }
-
-
-        /* ================================
-           RESPONSIVE
-        ================================= */
-
-        @media (max-width: 1000px) {
-
-            .sidebar {
-                width: 230px;
+        @media (max-width: 700px) {
+            .module {
+                grid-template-columns: auto 1fr;
             }
 
-            .content {
-                margin-left: 230px;
-
-                width: calc(100% - 230px);
-
-                padding: 30px;
+            .module-actions {
+                grid-column: 1 / -1;
+                justify-content: flex-start;
             }
         }
-
-
-        @media (max-width: 650px) {
-
-            .header {
-                position: relative;
-
-                height: auto;
-
-                min-height: 75px;
-
-                padding: 10px 15px;
-            }
-
-            .header-logo {
-                width: 45px;
-                height: 45px;
-            }
-
-            .brand-title {
-                font-size: 16px;
-            }
-
-            .brand-subtitle {
-                font-size: 10px;
-            }
-
-            .header-right {
-                display: none;
-            }
-
-            .main {
-                flex-direction: column;
-
-                padding-top: 0;
-            }
-
-            .sidebar {
-                position: relative;
-
-                top: auto;
-                left: auto;
-
-                width: 100%;
-
-                height: auto;
-
-                display: flex;
-
-                flex-direction: row;
-
-                overflow-x: auto;
-
-                padding: 8px;
-            }
-
-            .sidebar-top {
-                display: flex;
-
-                flex-direction: row;
-            }
-
-            .sidebar-bottom {
-                margin-top: 0;
-            }
-
-            .view {
-                display: none;
-            }
-
-            .menu {
-                min-width: 105px;
-
-                justify-content: center;
-
-                padding: 10px;
-
-                font-size: 13px;
-
-                margin: 0 3px;
-            }
-
-            .content {
-                margin-left: 0;
-
-                width: 100%;
-
-                padding: 20px 15px;
-            }
-
-            .course-header h1 {
-                font-size: 24px;
-            }
-
-            .module-card {
-                flex-direction: column;
-
-                align-items: stretch;
-            }
-
-            .module-button {
-                width: 100%;
-            }
-        }
-
     </style>
-
 </head>
+<body data-page="classes">
+    <main class="main-content" id="main">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="classes.html">Classes</a>
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            <span id="crumbName">Class</span>
+        </nav>
 
-
-<body>
-
-
-    <!-- HEADER -->
-
-    <header class="header">
-
-        <div class="header-left">
-
-            <img
-                src="../images/logo.png"
-                class="header-logo"
-                alt="MPSU Logo">
-
-            <div class="header-titles">
-
-                <div class="brand-title">
-                    MPSU ETEEAP LMS
-                </div>
-
-                <div class="brand-subtitle">
-                    Mountain Province State University
-                </div>
-
+        <div class="page-header">
+            <div>
+                <h2 id="className">Loading class...</h2>
+                <div class="class-info" id="classInfo"></div>
             </div>
-
         </div>
 
-
-        <div class="header-right">
-
-            <a
-                href="profile.html"
-                class="user-link">
-
-                <span id="headerUserName">Learner</span>
-
-            </a>
-
+        <div class="tabs" role="tablist">
+            <button class="tab active" type="button" role="tab" aria-selected="true" data-tab="modulesPanel" id="modulesTab">
+                <i class="fa-solid fa-layer-group" aria-hidden="true"></i> Modules
+                <span class="count" id="moduleCount">0</span>
+            </button>
+            <button class="tab" type="button" role="tab" aria-selected="false" data-tab="announcementsPanel" id="announcementsTab">
+                <i class="fa-solid fa-bullhorn" aria-hidden="true"></i> Announcements
+                <span class="count" id="announcementCount">0</span>
+            </button>
         </div>
 
-    </header>
-
-
-
-    <!-- MAIN -->
-
-    <div class="main">
-
-
-        <!-- SIDEBAR -->
-
-        <aside class="sidebar">
-
-            <div class="sidebar-top">
-
-                <div class="view">
-
-                    <span>
-                        View
-                    </span>
-
-                    <i class="fa-solid fa-table-columns"></i>
-
+        <section id="modulesPanel" role="tabpanel" aria-labelledby="modulesTab">
+            <div class="module-list" id="moduleList">
+                <div class="card state">
+                    <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+                    <h3>Loading modules</h3>
                 </div>
-
-
-                <a
-                    href="classes.html"
-                    class="menu active">
-
-                    <i class="fa-regular fa-folder"></i>
-
-                    <span>
-                        Classes
-                    </span>
-
-                </a>
-
-
-                <a
-                    href="grades.html"
-                    class="menu">
-
-                    <i class="fa-solid fa-chart-column"></i>
-
-                    <span>
-                        Grades
-                    </span>
-
-                </a>
-
-
-                <a
-                    href="notification.html"
-                    class="menu">
-
-                    <i class="fa-regular fa-bell"></i>
-
-                    <span>
-                        Notifications
-                    </span>
-
-                </a>
-
-
-                <a
-                    href="profile.html"
-                    class="menu">
-
-                    <i class="fa-regular fa-user"></i>
-
-                    <span>
-                        Profile
-                    </span>
-
-                </a>
-
             </div>
+        </section>
 
-
-            <div class="sidebar-bottom">
-
-                <a
-                    href="logout.html"
-                    class="menu">
-
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
-
-                    <span>
-                        Logout
-                    </span>
-
-                </a>
-
-            </div>
-
-        </aside>
-
-
-
-        <!-- CONTENT -->
-
-        <main class="content">
-
-
-            <a
-                href="classes.html"
-                class="back-button">
-
-                <i class="fa-solid fa-arrow-left"></i>
-
-                Back to Classes
-
-            </a>
-
-
-            <!-- COURSE INFORMATION -->
-
-            <div
-                class="course-header"
-                id="courseHeader">
-
-                <div class="loading">
-
-                    <i
-                        class="fa-solid fa-spinner fa-spin">
-                    </i>
-
-                    Loading course...
-
-                </div>
-
-            </div>
-
-
-            <!-- MODULES -->
-
-            <h2 class="section-title">
-                Course Modules
-            </h2>
-
-
-            <div
-                class="modules"
-                id="modulesContainer">
-
-                <div class="loading">
-
-                    <i
-                        class="fa-solid fa-spinner fa-spin">
-                    </i>
-
-                    Loading modules...
-
-                </div>
-
-            </div>
-
-
-        </main>
-
-    </div>
-
-
-
-    <!-- JAVASCRIPT -->
+        <section id="announcementsPanel" role="tabpanel" aria-labelledby="announcementsTab" hidden>
+            <div class="announcement-list" id="announcementList"></div>
+        </section>
+    </main>
 
     <script src="../api-config.js"></script>
-<script>
+    <script src="js/portal.js"></script>
+    <script>
+        (function () {
+            if (!window.Portal) return;
+            const { api, escape, formatDate, openFile } = window.Portal;
+            const $ = id => document.getElementById(id);
+            const params = new URLSearchParams(window.location.search);
+            const courseId = params.get("course") || params.get("course_id");
 
-        const API_BASE_URL = window.SIKNAYAN_API_ORIGIN;
-
-
-        /* =================================
-           GET COURSE ID
-        ================================= */
-
-        const params =
-            new URLSearchParams(
-                window.location.search
-            );
-
-        const courseId =
-            params.get("course");
-
-
-        const courseHeader =
-            document.getElementById(
-                "courseHeader"
-            );
-
-
-        const modulesContainer =
-            document.getElementById(
-                "modulesContainer"
-            );
-
-
-        /* =================================
-           CHECK COURSE ID
-        ================================= */
-
-        if (!courseId) {
-
-            showError(
-                "Course ID is missing."
-            );
-
-        } else {
-
-            loadCourse();
-
-        }
-
-
-        /* =================================
-           LOAD COURSE
-        ================================= */
-
-        async function loadCourse() {
-
-            const token =
-                sessionStorage.getItem(
-                    "authToken"
-                );
-
-
-            /* -----------------------------
-               CHECK LOGIN
-            ----------------------------- */
-
-            if (!token) {
-
-                window.location.href =
-                    "../index.html";
-
-                return;
+            /* Tabs */
+            function showTab(name) {
+                document.querySelectorAll(".tab").forEach(tab => {
+                    const active = tab.dataset.tab === name;
+                    tab.classList.toggle("active", active);
+                    tab.setAttribute("aria-selected", String(active));
+                    $(tab.dataset.tab).hidden = !active;
+                });
             }
 
+            document.querySelectorAll(".tab").forEach(tab =>
+                tab.addEventListener("click", () => showTab(tab.dataset.tab)));
 
-            try {
+            if (window.location.hash === "#announcements") showTab("announcementsPanel");
 
-                const response =
-                    await fetch(
-                        `${API_BASE_URL}/api/student/courses/${courseId}`,
-                        {
-                            method: "GET",
+            function statusBadge(submission) {
+                if (!submission) return '<span class="badge amber"><i class="fa-regular fa-clock" aria-hidden="true"></i> Not submitted</span>';
+                if (submission.status === "graded" && submission.grade) {
+                    const grade = submission.grade;
+                    return `<span class="badge green"><i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                        Graded: ${escape(Number(grade.score))}/${escape(Number(grade.max_score))}</span>`;
+                }
+                return '<span class="badge"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Submitted, waiting for grade</span>';
+            }
 
-                            headers: {
-                                "Accept":
-                                    "application/json",
+            function renderModules(modules) {
+                $("moduleCount").textContent = modules.length;
 
-                                "Authorization":
-                                    `Bearer ${token}`
-                            }
-                        }
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                /* -----------------------------
-                   AUTH ERROR
-                ----------------------------- */
-
-                if (
-                    response.status === 401
-                ) {
-
-                    sessionStorage.removeItem(
-                        "authToken"
-                    );
-
-                    sessionStorage.removeItem(
-                        "user"
-                    );
-
-                    window.location.href =
-                        "../index.html";
-
+                if (modules.length === 0) {
+                    $("moduleList").innerHTML = `
+                        <div class="card state">
+                            <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+                            <h3>No modules yet</h3>
+                            <p>Your instructor hasn't published any modules for this class.</p>
+                        </div>`;
                     return;
                 }
 
+                $("moduleList").innerHTML = modules.map((module, index) => {
+                    const href = `submission.html?module=${encodeURIComponent(module.id)}`;
+                    return `
+                        <article class="module">
+                            <span class="unit" aria-hidden="true">${escape(module.module_order || index + 1)}</span>
+                            <div>
+                                <h3><a href="${href}">${escape(module.title)}</a></h3>
+                                ${module.description ? `<p>${escape(module.description)}</p>` : ""}
+                                <div class="module-tags">
+                                    ${statusBadge(module.my_submission)}
+                                    ${module.has_material
+                                        ? `<span class="badge"><i class="fa-solid fa-paperclip" aria-hidden="true"></i> ${escape(module.material_name || "Material attached")}</span>`
+                                        : ""}
+                                </div>
+                            </div>
+                            <div class="module-actions">
+                                ${module.has_material ? `
+                                    <button class="btn secondary small" type="button" data-view="${escape(module.id)}">
+                                        <i class="fa-solid fa-eye" aria-hidden="true"></i> View
+                                    </button>
+                                    <button class="btn secondary small" type="button" data-download="${escape(module.id)}"
+                                        data-name="${escape(module.material_name || module.title)}">
+                                        <i class="fa-solid fa-download" aria-hidden="true"></i> Download
+                                    </button>` : ""}
+                                <a class="btn small" href="${href}">
+                                    ${module.my_submission ? "Open" : "Submit"}
+                                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </article>`;
+                }).join("");
+            }
 
-                /* -----------------------------
-                   OTHER ERROR
-                ----------------------------- */
+            function renderAnnouncements(items) {
+                $("announcementCount").textContent = items.length;
 
-                if (!response.ok) {
-
-                    throw new Error(
-                        data.message ||
-                        "Unable to load course."
-                    );
-
+                if (items.length === 0) {
+                    $("announcementList").innerHTML = `
+                        <div class="card state">
+                            <i class="fa-solid fa-bullhorn" aria-hidden="true"></i>
+                            <h3>No announcements</h3>
+                            <p>Announcements from your instructor will appear here.</p>
+                        </div>`;
+                    return;
                 }
 
-
-                const course =
-                    data.course;
-
-
-                /* -----------------------------
-                   COURSE HEADER
-                ----------------------------- */
-
-                const instructor =
-                    course.instructor
-                        ? course.instructor.name
-                        : "No instructor assigned";
-
-
-                courseHeader.innerHTML = `
-
-                    <h1>
-                        ${escapeHtml(
-                            course.name
-                        )}
-                    </h1>
-
-                    <div class="course-code">
-
-                        ${escapeHtml(
-                            course.code
-                        )}
-
-                    </div>
-
-                    <div class="course-program">
-
-                        Program:
-                        ${escapeHtml(
-                            course.program ||
-                            "ETEEAP"
-                        )}
-
-                    </div>
-
-                    <div class="course-description">
-
-                        ${escapeHtml(
-                            course.description ||
-                            "No course description available."
-                        )}
-
-                    </div>
-
-                    <div class="instructor">
-
-                        <i
-                            class="fa-solid fa-user">
-                        </i>
-
-                        Instructor:
-                        ${escapeHtml(
-                            instructor
-                        )}
-
-                    </div>
-
-                `;
-
-
-                /* -----------------------------
-                   LOAD MODULES
-                ----------------------------- */
-
-                renderModules(
-                    course.modules || []
-                );
-
-
-            } catch (error) {
-
-                console.error(error);
-
-                showError(
-                    error.message
-                );
-
+                $("announcementList").innerHTML = items.map(item => {
+                    const edited = item.updated_at && item.updated_at !== item.created_at;
+                    return `
+                        <article class="announcement">
+                            <h3>${escape(item.title)}</h3>
+                            <p class="meta">${escape(item.instructor?.name || "Instructor")} · ${escape(formatDate(item.created_at))}${edited ? " · edited" : ""}</p>
+                            <p class="text">${escape(item.message)}</p>
+                        </article>`;
+                }).join("");
             }
 
-        }
+            $("moduleList").addEventListener("click", event => {
+                const view = event.target.closest("[data-view]");
+                const download = event.target.closest("[data-download]");
+                if (view) openFile(`/student/modules/${encodeURIComponent(view.dataset.view)}/material`, { inline: true });
+                if (download) openFile(`/student/modules/${encodeURIComponent(download.dataset.download)}/material`, { fileName: download.dataset.name });
+            });
 
-
-        /* =================================
-           RENDER MODULES
-        ================================= */
-
-        function renderModules(modules) {
-
-            if (
-                !modules ||
-                modules.length === 0
-            ) {
-
-                modulesContainer.innerHTML = `
-
-                    <div class="empty-state">
-
-                        <i
-                            class="fa-solid fa-book-open">
-                        </i>
-
-                        <h3>
-                            No Modules Available
-                        </h3>
-
-                        <p>
-                            There are currently no
-                            published modules for this course.
-                        </p>
-
-                    </div>
-
-                `;
-
-                return;
+            function showError(message) {
+                $("className").textContent = "Class not available";
+                $("crumbName").textContent = "Not available";
+                $("moduleList").innerHTML = `
+                    <div class="card state">
+                        <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                        <h3>Unable to open this class</h3>
+                        <p>${escape(message)}</p>
+                        <a class="btn" href="classes.html">Back to my classes</a>
+                    </div>`;
             }
 
-
-            modulesContainer.innerHTML = "";
-
-
-            modules.forEach(
-                (module, index) => {
-
-                    const card =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    card.className =
-                        "module-card";
-
-
-                    card.innerHTML = `
-
-                        <div class="module-left">
-
-                            <div class="module-icon">
-
-                                <i
-                                    class="fa-solid fa-book">
-                                </i>
-
-                            </div>
-
-
-                            <div class="module-info">
-
-                                <h3>
-
-                                    ${escapeHtml(
-                                        module.name
-                                    )}
-
-                                </h3>
-
-
-                                <p>
-
-                                    ${escapeHtml(
-                                        module.description ||
-                                        "No description available."
-                                    )}
-
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-                        <button
-                            type="button"
-                            class="module-button"
-                            onclick="openModule(${module.id})">
-
-                            <i
-                                class="fa-solid fa-eye">
-                            </i>
-
-                            View Module
-
-                        </button>
-
-                    `;
-
-
-                    modulesContainer.appendChild(
-                        card
-                    );
-
+            async function load() {
+                if (!courseId) {
+                    showError("No class was selected.");
+                    return;
                 }
-            );
 
-        }
+                try {
+                    const { course } = await api(`/student/courses/${encodeURIComponent(courseId)}`);
 
+                    document.title = `${course.name} | MPSU ETEEAP LMS`;
+                    $("className").textContent = course.name;
+                    $("crumbName").textContent = course.name;
+                    $("classInfo").innerHTML = [
+                        course.code && `<span><i class="fa-solid fa-hashtag" aria-hidden="true"></i>${escape(course.code)}</span>`,
+                        `<span><i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i>${escape(course.instructor?.name || "No instructor assigned")}</span>`,
+                        course.program && `<span><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>${escape(course.program)}</span>`
+                    ].filter(Boolean).join("");
 
-        /* =================================
-           OPEN MODULE
-        ================================= */
-
-        function openModule(moduleId) {
-
-            /*
-             * For now, send the learner to
-             * the submission page with the
-             * module ID.
-             *
-             * We will connect this to the
-             * real module/submission backend
-             * in the next step.
-             */
-
-            window.location.href =
-                `submission.html?module=${moduleId}`;
-
-        }
-
-
-        /* =================================
-           ERROR
-        ================================= */
-
-        function showError(message) {
-
-            courseHeader.innerHTML = `
-
-                <div class="error-state">
-
-                    <i
-                        class="fa-solid fa-triangle-exclamation">
-                    </i>
-
-                    <h3>
-                        Unable to Load Course
-                    </h3>
-
-                    <p>
-                        ${escapeHtml(message)}
-                    </p>
-
-                    <button
-                        onclick="loadCourse()">
-
-                        <i
-                            class="fa-solid fa-rotate">
-                        </i>
-
-                        Try Again
-
-                    </button>
-
-                </div>
-
-            `;
-
-
-            modulesContainer.innerHTML = "";
-
-        }
-
-
-        /* =================================
-           ESCAPE HTML
-        ================================= */
-
-        function escapeHtml(value) {
-
-            if (
-                value === null ||
-                value === undefined
-            ) {
-
-                return "";
+                    renderModules(course.modules || []);
+                    renderAnnouncements(course.announcements || []);
+                } catch (error) {
+                    showError(error.message);
+                }
             }
 
-
-            return String(value)
-
-                .replace(
-                    /&/g,
-                    "&amp;"
-                )
-
-                .replace(
-                    /</g,
-                    "&lt;"
-                )
-
-                .replace(
-                    />/g,
-                    "&gt;"
-                )
-
-                .replace(
-                    /"/g,
-                    "&quot;"
-                )
-
-                .replace(
-                    /'/g,
-                    "&#039;"
-                );
-
-        }
-
-    </script>
-
-    <script>
-        // Show the logged-in learner's name in the header.
-        (function () {
-            try {
-                const user = JSON.parse(sessionStorage.getItem("user") || "null");
-                const element = document.getElementById("headerUserName");
-                if (user && user.name && element) element.textContent = user.name;
-            } catch (error) {}
+            load();
         })();
     </script>
-
 </body>
-
 </html>

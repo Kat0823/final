@@ -2,953 +2,285 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"content="width=device-width, initial-scale=1.0">
-    <title>Classes - MPSU ETEEAP LMS</title>
-    <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Classes | MPSU ETEEAP LMS</title>
+    <link rel="icon" href="../images/logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="css/portal.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            width: 100%;
-            min-height: 100%;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background: white;
-            color: #222;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-
-            width: 100%;
-            height: 84px;
-
-            background: #086b3c;
-
+        .toolbar {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            padding: 0 38px;
-
-            color: white;
-
-            border-radius: 0 0 4px 4px;
-
-            z-index: 1000;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .header-logo {
-            width: 58px;
-            height: 58px;
-            object-fit: contain;
-        }
-
-        .header-titles {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .brand-title {
-            color: white;
-            font-size: 23px;
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-
-        .brand-subtitle {
-            color: white;
-            font-size: 14px;
-        }
-
-         .header-right {
-            display: flex;
-            align-items: center;
-        }
-
-
-        .user-link {
-            color: white;
-
-            font-size: 16px;
-
-            text-decoration: underline;
-
-            cursor: pointer;
-        }
-
-
-        .user-link:hover {
-            color: #ffd32a;
-        }
-
-
-        /* =========================================
-           MAIN LAYOUT
-        ========================================== */
-
-        .main {
-            width: 100%;
-
-            display: flex;
-
-            min-height: calc(100vh - 84px);
-
-            padding-top: 84px;
-        }
-
-
-        /* =========================================
-           SIDEBAR
-        ========================================== */
-
-        .sidebar {
-            position: fixed;
-
-            top: 84px;
-            left: 0;
-
-            width: 270px;
-            height: calc(100vh - 84px);
-
-            background: #086b3c;
-
-            padding: 25px 12px;
-
-            border-radius: 0 0 7px 0;
-
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-
-            overflow-y: auto;
-
-            z-index: 900;
-        }
-
-
-        /* =========================================
-           SIDEBAR TOP
-        ========================================== */
-
-        .sidebar-top {
-            display: flex;
-            flex-direction: column;
-        }
-
-
-        /* =========================================
-           SIDEBAR BOTTOM
-        ========================================== */
-
-        .sidebar-bottom {
-            margin-top: auto;
-        }
-
-
-        /* =========================================
-           VIEW
-        ========================================== */
-
-        .view {
-            height: 60px;
-
-            padding: 0 24px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            color: white;
-
-            font-size: 20px;
-
-            margin-bottom: 10px;
-        }
-
-        .view i {
-            font-size: 22px;
-            color: white;
-        }
-
-
-        /* =========================================
-           SIDEBAR MENU
-        ========================================== */
-
-        .menu {
-            width: 100%;
-            height: 47px;
-
-            display: flex;
-            align-items: center;
-
-            gap: 20px;
-
-            padding: 0 25px;
-
-            margin-bottom: 5px;
-
-            border-radius: 9px;
-
-            color: white;
-
-            font-size: 18px;
-
-            transition: 0.2s;
-
-            text-decoration: none;
-        }
-
-
-        /* REMOVE UNDERLINES */
-
-        .menu,
-        .menu:hover,
-        .menu:focus,
-        .menu:active,
-        .menu:visited {
-            text-decoration: none;
-        }
-
-        .menu i {
-            width: 22px;
-
-            text-align: center;
-
-            font-size: 19px;
-        }
-
-        .menu:hover {
-            background: rgba(255, 255, 255, 0.10);
-        }
-
-
-        /* =========================================
-           ACTIVE MENU
-        ========================================== */
-
-        .menu.active {
-            background: #ffd34e;
-
-            color: #222;
-
-            font-weight: normal;
-        }
-
-        .menu.active i {
-            color: #222;
-        }
-
-
-        /* =========================================
-           LOGOUT
-        ========================================== */
-
-        .logout-menu {
-            margin-bottom: 0;
-        }
-
-
-        /* =========================================
-           MAIN CONTENT
-        ========================================== */
-
-        .content {
-            margin-left: 270px;
-
-            width: calc(100% - 270px);
-
-            background: white;
-
-            padding: 35px 40px;
-
-            min-width: 0;
-
-            min-height: calc(100vh - 84px);
-        }
-
-
-        /* =========================================
-           TITLE
-        ========================================== */
-
-        .title-row {
-            width: 100%;
+            flex-wrap: wrap;
+            gap: 12px;
             margin-bottom: 18px;
         }
 
-        .title-row h1 {
-            color: #222;
-
-            font-size: 32px;
-
-            font-weight: bold;
+        .search {
+            position: relative;
+            flex: 1 1 260px;
+            max-width: 420px;
         }
 
+        .search i {
+            position: absolute;
+            top: 50%;
+            left: 14px;
+            color: var(--muted);
+            transform: translateY(-50%);
+        }
 
-        /* =========================================
-           FEEDBACK
-        ========================================== */
-
-        .feedback {
+        .search input {
             width: 100%;
-
             min-height: 42px;
+            padding: 10px 12px 10px 40px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            background: var(--white);
+        }
 
-            background: #e0e1e5;
+        .search input:focus {
+            outline: 2px solid rgba(8, 104, 60, 0.22);
+            border-color: var(--green);
+        }
 
-            border-radius: 9px;
+        .class-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 18px;
+        }
 
-            padding: 0 18px;
+        .class-card {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            background: var(--white);
+            box-shadow: var(--shadow);
+            color: inherit;
+            text-decoration: none;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
 
+        .class-card:hover,
+        .class-card:focus-visible {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+            outline: none;
+        }
+
+        .class-card:focus-visible {
+            outline: 2px solid var(--green);
+            outline-offset: 2px;
+        }
+
+        .class-banner {
             display: flex;
             align-items: center;
             justify-content: space-between;
-
-            color: #555;
-
-            font-size: 16px;
-
-            margin-bottom: 33px;
+            gap: 10px;
+            padding: 16px 18px;
+            background: var(--green);
+            color: var(--white);
         }
 
-        .feedback button {
-            border: none;
-
-            background: transparent;
-
-            color: #777;
-
-            font-size: 15px;
-
-            cursor: pointer;
-
-            padding: 5px 8px;
+        .class-banner .code {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
         }
 
-        .feedback button:hover {
-            color: #086b3c;
-
-            font-weight: bold;
-        }
-
-
-        /* =========================================
-           HORIZONTAL LINE
-        ========================================== */
-
-        .content hr {
-            width: 100%;
-
-            border: none;
-
-            border-top: 1px solid #999;
-
-            margin-bottom: 20px;
-        }
-
-
-        /* =========================================
-           COURSES
-        ========================================== */
-
-        .courses {
-            width: 100%;
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(3, minmax(0, 1fr));
-
-            gap: 23px;
-        }
-
-
-        /* =========================================
-           COURSE CARD
-        ========================================== */
-
-        .course-card {
-            min-height: 140px;
-
-            background: white;
-
-            border: 2px solid #35a36b;
-
-            border-radius: 9px;
-
-            padding: 18px;
-
-            display: block;
-
-            color: #222;
-
-            box-shadow:
-                0 2px 5px rgba(0, 0, 0, 0.12);
-
-            transition:
-                transform 0.2s,
-                box-shadow 0.2s,
-                background 0.2s;
-        }
-
-        .course-card:hover {
-            background: #fbfdfc;
-
-            transform: translateY(-2px);
-
-            box-shadow:
-                0 5px 10px rgba(0, 0, 0, 0.14);
-        }
-
-
-        /* =========================================
-           COURSE NAME
-        ========================================== */
-
-        .course-card h3 {
-            color: #222;
-
+        .class-banner i {
             font-size: 20px;
-
-            font-weight: bold;
-
-            margin-bottom: 18px;
+            opacity: 0.85;
         }
 
-
-        /* =========================================
-           INSTRUCTOR
-        ========================================== */
-
-        .course-card p {
-            color: #777;
-
-            font-size: 15px;
-
-            line-height: 1.4;
+        .class-body {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            gap: 10px;
+            padding: 18px;
         }
 
-
-        /* =========================================
-           TABLET
-        ========================================== */
-
-        @media (max-width: 1000px) {
-
-            .sidebar {
-                width: 230px;
-            }
-
-            .content {
-                margin-left: 230px;
-
-                width: calc(100% - 230px);
-
-                padding: 30px;
-            }
-
-            .courses {
-                grid-template-columns:
-                    repeat(2, minmax(0, 1fr));
-            }
+        .class-body h3 {
+            font-size: 17px;
+            line-height: 1.35;
         }
 
-
-        /* =========================================
-           MOBILE
-        ========================================== */
-
-        @media (max-width: 650px) {
-
-            .header {
-                position: relative;
-
-                height: auto;
-
-                min-height: 75px;
-
-                padding: 10px 15px;
-            }
-
-            .header-logo {
-                width: 45px;
-                height: 45px;
-            }
-
-            .brand-title {
-                font-size: 16px;
-            }
-
-            .brand-subtitle {
-                font-size: 10px;
-            }
-
-            .header-right {
-                display: none;
-            }
-
-
-            /* Main becomes vertical */
-
-            .main {
-                flex-direction: column;
-
-                padding-top: 0;
-            }
-
-
-            /* Sidebar becomes horizontal */
-
-            .sidebar {
-                position: relative;
-
-                top: auto;
-                left: auto;
-
-                width: 100%;
-
-                height: auto;
-
-                min-height: auto;
-
-                display: flex;
-
-                flex-direction: row;
-
-                overflow-x: auto;
-
-                padding: 8px;
-
-                gap: 5px;
-
-                border-radius: 0;
-
-                justify-content: flex-start;
-            }
-
-
-            .sidebar-top {
-                display: flex;
-
-                flex-direction: row;
-
-                gap: 5px;
-            }
-
-
-            .sidebar-bottom {
-                margin-top: 0;
-            }
-
-
-            .view {
-                display: none;
-            }
-
-
-            .menu {
-                min-width: 105px;
-
-                justify-content: center;
-
-                padding: 10px;
-
-                margin: 0;
-
-                font-size: 13px;
-            }
-
-
-            /* Content */
-
-            .content {
-                margin-left: 0;
-
-                width: 100%;
-
-                padding: 20px 15px;
-            }
-
-            .title-row h1 {
-                font-size: 27px;
-            }
-
-            .feedback {
-                font-size: 13px;
-
-                min-height: 45px;
-
-                padding: 0 13px;
-            }
-
-            .courses {
-                grid-template-columns: 1fr;
-
-                gap: 15px;
-            }
-
-            .course-card {
-                min-height: 120px;
-            }
+        .class-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted);
+            font-size: 13px;
         }
 
-
-        /* =========================================
-           SMALL MOBILE
-        ========================================== */
-
-        @media (max-width: 400px) {
-
-            .brand-title {
-                font-size: 14px;
-            }
-
-            .brand-subtitle {
-                display: none;
-            }
-
-            .menu {
-                min-width: 90px;
-
-                font-size: 11px;
-            }
-
-            .menu i {
-                font-size: 14px;
-            }
-
-            .title-row h1 {
-                font-size: 24px;
-            }
-
-            .course-card h3 {
-                font-size: 18px;
-            }
-
-            .course-card p {
-                font-size: 13px;
-            }
+        .progress {
+            margin-top: auto;
+            padding-top: 8px;
         }
 
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: var(--border-light);
+        }
+
+        .progress-bar span {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+            background: var(--green);
+        }
     </style>
-
 </head>
-
-
-<body>
-
-
-    <!-- =========================================
-         HEADER
-    ========================================== -->
-
-    <header class="header">
-
-        <div class="header-left">
-
-            <img
-                src="../images/logo.png"
-                class="header-logo"
-                alt="MPSU Logo">
-
-            <div class="header-titles">
-
-                <h1 class="brand-title">
-                    MPSU ETEEAP LMS
-                </h1>
-
-                <p class="brand-subtitle">
-                    Mountain Province State University
-                </p>
-
+<body data-page="classes">
+    <main class="main-content" id="main">
+        <div class="page-header">
+            <div>
+                <h2>My Classes</h2>
+                <p id="classSummary">Loading your classes...</p>
             </div>
-
         </div>
 
-
-        <div class="header-right">
-
-            <a
-                href="profile.html"
-                class="user-link">
-
-                <span id="headerUserName">Learner</span>
-
-            </a>
-
+        <div class="stats" id="stats" hidden>
+            <div class="stat"><span>Classes</span><strong id="statClasses">0</strong></div>
+            <div class="stat"><span>Modules</span><strong id="statModules">0</strong></div>
+            <div class="stat"><span>Submitted</span><strong id="statSubmitted">0</strong></div>
+            <div class="stat"><span>Graded</span><strong id="statGraded">0</strong></div>
         </div>
 
-    </header>
+        <div class="toolbar" id="toolbar" hidden>
+            <label class="search">
+                <span class="visually-hidden">Search classes</span>
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input type="search" id="searchInput" placeholder="Search by class, code or instructor">
+            </label>
+        </div>
 
-
-    <!-- =========================================
-         MAIN
-    ========================================== -->
-
-    <div class="main">
-
-
-        <!-- =========================================
-             SIDEBAR
-        ========================================== -->
-
-        <aside class="sidebar">
-
-
-            <!-- TOP MENU -->
-
-            <div class="sidebar-top">
-
-                <div class="view">
-
-                    <span>
-                        View
-                    </span>
-
-                    <i class="fa-solid fa-table-columns"></i>
-
-                </div>
-
-
-                <a
-                    href="classes.html"
-                    class="menu active">
-
-                    <i class="fa-regular fa-folder"></i>
-
-                    <span>
-                        Classes
-                    </span>
-
-                </a>
-
-
-                <a
-                    href="grades.html"
-                    class="menu">
-
-                    <i class="fa-solid fa-chart-column"></i>
-
-                    <span>
-                        Grades
-                    </span>
-
-                </a>
-
-
-                <a
-                    href="notification.html"
-                    class="menu">
-
-                    <i class="fa-regular fa-bell"></i>
-
-                    <span>
-                        Notifications
-                    </span>
-
-                </a>
-
-
-                <a
-                    href="profile.html"
-                    class="menu">
-
-                    <i class="fa-regular fa-user"></i>
-
-                    <span>
-                        Profile
-                    </span>
-
-                </a>
-
+        <div id="classList" class="class-grid" aria-live="polite">
+            <div class="card state" style="grid-column: 1 / -1">
+                <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+                <h3>Loading classes</h3>
             </div>
+        </div>
+    </main>
 
-
-            <!-- BOTTOM MENU -->
-
-            <div class="sidebar-bottom">
-
-                <a
-                    href="logout.html"
-                    class="menu logout-menu">
-
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
-
-                    <span>
-                        Logout
-                    </span>
-
-                </a>
-
-            </div>
-
-        </aside>
-
-
-        <!-- =========================================
-             CONTENT
-        ========================================== -->
-
-        <main class="content">
-
-
-            <!-- TITLE -->
-
-            <div class="title-row">
-
-                <h1>
-                    Classes
-                </h1>
-
-            </div>
-
-
-            <!-- FEEDBACK -->
-
-            <div
-                class="feedback"
-                id="feedback">
-
-                <span>
-                    New Feedback on Intro to Computing
-                </span>
-
-                <button
-                    type="button"
-                    onclick="dismissFeedback()">
-
-                    Dismiss
-
-                </button>
-
-            </div>
-
-
-            <!-- LINE -->
-
-            <hr>
-
-
-            <!-- =========================================
-                 COURSES
-            ========================================== -->
-
-            <div class="courses">
-
-
-                <!-- COURSE 1 -->
-
-                <a
-                    href="courses.html"
-                    class="course-card">
-
-                    <h3>
-                        CRIM -A
-                    </h3>
-
-                    <p>
-                        Kim Reyes
-                    </p>
-
-                </a>
-
-
-                <!-- COURSE 2 -->
-
-                <a
-                    href="courses.html"
-                    class="course-card">
-
-                    <h3>
-                        CRIM1
-                    </h3>
-
-                    <p>
-                        Jennifer Lopez
-                    </p>
-
-                </a>
-
-
-                <!-- COURSE 3 -->
-
-                <a
-                    href="courses.html"
-                    class="course-card">
-
-                    <h3>
-                        CRIM 2
-                    </h3>
-
-                    <p>
-                        Patricia Flores
-                    </p>
-
-                </a>
-
-
-            </div>
-
-
-        </main>
-
-    </div>
-
-
-    <!-- =========================================
-         JAVASCRIPT
-    ========================================== -->
-
+    <script src="../api-config.js"></script>
+    <script src="js/portal.js"></script>
     <script>
+        (function () {
+            if (!window.Portal) return;
+            const { api, escape } = window.Portal;
+            const $ = id => document.getElementById(id);
+            let classes = [];
 
-        function dismissFeedback() {
+            function render() {
+                const list = $("classList");
+                const query = $("searchInput").value.trim().toLowerCase();
 
-            const feedback =
-                document.getElementById("feedback");
+                const shown = classes.filter(item => !query || [
+                    item.name, item.code, item.subject_code, item.program, item.instructor?.name
+                ].some(value => String(value || "").toLowerCase().includes(query)));
 
-            if (feedback) {
+                if (classes.length === 0) {
+                    list.innerHTML = `
+                        <div class="card state" style="grid-column: 1 / -1">
+                            <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+                            <h3>You are not enrolled in any class yet</h3>
+                            <p>Your classes will appear here once your administrator enrolls you.</p>
+                        </div>`;
+                    return;
+                }
 
-                feedback.style.display = "none";
+                if (shown.length === 0) {
+                    list.innerHTML = `
+                        <div class="card state" style="grid-column: 1 / -1">
+                            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                            <h3>No classes match "${escape(query)}"</h3>
+                        </div>`;
+                    return;
+                }
 
+                list.innerHTML = shown.map(item => {
+                    const total = item.module_count || 0;
+                    const done = Math.min(item.submitted_count || 0, total);
+                    const percent = total ? Math.round((done / total) * 100) : 0;
+
+                    return `
+                        <a class="class-card" href="modules.html?course=${encodeURIComponent(item.id)}">
+                            <div class="class-banner">
+                                <span class="code">${escape(item.code || item.subject_code || "CLASS")}</span>
+                                <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+                            </div>
+                            <div class="class-body">
+                                <h3>${escape(item.name)}</h3>
+                                <span class="class-meta">
+                                    <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i>
+                                    ${escape(item.instructor?.name || "No instructor assigned")}
+                                </span>
+                                <span class="class-meta">
+                                    <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+                                    ${total} module${total === 1 ? "" : "s"}${item.graded_count ? ` · ${item.graded_count} graded` : ""}
+                                </span>
+                                <div class="progress">
+                                    <div class="progress-label">
+                                        <span>Activities submitted</span>
+                                        <span>${done} / ${total}</span>
+                                    </div>
+                                    <div class="progress-bar" role="progressbar" aria-label="Activities submitted"
+                                        aria-valuemin="0" aria-valuemax="100" aria-valuenow="${percent}">
+                                        <span style="width: ${percent}%"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>`;
+                }).join("");
             }
 
-        }
+            async function load() {
+                try {
+                    const data = await api("/student/courses");
+                    classes = Array.isArray(data.courses) ? data.courses : [];
 
-    </script>
+                    const sum = key => classes.reduce((total, item) => total + (item[key] || 0), 0);
+                    $("statClasses").textContent = classes.length;
+                    $("statModules").textContent = sum("module_count");
+                    $("statSubmitted").textContent = sum("submitted_count");
+                    $("statGraded").textContent = sum("graded_count");
+                    $("stats").hidden = classes.length === 0;
+                    $("toolbar").hidden = classes.length === 0;
+                    $("classSummary").textContent = classes.length
+                        ? `You are enrolled in ${classes.length} class${classes.length === 1 ? "" : "es"}.`
+                        : "No classes yet.";
 
+                    render();
+                } catch (error) {
+                    $("classSummary").textContent = "Unable to load your classes.";
+                    $("classList").innerHTML = `
+                        <div class="card state" style="grid-column: 1 / -1">
+                            <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                            <h3>Unable to load your classes</h3>
+                            <p>${escape(error.message)}</p>
+                            <button class="btn" type="button" id="retryButton">Try again</button>
+                        </div>`;
+                    $("retryButton").addEventListener("click", load);
+                }
+            }
 
-    <script>
-        // Show the logged-in learner's name in the header.
-        (function () {
-            try {
-                const user = JSON.parse(sessionStorage.getItem("user") || "null");
-                const element = document.getElementById("headerUserName");
-                if (user && user.name && element) element.textContent = user.name;
-            } catch (error) {}
+            $("searchInput").addEventListener("input", render);
+            load();
         })();
     </script>
-
 </body>
-
 </html>

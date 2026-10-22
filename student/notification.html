@@ -1,1055 +1,253 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <title>Notifications - MPSU ETEEAP LMS</title>
-
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications | MPSU ETEEAP LMS</title>
+    <link rel="icon" href="../images/logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="css/portal.css">
     <style>
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background: white;
-            color: #222;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-
-        /* =========================
-           HEADER
-        ========================= */
-
-        .header {
-            position: fixed;
-
-            top: 0;
-            left: 0;
-
-            width: 100%;
-            height: 84px;
-
-            background: #086b3c;
-
+        .notice-list {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            padding: 0 38px;
-
-            color: white;
-
-            z-index: 1000;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-
-            gap: 20px;
-        }
-
-        .header-logo {
-            width: 58px;
-            height: 58px;
-
-            object-fit: contain;
-        }
-
-        .brand-title {
-            font-size: 23px;
-
-            font-weight: bold;
-
-            margin-bottom: 4px;
-        }
-
-        .brand-subtitle {
-            font-size: 14px;
-        }
-
-        .user-link {
-            color: white;
-        }
-
-        .user-link:hover {
-            text-decoration: underline;
-        }
-
-
-        /* =========================
-           MAIN
-        ========================= */
-
-        .main {
-            display: flex;
-
-            min-height: 100vh;
-
-            padding-top: 84px;
-        }
-
-
-        /* =========================
-           SIDEBAR
-        ========================= */
-
-        .sidebar {
-            position: fixed;
-
-            top: 84px;
-            left: 0;
-
-            width: 270px;
-
-            height: calc(100vh - 84px);
-
-            background: #086b3c;
-
-            padding: 25px 12px;
-
-            display: flex;
-
             flex-direction: column;
-
-            justify-content: space-between;
         }
 
-        .view {
-            height: 60px;
-
-            padding: 0 24px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            color: white;
-
-            font-size: 20px;
-        }
-
-        .menu {
+        .notice {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 14px;
             width: 100%;
-
-            height: 47px;
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 20px;
-
-            padding: 0 25px;
-
-            margin-bottom: 5px;
-
-            border-radius: 9px;
-
-            color: white;
-
-            font-size: 18px;
-
-            text-decoration: none;
+            padding: 16px 18px;
+            border: none;
+            border-bottom: 1px solid var(--border-light);
+            background: var(--white);
+            color: inherit;
+            text-align: left;
+            cursor: pointer;
         }
 
-        .menu:hover {
-            background: rgba(255,255,255,0.10);
+        .notice:last-child {
+            border-bottom: none;
         }
 
-        .menu.active {
-            background: #ffd34e;
-
-            color: #222;
+        .notice:hover {
+            background: #fafdfb;
         }
 
-        .menu i {
-            width: 22px;
-
-            text-align: center;
+        .notice:focus-visible {
+            outline: 2px solid var(--green);
+            outline-offset: -2px;
         }
 
-
-        /* =========================
-           CONTENT
-        ========================= */
-
-        .content {
-            margin-left: 270px;
-
-            width: calc(100% - 270px);
-
-            min-height: calc(100vh - 84px);
-
-            padding: 35px 40px;
+        .notice.unread {
+            background: #f3fbf6;
         }
 
-        .content h1 {
-            font-size: 30px;
-
-            margin-bottom: 25px;
+        .notice-icon {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: var(--green-soft);
+            color: var(--green);
         }
 
-
-        /* =========================
-           NOTIFICATION HEADER
-        ========================= */
-
-        .notification-header {
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            margin-bottom: 20px;
-        }
-
-        .notification-header p {
-            color: #666;
-
+        .notice-title {
+            display: block;
             font-size: 15px;
         }
 
-
-        /* =========================
-           NOTIFICATION LIST
-        ========================= */
-
-        .notifications {
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 12px;
-
-            max-width: 900px;
+        .notice.unread .notice-title {
+            font-weight: 700;
         }
 
-        .notification {
-            border: 2px solid #35a36b;
-
-            border-radius: 9px;
-
-            padding: 18px 20px;
-
-            background: white;
-
-            display: flex;
-
-            gap: 15px;
-        }
-
-        .notification-icon {
-            width: 42px;
-
-            height: 42px;
-
-            min-width: 42px;
-
-            border-radius: 50%;
-
-            background: #086b3c;
-
-            color: white;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-        }
-
-        .notification-content {
-            flex: 1;
-        }
-
-        .notification-title {
-            font-size: 17px;
-
-            font-weight: bold;
-
-            margin-bottom: 6px;
-        }
-
-        .notification-message {
-            color: #555;
-
+        .notice-text {
+            display: block;
+            margin-top: 4px;
+            color: var(--muted);
             line-height: 1.5;
-
-            margin-bottom: 7px;
+            overflow-wrap: anywhere;
         }
 
-        .notification-date {
-            color: #888;
-
-            font-size: 13px;
+        .notice time {
+            color: var(--muted);
+            font-size: 12px;
+            white-space: nowrap;
         }
 
-
-        /* =========================
-           UNREAD
-        ========================= */
-
-        .notification.unread {
-            background: #f3fbf6;
-
-            border-left: 6px solid #086b3c;
-        }
-
-        .unread-label {
+        .unread-dot {
             display: inline-block;
-
-            margin-left: 8px;
-
-            padding: 3px 7px;
-
-            border-radius: 10px;
-
-            background: #ffd34e;
-
-            color: #222;
-
-            font-size: 11px;
-
-            font-weight: bold;
+            width: 8px;
+            height: 8px;
+            margin-left: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            vertical-align: middle;
         }
 
-
-        /* =========================
-           EMPTY / LOADING / ERROR
-        ========================= */
-
-        .state {
-            border: 2px solid #35a36b;
-
-            border-radius: 9px;
-
-            padding: 35px;
-
-            max-width: 900px;
-
-            text-align: center;
-
-            color: #666;
+        .card.flush {
+            padding: 0;
+            overflow: hidden;
         }
 
-        .state i {
-            font-size: 30px;
+        @media (max-width: 600px) {
+            .notice {
+                grid-template-columns: auto 1fr;
+            }
 
-            color: #086b3c;
-
-            margin-bottom: 12px;
+            .notice time {
+                grid-column: 2;
+            }
         }
-
-        .error-state {
-            color: #9b2525;
-        }
-
-        .error-state i {
-            color: #9b2525;
-        }
-
-
-        /* =========================
-           MOBILE
-        ========================= */
-
-        @media (max-width: 650px) {
-
-            .header {
-                position: relative;
-
-                height: auto;
-
-                min-height: 75px;
-
-                padding: 10px 15px;
-            }
-
-            .header-logo {
-                width: 45px;
-                height: 45px;
-            }
-
-            .brand-title {
-                font-size: 16px;
-            }
-
-            .brand-subtitle {
-                font-size: 10px;
-            }
-
-            .header-right {
-                display: none;
-            }
-
-            .main {
-                padding-top: 0;
-
-                display: block;
-            }
-
-            .sidebar {
-                position: relative;
-
-                top: auto;
-                left: auto;
-
-                width: 100%;
-
-                height: auto;
-
-                flex-direction: row;
-
-                overflow-x: auto;
-
-                padding: 8px;
-            }
-
-            .view {
-                display: none;
-            }
-
-            .menu {
-                min-width: 105px;
-
-                justify-content: center;
-
-                font-size: 13px;
-
-                padding: 10px;
-
-                margin: 0 3px;
-            }
-
-            .content {
-                margin-left: 0;
-
-                width: 100%;
-
-                padding: 20px 15px;
-            }
-
-            .content h1 {
-                font-size: 25px;
-            }
-
-        }
-
     </style>
-
 </head>
-
-
-<body>
-
-
-    <!-- HEADER -->
-
-    <header class="header">
-
-        <div class="header-left">
-
-            <img
-                src="../images/logo.png"
-                class="header-logo"
-                alt="MPSU Logo">
-
+<body data-page="notifications">
+    <main class="main-content" id="main">
+        <div class="page-header">
             <div>
-
-                <div class="brand-title">
-                    MPSU ETEEAP LMS
-                </div>
-
-                <div class="brand-subtitle">
-                    Mountain Province State University
-                </div>
-
+                <h2>Notifications</h2>
+                <p id="summary">Loading...</p>
             </div>
-
+            <button class="btn secondary" type="button" id="markAllButton" disabled>
+                <i class="fa-solid fa-check-double" aria-hidden="true"></i> Mark all as read
+            </button>
         </div>
 
-
-        <div class="header-right">
-
-            <a
-                href="profile.html"
-                class="user-link"
-                id="userName">
-
-                Learner
-
-            </a>
-
+        <div class="tabs" role="tablist">
+            <button class="tab active" type="button" role="tab" aria-selected="true" data-filter="all">
+                All <span class="count" id="countAll">0</span>
+            </button>
+            <button class="tab" type="button" role="tab" aria-selected="false" data-filter="unread">
+                Unread <span class="count" id="countUnread">0</span>
+            </button>
+            <button class="tab" type="button" role="tab" aria-selected="false" data-filter="announcement">
+                Announcements
+            </button>
+            <button class="tab" type="button" role="tab" aria-selected="false" data-filter="grade">
+                Grades
+            </button>
         </div>
 
-    </header>
-
-
-
-    <!-- MAIN -->
-
-    <div class="main">
-
-
-        <!-- SIDEBAR -->
-
-        <aside class="sidebar">
-
-            <div>
-
-                <div class="view">
-
-                    <span>
-                        View
-                    </span>
-
-                    <i class="fa-solid fa-table-columns"></i>
-
-                </div>
-
-
-                <a
-                    href="classes.html"
-                    class="menu">
-
-                    <i class="fa-regular fa-folder"></i>
-
-                    <span>
-                        Classes
-                    </span>
-
-                </a>
-
-
-                <a
-                    href="grades.html"
-                    class="menu">
-
-                    <i class="fa-solid fa-chart-column"></i>
-
-                    <span>
-                        Grades
-                    </span>
-
-                </a>
-
-
-                <a
-                    href="notification.html"
-                    class="menu active">
-
-                    <i class="fa-regular fa-bell"></i>
-
-                    <span>
-                        Notifications
-                    </span>
-
-                </a>
-
-
-                <a
-                    href="profile.html"
-                    class="menu">
-
-                    <i class="fa-regular fa-user"></i>
-
-                    <span>
-                        Profile
-                    </span>
-
-                </a>
-
+        <section class="card flush">
+            <div class="notice-list" id="noticeList">
+                <div class="state"><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i><h3>Loading notifications</h3></div>
             </div>
-
-
-            <div>
-
-                <a
-                    href="logout.html"
-                    class="menu">
-
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
-
-                    <span>
-                        Logout
-                    </span>
-
-                </a>
-
-            </div>
-
-        </aside>
-
-
-
-        <!-- CONTENT -->
-
-        <main class="content">
-
-            <h1>
-                Notifications
-            </h1>
-
-
-            <div class="notification-header">
-
-                <p id="notificationCount">
-                    Loading notifications...
-                </p>
-
-            </div>
-
-
-            <!-- LOADING -->
-
-            <div
-                id="loadingState"
-                class="state">
-
-                <i class="fa-solid fa-spinner fa-spin"></i>
-
-                <p>
-                    Loading notifications...
-                </p>
-
-            </div>
-
-
-            <!-- EMPTY -->
-
-            <div
-                id="emptyState"
-                class="state"
-                style="display: none;">
-
-                <i class="fa-regular fa-bell"></i>
-
-                <p>
-                    You have no notifications.
-                </p>
-
-            </div>
-
-
-            <!-- ERROR -->
-
-            <div
-                id="errorState"
-                class="state error-state"
-                style="display: none;">
-
-                <i class="fa-solid fa-circle-exclamation"></i>
-
-                <p id="errorMessage">
-                    Unable to load notifications.
-                </p>
-
-            </div>
-
-
-            <!-- NOTIFICATIONS -->
-
-            <div
-                id="notifications"
-                class="notifications"
-                style="display: none;">
-
-            </div>
-
-        </main>
-
-    </div>
-
-
+        </section>
+    </main>
 
     <script src="../api-config.js"></script>
-<script>
+    <script src="js/portal.js"></script>
+    <script>
+        (function () {
+            if (!window.Portal) return;
+            const { api, escape, formatDate, toast, refreshBell } = window.Portal;
+            const $ = id => document.getElementById(id);
+            let notices = [];
+            let filter = "all";
 
-        /* ================================
-           API
-        ================================= */
+            const ICONS = {
+                grade: "fa-solid fa-star",
+                announcement: "fa-solid fa-bullhorn",
+                submission: "fa-solid fa-paper-plane"
+            };
 
-        const API_BASE_URL = window.SIKNAYAN_API_ORIGIN;
+            function render() {
+                const unread = notices.filter(item => !item.is_read).length;
+                $("countAll").textContent = notices.length;
+                $("countUnread").textContent = unread;
+                $("markAllButton").disabled = unread === 0;
+                $("summary").textContent = unread
+                    ? `You have ${unread} unread notification${unread === 1 ? "" : "s"}.`
+                    : "You're all caught up.";
 
+                const shown = notices.filter(item =>
+                    filter === "all" ||
+                    (filter === "unread" && !item.is_read) ||
+                    item.type === filter);
 
-        /* ================================
-           TOKEN
-        ================================= */
-
-        const token =
-            sessionStorage.getItem(
-                "authToken"
-            );
-
-
-        /* ================================
-           USER
-        ================================= */
-
-        const savedUser =
-            sessionStorage.getItem(
-                "user"
-            );
-
-
-        const userName =
-            document.getElementById(
-                "userName"
-            );
-
-
-        if (savedUser) {
-
-            try {
-
-                const user =
-                    JSON.parse(savedUser);
-
-                userName.textContent =
-                    user.name || "Learner";
-
-            } catch (error) {
-
-                userName.textContent =
-                    "Learner";
-
-            }
-
-        }
-
-
-        /* ================================
-           ELEMENTS
-        ================================= */
-
-        const loadingState =
-            document.getElementById(
-                "loadingState"
-            );
-
-        const emptyState =
-            document.getElementById(
-                "emptyState"
-            );
-
-        const errorState =
-            document.getElementById(
-                "errorState"
-            );
-
-        const errorMessage =
-            document.getElementById(
-                "errorMessage"
-            );
-
-        const notificationsContainer =
-            document.getElementById(
-                "notifications"
-            );
-
-        const notificationCount =
-            document.getElementById(
-                "notificationCount"
-            );
-
-
-        /* ================================
-           LOGIN CHECK
-        ================================= */
-
-        if (!token) {
-
-            window.location.href =
-                "../index.html";
-
-        } else {
-
-            loadNotifications();
-
-        }
-
-
-        /* ================================
-           LOAD NOTIFICATIONS
-        ================================= */
-
-        async function loadNotifications() {
-
-            try {
-
-                const response =
-                    await fetch(
-                        `${API_BASE_URL}/api/student/notifications`,
-                        {
-                            method: "GET",
-
-                            headers: {
-                                "Accept":
-                                    "application/json",
-
-                                "Authorization":
-                                    `Bearer ${token}`
-                            }
-                        }
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                /* =========================
-                   SESSION EXPIRED
-                ========================== */
-
-                if (
-                    response.status === 401
-                ) {
-
-                    sessionStorage.clear();
-
-                    window.location.href =
-                        "../index.html";
-
+                if (shown.length === 0) {
+                    $("noticeList").innerHTML = `
+                        <div class="state">
+                            <i class="fa-regular fa-bell-slash" aria-hidden="true"></i>
+                            <h3>No notifications here</h3>
+                            <p>Announcements and grades from your instructors will appear here.</p>
+                        </div>`;
                     return;
-
                 }
 
-
-                /* =========================
-                   SERVER ERROR
-                ========================== */
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        data.message ||
-                        "Unable to load notifications."
-                    );
-
-                }
-
-
-                const notifications =
-                    data.notifications || [];
-
-
-                loadingState.style.display =
-                    "none";
-
-
-                /* =========================
-                   EMPTY
-                ========================== */
-
-                if (
-                    notifications.length === 0
-                ) {
-
-                    emptyState.style.display =
-                        "block";
-
-                    notificationCount.textContent =
-                        "No notifications";
-
-                    return;
-
-                }
-
-
-                /* =========================
-                   COUNT
-                ========================== */
-
-                const unreadCount =
-                    notifications.filter(
-                        notification =>
-                            !notification.is_read
-                    ).length;
-
-
-                notificationCount.textContent =
-                    unreadCount > 0
-                        ? `${unreadCount} unread notification${unreadCount === 1 ? "" : "s"}`
-                        : `${notifications.length} notification${notifications.length === 1 ? "" : "s"}`;
-
-
-                /* =========================
-                   SHOW CONTAINER
-                ========================== */
-
-                notificationsContainer.style.display =
-                    "flex";
-
-
-                /* =========================
-                   DISPLAY NOTIFICATIONS
-                ========================== */
-
-                notificationsContainer.innerHTML =
-                    notifications.map(
-                        notification => {
-
-                            const unread =
-                                !notification.is_read;
-
-
-                            const date =
-                                notification.created_at
-                                    ? new Date(
-                                        notification.created_at
-                                      ).toLocaleString()
-                                    : "";
-
-
-                            return `
-
-                                <div class="notification ${
-                                    unread
-                                        ? "unread"
-                                        : ""
-                                }">
-
-                                    <div class="notification-icon">
-
-                                        <i class="fa-regular fa-bell"></i>
-
-                                    </div>
-
-
-                                    <div class="notification-content">
-
-                                        <div class="notification-title">
-
-                                            ${escapeHtml(
-                                                notification.title ||
-                                                "Notification"
-                                            )}
-
-                                            ${
-                                                unread
-                                                    ? `
-                                                        <span class="unread-label">
-                                                            NEW
-                                                        </span>
-                                                      `
-                                                    : ""
-                                            }
-
-                                        </div>
-
-
-                                        <div class="notification-message">
-
-                                            ${escapeHtml(
-                                                notification.message ||
-                                                ""
-                                            )}
-
-                                        </div>
-
-
-                                        <div class="notification-date">
-
-                                            ${escapeHtml(
-                                                date
-                                            )}
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            `;
-
-                        }
-                    ).join("");
-
-
-            } catch (error) {
-
-                loadingState.style.display =
-                    "none";
-
-                errorState.style.display =
-                    "block";
-
-                errorMessage.textContent =
-                    error.message ||
-                    "Unable to load notifications.";
-
+                $("noticeList").innerHTML = shown.map(item => `
+                    <button type="button" class="notice${item.is_read ? "" : " unread"}" data-id="${escape(item.id)}"
+                        aria-label="${escape(item.title)}${item.is_read ? "" : ", unread. Mark as read"}">
+                        <span class="notice-icon"><i class="${ICONS[item.type] || "fa-solid fa-bell"}" aria-hidden="true"></i></span>
+                        <span>
+                            <strong class="notice-title">${escape(item.title)}${item.is_read ? "" : '<span class="unread-dot" aria-hidden="true"></span>'}</strong>
+                            <span class="notice-text">${escape(item.message)}</span>
+                        </span>
+                        <time datetime="${escape(item.created_at)}">${escape(formatDate(item.created_at))}</time>
+                    </button>`).join("");
             }
 
-        }
+            document.querySelectorAll(".tab").forEach(tab => tab.addEventListener("click", () => {
+                filter = tab.dataset.filter;
+                document.querySelectorAll(".tab").forEach(other => {
+                    other.classList.toggle("active", other === tab);
+                    other.setAttribute("aria-selected", String(other === tab));
+                });
+                render();
+            }));
 
+            $("noticeList").addEventListener("click", async event => {
+                const button = event.target.closest(".notice");
+                if (!button) return;
+                const notice = notices.find(item => String(item.id) === button.dataset.id);
+                if (!notice || notice.is_read) return;
 
-        /* ================================
-           ESCAPE HTML
-        ================================= */
+                try {
+                    await api(`/student/notifications/${encodeURIComponent(notice.id)}/read`, { method: "POST" });
+                    notice.is_read = true;
+                    render();
+                    refreshBell();
+                } catch (error) {
+                    toast(error.message, "error");
+                }
+            });
 
-        function escapeHtml(value) {
+            $("markAllButton").addEventListener("click", async () => {
+                $("markAllButton").disabled = true;
+                try {
+                    await api("/student/notifications/read-all", { method: "POST" });
+                    notices.forEach(item => { item.is_read = true; });
+                    render();
+                    refreshBell();
+                    toast("All notifications marked as read.");
+                } catch (error) {
+                    $("markAllButton").disabled = false;
+                    toast(error.message, "error");
+                }
+            });
 
-            if (
-                value === null ||
-                value === undefined
-            ) {
-
-                return "";
+            async function load() {
+                try {
+                    const data = await api("/student/notifications");
+                    notices = Array.isArray(data.notifications) ? data.notifications : [];
+                    render();
+                } catch (error) {
+                    $("summary").textContent = "Unable to load notifications.";
+                    $("noticeList").innerHTML = `
+                        <div class="state">
+                            <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                            <h3>Unable to load notifications</h3>
+                            <p>${escape(error.message)}</p>
+                            <button class="btn" type="button" id="retryButton">Try again</button>
+                        </div>`;
+                    $("retryButton").addEventListener("click", load);
+                }
             }
 
-
-            return String(value)
-
-                .replace(
-                    /&/g,
-                    "&amp;"
-                )
-
-                .replace(
-                    /</g,
-                    "&lt;"
-                )
-
-                .replace(
-                    />/g,
-                    "&gt;"
-                )
-
-                .replace(
-                    /"/g,
-                    "&quot;"
-                )
-
-                .replace(
-                    /'/g,
-                    "&#039;"
-                );
-
-        }
-
+            load();
+        })();
     </script>
-
 </body>
-
 </html>

@@ -70,12 +70,15 @@ class SubmissionController extends Controller
          * Also load the course instructor.
          */
 
+        // Only published modules accept work (drafts are hidden from learners).
         $module = Module::with([
             'course',
             'course.instructor'
-        ])->find(
-            $validated['module_id']
-        );
+        ])
+            ->where('is_published', true)
+            ->find(
+                $validated['module_id']
+            );
 
 
         /*
@@ -101,12 +104,11 @@ class SubmissionController extends Controller
          * is enrolled in the course.
          */
 
-        $enrolled = $learner->courses()
-            ->where(
-                'courses.id',
-                $module->course_id
-            )
-            ->exists();
+        // Enrolled in the module's class, and the class is still active.
+        $enrolled = ModuleController::findForLearner(
+            $learner,
+            $module->id
+        ) !== null;
 
 
         if (!$enrolled) {
@@ -281,11 +283,9 @@ class SubmissionController extends Controller
                 'module_id' =>
                     $submission->module_id,
 
+                // The stored location stays private.
                 'file_name' =>
                     $submission->file_name,
-
-                'file_path' =>
-                    $submission->file_path,
 
                 'comment' =>
                     $submission->comment,

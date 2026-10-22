@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Module;
+use App\Models\Submission;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -11,45 +13,48 @@ use Illuminate\Support\Str;
 
 class ModuleController extends Controller
 {
+    /**
+     * A published module in an active class the learner is enrolled in,
+     * or null. Used for viewing, downloading and submitting.
+     */
+    public static function findForLearner(User $learner, $moduleId): ?Module
+    {
+        return Module::where('id', $moduleId)
+            ->where('is_published', true)
+            ->whereHas('course', fn ($query) => $query
+                ->where('is_active', true)
+                ->whereHas('learners', fn ($learners) => $learners->where('users.id', $learner->id)))
+            ->with('course.instructor:id,name')
+            ->first();
+    }
+
     public function show(Request $request, $moduleId): JsonResponse
     {
         $learner = $request->user();
-
-        $module = Module::with([
-            'course.instructor'
-        ])
-            ->where('id', $moduleId)
-            ->where('is_published', true)
-            ->first();
+        $module = self::findForLearner($learner, $moduleId);
 
         if (!$module) {
             return response()->json([
                 'success' => false,
-                'message' => 'Module not found.',
+                'message' => 'Module not found or you are not enrolled in its class.',
             ], 404);
         }
 
-        /*
-         * Make sure the learner is enrolled
-         * in the module's course.
-         */
-        $enrolled = $learner->courses()
-            ->where(
-                'courses.id',
-                $module->course_id
-            )
-            ->exists();
-
-        if (!$enrolled) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You are not enrolled in this course.',
-            ], 403);
-        }
+        $submission = StudentController::submissionsFor($learner, collect([$module->id]))->get($module->id);
+        $course = $module->course;
 
         return response()->json([
             'success' => true,
-            'module' => $module,
+            'module' => StudentController::module($module, $submission) + [
+                'course' => [
+                    'id' => $course->id,
+                    'name' => $course->name,
+                    'code' => $course->code,
+                    'instructor' => $course->instructor
+                        ? ['id' => $course->instructor->id, 'name' => $course->instructor->name]
+                        : null,
+                ],
+            ],
         ]);
     }
 
@@ -82,11 +87,8 @@ class ModuleController extends Controller
             ], 404);
         }
 
-        $enrolled = $learner->courses()
-            ->where('courses.id', $module->course_id)
-            ->exists();
-
-        if (!$enrolled) {
+        // Enrolled in the module's class, and the class is still active.
+        if (!self::findForLearner($learner, $module->id)) {
             return response()->json([
                 'success' => false,
                 'message' => 'You are not enrolled in this course.',
@@ -94,6 +96,41 @@ class ModuleController extends Controller
         }
 
         return self::sendMaterial($request, $module);
+    }
+
+    /**
+     * A learner views or downloads the file they submitted themselves.
+     */
+    public function submissionFile(Request $request, $submissionId)
+    {
+        $submission = Submission::where('id', $submissionId)
+            ->where('learner_id', $request->user()->id)
+            ->first();
+
+        $path = $submission ? str_replace('\\', '/', (string) $submission->file_path) : '';
+
+        if (
+            !$submission
+            || !str_starts_with($path, 'submissions/')
+            || str_contains($path, '..')
+            || !Storage::disk('local')->exists($path)
+        ) {
+            return response()->json([
+                'success' => false,
+                'message' => 'The submitted file could not be found.',
+            ], 404);
+        }
+
+        $fileName = trim(preg_replace('/[\x00-\x1F\x7F"\\\\\/:*?<>|]+/', '_', (string) $submission->file_name)) ?: basename($path);
+
+        if ($request->query('disposition') === 'inline') {
+            return Storage::disk('local')->response($path, $fileName, [
+                'Content-Type' => Storage::disk('local')->mimeType($path) ?: 'application/octet-stream',
+                'X-Content-Type-Options' => 'nosniff',
+            ], 'inline');
+        }
+
+        return Storage::disk('local')->download($path, $fileName);
     }
 
     /**
