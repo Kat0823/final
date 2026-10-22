@@ -206,14 +206,14 @@
     const NAV = [
         { page: "classes", href: "classes.html", icon: "fa-solid fa-book", label: "Classes" },
         { page: "grades", href: "grades.html", icon: "fa-solid fa-chart-column", label: "Grades" },
-        { page: "notifications", href: "notification.html", icon: "fa-solid fa-bell", label: "Notifications" },
-        { page: "profile", href: "profile.html", icon: "fa-solid fa-user", label: "Profile" }
+        { page: "notifications", href: "notification.html", icon: "fa-solid fa-bell", label: "Notifications" }
     ];
+    // My Profile opens from the name in the header, like the other portals.
 
-    function navLink(item, current) {
+    function navLink(item, current, extra = "") {
         const active = item.page === current;
         return `
-            <a href="${item.href}" class="nav-item${active ? " active" : ""}"${active ? ' aria-current="page"' : ""} title="${item.label}">
+            <a href="${item.href}" class="nav-item${active ? " active" : ""}"${active ? ' aria-current="page"' : ""} title="${item.label}"${extra}>
                 <i class="${item.icon}" aria-hidden="true"></i>
                 <span class="nav-label">${item.label}</span>
             </a>`;
@@ -245,7 +245,7 @@
                         <span class="notification-dot" hidden></span>
                     </a>
 
-                    <a class="profile" href="profile.html" title="My profile" aria-label="My profile: ${escape(name)}">
+                    <a class="profile" href="profile.html" title="My Profile" aria-label="Open My Profile: ${escape(name)}"${current === "profile" ? ' aria-current="page"' : ""}>
                         <span class="profile-avatar" aria-hidden="true">${escape(initials(name))}</span>
                         <span class="profile-info">
                             <strong id="headerName">${escape(name)}</strong>
@@ -270,11 +270,22 @@
                 </nav>
 
                 <div class="sidebar-bottom">
-                    ${navLink({ page: "logout", href: "logout.html", icon: "fa-solid fa-right-from-bracket", label: "Logout" }, current)}
+                    ${navLink({ page: "logout", href: LOGIN_PAGE, icon: "fa-solid fa-right-from-bracket", label: "Logout" }, current, " data-learner-logout")}
                 </div>
             </aside>
 
             <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+            <dialog class="logout-dialog" id="logoutDialog" aria-labelledby="logoutTitle" aria-describedby="logoutMessage">
+                <h2 id="logoutTitle">Confirm Logout</h2>
+                <p id="logoutMessage">Are you sure you want to log out?</p>
+                <div class="logout-actions">
+                    <button type="button" class="btn plain" data-logout-cancel>Cancel</button>
+                    <button type="button" class="btn danger" data-logout-confirm>
+                        <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Logout
+                    </button>
+                </div>
+            </dialog>
             <div class="toast-area" id="toastArea" aria-live="polite"></div>`;
 
         document.body.prepend(...shell.children);
@@ -329,6 +340,46 @@
         });
     }
 
+    /* ---------------- LOGOUT (confirm dialog, like the System Admin) ---------------- */
+
+    function setUpLogout() {
+        const dialog = document.getElementById("logoutDialog");
+        const cancel = dialog.querySelector("[data-logout-cancel]");
+        const confirm = dialog.querySelector("[data-logout-confirm]");
+
+        function open() {
+            if (typeof dialog.showModal === "function") {
+                if (!dialog.open) dialog.showModal();
+                cancel.focus();
+            } else if (window.confirm("Are you sure you want to log out?")) {
+                window.siknayanLogout(LOGIN_PAGE);
+            }
+        }
+
+        document.addEventListener("click", event => {
+            const link = event.target.closest && event.target.closest("[data-learner-logout]");
+            if (!link) return;
+            event.preventDefault();
+            open();
+        });
+
+        cancel.addEventListener("click", () => dialog.close());
+
+        // Clicking the dark area outside the box closes it.
+        dialog.addEventListener("click", event => {
+            if (event.target === dialog) dialog.close();
+        });
+
+        confirm.addEventListener("click", () => {
+            confirm.disabled = true;
+            cancel.disabled = true;
+            // Ends the sign-in on the server too, then returns to login.
+            window.siknayanLogout(LOGIN_PAGE);
+        });
+
+        return open;
+    }
+
     /* ---------------- BELL ---------------- */
 
     async function refreshBell() {
@@ -351,6 +402,7 @@
 
     drawShell();
     setUpSidebar();
+    const openLogout = setUpLogout();
     refreshBell();
     window.setInterval(refreshBell, 60000);
     document.addEventListener("visibilitychange", () => {
@@ -365,6 +417,7 @@
         escape,
         formatDate,
         refreshBell,
+        openLogout,
         /** Updates the name shown in the header (after a profile change). */
         setUserName(name) {
             if (!name) return;

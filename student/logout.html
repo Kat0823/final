@@ -7,69 +7,27 @@
     <link rel="icon" href="../images/logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="css/portal.css">
-    <style>
-        .logout-card {
-            max-width: 520px;
-            margin: 40px auto 0;
-            text-align: center;
-        }
-
-        .logout-icon {
-            width: 72px;
-            height: 72px;
-            display: grid;
-            place-items: center;
-            margin: 0 auto 18px;
-            border-radius: 50%;
-            background: var(--green-soft);
-            color: var(--green);
-            font-size: 28px;
-        }
-
-        .logout-card h3 {
-            font-size: 22px;
-        }
-
-        .logout-card p {
-            margin-top: 8px;
-            color: var(--muted);
-        }
-
-        .logout-card .form-actions {
-            justify-content: center;
-            margin-top: 24px;
-        }
-    </style>
 </head>
+<!-- Logout now opens a confirmation box from the sidebar on every page.
+     This page is kept for old links: it opens the same box, and
+     Cancel returns to Classes. -->
 <body data-page="logout">
-    <main class="main-content" id="main">
-        <section class="card logout-card">
-            <div class="logout-icon"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i></div>
-            <h3>Log out?</h3>
-            <p>You will be signed out of your learner account on this browser.</p>
-            <div class="form-actions">
-                <a class="btn plain" href="classes.html">Cancel</a>
-                <button class="btn" type="button" id="logoutButton">
-                    <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
-                    <span>Yes, log out</span>
-                </button>
-            </div>
-        </section>
-    </main>
+    <main class="main-content" id="main"></main>
 
     <script src="../api-config.js"></script>
     <script src="js/portal.js"></script>
     <script>
         (function () {
             if (!window.Portal) return;
-            const button = document.getElementById("logoutButton");
+            const dialog = document.getElementById("logoutDialog");
+            let leaving = false;
 
-            button.addEventListener("click", () => {
-                button.disabled = true;
-                button.querySelector("span").textContent = "Logging out...";
-                // Ends the sign-in on the server too, then returns to login.
-                window.siknayanLogout("../index.html");
+            dialog.querySelector("[data-logout-confirm]").addEventListener("click", () => { leaving = true; });
+            dialog.addEventListener("close", () => {
+                if (!leaving) window.location.replace("classes.html");
             });
+
+            window.Portal.openLogout();
         })();
     </script>
 </body>

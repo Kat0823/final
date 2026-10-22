@@ -3,183 +3,391 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile | MPSU ETEEAP LMS</title>
+    <title>My Profile | MPSU ETEEAP LMS</title>
     <link rel="icon" href="../images/logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="css/portal.css">
     <style>
-        .profile-head {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
+        /* Same layout as the System Admin's My Profile page. */
+        .profile-page-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
+            align-items: stretch;
             gap: 18px;
         }
 
-        .big-avatar {
-            width: 76px;
-            height: 76px;
+        .profile-panel {
+            min-width: 0;
+            padding: 24px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--white);
+            box-shadow: 0 1px 4px rgba(38, 50, 56, 0.045);
+        }
+
+        .profile-card-heading-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .profile-card-heading h3 {
+            font-size: 21px;
+            line-height: 1.25;
+        }
+
+        .profile-card-heading p {
+            margin-top: 5px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .profile-identity {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            margin: 28px 0 24px;
+            min-width: 0;
+        }
+
+        .profile-page-avatar {
+            width: 148px;
+            height: 148px;
             display: grid;
             place-items: center;
+            flex-shrink: 0;
+            border: 3px solid var(--border-light);
             border-radius: 50%;
             background: var(--green);
             color: var(--white);
-            font-size: 26px;
+            font-size: 48px;
             font-weight: 700;
-            flex-shrink: 0;
         }
 
-        .profile-head h3 {
-            font-size: 22px;
+        .profile-identity-copy {
+            min-width: 0;
         }
 
-        .profile-head p {
-            margin-top: 4px;
-            color: var(--muted);
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 16px;
-            margin-top: 20px;
-            padding-top: 18px;
-            border-top: 1px solid var(--border-light);
-        }
-
-        .info-grid dt {
-            color: var(--muted);
-            font-size: 12px;
-        }
-
-        .info-grid dd {
-            margin-top: 4px;
-            font-weight: 600;
+        .profile-identity-copy h3 {
+            font-size: 21px;
+            line-height: 1.35;
             overflow-wrap: anywhere;
         }
 
-        .password-field {
-            position: relative;
+        .profile-role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-top: 12px;
+            padding: 8px 11px;
+            border-radius: 7px;
+            background: var(--green-light);
+            color: var(--green-dark);
+            font-size: 13px;
+            font-weight: 600;
         }
 
-        .password-field input {
-            padding-right: 44px;
+        .profile-detail-list {
+            border-top: 1px solid var(--border-light);
         }
 
-        .show-password {
-            position: absolute;
-            right: 6px;
-            bottom: 5px;
-            width: 34px;
-            height: 32px;
-            border: none;
-            background: transparent;
+        .profile-detail-row {
+            display: grid;
+            grid-template-columns: minmax(100px, 0.45fr) minmax(0, 1fr);
+            gap: 12px;
+            padding: 18px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .profile-detail-row:last-child {
+            border-bottom: 0;
+            padding-bottom: 4px;
+        }
+
+        .profile-detail-row span {
             color: var(--muted);
+        }
+
+        .profile-detail-row strong {
+            min-width: 0;
+            font-weight: 500;
+            overflow-wrap: anywhere;
+        }
+
+        .profile-edit-form,
+        .profile-password-form {
+            display: flex;
+            flex-direction: column;
+            gap: 17px;
+            margin-top: 22px;
+        }
+
+        .profile-password-form {
+            gap: 22px;
+            margin-top: 27px;
+        }
+
+        .profile-edit-field label,
+        .profile-password-field label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .profile-edit-input {
+            width: 100%;
+            height: 44px;
+            padding: 0 12px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            background: var(--white);
+            color: var(--text);
+            outline: none;
+        }
+
+        .profile-edit-input[readonly] {
+            background: #f4f6f5;
+            color: var(--muted);
+            cursor: not-allowed;
+        }
+
+        .profile-edit-input:focus,
+        .profile-password-input-wrap input:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(8, 104, 60, 0.1);
+        }
+
+        .profile-edit-note {
+            margin-top: -4px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .profile-password-input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-password-input-wrap input {
+            width: 100%;
+            height: 48px;
+            padding: 0 45px;
+            border: 1px solid #cdd8d3;
+            border-radius: 7px;
+            background: var(--white);
+            color: var(--text);
+            outline: none;
+        }
+
+        .profile-input-icon {
+            position: absolute;
+            left: 15px;
+            color: #718078;
+            pointer-events: none;
+        }
+
+        .password-visibility-toggle {
+            position: absolute;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            display: grid;
+            place-items: center;
+            border: 0;
+            border-radius: 5px;
+            background: transparent;
+            color: #718078;
             cursor: pointer;
+        }
+
+        .password-visibility-toggle:hover {
+            background: var(--green-light);
+            color: var(--green-dark);
+        }
+
+        .profile-form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .profile-form-actions .btn {
+            min-height: 44px;
+        }
+
+        .profile-inline-status {
+            padding: 10px 12px;
+            border: 1px solid var(--border-light);
+            border-radius: 7px;
+            background: #f7faf8;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .profile-inline-status[data-status="error"] {
+            border-color: #f0d3ce;
+            background: #fff7f6;
+            color: #9a3328;
+        }
+
+        .profile-inline-status[data-status="success"] {
+            border-color: #d5e8dc;
+            background: var(--green-light);
+            color: var(--green-dark);
+        }
+
+        @media (max-width: 1200px) {
+            .profile-page-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .profile-panel {
+                padding: 18px;
+            }
+
+            .profile-identity {
+                gap: 16px;
+            }
+
+            .profile-page-avatar {
+                width: 96px;
+                height: 96px;
+                font-size: 32px;
+            }
+
+            .profile-card-heading-row {
+                flex-wrap: wrap;
+            }
+
+            .profile-form-actions .btn {
+                flex: 1 1 auto;
+            }
         }
     </style>
 </head>
 <body data-page="profile">
     <main class="main-content" id="main">
-        <div class="page-header">
+        <section class="page-header">
             <div>
                 <h2>My Profile</h2>
-                <p>Your account details, contact information and password.</p>
+                <p>Manage your profile and account settings.</p>
             </div>
-        </div>
-
-        <section class="card">
-            <div class="profile-head">
-                <div class="big-avatar" id="bigAvatar" aria-hidden="true">L</div>
-                <div>
-                    <h3 id="profileName">Loading...</h3>
-                    <p>Learner</p>
-                </div>
-            </div>
-
-            <dl class="info-grid">
-                <div><dt>School ID</dt><dd id="infoSchoolId">-</dd></div>
-                <div><dt>Program</dt><dd id="infoProgram">-</dd></div>
-                <div><dt>Enrolled classes</dt><dd id="infoClasses">-</dd></div>
-                <div><dt>Account created</dt><dd id="infoCreated">-</dd></div>
-            </dl>
-            <p style="margin-top: 14px; color: var(--muted); font-size: 12px">
-                Your name, school ID and program are managed by your administrator. Ask them if something is wrong.
-            </p>
         </section>
 
-        <section class="card">
-            <div class="card-title">
-                <div>
-                    <h3>Contact information</h3>
-                    <p>Used by your school to reach you. Both are optional.</p>
-                </div>
-            </div>
-
-            <form id="contactForm" novalidate>
-                <div class="form-grid">
-                    <div class="field">
-                        <label for="email">Email address</label>
-                        <input type="email" id="email" maxlength="255" autocomplete="email" placeholder="name@example.com">
+        <div class="profile-page-grid">
+            <section class="profile-panel" aria-labelledby="profileInformationTitle">
+                <div class="profile-card-heading-row">
+                    <div class="profile-card-heading">
+                        <h3 id="profileInformationTitle">Profile</h3>
+                        <p>Your personal information and contact details.</p>
                     </div>
-                    <div class="field">
-                        <label for="contact">Contact number</label>
-                        <input type="tel" id="contact" maxlength="30" autocomplete="tel" placeholder="09XX XXX XXXX">
-                    </div>
-                </div>
-
-                <p class="form-message" id="contactMessage" hidden></p>
-
-                <div class="form-actions">
-                    <button class="btn plain" type="button" id="contactReset">Cancel</button>
-                    <button class="btn" type="submit" id="contactSave">
-                        <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> Save changes
+                    <button class="btn plain" id="editProfileButton" type="button">
+                        <i class="fa-solid fa-pen" aria-hidden="true"></i> Edit Profile
                     </button>
                 </div>
-            </form>
-        </section>
 
-        <section class="card" id="password">
-            <div class="card-title">
-                <div>
-                    <h3>Change password</h3>
+                <div class="profile-identity">
+                    <div class="profile-page-avatar" id="profileAvatar" aria-hidden="true">L</div>
+                    <div class="profile-identity-copy">
+                        <h3 id="profileDisplayName">Loading...</h3>
+                        <span class="profile-role-badge">
+                            <i class="fa-solid fa-user-graduate" aria-hidden="true"></i> Learner
+                        </span>
+                    </div>
+                </div>
+
+                <div class="profile-detail-list" id="profileDetails">
+                    <div class="profile-detail-row"><span>School ID</span><strong id="detailSchoolId">-</strong></div>
+                    <div class="profile-detail-row"><span>Program</span><strong id="detailProgram">-</strong></div>
+                    <div class="profile-detail-row"><span>Email address</span><strong id="detailEmail">Not set</strong></div>
+                    <div class="profile-detail-row"><span>Contact number</span><strong id="detailContact">Not set</strong></div>
+                    <div class="profile-detail-row"><span>Enrolled classes</span><strong id="detailClasses">-</strong></div>
+                </div>
+
+                <form class="profile-edit-form" id="profileEditForm" novalidate hidden>
+                    <div class="profile-edit-field">
+                        <label for="nameInput">Full Name</label>
+                        <input class="profile-edit-input" id="nameInput" type="text" readonly aria-describedby="profileEditNote">
+                    </div>
+                    <div class="profile-edit-field">
+                        <label for="schoolIdInput">School ID</label>
+                        <input class="profile-edit-input" id="schoolIdInput" type="text" readonly aria-describedby="profileEditNote">
+                    </div>
+                    <div class="profile-edit-field">
+                        <label for="emailInput">Email Address</label>
+                        <input class="profile-edit-input" id="emailInput" type="email" maxlength="255" autocomplete="email" placeholder="Enter your email (optional)">
+                    </div>
+                    <div class="profile-edit-field">
+                        <label for="contactInput">Contact Number</label>
+                        <input class="profile-edit-input" id="contactInput" type="tel" maxlength="30" autocomplete="tel" placeholder="09XX XXX XXXX (optional)">
+                    </div>
+                    <p class="profile-edit-note" id="profileEditNote">Your name, school ID and program are managed by your administrator and cannot be edited here.</p>
+                    <div class="profile-form-actions">
+                        <button class="btn plain" id="cancelEditButton" type="button">Cancel</button>
+                        <button class="btn" type="submit" id="saveProfileButton">
+                            <i class="fa-solid fa-check" aria-hidden="true"></i> Save Changes
+                        </button>
+                    </div>
+                </form>
+
+                <p class="profile-inline-status" id="profileStatus" role="status" aria-live="polite" hidden style="margin-top: 16px"></p>
+            </section>
+
+            <section class="profile-panel" aria-labelledby="changePasswordTitle">
+                <div class="profile-card-heading">
+                    <h3 id="changePasswordTitle">Change Password</h3>
                     <p>At least 8 characters. You stay signed in here; other devices are signed out.</p>
                 </div>
-            </div>
 
-            <form id="passwordForm" novalidate>
-                <div class="form-grid">
-                    <div class="field password-field">
-                        <label for="currentPassword">Current password</label>
-                        <input type="password" id="currentPassword" autocomplete="current-password" required>
-                        <button class="show-password" type="button" data-target="currentPassword" aria-label="Show password">
-                            <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                <form class="profile-password-form" id="passwordForm" novalidate>
+                    <div class="profile-password-field">
+                        <label for="currentPassword">Current Password</label>
+                        <div class="profile-password-input-wrap">
+                            <i class="fa-solid fa-lock profile-input-icon" aria-hidden="true"></i>
+                            <input type="password" id="currentPassword" placeholder="Enter current password" autocomplete="current-password" required>
+                            <button type="button" class="password-visibility-toggle" data-password-toggle="currentPassword" aria-label="Show current password" title="Show password">
+                                <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="profile-password-field">
+                        <label for="newPassword">New Password</label>
+                        <div class="profile-password-input-wrap">
+                            <i class="fa-solid fa-lock profile-input-icon" aria-hidden="true"></i>
+                            <input type="password" id="newPassword" placeholder="Enter new password" autocomplete="new-password" minlength="8" required>
+                            <button type="button" class="password-visibility-toggle" data-password-toggle="newPassword" aria-label="Show new password" title="Show password">
+                                <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="profile-password-field">
+                        <label for="confirmPassword">Confirm New Password</label>
+                        <div class="profile-password-input-wrap">
+                            <i class="fa-solid fa-lock profile-input-icon" aria-hidden="true"></i>
+                            <input type="password" id="confirmPassword" placeholder="Confirm new password" autocomplete="new-password" minlength="8" required>
+                            <button type="button" class="password-visibility-toggle" data-password-toggle="confirmPassword" aria-label="Show password confirmation" title="Show password">
+                                <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <p class="profile-inline-status" id="passwordStatus" role="status" aria-live="polite" hidden></p>
+
+                    <div class="profile-form-actions">
+                        <button type="reset" class="btn plain" id="cancelPasswordButton">Cancel</button>
+                        <button type="submit" class="btn" id="updatePasswordButton">
+                            <i class="fa-solid fa-key" aria-hidden="true"></i> Update Password
                         </button>
                     </div>
-                    <div class="field password-field">
-                        <label for="newPassword">New password</label>
-                        <input type="password" id="newPassword" autocomplete="new-password" minlength="8" required>
-                        <button class="show-password" type="button" data-target="newPassword" aria-label="Show password">
-                            <i class="fa-regular fa-eye" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <div class="field password-field">
-                        <label for="confirmPassword">Confirm new password</label>
-                        <input type="password" id="confirmPassword" autocomplete="new-password" minlength="8" required>
-                        <button class="show-password" type="button" data-target="confirmPassword" aria-label="Show password">
-                            <i class="fa-regular fa-eye" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <p class="form-message" id="passwordMessage" hidden></p>
-
-                <div class="form-actions">
-                    <button class="btn" type="submit" id="passwordSave">
-                        <i class="fa-solid fa-key" aria-hidden="true"></i> Change password
-                    </button>
-                </div>
-            </form>
-        </section>
+                </form>
+            </section>
+        </div>
     </main>
 
     <script src="../api-config.js"></script>
@@ -187,14 +395,14 @@
     <script>
         (function () {
             if (!window.Portal) return;
-            const { api, escape, formatDate, toast, setUserName } = window.Portal;
+            const { api, setUserName } = window.Portal;
             const $ = id => document.getElementById(id);
             let profile = null;
 
-            function message(id, text, type) {
+            function status(id, text, type) {
                 const element = $(id);
-                element.textContent = text;
-                element.className = `form-message ${type}`;
+                element.textContent = text || "";
+                element.dataset.status = type || "";
                 element.hidden = !text;
             }
 
@@ -205,61 +413,75 @@
 
             function fill(user) {
                 profile = user;
-                $("profileName").textContent = user.name;
-                $("bigAvatar").textContent = initials(user.name);
-                $("infoSchoolId").textContent = user.school_id || "-";
-                $("infoProgram").textContent = user.program || "-";
-                $("infoClasses").textContent = user.class_count ?? "-";
-                $("infoCreated").textContent = formatDate(user.created_at, false) || "-";
-                $("email").value = user.email || "";
-                $("contact").value = user.contact || "";
+                $("profileDisplayName").textContent = user.name;
+                $("profileAvatar").textContent = initials(user.name);
+                $("detailSchoolId").textContent = user.school_id || "-";
+                $("detailProgram").textContent = user.program || "Not set";
+                $("detailEmail").textContent = user.email || "Not set";
+                $("detailContact").textContent = user.contact || "Not set";
+                $("detailClasses").textContent = user.class_count ?? "-";
                 setUserName(user.name);
             }
 
-            async function load() {
-                try {
-                    const data = await api("/student/profile");
-                    fill(data.user);
-                } catch (error) {
-                    $("profileName").textContent = "Unable to load your profile";
-                    toast(error.message, "error");
+            function setEditing(editing) {
+                $("profileDetails").hidden = editing;
+                $("profileEditForm").hidden = !editing;
+                $("editProfileButton").hidden = editing;
+
+                if (editing && profile) {
+                    $("nameInput").value = profile.name || "";
+                    $("schoolIdInput").value = profile.school_id || "";
+                    $("emailInput").value = profile.email || "";
+                    $("contactInput").value = profile.contact || "";
+                    $("emailInput").focus();
+                } else {
+                    $("editProfileButton").focus();
                 }
             }
 
-            $("contactReset").addEventListener("click", () => {
-                if (profile) fill(profile);
-                message("contactMessage", "", "");
+            $("editProfileButton").addEventListener("click", () => {
+                status("profileStatus", "");
+                setEditing(true);
             });
 
-            $("contactForm").addEventListener("submit", async event => {
-                event.preventDefault();
-                const email = $("email").value.trim();
-                const contact = $("contact").value.trim();
+            $("cancelEditButton").addEventListener("click", () => {
+                status("profileStatus", "");
+                setEditing(false);
+            });
 
-                if (email && !$("email").checkValidity()) {
-                    message("contactMessage", "Please enter a valid email address.", "error");
+            $("profileEditForm").addEventListener("submit", async event => {
+                event.preventDefault();
+                const email = $("emailInput").value.trim();
+                const contact = $("contactInput").value.trim();
+
+                if (email && !$("emailInput").checkValidity()) {
+                    status("profileStatus", "Please enter a valid email address.", "error");
                     return;
                 }
 
-                $("contactSave").disabled = true;
+                $("saveProfileButton").disabled = true;
                 try {
                     const data = await api("/student/profile", { method: "PUT", body: { email, contact } });
                     fill(data.user);
-                    message("contactMessage", "Your contact information was saved.", "success");
+                    setEditing(false);
+                    status("profileStatus", "Your profile was updated.", "success");
                 } catch (error) {
-                    message("contactMessage", error.message, "error");
+                    status("profileStatus", error.message, "error");
                 } finally {
-                    $("contactSave").disabled = false;
+                    $("saveProfileButton").disabled = false;
                 }
             });
 
-            document.querySelectorAll(".show-password").forEach(button => button.addEventListener("click", () => {
-                const input = $(button.dataset.target);
+            document.querySelectorAll("[data-password-toggle]").forEach(button => button.addEventListener("click", () => {
+                const input = $(button.dataset.passwordToggle);
                 const show = input.type === "password";
                 input.type = show ? "text" : "password";
-                button.setAttribute("aria-label", show ? "Hide password" : "Show password");
+                button.title = show ? "Hide password" : "Show password";
+                button.setAttribute("aria-label", button.getAttribute("aria-label").replace(show ? "Show" : "Hide", show ? "Hide" : "Show"));
                 button.innerHTML = `<i class="fa-regular ${show ? "fa-eye-slash" : "fa-eye"}" aria-hidden="true"></i>`;
             }));
+
+            $("passwordForm").addEventListener("reset", () => status("passwordStatus", ""));
 
             $("passwordForm").addEventListener("submit", async event => {
                 event.preventDefault();
@@ -268,38 +490,46 @@
                 const confirmation = $("confirmPassword").value;
 
                 if (!current || !next || !confirmation) {
-                    message("passwordMessage", "Please fill in all three password fields.", "error");
+                    status("passwordStatus", "Please fill in all three password fields.", "error");
                     return;
                 }
                 if (next.length < 8) {
-                    message("passwordMessage", "The new password must be at least 8 characters.", "error");
+                    status("passwordStatus", "The new password must be at least 8 characters.", "error");
                     return;
                 }
                 if (next !== confirmation) {
-                    message("passwordMessage", "The new passwords do not match.", "error");
+                    status("passwordStatus", "The new passwords do not match.", "error");
                     return;
                 }
                 if (next === current) {
-                    message("passwordMessage", "The new password must be different from your current one.", "error");
+                    status("passwordStatus", "The new password must be different from your current one.", "error");
                     return;
                 }
 
-                $("passwordSave").disabled = true;
+                $("updatePasswordButton").disabled = true;
                 try {
                     await api("/account/password", {
                         method: "PUT",
                         body: { current_password: current, password: next, password_confirmation: confirmation }
                     });
                     $("passwordForm").reset();
-                    message("passwordMessage", "Your password was changed.", "success");
+                    status("passwordStatus", "Your password was changed.", "success");
                 } catch (error) {
-                    message("passwordMessage", error.message, "error");
+                    status("passwordStatus", error.message, "error");
                 } finally {
-                    $("passwordSave").disabled = false;
+                    $("updatePasswordButton").disabled = false;
                 }
             });
 
-            load();
+            (async () => {
+                try {
+                    const data = await api("/student/profile");
+                    fill(data.user);
+                } catch (error) {
+                    $("profileDisplayName").textContent = "Unable to load your profile";
+                    status("profileStatus", error.message, "error");
+                }
+            })();
         })();
     </script>
 </body>
