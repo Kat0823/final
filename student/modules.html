@@ -30,7 +30,10 @@
             gap: 12px;
         }
 
+        /* The whole card opens the module (the title link covers it);
+           View and Download sit on top and work on their own. */
         .module {
+            position: relative;
             display: grid;
             grid-template-columns: auto 1fr auto;
             align-items: center;
@@ -40,6 +43,50 @@
             border-radius: 10px;
             background: var(--white);
             box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+        }
+
+        .module:hover {
+            border-color: #b9d6c5;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .module:focus-within {
+            outline: 2px solid var(--green);
+            outline-offset: 2px;
+        }
+
+        .module-open::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+        }
+
+        .module-open:focus {
+            outline: none;
+        }
+
+        /* Clicks pass through to the card except on the buttons. */
+        .module-actions {
+            position: relative;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .module-actions button {
+            pointer-events: auto;
+        }
+
+        .module-go {
+            color: var(--muted);
+            font-size: 16px;
+        }
+
+        .module:hover .module-go {
+            color: var(--green);
         }
 
         .unit {
@@ -61,9 +108,8 @@
             text-decoration: none;
         }
 
-        .module h3 a:hover {
+        .module:hover h3 a {
             color: var(--green);
-            text-decoration: underline;
         }
 
         .module p {
@@ -345,7 +391,8 @@
                         <article class="module">
                             <span class="unit" aria-hidden="true">${escape(module.module_order || index + 1)}</span>
                             <div>
-                                <h3><a href="${href}">${escape(module.title)}</a></h3>
+                                <h3><a class="module-open" href="${href}"
+                                    aria-label="${escape(module.title)}: ${module.my_submission ? "open" : "open and submit"}">${escape(module.title)}</a></h3>
                                 ${module.description ? `<p>${escape(module.description)}</p>` : ""}
                                 <div class="module-tags">
                                     ${statusBadge(module.my_submission)}
@@ -363,10 +410,7 @@
                                         data-name="${escape(module.material_name || module.title)}">
                                         <i class="fa-solid fa-download" aria-hidden="true"></i> Download
                                     </button>` : ""}
-                                <a class="btn small" href="${href}">
-                                    ${module.my_submission ? "Open" : "Submit"}
-                                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-                                </a>
+                                <i class="fa-solid fa-chevron-right module-go" aria-hidden="true"></i>
                             </div>
                         </article>`;
                 }).join("");
