@@ -690,6 +690,15 @@
         }
 
 
+        // Bars and percentages beside the Learner Status counts.
+        updateStatusBars(
+            learners.length,
+            activeCount,
+            inactiveCount,
+            completedCount,
+            average
+        );
+
         if (queueLearnersWithoutClass) {
             queueLearnersWithoutClass.textContent =
                 learnersWithoutClassCount;
@@ -721,6 +730,79 @@
         }
     }
     
+
+    /* =====================================================
+       LEARNER STATUS BARS
+       Share of all learners for Active / Inactive / Completed;
+       the progress bar shows the average progress itself.
+    ===================================================== */
+
+    function updateStatusBars(
+        total,
+        active,
+        inactive,
+        completed,
+        average
+    ) {
+        const share = count =>
+            total > 0
+                ? Math.round((count / total) * 100)
+                : 0;
+
+        [
+            ["activeLearners", active],
+            ["inactiveLearners", inactive],
+            ["completedLearners", completed]
+        ].forEach(([id, count]) => {
+            const percent = share(count);
+            const bar = document.getElementById(`${id}Bar`);
+            const label = document.getElementById(`${id}Percent`);
+
+            if (bar) bar.style.width = `${percent}%`;
+            if (label) label.textContent = `${percent}%`;
+        });
+
+        const progressBar =
+            document.getElementById("averageProgressBar");
+
+        if (progressBar) {
+            progressBar.style.width =
+                average === null
+                    ? "0%"
+                    : `${Math.max(0, Math.min(100, Math.round(average)))}%`;
+        }
+    }
+
+
+    /* =====================================================
+       BANNER DATE AND TIME
+    ===================================================== */
+
+    function updateDashboardClock() {
+        const now = new Date();
+        const date = document.getElementById("dashboardDate");
+        const time = document.getElementById("dashboardTime");
+
+        if (date) {
+            date.dateTime = now.toISOString().slice(0, 10);
+            date.textContent = now.toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric"
+            });
+        }
+
+        if (time) {
+            time.textContent = now.toLocaleTimeString("en-US", {
+                hour: "numeric",
+                minute: "2-digit"
+            });
+        }
+    }
+
+    updateDashboardClock();
+    window.setInterval(updateDashboardClock, 30000);
+
 
     /* =====================================================
        RENDER ACTIVE CLASSES

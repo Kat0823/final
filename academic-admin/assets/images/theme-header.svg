@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 84" preserveAspectRatio="xMaxYMid slice">
+  <!-- Decorative header art: misty mountain ranges, pine trees and a
+       gold swoosh. Drawn shapes, no photos. -->
+  <defs>
+    <linearGradient id="fade" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#08683c" stop-opacity="1"/>
+      <stop offset="0.35" stop-color="#08683c" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#e2ac2f" stop-opacity="0"/>
+      <stop offset="0.45" stop-color="#f3cd6b"/>
+      <stop offset="1" stop-color="#e2ac2f"/>
+    </linearGradient>
+    <g id="pine">
+      <path d="M0 0 L5 9 L2.5 9 L7 17 L3.5 17 L8.5 26 L-8.5 26 L-3.5 17 L-7 17 L-2.5 9 L-5 9 Z"/>
+    </g>
+  </defs>
+
+  <!-- Far ranges -->
+  <path fill="#5fa07a" fill-opacity="0.35"
+        d="M120 84 L210 30 L270 52 L360 12 L450 46 L520 22 L610 50 L700 16 L790 44 L900 20 L900 84 Z"/>
+  <path fill="#3f8a60" fill-opacity="0.45"
+        d="M160 84 L250 46 L330 64 L420 32 L520 62 L600 40 L700 66 L780 38 L900 58 L900 84 Z"/>
+  <!-- Near ridge with pines -->
+  <path fill="#0b5a35" fill-opacity="0.55"
+        d="M200 84 L300 66 L420 74 L540 60 L660 72 L780 58 L900 70 L900 84 Z"/>
+  <g fill="#064a2b" fill-opacity="0.6">
+    <use href="#pine" transform="translate(470 52)"/>
+    <use href="#pine" transform="translate(486 56) scale(0.8)"/>
+    <use href="#pine" transform="translate(560 46) scale(1.1)"/>
+    <use href="#pine" transform="translate(578 52) scale(0.85)"/>
+    <use href="#pine" transform="translate(640 54)"/>
+  </g>
+
+  <!-- Blend into the plain green on the left -->
+  <rect width="900" height="84" fill="url(#fade)"/>
+
+  <!-- Gold swoosh -->
+  <path fill="none" stroke="url(#gold)" stroke-width="3" stroke-linecap="round"
+        d="M380 86 C 560 78, 700 50, 820 -4"/>
+  <path fill="none" stroke="#f3cd6b" stroke-opacity="0.45" stroke-width="1.2"
+        d="M430 86 C 600 80, 730 56, 860 -4"/>
+</svg>

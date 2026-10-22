@@ -7,6 +7,8 @@
     <title>Siknayan | Academic Admin</title>
 
     <link rel="stylesheet" href="css/style.css">
+    <!-- MPSU look: header art, sidebar, dashboard (load after style.css) -->
+    <link rel="stylesheet" href="css/theme.css">
 
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -285,29 +287,40 @@
                  PAGE HEADING
             ================================== -->
 
-            <section class="page-heading dashboard-heading">
+            <section class="dashboard-hero-row">
 
-                <div>
-
-                    <h2>
-                        Dashboard
-                    </h2>
-
+                <div class="dashboard-welcome">
+                    <p class="dashboard-eyebrow">Welcome back,</p>
+                    <h2>Dashboard</h2>
                     <p class="dashboard-subtitle">
                         Academic overview and current system activity
                     </p>
-
                 </div>
 
-                <div
-                    class="dashboard-updated"
-                    id="dashboardUpdated"
-                >
-                    Updated just now
+                <div class="dashboard-banner" role="img"
+                     aria-label="Siknayan: Bridging Experience. Building Greater Futures.">
+                    <div class="dashboard-banner-text">
+                        <strong>Siknayan</strong>
+                        <span>Bridging Experience.<br>Building Greater Futures.</span>
+                        <i class="dashboard-banner-rule" aria-hidden="true"></i>
+                    </div>
+
+                    <div class="dashboard-banner-side">
+                        <div class="dashboard-clock">
+                            <i data-lucide="calendar-days"></i>
+                            <time id="dashboardDate"></time>
+                            <time id="dashboardTime"></time>
+                        </div>
+                        <div class="dashboard-updated" id="dashboardUpdated">
+                            Updated just now
+                        </div>
+                        <p class="dashboard-motto" aria-hidden="true">
+                            Recognize<br>Experience<br>Empower<br>Futures
+                        </p>
+                    </div>
                 </div>
 
             </section>
-
 
             <!-- =================================
                  OVERVIEW METRICS
@@ -317,7 +330,8 @@
 
                 <!-- Learners -->
 
-                <article class="dashboard-stat-card">
+                <article class="dashboard-stat-card tone-green">
+                    <span class="dashboard-stat-art" aria-hidden="true"></span>
 
                     <div class="dashboard-stat-icon">
                         <i data-lucide="users"></i>
@@ -344,7 +358,8 @@
 
                 <!-- Active Classes -->
 
-                <article class="dashboard-stat-card">
+                <article class="dashboard-stat-card tone-rose">
+                    <span class="dashboard-stat-art" aria-hidden="true"></span>
 
                     <div class="dashboard-stat-icon">
                         <i data-lucide="book-open"></i>
@@ -371,7 +386,8 @@
 
                 <!-- Instructors -->
 
-                <article class="dashboard-stat-card">
+                <article class="dashboard-stat-card tone-gold">
+                    <span class="dashboard-stat-art" aria-hidden="true"></span>
 
                     <div class="dashboard-stat-icon">
                         <i data-lucide="graduation-cap"></i>
@@ -398,7 +414,8 @@
 
                 <!-- Module Assignments -->
 
-                <article class="dashboard-stat-card">
+                <article class="dashboard-stat-card tone-teal">
+                    <span class="dashboard-stat-art" aria-hidden="true"></span>
 
                     <div class="dashboard-stat-icon">
                         <i data-lucide="files"></i>
@@ -433,215 +450,161 @@
 
 
                 <!-- Learner Status -->
-
                 <article class="dashboard-panel">
-
-                    <div class="dashboard-panel-header">
-
-                        <div>
-
+                    <div class="dashboard-panel-header dashboard-panel-header-with-link">
+                        <span class="dashboard-panel-icon" aria-hidden="true">
+                            <i data-lucide="users"></i>
+                        </span>
+                        <div class="dashboard-panel-title">
                             <h3>
                                 Learner Status
                             </h3>
-
                             <p>
-                                Current learner distribution
+                                Current learner distribution across all programs
                             </p>
-
                         </div>
-
+                        <a href="pages/learners.html" class="dashboard-view-button">
+                            View All
+                            <i data-lucide="arrow-right"></i>
+                        </a>
                     </div>
-
-
                     <div class="dashboard-status-list">
-
                         <div class="dashboard-status-row">
-
                             <div class="dashboard-status-label">
-
                                 <span class="status-dot active"></span>
-
-                                <span>
-                                    Active
-                                </span>
-
+                                <span>Active</span>
                             </div>
-
-                            <strong id="activeLearners">
-                                0
-                            </strong>
-
+                            <span class="dashboard-bar" aria-hidden="true"><i class="bar-active" id="activeLearnersBar"></i></span>
+                            <strong id="activeLearners">0</strong>
+                            <span class="dashboard-percent" id="activeLearnersPercent">0%</span>
                         </div>
-
-
                         <div class="dashboard-status-row">
-
                             <div class="dashboard-status-label">
-
                                 <span class="status-dot neutral"></span>
-
-                                <span>
-                                    Inactive
-                                </span>
-
+                                <span>Inactive</span>
                             </div>
-
-                            <strong id="inactiveLearners">
-                                0
-                            </strong>
-
+                            <span class="dashboard-bar" aria-hidden="true"><i class="bar-inactive" id="inactiveLearnersBar"></i></span>
+                            <strong id="inactiveLearners">0</strong>
+                            <span class="dashboard-percent" id="inactiveLearnersPercent">0%</span>
                         </div>
-
-
                         <div class="dashboard-status-row">
-
                             <div class="dashboard-status-label">
-
                                 <span class="status-dot completed"></span>
-
-                                <span>
-                                    Completed
-                                </span>
-
+                                <span>Completed</span>
                             </div>
-
-                            <strong id="completedLearners">
-                                0
-                            </strong>
-
+                            <span class="dashboard-bar" aria-hidden="true"><i class="bar-completed" id="completedLearnersBar"></i></span>
+                            <strong id="completedLearners">0</strong>
+                            <span class="dashboard-percent" id="completedLearnersPercent">0%</span>
                         </div>
-
-
                         <div class="dashboard-status-row dashboard-status-row-last">
-
                             <div class="dashboard-status-label">
-
-                                <span class="status-dot neutral"></span>
-
-                                <span>
-                                    Average Progress
-                                </span>
-
+                                <span class="status-dot pending"></span>
+                                <span>Average Progress</span>
                             </div>
-
-                            <strong id="averageProgress">
-                                —
-                            </strong>
-
+                            <span class="dashboard-bar" aria-hidden="true"><i class="bar-progress" id="averageProgressBar"></i></span>
+                            <strong id="averageProgress">—</strong>
+                            <span class="dashboard-percent"></span>
                         </div>
-
                     </div>
-
                 </article>
-
-
-                <!-- Current Work Queue -->
-
+<!-- Current Work Queue -->
                 <article class="dashboard-panel">
-
-                    <div class="dashboard-panel-header">
-
-                        <div>
-
+                    <div class="dashboard-panel-header dashboard-panel-header-with-link">
+                        <span class="dashboard-panel-icon" aria-hidden="true">
+                            <i data-lucide="clock"></i>
+                        </span>
+                        <div class="dashboard-panel-title">
                             <h3>
                                 Current Work Queue
                             </h3>
-
                             <p>
                                 Items requiring attention
                             </p>
-
                         </div>
-
+                        <a href="pages/classes.html" class="dashboard-view-button">
+                            View All
+                            <i data-lucide="arrow-right"></i>
+                        </a>
                     </div>
-
-
                     <div class="dashboard-queue-list">
-
                         <a
                             href="pages/learners.html"
                             class="dashboard-queue-row"
                         >
-
+                            <span class="dashboard-queue-icon tone-rose" aria-hidden="true"><i data-lucide="users"></i></span>
                             <div>
-
                                 <strong>
                                     Learners Without Class
                                 </strong>
-
                                 <span>
                                     Active learners without an assigned class
                                 </span>
-
                             </div>
-
                             <strong
                                 class="dashboard-queue-number"
                                 id="queueLearnersWithoutClass"
                             >
                                 0
                             </strong>
-
+                            <i data-lucide="chevron-right" class="dashboard-queue-chevron"></i>
                         </a>
-
-
                         <div class="dashboard-queue-row dashboard-queue-row-static">
-
+                            <span class="dashboard-queue-icon tone-gold" aria-hidden="true"><i data-lucide="file-text"></i></span>
                             <div>
-
                                 <strong>
                                     Awaiting Grade
                                 </strong>
-
                                 <span>
                                     Submitted modules awaiting grading
                                 </span>
-
                             </div>
-
                             <strong
                                 class="dashboard-queue-number"
                                 id="queueAwaitingGrade"
                             >
                                 0
                             </strong>
-
+                            <span class="dashboard-queue-chevron" aria-hidden="true"></span>
                         </div>
-
-
                         <a
                             href="pages/classes.html"
                             class="dashboard-queue-row"
                         >
-
+                            <span class="dashboard-queue-icon tone-green" aria-hidden="true"><i data-lucide="users-round"></i></span>
                             <div>
-
                                 <strong>
                                     Classes Without Learners
                                 </strong>
-
                                 <span>
                                     Active classes with no enrolled learners
                                 </span>
-
                             </div>
-
                             <strong
                                 class="dashboard-queue-number"
                                 id="queueEmptyClasses"
                             >
                                 0
                             </strong>
-
+                            <i data-lucide="chevron-right" class="dashboard-queue-chevron"></i>
                         </a>
-
                     </div>
-
                 </article>
-
             </section>
-
-
+            <!-- =================================
+                 SYSTEM OVERVIEW
+            ================================== -->
+            <section class="dashboard-overview-strip" aria-labelledby="systemOverviewTitle">
+                <span class="dashboard-panel-icon" aria-hidden="true">
+                    <i data-lucide="bar-chart-3"></i>
+                </span>
+                <div>
+                    <h3 id="systemOverviewTitle">System Overview</h3>
+                    <p>Quick view of key academic data</p>
+                </div>
+                <p class="dashboard-overview-words" aria-hidden="true">
+                    People <span>&bull;</span> Experiences <span>&bull;</span> Opportunities
+                </p>
+            </section>
             <!-- =================================
                  ACTIVE CLASSES
             ================================== -->

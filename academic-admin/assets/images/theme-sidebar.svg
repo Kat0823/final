@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 170" preserveAspectRatio="xMidYMax slice">
+  <!-- Decorative sidebar foot: maroon mountains, pines, a gold sun and a
+       woven gold triangle pattern. Drawn shapes, no photos. -->
+  <defs>
+    <pattern id="weave" width="22" height="12" patternUnits="userSpaceOnUse">
+      <path d="M0 12 L11 0 L22 12" fill="none" stroke="#e2ac2f" stroke-opacity="0.75" stroke-width="1.4"/>
+      <path d="M5.5 12 L11 6 L16.5 12" fill="none" stroke="#e2ac2f" stroke-opacity="0.45" stroke-width="1"/>
+    </pattern>
+    <g id="pine">
+      <path d="M0 0 L5 9 L2.5 9 L7 17 L3.5 17 L8.5 26 L-8.5 26 L-3.5 17 L-7 17 L-2.5 9 L-5 9 Z"/>
+    </g>
+  </defs>
+
+  <!-- Sun -->
+  <circle cx="198" cy="56" r="16" fill="#e2ac2f" fill-opacity="0.85"/>
+
+  <!-- Mountains -->
+  <path fill="#8c1a1f" fill-opacity="0.55" d="M0 120 L50 62 L95 100 L150 48 L205 96 L245 70 L245 170 L0 170 Z"/>
+  <path fill="#5b0a0f" fill-opacity="0.7" d="M0 138 L40 104 L85 128 L135 90 L185 126 L245 100 L245 170 L0 170 Z"/>
+
+  <!-- Pines -->
+  <g fill="#3f0609" fill-opacity="0.85">
+    <use href="#pine" transform="translate(28 108) scale(0.9)"/>
+    <use href="#pine" transform="translate(44 112) scale(0.7)"/>
+    <use href="#pine" transform="translate(118 100)"/>
+    <use href="#pine" transform="translate(134 106) scale(0.8)"/>
+    <use href="#pine" transform="translate(214 104) scale(0.9)"/>
+  </g>
+
+  <!-- Woven band -->
+  <rect y="146" width="245" height="24" fill="#3f0609"/>
+  <rect y="148" width="245" height="20" fill="url(#weave)"/>
+  <rect y="145" width="245" height="1.5" fill="#e2ac2f" fill-opacity="0.8"/>
+</svg>

@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 190" preserveAspectRatio="xMaxYMax slice">
+  <!-- Decorative dashboard banner: misty mountains, pine trees and a
+       campus building. Drawn shapes, no photos. -->
+  <defs>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#eef5ef"/>
+      <stop offset="1" stop-color="#f7f4ea"/>
+    </linearGradient>
+    <linearGradient id="fade" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#f6f5ec" stop-opacity="1"/>
+      <stop offset="0.42" stop-color="#f6f5ec" stop-opacity="0"/>
+    </linearGradient>
+    <g id="pine">
+      <path d="M0 0 L6 11 L3 11 L8.5 21 L4 21 L10 32 L-10 32 L-4 21 L-8.5 21 L-3 11 L-6 11 Z"/>
+    </g>
+  </defs>
+
+  <rect width="900" height="190" fill="url(#sky)"/>
+
+  <!-- Mountain ranges -->
+  <path fill="#b9d3c2" d="M260 150 L360 70 L420 104 L520 30 L610 92 L690 46 L780 98 L900 40 L900 190 L260 190 Z"/>
+  <path fill="#8fb8a0" d="M300 170 L400 106 L470 132 L560 82 L650 128 L730 92 L820 130 L900 100 L900 190 L300 190 Z"/>
+  <path fill="#5f9478" d="M340 190 L430 140 L520 160 L610 130 L700 158 L790 136 L900 152 L900 190 Z"/>
+
+  <!-- Pines -->
+  <g fill="#2f6b4c">
+    <use href="#pine" transform="translate(470 138)"/>
+    <use href="#pine" transform="translate(490 146) scale(0.8)"/>
+    <use href="#pine" transform="translate(540 130) scale(1.1)"/>
+    <use href="#pine" transform="translate(560 140) scale(0.85)"/>
+    <use href="#pine" transform="translate(610 136)"/>
+  </g>
+
+  <!-- Campus building -->
+  <g transform="translate(540 92)">
+    <rect x="0" y="34" width="236" height="64" fill="#f3eadb"/>
+    <rect x="-6" y="28" width="248" height="8" fill="#7a1418"/>
+    <rect x="70" y="8" width="96" height="30" fill="#f3eadb"/>
+    <path d="M62 10 L118 -6 L174 10 Z" fill="#7a1418"/>
+    <rect x="62" y="8" width="112" height="5" fill="#5b0a0f"/>
+    <g fill="#5b7c6a">
+      <rect x="84" y="16" width="10" height="14"/><rect x="104" y="16" width="10" height="14"/>
+      <rect x="124" y="16" width="10" height="14"/><rect x="144" y="16" width="10" height="14"/>
+    </g>
+    <g fill="#5b7c6a">
+      <rect x="12" y="44" width="12" height="16"/><rect x="34" y="44" width="12" height="16"/>
+      <rect x="56" y="44" width="12" height="16"/><rect x="78" y="44" width="12" height="16"/>
+      <rect x="146" y="44" width="12" height="16"/><rect x="168" y="44" width="12" height="16"/>
+      <rect x="190" y="44" width="12" height="16"/><rect x="212" y="44" width="12" height="16"/>
+      <rect x="12" y="70" width="12" height="16"/><rect x="34" y="70" width="12" height="16"/>
+      <rect x="56" y="70" width="12" height="16"/><rect x="78" y="70" width="12" height="16"/>
+      <rect x="146" y="70" width="12" height="16"/><rect x="168" y="70" width="12" height="16"/>
+      <rect x="190" y="70" width="12" height="16"/><rect x="212" y="70" width="12" height="16"/>
+    </g>
+    <rect x="104" y="58" width="28" height="40" fill="#7a1418"/>
+    <rect x="-6" y="96" width="248" height="4" fill="#cdbfa6"/>
+  </g>
+
+  <!-- Front trees -->
+  <g fill="#245a3e">
+    <use href="#pine" transform="translate(522 150) scale(1.2)"/>
+    <use href="#pine" transform="translate(792 150) scale(1.15)"/>
+  </g>
+
+  <!-- Fade into the card on the left so the text stays readable -->
+  <rect width="900" height="190" fill="url(#fade)"/>
+</svg>
