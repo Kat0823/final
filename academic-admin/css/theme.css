@@ -100,14 +100,13 @@
     right: 0;
     bottom: 0;
     z-index: 0;
-    height: 150px;
+    height: 190px;
     background: url("../assets/images/theme-sidebar.svg") center bottom / cover no-repeat;
     pointer-events: none;
 }
 
 .sidebar.collapsed::after {
-    height: 90px;
-    opacity: 0.7;
+    height: 140px;
 }
 
 .sidebar-top,
@@ -171,37 +170,34 @@
     margin-right: 14px;
     padding-left: 0;
     padding-right: 0;
-    /* Keep Logout above the decorative foot. */
-    margin-bottom: 118px;
+    /* The mountains are tone-on-tone, so Logout can sit over them. */
+    margin-bottom: 56px;
 }
 
 .sidebar.collapsed .sidebar-bottom {
     margin-left: 10px;
     margin-right: 10px;
-    margin-bottom: 70px;
+    margin-bottom: 40px;
 }
 
 /* Short windows: smaller foot so every link still fits. */
 @media (max-height: 820px) {
     .sidebar::after {
-        height: 110px;
-        background-position: center 70%;
+        height: 150px;
     }
 
     .sidebar-bottom {
-        margin-bottom: 70px;
+        margin-bottom: 30px;
     }
 }
 
 @media (max-height: 680px) {
-    /* Show the mountain peaks rather than the woven band. */
     .sidebar::after {
-        height: 84px;
-        background-position: center 45%;
+        height: 120px;
     }
 
     .sidebar-bottom {
-        margin-bottom: 40px;
+        margin-bottom: 14px;
     }
 }
 
