@@ -229,6 +229,25 @@
                     </div>
 
 
+                    <p
+                        class="program-card-name"
+                    >
+                        ${escapeHtml(
+                            program.name ||
+                            ""
+                        )}
+                    </p>
+
+                    ${
+                        Array.isArray(program.majors) &&
+                        program.majors.length
+                            ? `<p class="program-card-majors">Majors: ${program.majors
+                                .map(major => escapeHtml(major))
+                                .join(" · ")}</p>`
+                            : ""
+                    }
+
+
                     <div
                         class="program-card-stats"
                     >

@@ -462,6 +462,11 @@
             name:
                 "Bachelor of Science in Business Administration",
 
+            majors: [
+                "Financial Management",
+                "Marketing Management"
+            ],
+
             courses: [
 
                 [
@@ -568,6 +573,106 @@
 
             modules: []
 
+        },
+
+
+        /* Added programs: courses are added by the Academic Admin
+           on each program's page (+ Add Course). */
+
+        BSNED: {
+
+            code:
+                "BSNED",
+
+            name:
+                "Bachelor of Special Needs Education",
+
+            courses: [],
+
+            modules: []
+
+        },
+
+
+        BSED: {
+
+            code:
+                "BSED",
+
+            name:
+                "Bachelor of Science in Secondary Education",
+
+            majors: [
+                "English",
+                "Mathematics",
+                "Science",
+                "Social Studies"
+            ],
+
+            courses: [],
+
+            modules: []
+
+        },
+
+
+        BECED: {
+
+            code:
+                "BECED",
+
+            name:
+                "Bachelor of Early Childhood Education",
+
+            courses: [],
+
+            modules: []
+
+        },
+
+
+        BSHM: {
+
+            code:
+                "BSHM",
+
+            name:
+                "Bachelor of Science in Hospitality Management",
+
+            courses: [],
+
+            modules: []
+
+        },
+
+
+        AAHM: {
+
+            code:
+                "AAHM",
+
+            name:
+                "Associate of Arts in Hospitality Management",
+
+            courses: [],
+
+            modules: []
+
+        },
+
+
+        BSTM: {
+
+            code:
+                "BSTM",
+
+            name:
+                "Bachelor of Science in Tourism Management",
+
+            courses: [],
+
+            modules: []
+
         }
 
     };
@@ -597,7 +702,25 @@
             "dollar-sign",
 
         BAPS:
-            "bar-chart-3"
+            "bar-chart-3",
+
+        BSNED:
+            "accessibility",
+
+        BSED:
+            "school",
+
+        BECED:
+            "baby",
+
+        BSHM:
+            "chef-hat",
+
+        AAHM:
+            "utensils",
+
+        BSTM:
+            "plane"
 
     };
 
@@ -692,6 +815,11 @@
                     custom?.icon ||
                     "monitor-up",
 
+                majors:
+                    Array.isArray(custom?.majors)
+                        ? custom.majors
+                        : [],
+
                 courses:
                     [],
 
@@ -717,6 +845,12 @@
                     seed.code
                 ] ||
                 "monitor-up",
+
+            majors:
+                clone(
+                    seed.majors ||
+                    []
+                ),
 
             courses:
                 clone(
@@ -785,6 +919,14 @@
             icon:
                 program?.icon ||
                 fallback.icon,
+
+            majors:
+                Array.isArray(
+                    program?.majors
+                ) &&
+                program.majors.length
+                    ? program.majors
+                    : fallback.majors,
 
             courses:
                 Array.isArray(
@@ -1453,6 +1595,9 @@
             icon:
                 program.icon ||
                 "monitor-up",
+
+            majors:
+                [],
 
             courses:
                 [],
