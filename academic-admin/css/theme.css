@@ -134,6 +134,11 @@
     background: rgba(255, 255, 255, 0.08);
 }
 
+/* A little space between the name and the Dashboard link. */
+.sidebar-nav > .nav-item:first-of-type {
+    margin-top: 14px;
+}
+
 /* Gold active link */
 .nav-item.active,
 .nav-item.active:hover {
@@ -155,14 +160,14 @@
     margin-right: 14px;
     padding-left: 0;
     padding-right: 0;
-    /* Logout sits fully above the mountains. */
-    margin-bottom: 140px;
+    /* Logout sits low, over the lower part of the mountains. */
+    margin-bottom: 64px;
 }
 
 .sidebar.collapsed .sidebar-bottom {
     margin-left: 10px;
     margin-right: 10px;
-    margin-bottom: 140px;
+    margin-bottom: 64px;
 }
 
 /* Short windows: smaller foot so every link still fits. */
@@ -173,7 +178,11 @@
 
     .sidebar-bottom,
     .sidebar.collapsed .sidebar-bottom {
-        margin-bottom: 84px;
+        margin-bottom: 34px;
+    }
+
+    .sidebar-nav > .nav-item:first-of-type {
+        margin-top: 10px;
     }
 }
 
@@ -184,7 +193,11 @@
 
     .sidebar-bottom,
     .sidebar.collapsed .sidebar-bottom {
-        margin-bottom: 70px;
+        margin-bottom: 22px;
+    }
+
+    .sidebar-nav > .nav-item:first-of-type {
+        margin-top: 8px;
     }
 }
 
