@@ -148,9 +148,6 @@
     const modulesEmpty =
         document.getElementById("modulesEmpty");
 
-    const breadcrumb =
-        document.querySelector(".program-library-breadcrumb");
-
     const heading =
         document.querySelector(".program-library-heading h2");
 
@@ -424,9 +421,12 @@
         document.title =
             `${programCode} Modules - MPSU ETEEAP LMS`;
 
-        if (breadcrumb) {
-            breadcrumb.textContent =
-                `Module Library / ${programCode}`;
+        // Only the current part changes; "Module Library" stays a link back.
+        const breadcrumbProgram =
+            document.getElementById("breadcrumbProgram");
+
+        if (breadcrumbProgram) {
+            breadcrumbProgram.textContent = programCode;
         }
 
         if (heading) {
