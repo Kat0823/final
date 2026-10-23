@@ -264,6 +264,12 @@ class GradeController extends Controller
             |--------------------------------------------------------------------------
             */
 
+            // Lock the submission so a learner cannot unsubmit it while
+            // it is being graded. Stop if it was unsubmitted just now.
+            if (!Submission::whereKey($submission->id)->lockForUpdate()->exists()) {
+                return null;
+            }
+
             $existingGrade = Grade::where(
                 'submission_id',
                 $submission->id
@@ -377,6 +383,13 @@ class GradeController extends Controller
             ];
         });
 
+
+        if ($result === null) {
+            return response()->json([
+                'success' => false,
+                'message' => 'The learner unsubmitted this activity.',
+            ], 404);
+        }
 
         return response()->json([
             'success' => true,

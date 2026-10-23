@@ -9,6 +9,8 @@ use App\Models\Progress;
 use App\Models\Submission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class SubmissionController extends Controller
 {
@@ -299,5 +301,79 @@ class SubmissionController extends Controller
             ],
 
         ], 201);
+    }
+
+
+    /**
+     * Unsubmit: the learner takes back their own work so they can submit
+     * again. Only allowed while the instructor has not graded it.
+     */
+    public function destroy(Request $request, $submissionId): JsonResponse
+    {
+        $learner = $request->user();
+
+        $result = DB::transaction(function () use ($learner, $submissionId) {
+            // Lock the row so the instructor cannot grade it at the same moment.
+            $submission = Submission::with('module.course.instructor')
+                ->where('learner_id', $learner->id)
+                ->whereKey($submissionId)
+                ->lockForUpdate()
+                ->first();
+
+            if (!$submission) {
+                return ['status' => 404, 'message' => 'Submission not found.'];
+            }
+
+            if ($submission->grade()->exists()) {
+                return ['status' => 409, 'message' => 'This activity has already been graded and can no longer be unsubmitted.'];
+            }
+
+            $path = $submission->file_path;
+            $module = $submission->module;
+
+            $submission->delete();
+
+            // The module goes back to "not started" for this learner.
+            Progress::where('learner_id', $learner->id)
+                ->where('module_id', $submission->module_id)
+                ->update([
+                    'status' => 'not_started',
+                    'completion_percentage' => 0,
+                    'started_at' => null,
+                    'completed_at' => null,
+                ]);
+
+            $instructor = $module?->course?->instructor;
+
+            if ($instructor) {
+                Notification::create([
+                    'user_id' => $instructor->id,
+                    'title' => 'Submission Withdrawn',
+                    'message' => $learner->name . ' unsubmitted "' . $module->title . '" for ' . $module->course->name . '.',
+                    'type' => 'submission',
+                    'is_read' => false,
+                ]);
+            }
+
+            return ['status' => 200, 'path' => $path, 'module_id' => $submission->module_id];
+        });
+
+        if ($result['status'] !== 200) {
+            return response()->json([
+                'success' => false,
+                'message' => $result['message'],
+            ], $result['status']);
+        }
+
+        // Remove the file only after the record is gone.
+        if ($result['path']) {
+            Storage::disk('local')->delete($result['path']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Your work was unsubmitted. You can submit again.',
+            'module_id' => $result['module_id'],
+        ]);
     }
 }

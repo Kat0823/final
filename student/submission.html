@@ -190,6 +190,27 @@
                 grid-template-columns: 1fr;
             }
         }
+        .unsubmit-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .unsubmit-note {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        p.unsubmit-note:only-child,
+        #mySubmission > .unsubmit-note {
+            margin-top: 12px;
+        }
     </style>
 </head>
 <body data-page="classes">
@@ -236,7 +257,7 @@
                     <div class="card-title">
                         <div>
                             <h3>Submit your activity</h3>
-                            <p>One file: PDF, DOC or DOCX, up to 10 MB. You can submit once.</p>
+                            <p>One file: PDF, DOC or DOCX, up to 10 MB. You can unsubmit it until your instructor grades it.</p>
                         </div>
                     </div>
 
@@ -362,7 +383,17 @@
                 if (submission) {
                     $("mySubmission").innerHTML = `
                         ${fileRow("fa-solid fa-file-arrow-up", submission.file_name || "Submitted file", `Submitted ${formatDate(submission.submitted_at)}`, fileButtons("submission"))}
-                        ${submission.comment ? `<dl class="details"><dt>Your comment</dt><dd>${escape(submission.comment)}</dd></dl>` : ""}`;
+                        ${submission.comment ? `<dl class="details"><dt>Your comment</dt><dd>${escape(submission.comment)}</dd></dl>` : ""}
+                        ${grade
+                            ? '<p class="unsubmit-note"><i class="fa-solid fa-lock" aria-hidden="true"></i> Graded work can no longer be unsubmitted.</p>'
+                            : `<div class="unsubmit-row">
+                                <p class="unsubmit-note">Need to change your work? You can unsubmit it until your instructor grades it.</p>
+                                <button class="btn danger small" type="button" id="unsubmitButton">
+                                    <i class="fa-solid fa-rotate-left" aria-hidden="true"></i> <span>Unsubmit</span>
+                                </button>
+                            </div>`}`;
+
+                    $("unsubmitButton")?.addEventListener("click", unsubmit);
                 }
 
                 if (grade) {
@@ -465,7 +496,7 @@
                         return;
                     }
 
-                    if (!window.confirm(`Submit "${chosenFile.name}"? You can only submit once.`)) return;
+                    if (!window.confirm(`Submit "${chosenFile.name}"?`)) return;
 
                     const button = $("submitButton");
                     button.disabled = true;
@@ -488,6 +519,27 @@
                         button.querySelector("span").textContent = "Submit activity";
                     }
                 });
+            }
+
+            /* Unsubmit: take back work that has not been graded yet */
+            async function unsubmit() {
+                const submission = currentModule?.my_submission;
+                if (!submission || submission.grade) return;
+
+                if (!window.confirm(`Unsubmit "${submission.file_name || "your work"}"? Your file will be removed and you can submit again.`)) return;
+
+                const button = $("unsubmitButton");
+                button.disabled = true;
+                button.querySelector("span").textContent = "Unsubmitting...";
+
+                try {
+                    await api(`/student/submissions/${encodeURIComponent(submission.id)}`, { method: "DELETE" });
+                    toast("Your work was unsubmitted. You can submit again.");
+                } catch (error) {
+                    // For example, the instructor graded it in the meantime.
+                    toast(error.message, "error");
+                }
+                await load();
             }
 
             function showError(message) {

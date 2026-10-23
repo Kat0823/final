@@ -125,6 +125,7 @@ Route::middleware([
         Route::get('/student/modules/{moduleId}/material', [ModuleController::class, 'material']);
 
         Route::post('/student/submissions', [SubmissionController::class, 'store']);
+        Route::delete('/student/submissions/{submissionId}', [SubmissionController::class, 'destroy']);
         Route::get('/student/submissions/{submissionId}/file', [ModuleController::class, 'submissionFile']);
 
         // Own profile (email and contact; password via /account/password)
