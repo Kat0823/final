@@ -216,7 +216,9 @@ Laravel reports API.
         const token = getApiToken();
 
         if (!token) {
-            throw new Error("Your login session is missing. Please sign in again.");
+            const missing = new Error("Your login session is missing. Please log in again.");
+            missing.sessionExpired = true;
+            throw missing;
         }
 
         if (!window.SIKNAYAN_API_ROOT) {
@@ -234,6 +236,17 @@ Laravel reports API.
         );
 
         const payload = await response.json().catch(() => null);
+
+        // The sign-in has expired (8 hours) or was ended elsewhere.
+        if (response.status === 401) {
+            const expired = new Error("Your session has ended. Please log in again.");
+            expired.sessionExpired = true;
+            throw expired;
+        }
+
+        if (response.status === 403) {
+            throw new Error("This account cannot view Academic Admin reports. Please log in with an Academic Admin account.");
+        }
 
         if (!response.ok) {
             throw new Error(
@@ -291,6 +304,22 @@ Laravel reports API.
             } catch (error) {
                 console.error("Reports: failed to load current database data.", error);
                 reportData = null;
+
+                if (error.sessionExpired) {
+                    setReportStatus(
+                        "Your session has ended. Taking you to the login page so you can log in again...",
+                        "Session ended"
+                    );
+                    setTimeout(() => {
+                        if (typeof window.siknayanLogout === "function") {
+                            window.siknayanLogout("../../index.html");
+                        } else {
+                            window.location.replace("../../index.html");
+                        }
+                    }, 2500);
+                    return;
+                }
+
                 setReportStatus(
                     `Report data could not be loaded. ${error.message}`,
                     "Reports unavailable"
