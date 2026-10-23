@@ -1247,25 +1247,31 @@
 
 
 /* =========================================================
-   SYSTEM ADMIN THEME: NAVY & GOLD
-   Its own look, different from the green/maroon Academic Admin,
-   Instructor and Learner portals: deep navy header and sidebar,
-   gold accents, a circuit/grid pattern instead of mountains,
-   Montserrat headings. Appearance only; no sizes the scripts rely
+   SYSTEM ADMIN THEME: MAROON, GREEN & GOLD
+   Same MPSU colours as the other portals, arranged differently so
+   the System Admin stands out: maroon header (the others are green),
+   deep green sidebar (the others are maroon), gold accents, a
+   circuit/grid pattern instead of mountains, Montserrat headings. Appearance only; no sizes the scripts rely
    on change.
 ========================================================= */
 
 :root {
-    --sa-navy-950: #071427;
-    --sa-navy-900: #0b1f3a;
-    --sa-navy-800: #12305a;
-    --sa-navy-700: #1b4378;
+    /* header: maroon */
+    --sa-maroon-950: #3f070b;
+    --sa-maroon-900: #5d0a0f;
+    --sa-maroon-800: #7a1418;
+    /* sidebar and buttons: deep green */
+    --sa-green-950: #042a18;
+    --sa-green-900: #063a22;
+    --sa-green-800: #08482b;
+    --sa-green-700: #086b3c;
+    --sa-green-600: #0a7a46;
     --sa-gold: #e2ac2f;
     --sa-gold-light: #f3cd6b;
-    --sa-sky: #3d8bd9;
-    --sa-page: #f2f5fa;
+    --sa-mint: #3fbf7f;
+    --sa-page: #f5f6f0;
     --sa-heading: "Montserrat", "Segoe UI", Arial, sans-serif;
-    --sa-card-shadow: 0 6px 20px rgba(11, 31, 58, 0.08);
+    --sa-card-shadow: 0 6px 20px rgba(40, 30, 10, 0.08);
 }
 
 .topbar,
@@ -1280,8 +1286,8 @@
     background:
         /* circuit lines and nodes on the right (decorative) */
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 84' preserveAspectRatio='xMaxYMid slice'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.16' stroke-width='1.5'%3E%3Cpath d='M0 62 H120 L150 32 H260 L290 62 H400 L430 22 H520'/%3E%3Cpath d='M60 84 V70 H180 L200 50 H330 L350 70 H520'/%3E%3Cpath d='M210 0 V14 H320 L340 34 H470 V0'/%3E%3C/g%3E%3Cg fill='%23f3cd6b' fill-opacity='.7'%3E%3Ccircle cx='150' cy='32' r='3'/%3E%3Ccircle cx='290' cy='62' r='3'/%3E%3Ccircle cx='430' cy='22' r='3'/%3E%3Ccircle cx='200' cy='50' r='2.5'/%3E%3Ccircle cx='340' cy='34' r='2.5'/%3E%3C/g%3E%3C/svg%3E") right 330px center / auto 100% no-repeat,
-        radial-gradient(ellipse 40% 140% at 70% 50%, rgba(61, 139, 217, 0.25), transparent 70%),
-        linear-gradient(90deg, var(--sa-navy-950) 0%, var(--sa-navy-900) 45%, var(--sa-navy-800) 100%);
+        radial-gradient(ellipse 40% 140% at 70% 50%, rgba(226, 172, 47, 0.18), transparent 70%),
+        linear-gradient(90deg, var(--sa-maroon-950) 0%, var(--sa-maroon-900) 45%, var(--sa-maroon-800) 100%);
     border-bottom: 3px solid var(--sa-gold);
 }
 
@@ -1307,7 +1313,7 @@
 
 .notification-dot {
     background: #ff5a5a;
-    box-shadow: 0 0 0 2px var(--sa-navy-900);
+    box-shadow: 0 0 0 2px var(--sa-maroon-900);
 }
 
 .topbar-right .notification-button {
@@ -1354,7 +1360,7 @@
 
 .sidebar {
     background:
-        linear-gradient(180deg, var(--sa-navy-900) 0%, #0d2546 55%, var(--sa-navy-950) 100%);
+        linear-gradient(180deg, var(--sa-green-800) 0%, var(--sa-green-900) 55%, var(--sa-green-950) 100%);
     border-right: 1px solid rgba(226, 172, 47, 0.25);
 }
 
@@ -1368,7 +1374,7 @@
     z-index: 0;
     height: 170px;
     background:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 245 170' preserveAspectRatio='none'%3E%3Cg fill='none' stroke='%233d8bd9' stroke-opacity='.35' stroke-width='1.2'%3E%3Cpath d='M0 120 H60 L90 90 H160 L190 120 H245'/%3E%3Cpath d='M30 170 V140 H120 L140 120'/%3E%3Cpath d='M200 170 V150 H150 L130 130 H70'/%3E%3C/g%3E%3Cg fill='%23e2ac2f' fill-opacity='.8'%3E%3Ccircle cx='90' cy='90' r='3'/%3E%3Ccircle cx='190' cy='120' r='3'/%3E%3Ccircle cx='140' cy='120' r='2.5'/%3E%3Ccircle cx='130' cy='130' r='2.5'/%3E%3C/g%3E%3C/svg%3E") center bottom / 100% 100% no-repeat,
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 245 170' preserveAspectRatio='none'%3E%3Cg fill='none' stroke='%233fbf7f' stroke-opacity='.35' stroke-width='1.2'%3E%3Cpath d='M0 120 H60 L90 90 H160 L190 120 H245'/%3E%3Cpath d='M30 170 V140 H120 L140 120'/%3E%3Cpath d='M200 170 V150 H150 L130 130 H70'/%3E%3C/g%3E%3Cg fill='%23e2ac2f' fill-opacity='.8'%3E%3Ccircle cx='90' cy='90' r='3'/%3E%3Ccircle cx='190' cy='120' r='3'/%3E%3Ccircle cx='140' cy='120' r='2.5'/%3E%3Ccircle cx='130' cy='130' r='2.5'/%3E%3C/g%3E%3C/svg%3E") center bottom / 100% 100% no-repeat,
         linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px) 0 0 / 100% 18px,
         linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px) 0 0 / 18px 100%;
     -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 45%);
@@ -1404,7 +1410,7 @@
 }
 
 .nav-item:hover {
-    background: rgba(61, 139, 217, 0.16);
+    background: rgba(255, 255, 255, 0.09);
     color: #ffffff;
 }
 
@@ -1416,7 +1422,7 @@
 .nav-item.active,
 .nav-item.active:hover {
     background: linear-gradient(90deg, rgba(226, 172, 47, 0.95) 0%, rgba(201, 146, 35, 0.95) 100%);
-    color: var(--sa-navy-950);
+    color: var(--sa-maroon-950);
     font-weight: 700;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
 }
@@ -1433,7 +1439,7 @@
 }
 
 .nav-item.active svg {
-    color: var(--sa-navy-950);
+    color: var(--sa-maroon-950);
 }
 
 .sidebar-bottom {
@@ -1470,7 +1476,7 @@
 
 .main-content {
     background:
-        radial-gradient(ellipse 50% 35% at 100% 0%, rgba(61, 139, 217, 0.08), transparent 70%),
+        radial-gradient(ellipse 50% 35% at 100% 0%, rgba(226, 172, 47, 0.1), transparent 70%),
         var(--sa-page);
 }
 
@@ -1480,7 +1486,7 @@
 .dashboard-panel-header h3,
 .panel h2,
 .panel h3 {
-    color: var(--sa-navy-900);
+    color: var(--sa-maroon-900);
     font-family: var(--sa-heading);
     font-weight: 800;
 }
@@ -1496,19 +1502,19 @@
     background: linear-gradient(90deg, var(--sa-gold), var(--sa-gold-light));
 }
 
-/* Primary buttons in navy */
+/* Primary buttons in green */
 .main-content .primary-button,
 .main-content .btn-primary,
 .main-content button.primary {
-    background: var(--sa-navy-800);
-    border-color: var(--sa-navy-800);
+    background: var(--sa-green-700);
+    border-color: var(--sa-green-700);
 }
 
 .main-content .primary-button:hover,
 .main-content .btn-primary:hover,
 .main-content button.primary:hover {
-    background: var(--sa-navy-700);
-    border-color: var(--sa-navy-700);
+    background: var(--sa-green-800);
+    border-color: var(--sa-green-800);
 }
 
 /* ---------------- CARDS ---------------- */
@@ -1518,33 +1524,33 @@
     overflow: hidden;
     min-height: 132px;
     padding: 22px;
-    border: 1px solid #e3e8f1;
+    border: 1px solid #ebe7da;
     border-left: 4px solid var(--tone-fg);
     border-radius: 12px;
     box-shadow: var(--sa-card-shadow);
     transition: transform 0.18s ease, box-shadow 0.18s ease;
-    --tone-bg: #e4ecf7;
-    --tone-fg: #12305a;
+    --tone-bg: #e3f3ea;
+    --tone-fg: #086b3c;
 }
 
 .dashboard-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 26px rgba(11, 31, 58, 0.13);
+    box-shadow: 0 12px 26px rgba(40, 30, 10, 0.13);
 }
 
 .dashboard-card:nth-child(4n + 2) {
     --tone-bg: #fbefd2;
-    --tone-fg: #a87412;
+    --tone-fg: #b07a12;
 }
 
 .dashboard-card:nth-child(4n + 3) {
-    --tone-bg: #e1effc;
-    --tone-fg: #2b74c0;
+    --tone-bg: #f8e3e4;
+    --tone-fg: #7a1418;
 }
 
 .dashboard-card:nth-child(4n + 4) {
-    --tone-bg: #e8ebf0;
-    --tone-fg: #4a5568;
+    --tone-bg: #dff1e8;
+    --tone-fg: #0e7a55;
 }
 
 .dashboard-card .card-icon {
@@ -1568,7 +1574,7 @@
 }
 
 .dashboard-card .card-label {
-    color: #4a5568;
+    color: #5b6760;
     font-family: var(--sa-heading);
     font-size: 12px;
     font-weight: 700;
@@ -1578,7 +1584,7 @@
 
 .dashboard-card .card-value {
     margin-top: 6px;
-    color: var(--sa-navy-900);
+    color: var(--sa-maroon-900);
     font-family: var(--sa-heading);
     font-size: 34px;
     font-weight: 800;
@@ -1599,11 +1605,11 @@
     pointer-events: none;
 }
 
-/* Panels and tables: rounded, soft shadow, navy top edge. */
+/* Panels and tables: rounded, soft shadow, gold top edge. */
 .dashboard-panel,
 .panel,
 .administrators-panel {
-    border: 1px solid #e3e8f1;
+    border: 1px solid #ebe7da;
     border-radius: 12px;
     box-shadow: var(--sa-card-shadow);
     overflow: hidden;
@@ -1612,13 +1618,13 @@
 .dashboard-panel,
 .panel:not(.audit-filter-panel):not(.notifications-filter-panel),
 .administrators-panel {
-    border-top: 3px solid var(--sa-navy-800);
+    border-top: 3px solid var(--sa-gold);
 }
 
-/* Table headings in navy */
+/* Table headings in green on cream */
 .main-content table thead th {
-    background: #f4f7fb;
-    color: var(--sa-navy-800);
+    background: #f7f4ea;
+    color: var(--sa-green-800);
 }
 
 @media (prefers-reduced-motion: reduce) {
