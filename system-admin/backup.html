@@ -54,6 +54,49 @@
             margin-bottom: 6px;
         }
 
+        .backup-soon-panel h4 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 22px 0 8px;
+            font-size: 16px;
+        }
+
+        .backup-step-number {
+            width: 26px;
+            height: 26px;
+            display: inline-grid;
+            place-items: center;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: #e2ac2f;
+            color: #3f070b;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .backup-soon-panel code {
+            padding: 1px 6px;
+            border-radius: 5px;
+            background: #f4f1e6;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .backup-note {
+            margin: 10px 0 0;
+            padding: 10px 14px;
+            border-left: 4px solid #e2ac2f;
+            border-radius: 0 8px 8px 0;
+            background: #fff8e6;
+            font-size: 14px;
+        }
+
+        .backup-note.warning {
+            border-left-color: #7a1418;
+            background: #fbeeee;
+        }
+
         .backup-soon-actions {
             display: flex;
             flex-wrap: wrap;
@@ -351,21 +394,60 @@
                 <h3 id="manualBackupTitle">Back up the database manually</h3>
                 <p>
                     Until backups are built into Siknayan, make a copy of the
-                    database with phpMyAdmin (included with XAMPP):
+                    database with phpMyAdmin (included with XAMPP). Do this on
+                    the server computer, where Siknayan is installed.
                 </p>
+
+                <h4><span class="backup-step-number">1</span> Before you start</h4>
+                <p>
+                    Open the <strong>XAMPP Control Panel</strong> and make sure
+                    <strong>Apache</strong> and <strong>MySQL</strong> are both running.
+                    phpMyAdmin will not open without Apache.
+                </p>
+
+                <h4><span class="backup-step-number">2</span> Back up the database</h4>
                 <ol>
-                    <li>Open <strong>http://localhost/phpmyadmin</strong> on the server computer.</li>
+                    <li>Open <strong>http://localhost/phpmyadmin</strong>.</li>
                     <li>Select the <strong>siknayan</strong> database, then open the <strong>Export</strong> tab.</li>
                     <li>Keep <strong>Quick</strong> and <strong>SQL</strong> selected, and choose <strong>Export</strong>.</li>
                     <li>
-                        Store the downloaded <strong>.sql</strong> file somewhere private.
-                        It contains every account, including password hashes.
+                        Rename the downloaded file with the date, for example
+                        <code>siknayan-2026-10-23.sql</code>, so older copies are not overwritten.
                     </li>
                 </ol>
+                <p class="backup-note warning">
+                    Store the <strong>.sql</strong> file somewhere private. It contains
+                    every account, including password hashes.
+                </p>
+
+                <h4><span class="backup-step-number">3</span> Back up the uploaded files</h4>
                 <p>
-                    Uploaded files (module materials, submissions and profile photos)
-                    are stored separately in <strong>backend/storage/app</strong>.
-                    Copy that folder too.
+                    Module materials, submissions and profile photos are stored
+                    separately from the database. Copy this whole folder next to
+                    your <strong>.sql</strong> file:
+                </p>
+                <p><code>Siknayan LMS\final\backend\storage\app</code></p>
+
+                <h4><span class="backup-step-number">4</span> Restore from a backup</h4>
+                <ol>
+                    <li>In phpMyAdmin, create an empty database named <strong>siknayan</strong> (or select the existing one).</li>
+                    <li>Open the <strong>Import</strong> tab, choose your <strong>.sql</strong> file, and choose <strong>Import</strong>.</li>
+                    <li>Copy the saved <strong>app</strong> folder back into <code>backend\storage\</code>.</li>
+                </ol>
+                <p class="backup-note">
+                    Importing into a database that already has data replaces it.
+                    Make a fresh backup first if you are not sure.
+                </p>
+
+                <h4><span class="backup-step-number">5</span> Optional: the settings file</h4>
+                <p>
+                    Keep a private copy of <code>backend\.env</code>. It holds the
+                    database and email settings needed to run Siknayan again on a
+                    new computer.
+                </p>
+                <p class="backup-note warning">
+                    The settings file contains passwords. Never share it, email it,
+                    or upload it online.
                 </p>
 
                 <div class="backup-soon-actions">
