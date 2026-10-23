@@ -892,6 +892,8 @@
     </style>
     <!-- Header and sidebar shared by all Instructor pages (load last) -->
     <link rel="stylesheet" href="CSS/shell.css">
+    <!-- Class cards shared with the Learner portal -->
+    <link rel="stylesheet" href="../shared/class-cards.css">
 </head>
 
 <body>
@@ -1023,7 +1025,7 @@
         </div>
 
         <section class="classes-card-container" aria-label="Assigned classes">
-            <div class="classes-grid" id="classesGrid" aria-live="polite">
+            <div class="classes-grid sk-class-grid" id="classesGrid" aria-live="polite">
                 <div class="empty-state">
                     <i class="fa-solid fa-spinner fa-spin"></i>
                     <h3>Loading classes...</h3>
@@ -1142,6 +1144,7 @@
 </div>
 
 <script src="../api-config.js"></script>
+<script src="../shared/class-cards.js"></script>
 <script>
 "use strict";
 
@@ -1609,69 +1612,51 @@ function renderClasses(classes) {
     }
 
     classes.forEach(function (course) {
-        const card = document.createElement("a");
-        card.className = "class-card";
-
         const courseId = course.id ?? course.class_id ?? null;
+        const hasId = courseId !== null && courseId !== "";
 
-        if (courseId !== null && courseId !== "") {
-            card.href =
-                `class-content.html?course_id=${encodeURIComponent(courseId)}`;
-        } else {
-            card.href = "#";
+        const learners = Number(
+            course.learner_count ??
+            course.student_count ??
+            course.students_count ??
+            0
+        );
+
+        const modules = Number(
+            course.module_count ??
+            course.modules_count ??
+            0
+        );
+
+        // Same card design as the Learner portal (shared/class-cards.js);
+        // a class always gets the same banner on both portals.
+        const card = window.SiknayanClassCards.create({
+            id: courseId,
+            href: hasId
+                ? `class-content.html?course_id=${encodeURIComponent(courseId)}`
+                : "#",
+            code: course.code || course.course_code || "No Code",
+            name: course.name || course.class_name || course.course_name || "Unnamed Class",
+            meta: [
+                { icon: "fa-solid fa-graduation-cap", text: course.program || "" },
+                { icon: "fa-regular fa-file-lines", text: course.description || "" }
+            ],
+            footer: {
+                chips: [
+                    { icon: "fa-solid fa-users", text: `${learners} learner${learners === 1 ? "" : "s"}` },
+                    { icon: "fa-solid fa-layer-group", text: `${modules} module${modules === 1 ? "" : "s"}` }
+                ],
+                open: "Open class →"
+            }
+        });
+
+        if (!hasId) {
             card.addEventListener("click", function (event) {
                 event.preventDefault();
                 showToast("This class does not have a valid ID.", "error");
             });
         }
 
-        const details = document.createElement("div");
-
-        const title = document.createElement("div");
-        title.className = "class-title";
-        title.textContent =
-            course.name ||
-            course.class_name ||
-            course.course_name ||
-            "Unnamed Class";
-
-        const code = document.createElement("div");
-        code.className = "class-code";
-        code.textContent =
-            course.code || course.course_code || "No Code";
-
-        details.append(title, code);
-
-        const programName = course.program || course.description;
-
-        if (programName) {
-            const program = document.createElement("div");
-            program.className = "class-program";
-            program.textContent = programName;
-            details.appendChild(program);
-        }
-
-        const count = Number(
-            course.student_count ??
-            course.learner_count ??
-            course.students_count ??
-            0
-        );
-
-        const students = document.createElement("div");
-        students.className = "class-students";
-
-        const icon = document.createElement("i");
-        icon.className = "fa-solid fa-users";
-
-        students.append(
-            icon,
-            document.createTextNode(
-                ` ${count} student${count === 1 ? "" : "s"}`
-            )
-        );
-
-        card.append(details, students);
         classesGrid.appendChild(card);
     });
 }

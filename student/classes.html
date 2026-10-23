@@ -7,6 +7,8 @@
     <link rel="icon" href="../images/logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="css/portal.css">
+    <!-- Class cards shared with the Instructor portal -->
+    <link rel="stylesheet" href="../shared/class-cards.css">
     <style>
         .toolbar {
             display: flex;
@@ -42,106 +44,6 @@
             outline: 2px solid rgba(8, 104, 60, 0.22);
             border-color: var(--green);
         }
-
-        .class-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 18px;
-        }
-
-        .class-card {
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            border: 1px solid var(--border-light);
-            border-radius: 10px;
-            background: var(--white);
-            box-shadow: var(--shadow);
-            color: inherit;
-            text-decoration: none;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-        }
-
-        .class-card:hover,
-        .class-card:focus-visible {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
-            outline: none;
-        }
-
-        .class-card:focus-visible {
-            outline: 2px solid var(--green);
-            outline-offset: 2px;
-        }
-
-        .class-banner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 16px 18px;
-            background: var(--green);
-            color: var(--white);
-        }
-
-        .class-banner .code {
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-        }
-
-        .class-banner i {
-            font-size: 20px;
-            opacity: 0.85;
-        }
-
-        .class-body {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            gap: 10px;
-            padding: 18px;
-        }
-
-        .class-body h3 {
-            font-size: 17px;
-            line-height: 1.35;
-        }
-
-        .class-meta {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--muted);
-            font-size: 13px;
-        }
-
-        .progress {
-            margin-top: auto;
-            padding-top: 8px;
-        }
-
-        .progress-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 6px;
-            color: var(--muted);
-            font-size: 12px;
-        }
-
-        .progress-bar {
-            height: 8px;
-            overflow: hidden;
-            border-radius: 999px;
-            background: var(--border-light);
-        }
-
-        .progress-bar span {
-            display: block;
-            height: 100%;
-            border-radius: inherit;
-            background: var(--green);
-        }
     </style>
 </head>
 <body data-page="classes">
@@ -161,7 +63,7 @@
             </label>
         </div>
 
-        <div id="classList" class="class-grid" aria-live="polite">
+        <div id="classList" class="sk-class-grid" aria-live="polite">
             <div class="card state" style="grid-column: 1 / -1">
                 <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
                 <h3>Loading classes</h3>
@@ -170,6 +72,7 @@
     </main>
 
     <script src="../api-config.js"></script>
+    <script src="../shared/class-cards.js"></script>
     <script src="js/portal.js"></script>
     <script src="js/profile-modal.js"></script>
     <script>
@@ -206,40 +109,25 @@
                     return;
                 }
 
-                list.innerHTML = shown.map(item => {
+                // Same card design as the Instructor portal
+                // (shared/class-cards.js); a class always gets the same banner.
+                list.innerHTML = "";
+                shown.forEach(item => {
                     const total = item.module_count || 0;
                     const done = Math.min(item.submitted_count || 0, total);
-                    const percent = total ? Math.round((done / total) * 100) : 0;
 
-                    return `
-                        <a class="class-card" href="modules.html?course=${encodeURIComponent(item.id)}">
-                            <div class="class-banner">
-                                <span class="code">${escape(item.code || item.subject_code || "CLASS")}</span>
-                                <i class="fa-solid fa-book-open" aria-hidden="true"></i>
-                            </div>
-                            <div class="class-body">
-                                <h3>${escape(item.name)}</h3>
-                                <span class="class-meta">
-                                    <i class="fa-solid fa-chalkboard-user" aria-hidden="true"></i>
-                                    ${escape(item.instructor?.name || "No instructor assigned")}
-                                </span>
-                                <span class="class-meta">
-                                    <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
-                                    ${total} module${total === 1 ? "" : "s"}${item.graded_count ? ` · ${item.graded_count} graded` : ""}
-                                </span>
-                                <div class="progress">
-                                    <div class="progress-label">
-                                        <span>Activities submitted</span>
-                                        <span>${done} / ${total}</span>
-                                    </div>
-                                    <div class="progress-bar" role="progressbar" aria-label="Activities submitted"
-                                        aria-valuemin="0" aria-valuemax="100" aria-valuenow="${percent}">
-                                        <span style="width: ${percent}%"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>`;
-                }).join("");
+                    list.appendChild(window.SiknayanClassCards.create({
+                        id: item.id,
+                        href: `modules.html?course=${encodeURIComponent(item.id)}`,
+                        code: item.code || item.subject_code || "CLASS",
+                        name: item.name,
+                        meta: [
+                            { icon: "fa-solid fa-chalkboard-user", text: item.instructor?.name || "No instructor assigned" },
+                            { icon: "fa-solid fa-layer-group", text: `${total} module${total === 1 ? "" : "s"}${item.graded_count ? ` · ${item.graded_count} graded` : ""}` }
+                        ],
+                        footer: { progress: { label: "Activities submitted", done, total } }
+                    }));
+                });
             }
 
             async function load() {

@@ -1,0 +1,251 @@
+/* =========================================================
+   SIKNAYAN - CLASS CARDS (shared by the Instructor and Learner
+   Classes pages)
+
+   A card with a patterned banner on top. There are six banner
+   designs (.sk-art-1 ... .sk-art-6); each class always gets the same
+   one (chosen from its ID by shared/class-cards.js), so a class looks
+   the same to the instructor and to the learners.
+========================================================= */
+
+.sk-class-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 20px;
+}
+
+.sk-class-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid #e6ebe7;
+    border-radius: 14px;
+    background: #ffffff;
+    color: inherit;
+    text-decoration: none;
+    box-shadow: 0 6px 20px rgba(23, 40, 30, 0.07);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.sk-class-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(23, 40, 30, 0.13);
+}
+
+.sk-class-card:focus-visible {
+    outline: 3px solid #e2ac2f;
+    outline-offset: 3px;
+}
+
+/* ---------------- Banner ---------------- */
+
+.sk-class-banner {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 96px;
+    padding: 16px 18px;
+    overflow: hidden;
+    color: #ffffff;
+}
+
+.sk-class-code {
+    position: relative;
+    z-index: 1;
+    padding: 5px 11px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.18);
+    font-family: "Merriweather", Georgia, serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+    backdrop-filter: blur(2px);
+}
+
+.sk-class-badge {
+    position: relative;
+    z-index: 1;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.16);
+    font-size: 17px;
+}
+
+/* Gold rule along the bottom of every banner */
+.sk-class-banner::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #f2cf74, #e2ac2f, #c99223);
+}
+
+/* 1. Forest green with mountains */
+.sk-art-1 {
+    background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 100' preserveAspectRatio='none'%3E%3Cpath fill='%23ffffff' fill-opacity='.12' d='M0 100 L50 55 L85 78 L140 30 L190 70 L235 45 L300 80 L300 100 Z'/%3E%3Cpath fill='%23000000' fill-opacity='.12' d='M0 100 L60 76 L110 90 L170 66 L230 88 L300 72 L300 100 Z'/%3E%3C/svg%3E") center bottom / 100% 70% no-repeat,
+        linear-gradient(135deg, #0b6b3e 0%, #075c35 100%);
+}
+
+/* 2. Maroon with diagonal stripes */
+.sk-art-2 {
+    background:
+        repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0 10px, transparent 10px 22px),
+        linear-gradient(135deg, #8c1a1f 0%, #5b0a0f 100%);
+}
+
+/* 3. Amber with dots */
+.sk-art-3 {
+    background:
+        radial-gradient(rgba(255, 255, 255, 0.28) 2px, transparent 2.5px) 0 0 / 16px 16px,
+        linear-gradient(135deg, #c99223 0%, #9a6a0a 100%);
+}
+
+/* 4. Teal with waves */
+.sk-art-4 {
+    background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 100' preserveAspectRatio='none'%3E%3Cpath fill='none' stroke='%23ffffff' stroke-opacity='.18' stroke-width='3' d='M0 60 C 50 40, 100 80, 150 60 S 250 40, 300 60'/%3E%3Cpath fill='none' stroke='%23ffffff' stroke-opacity='.12' stroke-width='3' d='M0 78 C 50 58, 100 98, 150 78 S 250 58, 300 78'/%3E%3Cpath fill='none' stroke='%23ffffff' stroke-opacity='.1' stroke-width='3' d='M0 42 C 50 22, 100 62, 150 42 S 250 22, 300 42'/%3E%3C/svg%3E") center / 100% 100% no-repeat,
+        linear-gradient(135deg, #0e7a5f 0%, #0a5a46 100%);
+}
+
+/* 5. Deep green with a woven gold band */
+.sk-art-5 {
+    background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='14'%3E%3Cpath d='M0 14 L12 2 L24 14' fill='none' stroke='%23f2cf74' stroke-opacity='.55' stroke-width='1.5'/%3E%3C/svg%3E") left bottom 4px / 24px 14px repeat-x,
+        linear-gradient(135deg, #075c35 0%, #063a22 100%);
+}
+
+/* 6. Maroon to gold with rings */
+.sk-art-6 {
+    background:
+        radial-gradient(circle at 88% 20%, transparent 0 22px, rgba(255, 255, 255, 0.14) 23px 25px, transparent 26px 36px, rgba(255, 255, 255, 0.1) 37px 39px, transparent 40px),
+        radial-gradient(circle at 12% 110%, transparent 0 30px, rgba(255, 255, 255, 0.1) 31px 33px, transparent 34px),
+        linear-gradient(120deg, #7a1418 0%, #a2462a 60%, #c99223 100%);
+}
+
+/* ---------------- Body ---------------- */
+
+.sk-class-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 9px;
+    padding: 16px 18px 18px;
+}
+
+.sk-class-title {
+    margin: 0;
+    color: #1d2a23;
+    font-family: "Merriweather", Georgia, serif;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.sk-class-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    color: #5b6760;
+    font-size: 13px;
+}
+
+.sk-class-meta i {
+    width: 16px;
+    color: #8a948f;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.sk-class-meta span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Footer: a progress bar (learners) or chips (instructors) */
+.sk-class-footer {
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid #eef1ee;
+}
+
+.sk-class-progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    color: #5b6760;
+    font-size: 12px;
+}
+
+.sk-class-progress {
+    height: 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e9ecea;
+}
+
+.sk-class-progress span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #0b6b3e, #148a52);
+}
+
+.sk-class-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.sk-class-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: #f1f6f2;
+    color: #2d3a33;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.sk-class-chip i {
+    color: #0b6b3e;
+}
+
+.sk-class-open {
+    margin-left: auto;
+    color: #0b6b3e;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.sk-class-card:hover .sk-class-open {
+    text-decoration: underline;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sk-class-card {
+        transition: none;
+    }
+
+    .sk-class-card:hover {
+        transform: none;
+    }
+}
