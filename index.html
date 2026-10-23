@@ -44,7 +44,7 @@
             --serif: "Merriweather", Georgia, "Times New Roman", serif;
             --sans: "Nunito Sans", Arial, Helvetica, sans-serif;
             --wave: 72px;
-            --card-drop: 22px;
+            --card-drop: 40px;
             --bottom-gap: 32px;
         }
 
@@ -189,7 +189,7 @@
             /* Starts behind the header's wave so the curve shows this background. */
             margin-top: calc(-1 * var(--wave));
             display: grid;
-            grid-template-columns: minmax(0, 1fr) minmax(380px, 720px);
+            grid-template-columns: minmax(0, 1fr) minmax(380px, 600px);
             align-items: stretch;
             padding: var(--wave) 3.5vw var(--bottom-gap) 0;
             /* Cream area beside the card */
@@ -342,12 +342,10 @@
         .right-section {
             position: relative;
             z-index: 4;
-            /* Starts a little below the header wave and reaches down to
-               the bottom of the page; the content is centred inside. */
-            align-self: stretch;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            /* Below the header wave, centred in the space beside the
+               green panel; height follows the content so the card keeps
+               balanced (nearly square) proportions. */
+            align-self: center;
             margin-top: var(--card-drop);
             padding: clamp(26px, 4.2vh, 50px) clamp(28px, 4.6vw, 80px) clamp(20px, 3vh, 34px);
             /* Straight left edge; rounded right corners. */
@@ -824,7 +822,7 @@
         @media (min-width: 821px) and (max-height: 1100px) {
             :root {
                 --wave: 58px;
-                --card-drop: 20px;
+                --card-drop: 26px;
                 --bottom-gap: 22px;
             }
 

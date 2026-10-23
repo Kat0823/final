@@ -2,84 +2,634 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - MPSU ETEEAP LMS</title>
+    <link rel="icon" href="images/logo.png">
 
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
-    <title>User Terms of Services - MPSU ETEEAP LMS</title>
+    <!-- Same fonts as the login page -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Nunito+Sans:wght@400;600;700&display=swap">
 
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* =========================================================
+           MPSU ETEEAP LMS - TERMS OF SERVICE
+           Same look as the login page: sky and campus header with a
+           gold wave, green background, white card, maroon sweep.
+        ========================================================= */
 
+        :root {
+            --green-900: #063a22;
+            --green-800: #08482b;
+            --green-700: #0a5a35;
+            --green: #086b3c;
+            --gold: #e2ac2f;
+            --gold-light: #f3cd6b;
+            --maroon: #7a1018;
+            --cream: #f7f3e8;
+            --text: #1f2a24;
+            --muted: #5f6b64;
+            --serif: "Merriweather", Georgia, "Times New Roman", serif;
+            --sans: "Nunito Sans", Arial, Helvetica, sans-serif;
+            --wave: 56px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--green-900);
+            color: var(--text);
+            font-family: var(--sans);
+        }
+
+        .page {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ---------------- HEADER ---------------- */
+
+        .terms-header {
+            position: relative;
+            z-index: 2;
+            -webkit-mask:
+                linear-gradient(#000, #000) top / 100% calc(100% - var(--wave) + 1px) no-repeat,
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 72' preserveAspectRatio='none'%3E%3Cpath d='M0 0H1440V20C1150 16 820 50 520 56C300 60 160 38 0 12Z'/%3E%3C/svg%3E") bottom / 100% var(--wave) no-repeat;
+            mask:
+                linear-gradient(#000, #000) top / 100% calc(100% - var(--wave) + 1px) no-repeat,
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 72' preserveAspectRatio='none'%3E%3Cpath d='M0 0H1440V20C1150 16 820 50 520 56C300 60 160 38 0 12Z'/%3E%3C/svg%3E") bottom / 100% var(--wave) no-repeat;
+            display: flex;
+            align-items: center;
+            min-height: 170px;
+            padding: 20px clamp(20px, 7vw, 120px) calc(var(--wave) + 6px);
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse 18% 30% at 3% 8%, rgba(255, 255, 255, 0.95), transparent 70%),
+                linear-gradient(180deg, #8ec5ec 0%, #c3e0f4 45%, #eaf4f9 100%);
+        }
+
+        .terms-header .mountains {
+            position: absolute;
+            inset: auto 0 0 0;
+            width: 100%;
+            height: 70%;
+            pointer-events: none;
+        }
+
+        .terms-header .campus {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: min(52%, 900px);
+            background: url("images/login-campus.jpg") right bottom / cover no-repeat;
+            -webkit-mask-image: linear-gradient(90deg, transparent 0, rgba(0, 0, 0, 0.6) 18%, #000 38%);
+            mask-image: linear-gradient(90deg, transparent 0, rgba(0, 0, 0, 0.6) 18%, #000 38%);
+            pointer-events: none;
+        }
+
+        .brand {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: var(--green-900);
+            text-decoration: none;
+        }
+
+        .brand img {
+            width: clamp(64px, 7vw, 96px);
+            height: clamp(64px, 7vw, 96px);
+            border-radius: 50%;
+            box-shadow: 0 6px 18px rgba(6, 58, 34, 0.25);
+        }
+
+        .brand strong {
+            display: block;
+            font-family: var(--serif);
+            font-size: clamp(18px, 2.3vw, 34px);
+            font-weight: 900;
+            line-height: 1.1;
+            text-transform: uppercase;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+        }
+
+        .brand span {
+            display: block;
+            margin-top: 6px;
+            color: #2f5b45;
+            font-size: clamp(13px, 1.2vw, 16px);
+            font-weight: 700;
+            letter-spacing: 0.4px;
+        }
+
+        .header-wave {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 3;
+            width: 100%;
+            height: var(--wave);
+            pointer-events: none;
+        }
+
+        /* ---------------- MAIN ---------------- */
+
+        main {
+            position: relative;
+            flex: 1;
+            margin-top: calc(-1 * var(--wave));
+            padding: calc(var(--wave) + 34px) 20px 150px;
+            background:
+                radial-gradient(ellipse 60% 50% at 15% 25%, rgba(23, 128, 76, 0.45), transparent 70%),
+                radial-gradient(ellipse 45% 55% at 85% 70%, rgba(12, 92, 54, 0.5), transparent 70%),
+                linear-gradient(160deg, var(--green-700) 0%, var(--green-800) 45%, var(--green-900) 100%);
+        }
+
+        .dots {
+            position: absolute;
+            width: 130px;
+            height: 110px;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.2) 2px, transparent 2.5px);
+            background-size: 16px 16px;
+            pointer-events: none;
+        }
+
+        .dots.left {
+            top: calc(var(--wave) + 20px);
+            left: 2%;
+        }
+
+        .dots.right {
+            top: 45%;
+            right: 2%;
+        }
+
+        .bottom-band {
+            position: absolute;
+            inset: auto 0 0 0;
+            width: 100%;
+            height: 130px;
+            pointer-events: none;
+        }
+
+        /* ---------------- CARD ---------------- */
+
+        .terms-card {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 860px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 20px;
+            background: #ffffff;
+            box-shadow: 0 22px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-top {
+            position: relative;
+            padding: 34px clamp(22px, 5vw, 54px) 28px;
+            background:
+                repeating-linear-gradient(135deg, rgba(226, 172, 47, 0.08) 0 12px, transparent 12px 28px),
+                linear-gradient(180deg, #fffaf0, #fbf3e0);
+            border-bottom: 4px solid var(--gold);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            padding: 7px 14px;
+            border: 1px solid #d7e2db;
+            border-radius: 999px;
+            background: #ffffff;
+            color: var(--green);
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: box-shadow 0.15s ease, transform 0.15s ease;
+        }
+
+        .back-link:hover,
+        .back-link:focus-visible {
+            box-shadow: 0 4px 12px rgba(8, 107, 60, 0.15);
+            transform: translateX(-2px);
+        }
+
+        .back-link:focus-visible {
+            outline: 2px solid var(--green);
+            outline-offset: 2px;
+        }
+
+        .title-row {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .title-icon {
+            width: 62px;
+            height: 62px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            background: var(--green);
+            color: var(--gold-light);
+            font-size: 26px;
+        }
+
+        .card-top h1 {
+            color: var(--green-900);
+            font-family: var(--serif);
+            font-size: clamp(26px, 3.4vw, 38px);
+            font-weight: 900;
+            line-height: 1.15;
+        }
+
+        .card-top p {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .intro {
+            margin: 28px clamp(22px, 5vw, 54px) 6px;
+            padding: 16px 18px;
+            border-left: 4px solid var(--green);
+            border-radius: 0 10px 10px 0;
+            background: #f2f8f4;
+            color: var(--text);
+            font-size: 16px;
+            line-height: 1.65;
+        }
+
+        .sections {
+            display: grid;
+            gap: 14px;
+            padding: 18px clamp(22px, 5vw, 54px) 8px;
+            list-style: none;
+        }
+
+        .section {
+            display: flex;
+            gap: 16px;
+            padding: 18px;
+            border: 1px solid #e6ece8;
+            border-radius: 14px;
+            background: #ffffff;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .section:hover {
+            border-color: rgba(226, 172, 47, 0.7);
+            box-shadow: 0 8px 22px rgba(23, 40, 30, 0.08);
+        }
+
+        .section-icon {
+            position: relative;
+            width: 46px;
+            height: 46px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            border-radius: 12px;
+            background: #e6f3eb;
+            color: var(--green);
+            font-size: 19px;
+        }
+
+        .section-icon b {
+            position: absolute;
+            top: -7px;
+            right: -7px;
+            width: 22px;
+            height: 22px;
+            display: grid;
+            place-items: center;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            background: var(--gold);
+            color: #3d2a00;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .section h2 {
+            margin-bottom: 6px;
+            color: var(--green-900);
+            font-family: var(--serif);
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .section p {
+            color: #3b4741;
+            font-size: 15px;
+            line-height: 1.65;
+        }
+
+        .card-foot {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-top: 22px;
+            padding: 22px clamp(22px, 5vw, 54px) 28px;
+            border-top: 1px dashed #dfe6e1;
+            background: #fafcfb;
+        }
+
+        .card-foot p {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .card-foot p i {
+            color: var(--gold);
+            font-size: 18px;
+        }
+
+        .return-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 46px;
+            padding: 0 22px;
+            border-radius: 8px;
+            background: var(--green);
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.2s ease;
+        }
+
+        .return-button:hover {
+            background: #064f2d;
+        }
+
+        .return-button:focus-visible {
+            outline: 3px solid var(--gold);
+            outline-offset: 2px;
+        }
+
+        .copyright {
+            position: relative;
+            z-index: 2;
+            margin-top: 22px;
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 13px;
+            text-align: center;
+        }
+
+        /* ---------------- SMALL SCREENS ---------------- */
+
+        @media (max-width: 700px) {
+            :root {
+                --wave: 42px;
+            }
+
+            .terms-header {
+                min-height: 0;
+                padding: 16px 16px calc(var(--wave) + 6px);
+            }
+
+            .terms-header .campus {
+                width: 60%;
+                opacity: 0.5;
+            }
+
+            main {
+                padding: calc(var(--wave) + 20px) 14px 110px;
+            }
+
+            .title-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 21px;
+            }
+
+            .section {
+                padding: 15px;
+                gap: 13px;
+            }
+
+            .card-foot {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+
+            .card-foot p {
+                justify-content: center;
+            }
+
+            .return-button {
+                justify-content: center;
+            }
+
+            .dots {
+                display: none;
+            }
+
+            .bottom-band {
+                height: 90px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition: none !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
+    <div class="page">
 
-    <!-- GREEN BACKGROUND -->
+        <!-- HEADER -->
+        <header class="terms-header">
 
-    <div class="terms-background">
+            <!-- Mountain ranges (decorative) -->
+            <svg class="mountains" viewBox="0 0 1440 200" preserveAspectRatio="none" aria-hidden="true">
+                <path fill="#b4d3ea" opacity="0.8"
+                    d="M0 120 L120 70 L210 105 L330 40 L450 95 L560 55 L690 110 L800 50 L930 100 L1050 35 L1170 90 L1290 45 L1440 95 L1440 200 L0 200 Z" />
+                <path fill="#8db8d6" opacity="0.7"
+                    d="M0 150 L140 100 L260 140 L390 85 L520 135 L640 95 L770 145 L900 90 L1030 140 L1160 80 L1300 130 L1440 100 L1440 200 L0 200 Z" />
+                <path fill="#6d9c8c" opacity="0.55"
+                    d="M0 175 L160 135 L300 170 L460 125 L610 165 L760 130 L910 172 L1080 128 L1240 168 L1440 135 L1440 200 L0 200 Z" />
+            </svg>
 
-        <!-- TERMS CARD -->
+            <!-- Campus picture (decorative) -->
+            <div class="campus" aria-hidden="true"></div>
 
-        <div class="terms-card">
+            <a class="brand" href="index.html">
+                <img src="images/logo.png" alt="Mountain Province State University seal">
+                <div>
+                    <strong>Mountain Province<br>State University</strong>
+                    <span>MPSU ETEEAP Learning Management System</span>
+                </div>
+            </a>
 
-            <div class="terms-heading">
+        </header>
 
-                <a href="index.html" class="back-button">
-                    <i>←</i>
-                </a>
+        <main>
 
-                <h1>User Terms of Services</h1>
+            <!-- Gold line along the header's wave (decorative) -->
+            <svg class="header-wave" viewBox="0 0 1440 72" preserveAspectRatio="none" aria-hidden="true">
+                <path fill="none" stroke="#e2ac2f" stroke-width="6" vector-effect="non-scaling-stroke"
+                    d="M0 12 C 160 38, 300 60, 520 56 C 820 50, 1150 16, 1440 20" />
+            </svg>
+            <span class="dots left" aria-hidden="true"></span>
+            <span class="dots right" aria-hidden="true"></span>
 
-            </div>
+            <article class="terms-card" aria-labelledby="termsTitle">
 
+                <div class="card-top">
+                    <a href="index.html" class="back-link">
+                        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                        Back to Login
+                    </a>
 
-            <div class="terms-content">
+                    <div class="title-row">
+                        <span class="title-icon" aria-hidden="true">
+                            <i class="fa-solid fa-file-contract"></i>
+                        </span>
+                        <div>
+                            <h1 id="termsTitle">Terms of Service</h1>
+                            <p>Please read these terms before using the MPSU ETEEAP LMS.</p>
+                        </div>
+                    </div>
+                </div>
 
-                <p>
+                <p class="intro">
                     By logging in to the MPSU ETEEAP Learning
                     Management System, you acknowledge and agree
                     to comply with the terms and conditions
                     governing the use of the system.
                 </p>
 
-                <p>
-                    The MPSU ETEEAP LMS is intended for
-                    educational, administrative, and academic
-                    purposes. Users are expected to use the
-                    system responsibly and only for authorized
-                    activities.
-                </p>
+                <ol class="sections">
 
-                <p>
-                    Users must keep their account information,
-                    including their username and password,
-                    confidential. You are responsible for all
-                    activities performed using your account.
-                </p>
+                    <li class="section">
+                        <span class="section-icon" aria-hidden="true">
+                            <i class="fa-solid fa-graduation-cap"></i><b>1</b>
+                        </span>
+                        <div>
+                            <h2>Purpose of the System</h2>
+                            <p>
+                                The MPSU ETEEAP LMS is intended for
+                                educational, administrative, and academic
+                                purposes. Users are expected to use the
+                                system responsibly and only for authorized
+                                activities.
+                            </p>
+                        </div>
+                    </li>
 
-                <p>
-                    Users agree not to misuse, damage, disrupt,
-                    or attempt to gain unauthorized access to
-                    the system, its resources, or the information
-                    of other users.
-                </p>
+                    <li class="section">
+                        <span class="section-icon" aria-hidden="true">
+                            <i class="fa-solid fa-user-lock"></i><b>2</b>
+                        </span>
+                        <div>
+                            <h2>Account Security</h2>
+                            <p>
+                                Users must keep their account information,
+                                including their username and password,
+                                confidential. You are responsible for all
+                                activities performed using your account.
+                            </p>
+                        </div>
+                    </li>
 
-                <p>
-                    MPSU reserves the right to update these
-                    terms when necessary. Continued use of the
-                    MPSU ETEEAP Learning Management System
-                    constitutes acceptance of the updated terms.
-                </p>
+                    <li class="section">
+                        <span class="section-icon" aria-hidden="true">
+                            <i class="fa-solid fa-shield-halved"></i><b>3</b>
+                        </span>
+                        <div>
+                            <h2>Acceptable Use</h2>
+                            <p>
+                                Users agree not to misuse, damage, disrupt,
+                                or attempt to gain unauthorized access to
+                                the system, its resources, or the information
+                                of other users.
+                            </p>
+                        </div>
+                    </li>
 
-            </div>
+                    <li class="section">
+                        <span class="section-icon" aria-hidden="true">
+                            <i class="fa-solid fa-pen-to-square"></i><b>4</b>
+                        </span>
+                        <div>
+                            <h2>Changes to These Terms</h2>
+                            <p>
+                                MPSU reserves the right to update these
+                                terms when necessary. Continued use of the
+                                MPSU ETEEAP Learning Management System
+                                constitutes acceptance of the updated terms.
+                            </p>
+                        </div>
+                    </li>
 
-        </div>
+                </ol>
+
+                <div class="card-foot">
+                    <p>
+                        <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                        Tick "I agree" on the login page to accept these terms.
+                    </p>
+                    <a href="index.html" class="return-button">
+                        <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
+                        Return to Login
+                    </a>
+                </div>
+
+            </article>
+
+            <p class="copyright">Mountain Province State University · MPSU ETEEAP LMS</p>
+
+            <!-- Maroon sweep with gold lines (decorative) -->
+            <svg class="bottom-band" viewBox="0 0 1440 200" preserveAspectRatio="none" aria-hidden="true">
+                <path fill="#e2ac2f" d="M0 60 C 360 20, 760 130, 1100 80 C 1260 56, 1360 60, 1440 66 L1440 200 L0 200 Z" />
+                <path fill="#7a1018" d="M0 74 C 360 34, 760 144, 1100 94 C 1260 70, 1360 74, 1440 80 L1440 200 L0 200 Z" />
+                <path fill="none" stroke="rgba(242,207,116,0.6)" stroke-width="2" vector-effect="non-scaling-stroke"
+                    d="M0 130 C 400 100, 800 180, 1440 130" />
+                <path fill="#5a0a11" d="M0 160 C 400 140, 820 200, 1440 160 L1440 200 L0 200 Z" />
+            </svg>
+
+        </main>
 
     </div>
-
 
 </body>
 
