@@ -369,43 +369,6 @@ let instructorCredentialsExpiryTimer = null;
 
     }
 
-    function createInstructorId() {
-
-        const instructors =
-            loadInstructors();
-
-        let highestNumber = 0;
-
-        instructors.forEach(
-            instructor => {
-
-                const match =
-                    String(
-                        instructor.id || ""
-                    ).match(
-                        /^INS-(\d+)$/
-                    );
-
-                if (!match) {
-                    return;
-                }
-
-                highestNumber =
-                    Math.max(
-                        highestNumber,
-                        Number(match[1])
-                    );
-
-            }
-        );
-
-        return `INS-${String(
-            highestNumber + 1
-        ).padStart(3, "0")}`;
-
-    }
-
-
     async function syncInstructorsFromApi() {
 
         const payload =
@@ -1069,8 +1032,9 @@ let instructorCredentialsExpiryTimer = null;
             "Create a new instructor and account.";
 
 
+        // The admin types the Instructor ID (no automatic INS-number).
         instructorIdInput.value =
-            createInstructorId();
+            "";
 
 
         instructorNameInput.value =
@@ -1451,11 +1415,14 @@ let instructorCredentialsExpiryTimer = null;
         /*
          * Prevent duplicate email addresses in the
          * currently synchronized instructor records.
+         * A blank email is never a duplicate (many
+         * instructors have no email).
          */
         const accounts =
             getAccounts();
 
         const duplicateEmail =
+            Boolean(email) &&
             accounts.some(
                 account =>
                     String(
@@ -1928,9 +1895,10 @@ let instructorCredentialsExpiryTimer = null;
                     "learner-account-email";
 
 
+                // Blank when the instructor has no email.
                 emailCell.textContent =
                     account?.email ||
-                    "â€”";
+                    "";
 
 
 
