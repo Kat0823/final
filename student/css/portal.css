@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap");
+
 /* =========================================================
    SIKNAYAN - LEARNER PORTAL (portal.css)
 
@@ -1356,5 +1358,172 @@ table.data tbody tr:hover {
 
     .lp-profile-actions {
         grid-template-columns: 1fr;
+    }
+}
+
+
+/* =========================================================
+   MPSU THEME (same as the Academic Admin portal)
+   Header with mountain art and a gold swoosh, serif lettering,
+   maroon sidebar with a gold active link and plain mountains at
+   the foot. Appearance only.
+========================================================= */
+
+:root {
+    --theme-serif: "Merriweather", Georgia, "Times New Roman", serif;
+    --theme-gold: #e2ac2f;
+}
+
+/* Header */
+.topbar {
+    background:
+        url("../../images/theme-header.svg") right center / auto 100% no-repeat,
+        linear-gradient(90deg, #075c35 0%, #08683c 55%, #0a6e40 100%);
+    border-bottom: 2px solid var(--theme-gold);
+}
+
+.topbar,
+.sidebar {
+    font-variant-numeric: lining-nums;
+}
+
+.brand-text h1,
+.brand-text p,
+.profile-info strong,
+.sidebar-view-text,
+.nav-item {
+    font-family: var(--theme-serif);
+}
+
+.brand-text h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.brand-text p {
+    font-size: 16px;
+}
+
+.brand-logo {
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
+}
+
+.profile-avatar {
+    border-color: #f3cd6b;
+}
+
+.notification-dot {
+    background: #ff5a5a;
+    box-shadow: 0 0 0 2px #08683c;
+}
+
+/* Divider between the bell and the profile */
+#notificationsButton {
+    margin-right: 6px;
+}
+
+#notificationsButton::after {
+    content: "";
+    position: absolute;
+    top: 9px;
+    right: -15px;
+    width: 1px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.35);
+}
+
+/* Sidebar */
+.sidebar {
+    background: linear-gradient(180deg, #73101a 0%, #6a0d12 55%, #5d0a0f 100%);
+}
+
+.nav-item {
+    font-size: 15px;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.nav-item.active,
+.nav-item.active:hover {
+    background: linear-gradient(90deg, #f2cf74 0%, #e2ac2f 55%, #c99223 100%);
+    color: #3d0a0d;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
+}
+
+.nav-item.active i {
+    color: #3d0a0d;
+}
+
+/* A little space above the first link */
+.sidebar-nav > .nav-item:first-child {
+    margin-top: 14px;
+}
+
+/* Divider above Logout; Logout sits low over the mountains */
+.sidebar-bottom {
+    position: relative;
+    z-index: 1;
+    margin: auto 14px 50px;
+    padding: 10px 0 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.sidebar.collapsed .sidebar-bottom {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.sidebar-top,
+.sidebar-nav {
+    position: relative;
+    z-index: 1;
+}
+
+@media (min-width: 901px) {
+    /* Plain mountains at the foot (decorative, behind the links) */
+    .sidebar::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 0;
+        height: 140px;
+        background: url("../../images/theme-sidebar.svg") center bottom / 100% 100% no-repeat;
+        pointer-events: none;
+    }
+}
+
+@media (min-width: 901px) and (max-height: 820px) {
+    .sidebar::after {
+        height: 84px;
+    }
+
+    .sidebar-nav > .nav-item:first-child {
+        margin-top: 10px;
+    }
+
+    .sidebar-bottom {
+        margin-bottom: 22px;
+    }
+}
+
+@media (min-width: 901px) and (max-height: 680px) {
+    .sidebar::after {
+        height: 70px;
+    }
+
+    .sidebar-bottom {
+        margin-bottom: 14px;
+    }
+}
+
+@media (max-width: 900px) {
+    .sidebar-bottom {
+        margin-bottom: 14px;
     }
 }
