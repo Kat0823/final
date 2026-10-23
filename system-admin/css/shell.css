@@ -1636,3 +1636,170 @@
         transform: none;
     }
 }
+
+
+/* ---------------- MY PROFILE POP-UP ----------------
+   Same colours as the System Admin header and sidebar: maroon cover
+   with gold circuit lines, gold photo ring, maroon headings with a
+   gold underline, green buttons. */
+
+.sa-profile-modal {
+    border-top: 4px solid var(--sa-gold);
+    box-shadow: 0 24px 70px rgba(40, 10, 10, 0.35);
+}
+
+.sa-profile-cover {
+    position: relative;
+    overflow: hidden;
+    background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 150' preserveAspectRatio='xMaxYMid slice'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.14' stroke-width='1.5'%3E%3Cpath d='M0 120 H70 L100 90 H170 L200 120 H300'/%3E%3Cpath d='M120 0 V30 H210 L240 60 H300'/%3E%3Cpath d='M40 150 V135 H150 L170 115'/%3E%3C/g%3E%3Cg fill='%23f3cd6b' fill-opacity='.75'%3E%3Ccircle cx='100' cy='90' r='3'/%3E%3Ccircle cx='200' cy='120' r='3'/%3E%3Ccircle cx='240' cy='60' r='3'/%3E%3Ccircle cx='170' cy='115' r='2.5'/%3E%3C/g%3E%3C/svg%3E") right center / auto 100% no-repeat,
+        radial-gradient(ellipse 50% 120% at 85% 40%, rgba(226, 172, 47, 0.2), transparent 70%),
+        linear-gradient(120deg, var(--sa-maroon-950) 0%, var(--sa-maroon-900) 50%, var(--sa-maroon-800) 100%);
+    border-bottom: 3px solid var(--sa-gold);
+}
+
+.sa-profile-photo {
+    border: 3px solid var(--sa-gold);
+    box-shadow: 0 0 0 4px rgba(226, 172, 47, 0.25);
+    background: #fbefd2;
+    color: var(--sa-maroon-900);
+}
+
+.sa-profile-cover h2 {
+    font-family: var(--sa-heading);
+    font-weight: 800;
+}
+
+.sa-profile-cover p {
+    color: var(--sa-gold-light);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.sa-profile-role {
+    display: inline-flex;
+    padding: 5px 12px;
+    border: 1px solid rgba(243, 205, 107, 0.55);
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.18);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.sa-profile-role svg {
+    color: var(--sa-gold-light);
+}
+
+.sa-profile-close {
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--sa-maroon-900);
+}
+
+.sa-profile-close:hover {
+    background: #ffffff;
+}
+
+.sa-profile-photo-upload {
+    border-bottom-color: #ebe7da;
+    background: #f7f4ea;
+}
+
+.sa-change-photo,
+.sa-upload-photo {
+    background: var(--sa-green-700);
+    color: #ffffff;
+}
+
+.sa-change-photo:hover,
+.sa-upload-photo:hover {
+    background: var(--sa-green-800);
+}
+
+.sa-profile-body h3 {
+    color: var(--sa-maroon-900);
+    font-family: var(--sa-heading);
+    font-weight: 800;
+}
+
+.sa-profile-body h3::after {
+    content: "";
+    display: block;
+    width: 42px;
+    height: 3px;
+    margin-top: 6px;
+    border-radius: 3px;
+    background: var(--sa-gold);
+}
+
+.sa-profile-field .sa-label,
+.sa-profile-field label,
+.sa-profile-field .label {
+    color: var(--sa-green-800);
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.sa-profile-security {
+    border-top-color: #ebe7da;
+}
+
+/* Tinted security icons: gold for the password, green for the account */
+.sa-security-row .sa-security-icon {
+    background: #fbefd2;
+    color: #9a6a0a;
+}
+
+.sa-security-row:last-of-type .sa-security-icon {
+    background: #e3f3ea;
+    color: var(--sa-green-700);
+}
+
+.sa-profile-change {
+    color: var(--sa-green-700);
+}
+
+.sa-profile-change:hover {
+    background: #e3f3ea;
+}
+
+.sa-profile-status {
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: #e3f3ea;
+    color: var(--sa-green-700);
+}
+
+.sa-password-form {
+    border-color: #ebe7da;
+    background: #fcfaf3;
+}
+
+.sa-password-form input:focus {
+    border-color: var(--sa-green-700);
+    box-shadow: 0 0 0 3px rgba(8, 107, 60, 0.12);
+}
+
+.sa-profile-actions {
+    border-top-color: #ebe7da;
+}
+
+.sa-profile-button:hover {
+    border-color: var(--sa-gold);
+    background: #fffaf0;
+}
+
+.sa-profile-button.primary,
+.sa-btn.primary {
+    border-color: var(--sa-green-700);
+    background: var(--sa-green-700);
+    color: #ffffff;
+}
+
+.sa-profile-button.primary:hover,
+.sa-btn.primary:hover {
+    border-color: var(--sa-green-800);
+    background: var(--sa-green-800);
+}
