@@ -278,9 +278,17 @@ function renderLearners(learnerList) {
 
     learnersTableBody.innerHTML = "";
 
+    const learnerCount = document.getElementById("learnerCount");
+    const count = Array.isArray(learnerList) ? learnerList.length : 0;
+
+    if (learnerCount) {
+        learnerCount.textContent =
+            `Showing ${count} learner${count === 1 ? "" : "s"}`;
+    }
+
     /* Show empty message if there are no learners */
 
-    if (!Array.isArray(learnerList) || learnerList.length === 0) {
+    if (count === 0) {
         if (emptyMessage) {
             emptyMessage.style.display = "block";
         }
@@ -292,24 +300,25 @@ function renderLearners(learnerList) {
         emptyMessage.style.display = "none";
     }
 
-    /* Create a table row for each learner */
+    /* One row per learner, in the same order as the table headings:
+       Learner | Class | Modules | Progress | Pending | Status */
 
     learnerList.forEach(learner => {
         const row = document.createElement("tr");
 
-        /* Student ID */
-
-        const studentIdCell = document.createElement("td");
-
-        studentIdCell.textContent =
-            learner.school_id || "—";
-
-        /* Learner name */
+        /* Learner: name with the School ID under it */
 
         const learnerCell = document.createElement("td");
 
-        learnerCell.textContent =
-            learner.name || "Unknown Learner";
+        const name = document.createElement("div");
+        name.className = "learner-name";
+        name.textContent = learner.name || "Unknown Learner";
+
+        const schoolId = document.createElement("div");
+        schoolId.className = "learner-id";
+        schoolId.textContent = learner.school_id || "No School ID";
+
+        learnerCell.append(name, schoolId);
 
         /* Class codes */
 
@@ -329,27 +338,19 @@ function renderLearners(learnerList) {
         classCell.textContent =
             classCodes.length > 0
                 ? classCodes.join(", ")
-                : "—";
+                : "No class";
 
-        /* Modules assigned */
+        /* Modules */
 
         const modulesCell = document.createElement("td");
 
         modulesCell.textContent =
-            learner.modules_assigned ?? 0;
+            Number(learner.modules_assigned) || 0;
 
         /* Progress bar */
 
         const progressCell = document.createElement("td");
-
-        const progressWrapper = document.createElement("div");
-        progressWrapper.className = "progress-wrapper";
-
-        const progressBar = document.createElement("div");
-        progressBar.className = "progress-bar";
-
-        const progressFill = document.createElement("div");
-        progressFill.className = "progress-fill";
+        progressCell.className = "progress-cell";
 
         let progress = Number(learner.progress);
 
@@ -357,49 +358,76 @@ function renderLearners(learnerList) {
             progress = 0;
         }
 
-        progress = Math.max(0, Math.min(100, progress));
+        progress = Math.max(0, Math.min(100, Math.round(progress)));
 
+        const progressTop = document.createElement("div");
+        progressTop.className = "progress-top";
+
+        const progressLabel = document.createElement("span");
+        progressLabel.textContent = "Overall";
+
+        const progressValue = document.createElement("span");
+        progressValue.textContent = `${progress}%`;
+
+        progressTop.append(progressLabel, progressValue);
+
+        const progressTrack = document.createElement("div");
+        progressTrack.className = "progress-track";
+        progressTrack.setAttribute("role", "progressbar");
+        progressTrack.setAttribute("aria-label", `${learner.name || "Learner"} progress`);
+        progressTrack.setAttribute("aria-valuemin", "0");
+        progressTrack.setAttribute("aria-valuemax", "100");
+        progressTrack.setAttribute("aria-valuenow", String(progress));
+
+        const progressFill = document.createElement("div");
+        progressFill.className = "progress-fill";
         progressFill.style.width = `${progress}%`;
 
-        const progressText = document.createElement("span");
-        progressText.className = "progress-text";
-        progressText.textContent = `${progress}%`;
+        progressTrack.appendChild(progressFill);
+        progressCell.append(progressTop, progressTrack);
 
-        progressBar.appendChild(progressFill);
-        progressWrapper.appendChild(progressBar);
-        progressWrapper.appendChild(progressText);
-        progressCell.appendChild(progressWrapper);
+        /* Pending: submissions waiting for a grade */
 
-        /* Learner status */
+        const pendingCell = document.createElement("td");
+        const pending = Number(learner.pending_submissions) || 0;
+
+        pendingCell.textContent = pending;
+
+        if (pending > 0) {
+            pendingCell.className = "pending-count";
+        }
+
+        /* Status */
 
         const statusCell = document.createElement("td");
 
         const status = learner.status || "Pending Plan";
+        const normalizedStatus = String(status).toLowerCase();
 
         const statusBadge = document.createElement("span");
-        statusBadge.className = "status-badge";
-
-        const normalizedStatus = status.toLowerCase();
+        statusBadge.className = "status";
 
         if (normalizedStatus === "completed") {
-            statusBadge.classList.add("status-completed");
+            statusBadge.classList.add("completed");
         } else if (normalizedStatus === "active") {
-            statusBadge.classList.add("status-active");
+            statusBadge.classList.add("active");
+        } else if (normalizedStatus === "inactive") {
+            statusBadge.classList.add("inactive");
         } else {
-            statusBadge.classList.add("status-pending");
+            statusBadge.classList.add("pending");
         }
 
         statusBadge.textContent = status;
         statusCell.appendChild(statusBadge);
 
-        /* Add cells to the row */
-
-        row.appendChild(studentIdCell);
-        row.appendChild(learnerCell);
-        row.appendChild(classCell);
-        row.appendChild(modulesCell);
-        row.appendChild(progressCell);
-        row.appendChild(statusCell);
+        row.append(
+            learnerCell,
+            classCell,
+            modulesCell,
+            progressCell,
+            pendingCell,
+            statusCell
+        );
 
         learnersTableBody.appendChild(row);
     });

@@ -95,6 +95,24 @@ class InstructorPortalTest extends TestCase
         $this->actingAs($this->instructor)->getJson($url)->assertNotFound();
     }
 
+    public function test_dashboard_counts_each_learners_ungraded_submissions(): void
+    {
+        $submission = $this->submit();
+
+        $this->actingAs($this->instructor)->getJson('/api/instructor/dashboard')
+            ->assertOk()
+            ->assertJsonPath('learners.0.name', 'Ana Cruz')
+            ->assertJsonPath('learners.0.pending_submissions', 1);
+
+        $this->actingAs($this->instructor)
+            ->postJson("/api/instructor/submissions/{$submission->id}/grade", ['score' => 8, 'max_score' => 10])
+            ->assertOk();
+
+        $this->actingAs($this->instructor)->getJson('/api/instructor/dashboard')
+            ->assertOk()
+            ->assertJsonPath('learners.0.pending_submissions', 0);
+    }
+
     public function test_dashboard(): void
     {
         $this->actingAs($this->instructor)->getJson('/api/instructor/dashboard')

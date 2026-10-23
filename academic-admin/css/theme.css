@@ -635,3 +635,28 @@
         transition: none;
     }
 }
+
+
+/* Larger profile in the header */
+.topbar .profile {
+    gap: 14px;
+}
+
+.topbar .profile-avatar {
+    width: 56px;
+    height: 56px;
+}
+
+.topbar .profile-info strong,
+.topbar .profile-info > div {
+    font-size: 18px;
+}
+
+.topbar .profile-info span {
+    font-size: 13px;
+}
+
+.topbar .profile-chevron {
+    width: 18px;
+    height: 18px;
+}

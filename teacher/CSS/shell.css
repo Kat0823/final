@@ -724,3 +724,29 @@
         margin-bottom: 10px;
     }
 }
+
+
+/* Larger profile in the header */
+@media (min-width: 1101px) {
+    .header .user-profile {
+        gap: 14px;
+    }
+
+    .header .avatar-ring {
+        width: 56px;
+        height: 56px;
+    }
+
+    .header .user-name {
+        font-size: 18px;
+    }
+
+    .header .user-role {
+        font-size: 13px;
+    }
+
+    .header .profile-chevron {
+        width: 18px;
+        height: 18px;
+    }
+}

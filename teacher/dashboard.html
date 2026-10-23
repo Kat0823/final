@@ -1033,6 +1033,228 @@
     </style>
     <!-- Header and sidebar shared by all Instructor pages (load last) -->
     <link rel="stylesheet" href="CSS/shell.css">
+    <!-- Learner Progress: same card style as the Academic Admin dashboard -->
+    <style>
+        .main-content {
+            background:
+                radial-gradient(ellipse 60% 40% at 100% 0%, rgba(226, 172, 47, 0.08), transparent 70%),
+                #effcf7;
+        }
+
+        .page-heading h1 {
+            color: #5b0a0f;
+            font-family: "Merriweather", Georgia, serif;
+            font-size: clamp(28px, 2.6vw, 36px);
+            font-weight: 900;
+        }
+
+        .page-heading h1::after {
+            content: "";
+            display: block;
+            width: 56px;
+            height: 4px;
+            margin-top: 10px;
+            border-radius: 2px;
+            background: #e2ac2f;
+        }
+
+        .page-heading p {
+            margin-top: 10px;
+            color: #4f5a54;
+            font-family: "Merriweather", Georgia, serif;
+            font-size: 14px;
+        }
+
+        /* Stat cards */
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+            align-items: flex-start;
+            min-height: 140px;
+            padding: 22px;
+            border: 1px solid #ebeee9;
+            border-radius: 14px;
+            box-shadow: 0 6px 20px rgba(23, 40, 30, 0.07);
+        }
+
+        /* Decorative mountains along the bottom of each card (not data). */
+        .stat-card::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 62%;
+            height: 44px;
+            opacity: 0.55;
+            pointer-events: none;
+            -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 46' preserveAspectRatio='none'%3E%3Cpath d='M0 46 L40 26 L70 36 L110 12 L140 28 L170 8 L200 20 L200 46 Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 46' preserveAspectRatio='none'%3E%3Cpath d='M0 46 L40 26 L70 36 L110 12 L140 28 L170 8 L200 20 L200 46 Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+        }
+
+        .stat-card:has(.stat-icon.green)::after {
+            background: linear-gradient(180deg, #bfe0cc, #e3f3ea);
+        }
+
+        .stat-card:has(.stat-icon.gold)::after {
+            background: linear-gradient(180deg, #f2d899, #fbefd2);
+        }
+
+        .stat-card:has(.stat-icon.blue)::after {
+            background: linear-gradient(180deg, #b8dfcf, #dff1ea);
+        }
+
+        .stat-card:has(.stat-icon.red)::after {
+            background: linear-gradient(180deg, #f3c1c4, #fbe4e4);
+        }
+
+        .stat-icon {
+            width: 62px;
+            height: 62px;
+            min-width: 62px;
+            border-radius: 14px;
+            font-size: 26px;
+        }
+
+        .stat-icon.green {
+            background: #e3f3ea;
+            color: #0b6b3e;
+        }
+
+        .stat-icon.gold {
+            background: #fbefd2;
+            color: #9a6a0a;
+        }
+
+        .stat-icon.blue {
+            background: #dff1ea;
+            color: #0e6f55;
+        }
+
+        .stat-icon.red {
+            background: #fbe4e4;
+            color: #9b1c22;
+        }
+
+        .stat-info {
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-info p {
+            color: #2d3a33;
+            font-family: "Merriweather", Georgia, serif;
+            font-size: 15px;
+        }
+
+        .stat-info h2 {
+            margin-top: 6px;
+            color: #1d2a23;
+            font-family: "Merriweather", Georgia, serif;
+            font-size: 40px;
+            font-weight: 900;
+            line-height: 1.1;
+            font-variant-numeric: lining-nums;
+        }
+
+        /* Learner Records panel */
+        .content-panel {
+            border: 1px solid #ebeee9;
+            border-radius: 14px;
+            box-shadow: 0 6px 20px rgba(23, 40, 30, 0.07);
+        }
+
+        .panel-header {
+            padding: 20px 22px;
+        }
+
+        .panel-title {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .records-icon {
+            width: 46px;
+            height: 46px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: #fbefd2;
+            color: #9a6a0a;
+            font-size: 19px;
+        }
+
+        .panel-header h2 {
+            color: #1d2a23;
+            font-family: "Merriweather", Georgia, serif;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .panel-header p {
+            font-size: 13px;
+        }
+
+        .search-box input {
+            min-height: 44px;
+            border-radius: 9px;
+            font-size: 13px;
+        }
+
+        .search-box input:focus {
+            box-shadow: 0 0 0 3px rgba(8, 107, 60, 0.12);
+        }
+
+        thead {
+            background: #f6faf7;
+        }
+
+        th {
+            color: #5b6760;
+        }
+
+        td {
+            font-size: 13px;
+        }
+
+        .learner-name {
+            font-family: "Merriweather", Georgia, serif;
+        }
+
+        .progress-track {
+            height: 10px !important;
+            border-radius: 999px !important;
+            background: #e9ecea !important;
+        }
+
+        .progress-fill {
+            border-radius: 999px !important;
+            background: linear-gradient(90deg, #0b6b3e, #148a52) !important;
+        }
+
+        .panel-footer {
+            font-family: "Merriweather", Georgia, serif;
+        }
+
+        .pending-count {
+            color: #9b1c22;
+            font-family: "Merriweather", Georgia, serif;
+            font-weight: 900;
+        }
+
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -1198,9 +1420,14 @@
         <section class="content-panel">
 
             <div class="panel-header">
-                <div>
-                    <h2>Learner Records</h2>
-                    <p>Review learner information and overall progress.</p>
+                <div class="panel-title">
+                    <span class="records-icon" aria-hidden="true">
+                        <i class="fa-solid fa-users"></i>
+                    </span>
+                    <div>
+                        <h2>Learner Records</h2>
+                        <p>Review learner information and overall progress.</p>
+                    </div>
                 </div>
 
                 <div class="search-box">

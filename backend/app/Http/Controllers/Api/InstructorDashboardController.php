@@ -183,8 +183,24 @@ class InstructorDashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
+        // Submissions still waiting for a grade, per learner (this
+        // instructor's active classes only).
+        $instructorModuleIds = $learners
+            ->flatMap(fn ($learner) => $learner->courses)
+            ->flatMap(fn ($course) => $course->modules)
+            ->pluck('id')
+            ->unique()
+            ->values();
+
+        $pendingByLearner = \App\Models\Submission::whereIn('module_id', $instructorModuleIds)
+            ->whereIn('learner_id', $learners->pluck('id'))
+            ->whereDoesntHave('grade')
+            ->selectRaw('learner_id, COUNT(*) AS pending')
+            ->groupBy('learner_id')
+            ->pluck('pending', 'learner_id');
+
         $learnerProgress = $learners->map(
-            function ($learner) {
+            function ($learner) use ($pendingByLearner) {
 
                 /*
                 |--------------------------------------------------------------------------
@@ -313,6 +329,8 @@ class InstructorDashboardController extends Controller
                     'modules_assigned' => $moduleCount,
 
                     'progress' => $progressPercentage,
+
+                    'pending_submissions' => (int) ($pendingByLearner[$learner->id] ?? 0),
 
                     'status' => $status,
 

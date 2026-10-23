@@ -1527,3 +1527,28 @@ table.data tbody tr:hover {
         margin-bottom: 14px;
     }
 }
+
+
+/* Larger profile in the header */
+.topbar .profile {
+    gap: 14px;
+}
+
+.topbar .profile-avatar {
+    width: 56px;
+    height: 56px;
+    font-size: 19px;
+}
+
+.topbar .profile-info strong {
+    font-size: 18px;
+}
+
+.topbar .profile-info span {
+    font-size: 13px;
+}
+
+.topbar .profile-chevron {
+    width: 18px;
+    height: 18px;
+}
