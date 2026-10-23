@@ -1,11 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 180" preserveAspectRatio="xMidYMax slice">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 180" preserveAspectRatio="none">
   <!-- Decorative sidebar foot: plain, tone-on-tone maroon mountains.
        The back range is a little lighter than the sidebar, the front range
-       darker. No outlines, no texture. Drawn, no photos. -->
+       darker. No outlines, no texture. Drawn, no photos.
+       It stretches to fit the strip so the peaks are never cut. -->
   <defs>
     <!-- Back range: lighter, fading out toward the peaks -->
     <linearGradient id="back" x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0" stop-color="#a02d34" stop-opacity="0.3"/>
+      <stop offset="0" stop-color="#a5333a" stop-opacity="0.5"/>
       <stop offset="0.55" stop-color="#8f2128" stop-opacity="0.55"/>
       <stop offset="1" stop-color="#7f1a20" stop-opacity="0.65"/>
     </linearGradient>
