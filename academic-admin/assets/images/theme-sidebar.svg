@@ -1,35 +1,38 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 200" preserveAspectRatio="xMidYMax slice">
-  <!-- Decorative sidebar foot: soft, tone-on-tone maroon mountain ranges
-       with a fine diamond texture. Drawn shapes, no photos. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 180" preserveAspectRatio="xMidYMax slice">
+  <!-- Decorative sidebar foot: soft, tone-on-tone maroon mountains with
+       a fine diagonal texture. The back range is a little lighter than the
+       sidebar, the front range darker. No outlines. Drawn, no photos. -->
   <defs>
-    <pattern id="texture" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-      <path d="M0 0 H8 M0 0 V8" fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="1"/>
+    <pattern id="texture" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <path d="M0 0 H6 M0 0 V6" fill="none" stroke="#ffffff" stroke-opacity="0.045" stroke-width="0.8"/>
     </pattern>
-    <linearGradient id="far" x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0" stop-color="#a5333b" stop-opacity="0.55"/>
-      <stop offset="1" stop-color="#8a1f26" stop-opacity="0.35"/>
+
+    <!-- Back range: lighter, fading out toward the peaks -->
+    <linearGradient id="back" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#a02d34" stop-opacity="0.3"/>
+      <stop offset="0.55" stop-color="#8f2128" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#7f1a20" stop-opacity="0.65"/>
     </linearGradient>
-    <linearGradient id="near" x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0" stop-color="#94252c" stop-opacity="0.7"/>
-      <stop offset="1" stop-color="#6e1218" stop-opacity="0.6"/>
+
+    <!-- Front range: darker, close to the sidebar colour -->
+    <linearGradient id="front" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#6e1117" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#560a0f"/>
     </linearGradient>
+
+    <clipPath id="land">
+      <path d="M0 64 L26 46 L44 54 L72 26 L98 10 L120 32 L136 26 L164 50 L188 40 L214 58 L245 42 L245 180 L0 180 Z"/>
+    </clipPath>
   </defs>
 
-  <!-- Far range -->
-  <path fill="url(#far)"
-        d="M0 112 L34 84 L58 96 L96 52 L128 82 L150 70 L190 104 L222 80 L245 92 L245 200 L0 200 Z"/>
-  <!-- Ridge highlight -->
-  <path fill="none" stroke="#c4535a" stroke-opacity="0.35" stroke-width="1"
-        d="M0 112 L34 84 L58 96 L96 52 L128 82 L150 70 L190 104 L222 80 L245 92"/>
+  <!-- Back range -->
+  <path fill="url(#back)"
+        d="M0 64 L26 46 L44 54 L72 26 L98 10 L120 32 L136 26 L164 50 L188 40 L214 58 L245 42 L245 180 L0 180 Z"/>
 
-  <!-- Near range -->
-  <path fill="url(#near)"
-        d="M0 150 L44 120 L76 136 L118 104 L160 138 L196 116 L245 142 L245 200 L0 200 Z"/>
-  <path fill="none" stroke="#b23b42" stroke-opacity="0.3" stroke-width="1"
-        d="M0 150 L44 120 L76 136 L118 104 L160 138 L196 116 L245 142"/>
+  <!-- Front range -->
+  <path fill="url(#front)"
+        d="M0 112 L30 92 L52 100 L84 74 L108 88 L132 66 L160 90 L186 80 L212 96 L245 78 L245 180 L0 180 Z"/>
 
-  <!-- Fine texture over the mountains -->
-  <path fill="url(#texture)"
-        d="M0 112 L34 84 L58 96 L96 52 L128 82 L150 70 L190 104 L222 80 L245 92 L245 200 L0 200 Z"/>
-
+  <!-- Fine texture over the mountains only -->
+  <rect width="245" height="180" fill="url(#texture)" clip-path="url(#land)"/>
 </svg>
