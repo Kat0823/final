@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap");
 
 /* =========================================================
    SIKNAYAN - SYSTEM ADMINISTRATOR
@@ -1247,22 +1247,27 @@
 
 
 /* =========================================================
-   MPSU THEME (same as the Academic Admin and Instructor portals)
-   Header with mountain art and a gold swoosh, serif lettering,
-   maroon sidebar with a gold active link and mountains at the
-   foot, and cards with soft tones and mountain art. Appearance
-   only; no sizes the scripts rely on change.
+   SYSTEM ADMIN THEME: NAVY & GOLD
+   Its own look, different from the green/maroon Academic Admin,
+   Instructor and Learner portals: deep navy header and sidebar,
+   gold accents, a circuit/grid pattern instead of mountains,
+   Montserrat headings. Appearance only; no sizes the scripts rely
+   on change.
 ========================================================= */
 
-
 :root {
-    --theme-serif: "Merriweather", Georgia, "Times New Roman", serif;
-    --theme-gold: #e2ac2f;
-    --theme-gold-light: #f3cd6b;
-    --theme-card-shadow: 0 6px 20px rgba(23, 40, 30, 0.07);
+    --sa-navy-950: #071427;
+    --sa-navy-900: #0b1f3a;
+    --sa-navy-800: #12305a;
+    --sa-navy-700: #1b4378;
+    --sa-gold: #e2ac2f;
+    --sa-gold-light: #f3cd6b;
+    --sa-sky: #3d8bd9;
+    --sa-page: #f2f5fa;
+    --sa-heading: "Montserrat", "Segoe UI", Arial, sans-serif;
+    --sa-card-shadow: 0 6px 20px rgba(11, 31, 58, 0.08);
 }
 
-/* Numbers stay full height in the serif font. */
 .topbar,
 .sidebar,
 .main-content {
@@ -1273,34 +1278,38 @@
 
 .topbar {
     background:
-        url("../../images/theme-header.svg") right center / auto 100% no-repeat,
-        linear-gradient(90deg, #075c35 0%, #08683c 55%, #0a6e40 100%);
-    border-bottom: 2px solid var(--theme-gold);
+        /* circuit lines and nodes on the right (decorative) */
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 84' preserveAspectRatio='xMaxYMid slice'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.16' stroke-width='1.5'%3E%3Cpath d='M0 62 H120 L150 32 H260 L290 62 H400 L430 22 H520'/%3E%3Cpath d='M60 84 V70 H180 L200 50 H330 L350 70 H520'/%3E%3Cpath d='M210 0 V14 H320 L340 34 H470 V0'/%3E%3C/g%3E%3Cg fill='%23f3cd6b' fill-opacity='.7'%3E%3Ccircle cx='150' cy='32' r='3'/%3E%3Ccircle cx='290' cy='62' r='3'/%3E%3Ccircle cx='430' cy='22' r='3'/%3E%3Ccircle cx='200' cy='50' r='2.5'/%3E%3Ccircle cx='340' cy='34' r='2.5'/%3E%3C/g%3E%3C/svg%3E") right 330px center / auto 100% no-repeat,
+        radial-gradient(ellipse 40% 140% at 70% 50%, rgba(61, 139, 217, 0.25), transparent 70%),
+        linear-gradient(90deg, var(--sa-navy-950) 0%, var(--sa-navy-900) 45%, var(--sa-navy-800) 100%);
+    border-bottom: 3px solid var(--sa-gold);
 }
 
 .brand-text h1 {
-    font-family: var(--theme-serif);
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 0.3px;
+    font-family: var(--sa-heading);
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
 }
 
 .brand-text p {
-    font-family: var(--theme-serif);
-    font-size: 16px;
-    font-weight: 400;
+    color: var(--sa-gold-light);
+    font-family: var(--sa-heading);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
 }
 
 .brand-logo {
-    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35));
 }
 
 .notification-dot {
     background: #ff5a5a;
-    box-shadow: 0 0 0 2px #08683c;
+    box-shadow: 0 0 0 2px var(--sa-navy-900);
 }
 
-/* Thin divider between the bell and the profile. */
 .topbar-right .notification-button {
     position: relative;
     margin-right: 6px;
@@ -1313,41 +1322,43 @@
     right: -15px;
     width: 1px;
     height: 24px;
-    background: rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.25);
 }
 
-/* Larger profile, gold ring */
 .topbar .profile {
     gap: 14px;
 }
 
 .topbar .profile-avatar {
-    width: 56px;
-    height: 56px;
-    border: 2px solid var(--theme-gold-light);
+    width: 54px;
+    height: 54px;
+    border: 2px solid var(--sa-gold);
+    box-shadow: 0 0 0 3px rgba(226, 172, 47, 0.2);
 }
 
 .topbar .profile-info strong {
-    font-family: var(--theme-serif);
-    font-size: 18px;
+    font-family: var(--sa-heading);
+    font-size: 17px;
+    font-weight: 700;
 }
 
 .topbar .profile-info span {
-    font-size: 13px;
-}
-
-.topbar .profile-chevron {
-    width: 18px;
-    height: 18px;
+    color: var(--sa-gold-light);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
 }
 
 /* ---------------- SIDEBAR ---------------- */
 
 .sidebar {
-    background: linear-gradient(180deg, #73101a 0%, #6a0d12 55%, #5d0a0f 100%);
+    background:
+        linear-gradient(180deg, var(--sa-navy-900) 0%, #0d2546 55%, var(--sa-navy-950) 100%);
+    border-right: 1px solid rgba(226, 172, 47, 0.25);
 }
 
-/* Mountains at the foot (decorative, behind the links). */
+/* Faint grid with gold nodes at the foot (decorative). */
 .sidebar::after {
     content: "";
     position: absolute;
@@ -1355,8 +1366,13 @@
     right: 0;
     bottom: 0;
     z-index: 0;
-    height: 140px;
-    background: url("../../images/theme-sidebar.svg") center bottom / 100% 100% no-repeat;
+    height: 170px;
+    background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 245 170' preserveAspectRatio='none'%3E%3Cg fill='none' stroke='%233d8bd9' stroke-opacity='.35' stroke-width='1.2'%3E%3Cpath d='M0 120 H60 L90 90 H160 L190 120 H245'/%3E%3Cpath d='M30 170 V140 H120 L140 120'/%3E%3Cpath d='M200 170 V150 H150 L130 130 H70'/%3E%3C/g%3E%3Cg fill='%23e2ac2f' fill-opacity='.8'%3E%3Ccircle cx='90' cy='90' r='3'/%3E%3Ccircle cx='190' cy='120' r='3'/%3E%3Ccircle cx='140' cy='120' r='2.5'/%3E%3Ccircle cx='130' cy='130' r='2.5'/%3E%3C/g%3E%3C/svg%3E") center bottom / 100% 100% no-repeat,
+        linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px) 0 0 / 100% 18px,
+        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px) 0 0 / 18px 100%;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 45%);
+    mask-image: linear-gradient(180deg, transparent 0%, #000 45%);
     pointer-events: none;
 }
 
@@ -1369,51 +1385,66 @@
 }
 
 .sidebar-view-text {
-    font-family: var(--theme-serif);
+    font-family: var(--sa-heading);
+    font-weight: 600;
 }
 
 .sidebar-profile-name {
-    font-family: var(--theme-serif);
-    font-size: 19px;
+    font-family: var(--sa-heading);
+    font-size: 18px;
+    font-weight: 700;
 }
 
 .nav-item {
-    font-family: var(--theme-serif);
-    font-size: 15px;
+    position: relative;
+    font-family: var(--sa-heading);
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.86);
 }
 
 .nav-item:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(61, 139, 217, 0.16);
+    color: #ffffff;
 }
 
-/* A little space between the name and the Dashboard link. */
 .sidebar-nav > .nav-item:first-of-type {
     margin-top: 14px;
 }
 
-/* Gold active link */
+/* Gold active link with a bright edge on the left */
 .nav-item.active,
 .nav-item.active:hover {
-    background: linear-gradient(90deg, #f2cf74 0%, #e2ac2f 55%, #c99223 100%);
-    color: #3d0a0d;
+    background: linear-gradient(90deg, rgba(226, 172, 47, 0.95) 0%, rgba(201, 146, 35, 0.95) 100%);
+    color: var(--sa-navy-950);
     font-weight: 700;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+.nav-item.active::before {
+    content: "";
+    position: absolute;
+    top: 8px;
+    bottom: 8px;
+    left: -14px;
+    width: 4px;
+    border-radius: 0 4px 4px 0;
+    background: var(--sa-gold-light);
 }
 
 .nav-item.active svg {
-    color: #3d0a0d;
+    color: var(--sa-navy-950);
 }
 
-/* Logout sits low, over the lower part of the mountains. */
 .sidebar-bottom {
     margin-top: auto;
     margin-right: 14px;
-    margin-bottom: 64px;
+    margin-bottom: 26px;
     margin-left: 14px;
     padding-top: 10px;
     padding-right: 0;
     padding-left: 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.18);
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .sidebar.collapsed .sidebar-bottom {
@@ -1421,27 +1452,13 @@
     margin-left: 10px;
 }
 
-@media (max-height: 820px) {
+@media (max-height: 700px) {
     .sidebar::after {
-        height: 84px;
+        height: 110px;
     }
 
     .sidebar-bottom {
-        margin-bottom: 34px;
-    }
-
-    .sidebar-nav > .nav-item:first-of-type {
-        margin-top: 10px;
-    }
-}
-
-@media (max-height: 680px) {
-    .sidebar::after {
-        height: 70px;
-    }
-
-    .sidebar-bottom {
-        margin-bottom: 22px;
+        margin-bottom: 14px;
     }
 
     .sidebar-nav > .nav-item:first-of-type {
@@ -1453,8 +1470,8 @@
 
 .main-content {
     background:
-        radial-gradient(ellipse 60% 40% at 100% 0%, rgba(226, 172, 47, 0.08), transparent 70%),
-        #f3f7f4;
+        radial-gradient(ellipse 50% 35% at 100% 0%, rgba(61, 139, 217, 0.08), transparent 70%),
+        var(--sa-page);
 }
 
 .page-header h2,
@@ -1463,62 +1480,86 @@
 .dashboard-panel-header h3,
 .panel h2,
 .panel h3 {
-    font-family: var(--theme-serif);
+    color: var(--sa-navy-900);
+    font-family: var(--sa-heading);
+    font-weight: 800;
+}
+
+/* Gold underline under each page title */
+.page-header h2::after {
+    content: "";
+    display: block;
+    width: 54px;
+    height: 4px;
+    margin-top: 8px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--sa-gold), var(--sa-gold-light));
+}
+
+/* Primary buttons in navy */
+.main-content .primary-button,
+.main-content .btn-primary,
+.main-content button.primary {
+    background: var(--sa-navy-800);
+    border-color: var(--sa-navy-800);
+}
+
+.main-content .primary-button:hover,
+.main-content .btn-primary:hover,
+.main-content button.primary:hover {
+    background: var(--sa-navy-700);
+    border-color: var(--sa-navy-700);
 }
 
 /* ---------------- CARDS ---------------- */
 
-/* Dashboard stat cards: soft tone per card and mountain art. */
 .dashboard-card {
     position: relative;
     overflow: hidden;
     min-height: 132px;
     padding: 22px;
-    border: 1px solid #ebeee9;
-    border-radius: 14px;
-    box-shadow: var(--theme-card-shadow);
+    border: 1px solid #e3e8f1;
+    border-left: 4px solid var(--tone-fg);
+    border-radius: 12px;
+    box-shadow: var(--sa-card-shadow);
     transition: transform 0.18s ease, box-shadow 0.18s ease;
-    --tone-bg: #e3f3ea;
-    --tone-fg: #0b6b3e;
-    --tone-art: #bfe0cc;
+    --tone-bg: #e4ecf7;
+    --tone-fg: #12305a;
 }
 
 .dashboard-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 26px rgba(23, 40, 30, 0.11);
+    box-shadow: 0 12px 26px rgba(11, 31, 58, 0.13);
 }
 
 .dashboard-card:nth-child(4n + 2) {
-    --tone-bg: #fbe4e4;
-    --tone-fg: #9b1c22;
-    --tone-art: #f3c1c4;
+    --tone-bg: #fbefd2;
+    --tone-fg: #a87412;
 }
 
 .dashboard-card:nth-child(4n + 3) {
-    --tone-bg: #fbefd2;
-    --tone-fg: #9a6a0a;
-    --tone-art: #f2d899;
+    --tone-bg: #e1effc;
+    --tone-fg: #2b74c0;
 }
 
 .dashboard-card:nth-child(4n + 4) {
-    --tone-bg: #dff1ea;
-    --tone-fg: #0e6f55;
-    --tone-art: #b8dfcf;
+    --tone-bg: #e8ebf0;
+    --tone-fg: #4a5568;
 }
 
 .dashboard-card .card-icon {
     position: relative;
     z-index: 1;
-    width: 58px;
-    height: 58px;
-    border-radius: 14px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
     background: var(--tone-bg);
     color: var(--tone-fg);
 }
 
 .dashboard-card .card-icon svg {
-    width: 26px;
-    height: 26px;
+    width: 25px;
+    height: 25px;
 }
 
 .dashboard-card .card-content {
@@ -1527,48 +1568,57 @@
 }
 
 .dashboard-card .card-label {
-    color: #2d3a33;
-    font-family: var(--theme-serif);
-    font-size: 14px;
+    color: #4a5568;
+    font-family: var(--sa-heading);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
 }
 
 .dashboard-card .card-value {
     margin-top: 6px;
-    color: #1d2a23;
-    font-family: var(--theme-serif);
+    color: var(--sa-navy-900);
+    font-family: var(--sa-heading);
     font-size: 34px;
-    font-weight: 900;
+    font-weight: 800;
 }
 
-/* Decorative mountains along the bottom of each card (not data). */
+/* Circuit lines in the card's corner (decorative). */
 .dashboard-card::after {
     content: "";
     position: absolute;
     right: 0;
     bottom: 0;
-    width: 62%;
-    height: 42px;
-    opacity: 0.55;
-    background: linear-gradient(180deg, var(--tone-art), var(--tone-bg));
-    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 46' preserveAspectRatio='none'%3E%3Cpath d='M0 46 L40 26 L70 36 L110 12 L140 28 L170 8 L200 20 L200 46 Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 46' preserveAspectRatio='none'%3E%3Cpath d='M0 46 L40 26 L70 36 L110 12 L140 28 L170 8 L200 20 L200 46 Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+    width: 140px;
+    height: 70px;
+    background: var(--tone-fg);
+    opacity: 0.12;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 70'%3E%3Cg fill='none' stroke='%23000' stroke-width='2'%3E%3Cpath d='M0 60 H40 L60 40 H100 L120 20 H140'/%3E%3Cpath d='M30 70 V52 H80 L95 37'/%3E%3Cpath d='M110 70 V55 H140'/%3E%3C/g%3E%3Cg fill='%23000'%3E%3Ccircle cx='60' cy='40' r='4'/%3E%3Ccircle cx='120' cy='20' r='4'/%3E%3Ccircle cx='95' cy='37' r='3.5'/%3E%3C/g%3E%3C/svg%3E") right bottom / 100% 100% no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 70'%3E%3Cg fill='none' stroke='%23000' stroke-width='2'%3E%3Cpath d='M0 60 H40 L60 40 H100 L120 20 H140'/%3E%3Cpath d='M30 70 V52 H80 L95 37'/%3E%3Cpath d='M110 70 V55 H140'/%3E%3C/g%3E%3Cg fill='%23000'%3E%3Ccircle cx='60' cy='40' r='4'/%3E%3Ccircle cx='120' cy='20' r='4'/%3E%3Ccircle cx='95' cy='37' r='3.5'/%3E%3C/g%3E%3C/svg%3E") right bottom / 100% 100% no-repeat;
     pointer-events: none;
 }
 
-/* Panels and tables on every page: rounded, soft shadow, gold top. */
+/* Panels and tables: rounded, soft shadow, navy top edge. */
 .dashboard-panel,
 .panel,
 .administrators-panel {
-    border: 1px solid #ebeee9;
-    border-radius: 14px;
-    box-shadow: var(--theme-card-shadow);
+    border: 1px solid #e3e8f1;
+    border-radius: 12px;
+    box-shadow: var(--sa-card-shadow);
     overflow: hidden;
 }
 
 .dashboard-panel,
 .panel:not(.audit-filter-panel):not(.notifications-filter-panel),
 .administrators-panel {
-    border-top: 3px solid var(--theme-gold);
+    border-top: 3px solid var(--sa-navy-800);
+}
+
+/* Table headings in navy */
+.main-content table thead th {
+    background: #f4f7fb;
+    color: var(--sa-navy-800);
 }
 
 @media (prefers-reduced-motion: reduce) {
