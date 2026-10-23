@@ -25,7 +25,7 @@
        Learner Details
 ========================================================= */
 
-(function initLearnerDetailsPage() {
+(function initLearnerDetailsPage(retried) {
 
     const page =
         document.querySelector(
@@ -80,12 +80,46 @@
 
     if (!learner) {
 
+        /*
+         * Not in this browser's saved list yet (for example a new
+         * learner opened from the Reports page): load the learners
+         * from the server once, then try again.
+         */
+        if (
+            !retried &&
+            typeof syncLearnersFromApi === "function"
+        ) {
+
+            syncLearnersFromApi()
+                .then(() => initLearnerDetailsPage(true))
+                .catch(error => {
+                    console.error("Learner Details: unable to load learners.", error);
+                    showNotFound();
+                });
+
+            return;
+        }
+
         console.warn(
             "Learner not found:",
             learnerId
         );
 
+        showNotFound();
+
         return;
+    }
+
+
+    function showNotFound() {
+
+        const nameElement =
+            document.getElementById("learnerName");
+
+        if (nameElement) {
+            nameElement.textContent =
+                "Learner not found";
+        }
     }
 
 

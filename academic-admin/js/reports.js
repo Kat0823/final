@@ -4498,7 +4498,7 @@ Laravel reports API.
                     percentText(
                         average
                     ),
-                    `${totalModules} module assignments represented`
+                    `Across ${totalModules} module${totalModules === 1 ? "" : "s"} in the filtered programs`
                 )
 
             ],
