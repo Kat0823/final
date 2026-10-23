@@ -187,6 +187,7 @@ Route::middleware([
         Route::get('/instructor/profile', [InstructorProfileController::class, 'show']);
         Route::put('/instructor/profile', [InstructorProfileController::class, 'update']);
         Route::post('/instructor/profile/password', [InstructorProfileController::class, 'changePassword']);
+        Route::post('/instructor/profile/photo', [InstructorProfileController::class, 'uploadPhoto']);
     });
 
 

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class InstructorProfileController extends Controller
@@ -26,15 +28,7 @@ class InstructorProfileController extends Controller
 
         return response()->json([
             'success' => true,
-            'user' => [
-                'id' => $instructor->id,
-                'name' => $instructor->name,
-                'email' => $instructor->email,
-                'school_id' => $instructor->school_id,
-                'program' => $instructor->program,
-                'contact' => $instructor->contact,
-                'role' => $instructor->role,
-            ],
+            'user' => $this->profile($instructor->fresh()),
         ]);
     }
 
@@ -53,14 +47,18 @@ class InstructorProfileController extends Controller
         }
 
         $validated = $request->validate([
+            // Optional: the profile pop-up only edits email and contact,
+            // like the learner's (the name is managed by the admin).
             'name' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:255',
             ],
 
+            // Optional, as for learners: some instructors have no email.
             'email' => [
-                'required',
+                'nullable',
                 'email',
                 'max:255',
                 Rule::unique('users', 'email')
@@ -75,23 +73,15 @@ class InstructorProfileController extends Controller
         ]);
 
         $instructor->update([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
+            'name' => $validated['name'] ?? $instructor->name,
+            'email' => $validated['email'] ?? null,
             'contact' => $validated['contact'] ?? null,
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Profile updated successfully.',
-            'user' => [
-                'id' => $instructor->id,
-                'name' => $instructor->name,
-                'email' => $instructor->email,
-                'school_id' => $instructor->school_id,
-                'program' => $instructor->program,
-                'contact' => $instructor->contact,
-                'role' => $instructor->role,
-            ],
+            'user' => $this->profile($instructor->fresh()),
         ]);
     }
 
@@ -151,5 +141,61 @@ class InstructorProfileController extends Controller
             'success' => true,
             'message' => 'Password changed successfully.',
         ]);
+    }
+
+    /**
+     * Upload or replace the profile picture (JPG, PNG or WEBP, up to
+     * 2 MB), the same way the learner's works.
+     */
+    public function uploadPhoto(Request $request): JsonResponse
+    {
+        $instructor = $request->user();
+
+        if (!$instructor || $instructor->role !== 'instructor') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only instructors can change this profile picture.',
+            ], 403);
+        }
+
+        $request->validate([
+            'photo' => ['required', 'image', 'mimes:jpeg,png,webp', 'max:2048'],
+        ]);
+
+        $oldPath = $instructor->profile_photo_path;
+
+        $instructor->profile_photo_path = $request->file('photo')->store('profile-photos', 'public');
+        $instructor->save();
+
+        if ($oldPath && str_starts_with($oldPath, 'profile-photos/')) {
+            Storage::disk('public')->delete($oldPath);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profile picture updated successfully.',
+            'user' => $this->profile($instructor->fresh()),
+        ]);
+    }
+
+    /**
+     * What the profile pop-up shows (same fields as the learner's).
+     */
+    private function profile(User $instructor): array
+    {
+        return [
+            'id' => $instructor->id,
+            'name' => $instructor->name,
+            'email' => $instructor->email,
+            'school_id' => $instructor->school_id,
+            'program' => $instructor->program,
+            'contact' => $instructor->contact,
+            'role' => $instructor->role,
+            'profile_photo_url' => $instructor->profile_photo_path
+                ? url(Storage::disk('public')->url($instructor->profile_photo_path))
+                : null,
+            'class_count' => $instructor->instructedCourses()->where('is_active', true)->count(),
+            'created_at' => $instructor->created_at,
+        ];
     }
 }

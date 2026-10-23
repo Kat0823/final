@@ -45,22 +45,33 @@
      *         or { chips: [{ icon, text }], open: "Open class" }
      */
     function create(options) {
-        const card = element("a", `sk-class-card`);
+        const design = designFor(options.id, options.code);
+        const card = element("a", `sk-class-card sk-tone-${design}`);
         card.href = options.href || "#";
 
-        const banner = element("div", `sk-class-banner sk-art-${designFor(options.id, options.code)}`);
+        // Banner: code on top, class name at the bottom, over the artwork.
+        const banner = element("div", `sk-class-banner sk-art-${design}`);
+        const top = element("div", "sk-class-banner-top");
+        top.appendChild(element("span", "sk-class-code", options.code || "CLASS"));
+        const go = element("span", "sk-class-go");
+        go.setAttribute("aria-hidden", "true");
+        go.appendChild(icon("fa-solid fa-arrow-right"));
+        top.appendChild(go);
+        banner.append(top, element("h3", "sk-class-title", options.name || "Unnamed Class"));
+
+        // Round badge overlapping the banner's bottom edge.
         const badge = element("span", "sk-class-badge");
         badge.setAttribute("aria-hidden", "true");
         badge.appendChild(icon(options.badgeIcon || "fa-solid fa-book-open"));
-        banner.append(element("span", "sk-class-code", options.code || "CLASS"), badge);
 
         const body = element("div", "sk-class-body");
-        body.appendChild(element("h3", "sk-class-title", options.name || "Unnamed Class"));
 
         (options.meta || []).forEach(item => {
             if (!item || !item.text) return;
             const row = element("div", "sk-class-meta");
-            row.append(icon(item.icon), element("span", "", item.text));
+            const iconBox = element("span", "sk-class-meta-icon");
+            iconBox.appendChild(icon(item.icon));
+            row.append(iconBox, element("span", "sk-class-meta-text", item.text));
             body.appendChild(row);
         });
 
@@ -72,7 +83,9 @@
             const percent = total > 0 ? Math.round((Math.min(done, total) / total) * 100) : 0;
 
             const labelRow = element("div", "sk-class-progress-label");
-            labelRow.append(element("span", "", label || "Progress"), element("span", "", `${done} / ${total}`));
+            const count = element("span", "sk-class-progress-count", `${done} / ${total}`);
+            count.appendChild(element("small", "", ` · ${percent}%`));
+            labelRow.append(element("span", "", label || "Progress"), count);
 
             const bar = element("div", "sk-class-progress");
             bar.setAttribute("role", "progressbar");
@@ -97,7 +110,7 @@
         }
 
         body.appendChild(foot);
-        card.append(banner, body);
+        card.append(banner, badge, body);
         return card;
     }
 
