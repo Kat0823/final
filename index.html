@@ -44,7 +44,7 @@
             --serif: "Merriweather", Georgia, "Times New Roman", serif;
             --sans: "Nunito Sans", Arial, Helvetica, sans-serif;
             --wave: 72px;
-            --card-rise: 30px;
+            --card-drop: 22px;
             --bottom-gap: 32px;
         }
 
@@ -342,10 +342,14 @@
         .right-section {
             position: relative;
             z-index: 4;
-            align-self: start;
-            /* Top edge sits on the header wave, as in the design. */
-            margin-top: calc(-1 * var(--card-rise));
-            padding: clamp(32px, 5.5vh, 54px) clamp(28px, 4.6vw, 80px) clamp(24px, 3.6vh, 38px);
+            /* Starts a little below the header wave and reaches down to
+               the bottom of the page; the content is centred inside. */
+            align-self: stretch;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-top: var(--card-drop);
+            padding: clamp(26px, 4.2vh, 50px) clamp(28px, 4.6vw, 80px) clamp(20px, 3vh, 34px);
             /* Straight left edge; rounded right corners. */
             border-radius: 4px 20px 20px 4px;
             background: var(--card);
@@ -555,24 +559,113 @@
             color: #b3bdb7;
         }
 
-        /* FOOTER */
-        .login-footer {
-            margin-top: 12px;
-            color: var(--muted);
-            font-size: 15px;
-            line-height: 1.8;
-            text-align: center;
+        /* TERMS AGREEMENT (required before logging in) */
+        .terms-agree {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 0 0 18px;
+            padding: 11px 14px;
+            border: 1px solid #e3e9e5;
+            border-radius: 10px;
+            background: #f7faf8;
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.45;
+            transition: border-color 0.15s ease, background 0.15s ease;
         }
 
-        .login-footer a {
+        .terms-agree.missing {
+            border-color: #e5a3a3;
+            background: #fff4f4;
+        }
+
+        .terms-agree input {
+            width: 18px;
+            height: 18px;
+            margin-top: 1px;
+            flex-shrink: 0;
+            accent-color: var(--green);
+            cursor: pointer;
+        }
+
+        .terms-agree label {
+            cursor: pointer;
+        }
+
+        .terms-agree a {
             color: var(--green);
-            font-weight: 600;
+            font-weight: 700;
             text-decoration: none;
         }
 
-        .login-footer a:hover,
-        .login-footer a:focus-visible {
+        .terms-agree a:hover,
+        .terms-agree a:focus-visible {
             text-decoration: underline;
+        }
+
+        /* FOOTER */
+        .login-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .footer-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--green-900);
+            font-family: var(--serif);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .footer-brand img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+        }
+
+        .terms-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 16px;
+            border: 1px solid rgba(226, 172, 47, 0.55);
+            border-radius: 999px;
+            background: linear-gradient(180deg, #fffaf0, #fbf1da);
+            color: var(--green);
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: box-shadow 0.15s ease, transform 0.15s ease;
+        }
+
+        .terms-link i {
+            color: #b8861b;
+        }
+
+        .terms-link:hover,
+        .terms-link:focus-visible {
+            box-shadow: 0 4px 12px rgba(201, 146, 35, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .terms-link:focus-visible {
+            outline: 2px solid var(--green);
+            outline-offset: 2px;
+        }
+
+        .footer-copy {
+            color: #8a948f;
+            font-size: 12px;
         }
 
         /* ---------------- TABLET ---------------- */
@@ -728,10 +821,10 @@
            Fit the whole page (card and maroon sweep) on screens such
            as 1366x768 without scrolling. */
 
-        @media (min-width: 821px) and (max-height: 820px) {
+        @media (min-width: 821px) and (max-height: 1100px) {
             :root {
                 --wave: 58px;
-                --card-rise: 24px;
+                --card-drop: 20px;
                 --bottom-gap: 22px;
             }
 
@@ -804,9 +897,19 @@
             }
 
             .login-footer {
+                gap: 6px;
                 margin-top: 6px;
-                font-size: 14px;
-                line-height: 1.6;
+            }
+
+            .terms-agree {
+                margin-bottom: 12px;
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+
+            .terms-link {
+                padding: 5px 14px;
+                font-size: 13px;
             }
 
             .left-section {
@@ -843,7 +946,7 @@
         @media (min-width: 821px) and (max-height: 700px) {
             :root {
                 --wave: 46px;
-                --card-rise: 18px;
+                --card-drop: 12px;
                 --bottom-gap: 14px;
             }
 
@@ -928,9 +1031,19 @@
             }
 
             .login-footer {
-                margin-top: 2px;
-                font-size: 13px;
-                line-height: 1.45;
+                flex-direction: row;
+                justify-content: center;
+                gap: 12px;
+                margin-top: 4px;
+            }
+
+            .footer-copy {
+                display: none;
+            }
+
+            .terms-agree {
+                margin-bottom: 8px;
+                padding: 6px 10px;
             }
 
             .left-section {
@@ -1178,6 +1291,15 @@
 
                     </div>
 
+                    <!-- TERMS AGREEMENT (required) -->
+                    <div class="terms-agree" id="termsAgree">
+                        <input type="checkbox" id="agreeTerms" name="agree_terms" aria-required="true">
+                        <label for="agreeTerms">
+                            I have read and agree to the
+                            <a href="terms.html" target="_blank" rel="noopener">Terms of Service</a>
+                        </label>
+                    </div>
+
                     <!-- LOGIN BUTTON -->
                     <button
                         type="submit"
@@ -1199,11 +1321,17 @@
                 <!-- FOOTER -->
                 <div class="login-footer">
 
-                    <p>MPSU ETEEAP LMS</p>
-
-                    <p>
-                        <a href="terms.html">Terms of Service</a>
+                    <p class="footer-brand">
+                        <img src="images/logo.png" alt="" aria-hidden="true">
+                        MPSU ETEEAP LMS
                     </p>
+
+                    <a class="terms-link" href="terms.html">
+                        <i class="fa-solid fa-file-contract" aria-hidden="true"></i>
+                        Terms of Service
+                    </a>
+
+                    <p class="footer-copy">Mountain Province State University</p>
 
                 </div>
 
@@ -1224,6 +1352,13 @@
         const passwordIcon = document.getElementById("passwordIcon");
         const loginButton = document.getElementById("loginButton");
         const loginMessage = document.getElementById("loginMessage");
+        const agreeTerms = document.getElementById("agreeTerms");
+        const termsAgree = document.getElementById("termsAgree");
+
+        // Clear the red outline once the box is ticked.
+        agreeTerms.addEventListener("change", function () {
+            termsAgree.classList.toggle("missing", !agreeTerms.checked);
+        });
 
         // Show or hide password
         function togglePassword() {
@@ -1286,6 +1421,17 @@
                     "Please enter your ID and password.",
                     "error"
                 );
+                return;
+            }
+
+            // The Terms of Service must be accepted before logging in.
+            if (!agreeTerms.checked) {
+                termsAgree.classList.add("missing");
+                showMessage(
+                    "Please agree to the Terms of Service before logging in.",
+                    "error"
+                );
+                agreeTerms.focus();
                 return;
             }
 
