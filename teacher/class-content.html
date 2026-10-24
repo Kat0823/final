@@ -1579,6 +1579,102 @@
             object-fit: cover;
         }
 
+        /* ---------- Simple card design ---------- */
+
+        /* Modules: coloured stripe on the left (green, gold, maroon in turn)
+           and a matching unit badge. */
+        .module-row {
+            position: relative;
+            overflow: hidden;
+            padding-left: 24px;
+            border-radius: 10px;
+            --stripe: #08683c;
+            --stripe-soft: #e7f4eb;
+        }
+
+        .module-row:nth-child(3n + 2) {
+            --stripe: #c99223;
+            --stripe-soft: #fbf1dc;
+        }
+
+        .module-row:nth-child(3n + 3) {
+            --stripe: #7a1418;
+            --stripe-soft: #f8e7e8;
+        }
+
+        .module-row::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 5px;
+            background: var(--stripe);
+        }
+
+        .module-row .unit-badge {
+            background: var(--stripe-soft);
+            color: var(--stripe);
+            border-radius: 8px;
+        }
+
+        .module-row:hover {
+            border-color: var(--stripe);
+            transform: translateY(-1px);
+        }
+
+        /* Announcements: white card, gold stripe, megaphone icon */
+        .announcement-item {
+            border: 1px solid var(--border);
+            border-left: 5px solid #e2ac2f;
+            border-radius: 10px;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(23, 40, 30, 0.04);
+        }
+
+        .announcement-title-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .announcement-title-group h3 {
+            overflow-wrap: anywhere;
+        }
+
+        .announcement-icon {
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: #fbf1dc;
+            color: #a87412;
+            font-size: 14px;
+        }
+
+        .announcement-meta i {
+            margin-right: 3px;
+        }
+
+        .announcement-text {
+            margin-left: 48px;
+        }
+
+        @media (max-width: 600px) {
+            .announcement-text {
+                margin-left: 0;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .module-row:hover {
+                transform: none;
+            }
+        }
+
         /* Opened from a reply notification */
         .announcement-item.highlight {
             border-color: #e2ac2f;
@@ -2682,11 +2778,17 @@
                 return `
                     <article class="announcement-item" id="announcement-${escapeHtml(item.id)}">
                         <div class="announcement-item-head">
-                            <div>
-                                <h3>${escapeHtml(item.title)}</h3>
-                                <p class="announcement-meta">
-                                    ${escapeHtml(formatAnnouncementDate(item.created_at))}${edited ? " · edited" : ""}
-                                </p>
+                            <div class="announcement-title-group">
+                                <span class="announcement-icon" aria-hidden="true">
+                                    <i class="fa-solid fa-bullhorn"></i>
+                                </span>
+                                <div>
+                                    <h3>${escapeHtml(item.title)}</h3>
+                                    <p class="announcement-meta">
+                                        <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                                        ${escapeHtml(formatAnnouncementDate(item.created_at))}${edited ? " · edited" : ""}
+                                    </p>
+                                </div>
                             </div>
                             <div class="announcement-actions">
                                 <button type="button" data-announcement-edit="${escapeHtml(item.id)}"
