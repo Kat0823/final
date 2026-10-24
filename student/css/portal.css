@@ -997,12 +997,59 @@ table.data tbody tr:hover {
     line-height: 1.5;
 }
 
-.lp-profile-role {
+.lp-profile-tags {
     display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.lp-profile-role {
+    display: inline-flex;
     align-items: center;
     gap: 7px;
     color: #e0f2e9;
     font-size: 14px;
+}
+
+.lp-profile-tags .lp-profile-role {
+    padding: 4px 11px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+}
+
+.lp-profile-tags .lp-profile-program {
+    background: #e2ac2f;
+    color: #3d0a0d;
+    font-weight: 700;
+}
+
+.lp-profile-role[hidden] {
+    display: none;
+}
+
+/* Change Password: compact so the whole card fits. */
+.lp-password-form:not([hidden]) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 14px;
+    margin-bottom: 0;
+    padding: 16px;
+}
+
+.lp-password-form > div:first-child,
+.lp-password-form > .lp-message,
+.lp-password-form > .lp-password-buttons {
+    grid-column: 1 / -1;
+}
+
+.lp-password-form .lp-message:empty {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    .lp-password-form:not([hidden]) {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Pen button on the profile photo */

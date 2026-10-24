@@ -50,9 +50,16 @@
                 <div>
                     <h2 id="lpProfileName">Loading...</h2>
                     <p>Mountain Province State University</p>
-                    <div class="lp-profile-role">
-                        <i class="fa-solid fa-user-graduate" aria-hidden="true"></i>
-                        <span>Learner</span>
+                    <div class="lp-profile-tags">
+                        <span class="lp-profile-role">
+                            <i class="fa-solid fa-user-graduate" aria-hidden="true"></i>
+                            <span>Learner</span>
+                        </span>
+                        <!-- Program (e.g. BSIT) -->
+                        <span class="lp-profile-role lp-profile-program" id="lpProgramTag" hidden>
+                            <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
+                            <span id="lpProgram"></span>
+                        </span>
                     </div>
                 </div>
             </header>
@@ -82,10 +89,6 @@
                             <p id="lpEmail">—</p>
                             <input id="lpEmailInput" type="email" maxlength="255" autocomplete="email"
                                 placeholder="name@example.com (optional)" hidden>
-                        </div>
-                        <div class="lp-profile-field">
-                            <span class="label">Program</span>
-                            <p id="lpProgram">—</p>
                         </div>
                     </div>
                     <p class="lp-profile-note" id="lpEditNote" hidden>
@@ -202,7 +205,8 @@
         $("lpProfileName").textContent = user.name;
         $("lpSchoolId").textContent = shown(user.school_id);
         $("lpEmail").textContent = shown(user.email);
-        $("lpProgram").textContent = shown(user.program);
+        $("lpProgram").textContent = user.program || "";
+        $("lpProgramTag").hidden = !user.program;
         showPhoto(user.profile_photo_url, user.name);
         setUserName(user.name);
     }
@@ -272,6 +276,8 @@
 
     function setPasswordOpen(isOpen) {
         $("lpPasswordForm").hidden = !isOpen;
+        // Keep the card short: the big buttons hide while the form is open.
+        $("lpViewActions").hidden = isOpen || !$("lpEditActions").hidden;
         overlay.querySelectorAll('[aria-controls="lpPasswordForm"]').forEach(button =>
             button.setAttribute("aria-expanded", String(isOpen)));
         if (!isOpen) $("lpPasswordForm").reset();
