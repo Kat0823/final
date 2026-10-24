@@ -1399,6 +1399,279 @@
                 padding: 16px 18px;
             }
         }
+
+        .course-description[hidden] {
+            display: none;
+        }
+
+        /* ---------- Learners table: clickable rows ---------- */
+        .learner-row {
+            cursor: pointer;
+        }
+
+        .learner-row:focus-visible {
+            outline: 2px solid var(--green);
+            outline-offset: -2px;
+        }
+
+        .learner-activity {
+            white-space: nowrap;
+        }
+
+        .activity-count {
+            margin-right: 8px;
+            color: #374151;
+            font-weight: 600;
+        }
+
+        .activity-loading,
+        .activity-muted {
+            color: #9ca3af;
+        }
+
+        .activity-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .activity-badge.to-score {
+            background: #fbefd2;
+            color: #8a5a00;
+        }
+
+        .activity-badge.scored {
+            background: #e3f3ea;
+            color: #08683c;
+        }
+
+        .activity-badge.not-submitted {
+            background: #f1f2f4;
+            color: #6b7280;
+        }
+
+        .learner-open,
+        .learner-open-head {
+            width: 40px;
+            color: #9ca3af;
+            text-align: right;
+        }
+
+        .learner-row:hover .learner-open {
+            color: var(--green);
+        }
+
+        /* ---------- Learner pop-up ---------- */
+        .learner-panel-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2500;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(6px);
+        }
+
+        .learner-panel-overlay.active {
+            display: flex;
+        }
+
+        .learner-panel {
+            width: 100%;
+            max-width: 680px;
+            max-height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-top: 4px solid #e2ac2f;
+            border-radius: 16px;
+            background: #ffffff;
+            box-shadow: 0 22px 60px rgba(0, 0, 0, 0.28);
+        }
+
+        .learner-panel-head {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 20px 22px;
+            background: linear-gradient(120deg, #075c35, #0a7549);
+            color: #ffffff;
+        }
+
+        .learner-panel-head .learner-avatar {
+            border: 2px solid #f3cd6b;
+        }
+
+        .learner-panel-head h2 {
+            font-size: 19px;
+        }
+
+        .learner-panel-head p {
+            margin-top: 3px;
+            color: #e0f2e9;
+            font-size: 13px;
+        }
+
+        .learner-panel-close {
+            width: 36px;
+            height: 36px;
+            margin-left: auto;
+            border: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.92);
+            color: #075c35;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        .learner-panel-body {
+            padding: 18px 22px 22px;
+            overflow-y: auto;
+        }
+
+        .learner-panel-body h3 {
+            margin-bottom: 12px;
+            color: #111827;
+            font-size: 15px;
+        }
+
+        .lp-modules {
+            display: grid;
+            gap: 12px;
+            list-style: none;
+        }
+
+        .lp-module {
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .lp-module-top {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .lp-module-top strong {
+            color: #111827;
+            font-size: 14px;
+        }
+
+        .lp-comment {
+            margin-top: 8px;
+            color: #4b5563;
+            font-size: 13px;
+        }
+
+        .lp-file {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px 8px;
+            margin-top: 10px;
+            color: #374151;
+            font-size: 13px;
+        }
+
+        .lp-file i {
+            color: var(--green);
+        }
+
+        .lp-file small {
+            color: #9ca3af;
+        }
+
+        .lp-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .lp-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #ffffff;
+            color: #374151;
+            font: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .lp-btn:hover {
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .lp-btn.primary {
+            border-color: var(--green);
+            background: var(--green);
+            color: #ffffff;
+        }
+
+        .lp-btn.primary:hover {
+            background: #065330;
+            color: #ffffff;
+        }
+
+        /* Beat the page's general button colours: View / Download white,
+           Score green. */
+        .learner-panel .lp-btn {
+            border: 1px solid var(--border);
+            background: #ffffff;
+            color: #374151;
+        }
+
+        .learner-panel .lp-btn:hover {
+            border-color: var(--green);
+            background: #f3faf6;
+            color: var(--green);
+        }
+
+        .learner-panel .lp-btn.primary {
+            border-color: var(--green);
+            background: var(--green);
+            color: #ffffff;
+        }
+
+        .learner-panel .lp-btn.primary:hover {
+            background: #065330;
+            color: #ffffff;
+        }
+
+        .lp-btn:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .lp-empty {
+            padding: 18px;
+            color: #6b7280;
+            text-align: center;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+        }
     </style>
     <!-- Header and sidebar shared by all Instructor pages (load last) -->
     <link rel="stylesheet" href="CSS/shell.css">
@@ -1624,14 +1897,13 @@
                             <thead>
                                 <tr>
                                     <th>Learner</th>
-                                    <th>Email</th>
-                                    <th>Program</th>
-                                    <th>Contact</th>
+                                    <th>Activities</th>
+                                    <th class="learner-open-head"><span class="visually-hidden">Open</span></th>
                                 </tr>
                             </thead>
                             <tbody id="learnersTableBody">
                                 <tr>
-                                    <td colspan="4">
+                                    <td colspan="3">
                                         <div class="empty-state">
                                             <i class="fa-solid fa-spinner fa-spin"></i>
                                             <h3>Loading learners</h3>
@@ -1929,6 +2201,19 @@
                 renderLearners(courseData.learners || []);
                 loadAnnouncements();
 
+                // Activity counts for the learners table and Pending Reviews.
+                loadClassSubmissions().catch(error => console.error("Submissions:", error));
+
+                // Back from scoring: show the Learners tab and that learner again.
+                const returnLearner = params.get("learner");
+                const learner = returnLearner &&
+                    (courseData.learners || []).find(item => String(item.id) === String(returnLearner));
+
+                if (learner) {
+                    document.querySelector('.tab-btn[data-tab="learnersPanel"]')?.click();
+                    openLearnerPanel(learner);
+                }
+
             } catch (error) {
                 console.error("Error loading class:", error);
                 renderCourseError();
@@ -1962,7 +2247,7 @@
                 </div>`;
 
             $("learnersTableBody").innerHTML = `
-                <tr><td colspan="4">
+                <tr><td colspan="3">
                     <div class="empty-state">
                         <i class="fa-solid fa-circle-exclamation"></i>
                         <h3>Unable to load learners</h3>
@@ -1974,7 +2259,7 @@
         function renderCourse(course) {
             const name = course.name || course.title || "Untitled Course";
             const code = course.code || "No Course Code";
-            const description = course.description || "No course description.";
+            const description = String(course.description || "").trim();
             const program = course.program || "Program not specified.";
 
             const modules = Array.isArray(course.modules) ? course.modules : [];
@@ -1991,7 +2276,9 @@
             $("courseCode").textContent = code;
             $("courseTitle").textContent = `${code} | ${name}`;
             $("breadcrumbCourse").textContent = `${code} | ${name}`;
+            // Hidden when the class has no description.
             $("courseDescription").textContent = description;
+            $("courseDescription").hidden = !description;
 
             $("courseProgram").innerHTML =
                 `<i class="fa-solid fa-graduation-cap"></i> ${escapeHtml(program)}`;
@@ -2440,7 +2727,7 @@
 
             if (!Array.isArray(learners) || learners.length === 0) {
                 tbody.innerHTML = `
-                    <tr><td colspan="4">
+                    <tr><td colspan="3">
                         <div class="empty-state">
                             <i class="fa-solid fa-users"></i>
                             <h3>No learners enrolled</h3>
@@ -2463,6 +2750,13 @@
                 const row = document.createElement("tr");
                 const name = learner.name || "Unknown Learner";
 
+                // Click (or Enter) opens the learner's modules and activities.
+                row.className = "learner-row";
+                row.tabIndex = 0;
+                row.dataset.learnerId = learner.id;
+                row.setAttribute("role", "button");
+                row.setAttribute("aria-label", `Open ${name}'s modules and activities`);
+
                 row.innerHTML = `
                     <td>
                         <div class="learner-profile-cell">
@@ -2475,12 +2769,285 @@
                             </div>
                         </div>
                     </td>
-                    <td>${escapeHtml(learner.email || "No email")}</td>
-                    <td>${escapeHtml(learner.program || "Not specified")}</td>
-                    <td>${escapeHtml(learner.contact || learner.phone || "No contact")}</td>`;
+                    <td class="learner-activity" data-learner-activity="${escapeHtml(learner.id)}">
+                        <span class="activity-loading">Loading...</span>
+                    </td>
+                    <td class="learner-open"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></td>`;
+
+                row.addEventListener("click", () => openLearnerPanel(learner));
+                row.addEventListener("keydown", event => {
+                    if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        openLearnerPanel(learner);
+                    }
+                });
 
                 tbody.appendChild(row);
             });
+
+            updateLearnerActivity();
+        }
+
+        /* =========================================================
+           LEARNER ACTIVITIES
+           Clicking a learner shows this class's modules with their
+           submitted activity: view or download it, and score it (the
+           scoring card on the Submissions page, which returns here).
+        ========================================================= */
+
+        let classSubmissions = null;
+        let classSubmissionsRequest = null;
+
+        function publishedModules() {
+            const modules = Array.isArray(courseData?.modules) ? courseData.modules : [];
+            return modules.filter(module =>
+                module.is_published === true ||
+                module.is_published === 1 ||
+                module.status === "published"
+            );
+        }
+
+        function loadClassSubmissions() {
+            if (!classSubmissionsRequest) {
+                classSubmissionsRequest = apiRequest(`${API_BASE_URL}/instructor/submissions`, {
+                    method: "GET",
+                    headers: getAuthHeaders()
+                })
+                    .then(data => {
+                        const list = Array.isArray(data.submissions) ? data.submissions : [];
+                        classSubmissions = list.filter(item =>
+                            String(item.course?.id ?? "") === String(courseId)
+                        );
+                        updateLearnerActivity();
+                        return classSubmissions;
+                    })
+                    .catch(error => {
+                        classSubmissionsRequest = null;
+                        document.querySelectorAll("[data-learner-activity]").forEach(cell => {
+                            cell.innerHTML = '<span class="activity-muted">Not available</span>';
+                        });
+                        throw error;
+                    });
+            }
+
+            return classSubmissionsRequest;
+        }
+
+        function submissionsFor(learnerId) {
+            return (classSubmissions || []).filter(item =>
+                String(item.learner?.id ?? "") === String(learnerId)
+            );
+        }
+
+        function isScored(submission) {
+            return Boolean(submission.grade) || submission.status === "graded";
+        }
+
+        /* "2 of 3 submitted · 1 to score" in each learner row, and the
+           Pending Reviews count at the top. */
+        function updateLearnerActivity() {
+            if (!classSubmissions) return;
+
+            const total = publishedModules().length;
+
+            document.querySelectorAll("[data-learner-activity]").forEach(cell => {
+                const mine = submissionsFor(cell.dataset.learnerActivity);
+                const toScore = mine.filter(item => !isScored(item)).length;
+
+                cell.innerHTML = `
+                    <span class="activity-count">${mine.length} of ${total} submitted</span>
+                    ${toScore
+                        ? `<span class="activity-badge to-score">${toScore} to score</span>`
+                        : mine.length
+                            ? '<span class="activity-badge scored">All scored</span>'
+                            : ""}`;
+            });
+
+            $("pendingCount").textContent =
+                classSubmissions.filter(item => !isScored(item)).length;
+        }
+
+        function scoreLink(submission, learnerId) {
+            const back = `class-content.html?course_id=${encodeURIComponent(courseId)}&learner=${encodeURIComponent(learnerId)}`;
+            return `submissions.html?submission=${encodeURIComponent(submission.id)}&return=${encodeURIComponent(back)}`;
+        }
+
+        function learnerModuleRow(module, submission, learnerId) {
+            const title = module.name || module.title || "Untitled Module";
+            const grade = submission?.grade;
+            let status;
+            let actions = "";
+
+            if (!submission) {
+                status = '<span class="activity-badge not-submitted">Not submitted</span>';
+            } else {
+                const when = submission.submitted_at
+                    ? new Date(submission.submitted_at).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })
+                    : "";
+
+                status = grade
+                    ? `<span class="activity-badge scored">Score ${escapeHtml(Number(grade.score))} / ${escapeHtml(Number(grade.max_score))}</span>`
+                    : '<span class="activity-badge to-score">Submitted · to score</span>';
+
+                actions = `
+                    <div class="lp-file">
+                        <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
+                        <span>${escapeHtml(submission.file_name || "Submitted file")}</span>
+                        ${when ? `<small>${escapeHtml(when)}</small>` : ""}
+                    </div>
+                    <div class="lp-actions">
+                        <button type="button" class="lp-btn" data-submission-file="view" data-submission-id="${escapeHtml(submission.id)}" data-file-name="${escapeHtml(submission.file_name || "submission")}">
+                            <i class="fa-solid fa-eye" aria-hidden="true"></i> View
+                        </button>
+                        <button type="button" class="lp-btn" data-submission-file="download" data-submission-id="${escapeHtml(submission.id)}" data-file-name="${escapeHtml(submission.file_name || "submission")}">
+                            <i class="fa-solid fa-download" aria-hidden="true"></i> Download
+                        </button>
+                        <a class="lp-btn primary" href="${scoreLink(submission, learnerId)}">
+                            <i class="fa-solid fa-star" aria-hidden="true"></i> ${grade ? "Edit score" : "Score"}
+                        </a>
+                    </div>`;
+            }
+
+            return `
+                <li class="lp-module">
+                    <div class="lp-module-top">
+                        <strong>${escapeHtml(title)}</strong>
+                        ${status}
+                    </div>
+                    ${submission?.comment ? `<p class="lp-comment"><b>Learner's note:</b> ${escapeHtml(submission.comment)}</p>` : ""}
+                    ${actions}
+                </li>`;
+        }
+
+        function learnerPanel() {
+            let overlay = $("learnerPanelOverlay");
+            if (overlay) return overlay;
+
+            overlay = document.createElement("div");
+            overlay.className = "learner-panel-overlay";
+            overlay.id = "learnerPanelOverlay";
+            overlay.innerHTML = `
+                <section class="learner-panel" role="dialog" aria-modal="true" aria-labelledby="learnerPanelName">
+                    <header class="learner-panel-head">
+                        <div class="learner-avatar" id="learnerPanelAvatar"></div>
+                        <div>
+                            <h2 id="learnerPanelName">Learner</h2>
+                            <p id="learnerPanelId"></p>
+                        </div>
+                        <button type="button" class="learner-panel-close" id="learnerPanelClose" aria-label="Close">
+                            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                        </button>
+                    </header>
+                    <div class="learner-panel-body">
+                        <h3>Assigned modules</h3>
+                        <ul class="lp-modules" id="learnerPanelModules"></ul>
+                    </div>
+                </section>`;
+            document.body.appendChild(overlay);
+
+            const close = () => {
+                overlay.classList.remove("active");
+                document.body.style.overflow = "";
+                overlay._returnFocus?.focus?.();
+            };
+
+            $("learnerPanelClose").addEventListener("click", close);
+            overlay.addEventListener("click", event => {
+                if (event.target === overlay) close();
+            });
+            document.addEventListener("keydown", event => {
+                if (event.key === "Escape" && overlay.classList.contains("active")) close();
+            });
+
+            // View / Download a submitted file.
+            overlay.addEventListener("click", async event => {
+                const button = event.target.closest("[data-submission-file]");
+                if (!button) return;
+
+                const isView = button.dataset.submissionFile === "view";
+                const tab = isView ? window.open("about:blank", "_blank") : null;
+                button.disabled = true;
+
+                try {
+                    const response = await fetch(
+                        `${API_BASE_URL}/instructor/submissions/${encodeURIComponent(button.dataset.submissionId)}/file`,
+                        { headers: { ...getAuthHeaders(), "Accept": "*/*" } }
+                    );
+
+                    if (response.status === 401) {
+                        handleUnauthorized();
+                        throw new Error("Unauthorized");
+                    }
+                    if (!response.ok) {
+                        const data = await response.json().catch(() => null);
+                        throw new Error(data?.message || "The submitted file could not be opened.");
+                    }
+
+                    const url = URL.createObjectURL(await response.blob());
+
+                    if (isView) {
+                        if (tab) tab.location.href = url;
+                        else window.location.href = url;
+                    } else {
+                        const link = document.createElement("a");
+                        link.href = url;
+                        link.download = button.dataset.fileName || "submission";
+                        document.body.appendChild(link);
+                        link.click();
+                        link.remove();
+                    }
+
+                    setTimeout(() => URL.revokeObjectURL(url), 300000);
+                } catch (error) {
+                    tab?.close();
+                    if (error.message !== "Unauthorized") showToast(error.message, "error");
+                } finally {
+                    button.disabled = false;
+                }
+            });
+
+            return overlay;
+        }
+
+        async function openLearnerPanel(learner) {
+            const overlay = learnerPanel();
+            const name = learner.name || "Unknown Learner";
+
+            overlay._returnFocus = document.activeElement;
+            $("learnerPanelAvatar").textContent = getInitials(name);
+            $("learnerPanelName").textContent = name;
+            $("learnerPanelId").textContent = learner.school_id || learner.student_id || "No School ID";
+            $("learnerPanelModules").innerHTML = `
+                <li class="lp-empty"><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Loading activities...</li>`;
+
+            overlay.classList.add("active");
+            document.body.style.overflow = "hidden";
+            $("learnerPanelClose").focus();
+
+            try {
+                await loadClassSubmissions();
+            } catch (error) {
+                $("learnerPanelModules").innerHTML = `
+                    <li class="lp-empty">${escapeHtml(error.message || "Activities could not be loaded.")}</li>`;
+                return;
+            }
+
+            const modules = publishedModules();
+            const mine = submissionsFor(learner.id);
+
+            if (!modules.length) {
+                $("learnerPanelModules").innerHTML =
+                    '<li class="lp-empty">No published modules in this class yet.</li>';
+                return;
+            }
+
+            $("learnerPanelModules").innerHTML = modules
+                .map(module => learnerModuleRow(
+                    module,
+                    mine.find(item => String(item.module?.id ?? "") === String(module.id)),
+                    learner.id
+                ))
+                .join("");
         }
 
         /* SIDEBAR */

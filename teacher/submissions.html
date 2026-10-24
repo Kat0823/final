@@ -3329,6 +3329,9 @@ function openGradingModal(
 
 function closeGradingModal() {
 
+    const wasOpen =
+        gradingModal.classList.contains("active");
+
     gradingModal.classList.remove(
         "active"
     );
@@ -3337,6 +3340,50 @@ function closeGradingModal() {
     currentSubmission =
         null;
 
+
+    // Opened from a learner on the class page: go back there.
+    if (wasOpen && GRADING_RETURN_URL) {
+        window.location.href = GRADING_RETURN_URL;
+    }
+
+}
+
+
+/* =========================================================
+   OPENED FROM THE CLASS PAGE
+   submissions.html?submission=ID&return=class-content.html?...
+   opens that submission's scoring card; closing or saving it
+   returns to the class. Only a class-content.html address is
+   accepted as the return page.
+========================================================= */
+
+const GRADING_PARAMS =
+    new URLSearchParams(window.location.search);
+
+const GRADING_RETURN_URL = (() => {
+    const value = GRADING_PARAMS.get("return") || "";
+
+    return /^class-content\.html\?course_id=\d+(&learner=\d+)?$/.test(value)
+        ? value
+        : "";
+})();
+
+function openGradingFromLink() {
+    const submissionId =
+        GRADING_PARAMS.get("submission");
+
+    if (!submissionId || !/^\d+$/.test(submissionId)) {
+        return;
+    }
+
+    if (findSubmissionById(submissionId)) {
+        openGradingModal(submissionId);
+    } else {
+        showToast(
+            "That activity could not be found. It may have been unsubmitted.",
+            "error"
+        );
+    }
 }
 
 
@@ -4573,6 +4620,13 @@ document.addEventListener(
          */
 
         await loadSubmissions();
+
+
+        /*
+         * Opened from a learner on the class page.
+         */
+
+        openGradingFromLink();
 
     }
 );
