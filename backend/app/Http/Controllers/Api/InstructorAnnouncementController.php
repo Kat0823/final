@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AnnouncementPosted;
 use App\Models\Announcement;
 use App\Models\Course;
 use App\Models\Notification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 /**
@@ -83,6 +86,8 @@ class InstructorAnnouncementController extends Controller
             return $announcement;
         });
 
+        $this->emailLearners($course, $announcement, (string) $request->user()->name);
+
         return response()->json([
             'success' => true,
             'message' => 'Announcement posted.',
@@ -121,6 +126,42 @@ class InstructorAnnouncementController extends Controller
             'success' => true,
             'message' => 'Announcement deleted.',
         ]);
+    }
+
+    /**
+     * Email the announcement to the class's active learners who have an
+     * email address. It is sent after the response, so posting stays
+     * fast; learners are in BCC, 50 per email. A mail problem is logged
+     * and never stops the announcement.
+     */
+    private function emailLearners(Course $course, Announcement $announcement, string $instructorName): void
+    {
+        $emails = $course->learners()
+            ->where('users.is_active', true)
+            ->whereNotNull('users.email')
+            ->where('users.email', '!=', '')
+            ->pluck('users.email')
+            ->unique()
+            ->values();
+
+        if ($emails->isEmpty()) {
+            return;
+        }
+
+        app()->terminating(function () use ($emails, $course, $announcement, $instructorName) {
+            foreach ($emails->chunk(50) as $group) {
+                try {
+                    Mail::bcc($group->values()->all())
+                        ->send(new AnnouncementPosted($course, $announcement, $instructorName));
+                } catch (\Throwable $error) {
+                    Log::error('Announcement email could not be sent.', [
+                        'announcement_id' => $announcement->id,
+                        'recipients' => $group->count(),
+                        'error' => $error->getMessage(),
+                    ]);
+                }
+            }
+        });
     }
 
     private function validateAnnouncement(Request $request): array

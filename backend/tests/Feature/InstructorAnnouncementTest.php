@@ -2,11 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Mail\AnnouncementPosted;
 use App\Models\Announcement;
 use App\Models\Course;
 use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class InstructorAnnouncementTest extends TestCase
@@ -54,6 +56,49 @@ class InstructorAnnouncementTest extends TestCase
         $this->actingAs($this->instructor)
             ->getJson("/api/instructor/classes/{$this->class->id}/announcements")
             ->assertOk()->assertJsonCount(1, 'announcements');
+    }
+
+    public function test_learners_with_an_email_get_the_announcement_by_email(): void
+    {
+        Mail::fake();
+        $this->learner->update(['email' => 'ana@example.com']);
+        $noEmail = User::factory()->create(['role' => 'learner', 'school_id' => '24-AN003', 'is_active' => true, 'email' => null]);
+        $inactive = User::factory()->create(['role' => 'learner', 'school_id' => '24-AN004', 'is_active' => false, 'email' => 'off@example.com']);
+        $this->outsider->update(['email' => 'outsider@example.com']);
+        $this->class->learners()->attach([$noEmail->id, $inactive->id]);
+
+        $this->postAnnouncement()->assertCreated();
+
+        Mail::assertSent(AnnouncementPosted::class, 1);
+        Mail::assertSent(AnnouncementPosted::class, function (AnnouncementPosted $mail) {
+            $html = $mail->render();
+
+            return $mail->hasBcc('ana@example.com')
+                && !$mail->hasBcc('off@example.com')
+                && !$mail->hasBcc('outsider@example.com')
+                && $mail->hasSubject('New announcement in Web Development: Quiz on Friday')
+                && str_contains($html, 'Review modules 1 and 2.')
+                && str_contains($html, 'Prof Reyes')
+                && str_contains($html, '/student/modules.html?course=' . $this->class->id . '#announcements');
+        });
+    }
+
+    public function test_announcement_is_posted_even_if_the_email_fails(): void
+    {
+        $this->learner->update(['email' => 'ana@example.com']);
+        Mail::shouldReceive('bcc')->andThrow(new \RuntimeException('SMTP down'));
+
+        $this->postAnnouncement()->assertCreated();
+        $this->assertSame(1, Announcement::count());
+    }
+
+    public function test_no_email_when_no_learner_has_an_address(): void
+    {
+        Mail::fake();
+        $this->learner->update(['email' => null]);
+
+        $this->postAnnouncement()->assertCreated();
+        Mail::assertNothingSent();
     }
 
     public function test_title_and_message_are_required(): void

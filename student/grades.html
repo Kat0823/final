@@ -8,16 +8,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="css/portal.css">
     <style>
+        /* Class and Status filters sit on the same line as "Grades". */
         .filters {
             display: flex;
             flex-wrap: wrap;
             align-items: flex-end;
             gap: 12px;
-            margin-bottom: 16px;
         }
 
         .filters .field {
-            min-width: 240px;
+            width: 220px;
+            margin: 0;
+        }
+
+        @media (max-width: 700px) {
+            .filters,
+            .filters .field {
+                width: 100%;
+            }
         }
 
         /* One heading row per class, then its modules. */
@@ -93,9 +101,6 @@
                 <h2>Grades</h2>
                 <p>Your classes and modules, with the scores from your instructors.</p>
             </div>
-        </div>
-
-        <section class="card">
             <div class="filters">
                 <div class="field">
                     <label for="classFilter">Class</label>
@@ -113,7 +118,9 @@
                     </select>
                 </div>
             </div>
+        </div>
 
+        <section class="card">
             <div class="table-wrap">
                 <table class="data">
                     <thead>

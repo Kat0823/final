@@ -25,6 +25,76 @@
             gap: 18px;
         }
 
+        /* Module page cards: coloured top line and an icon tile */
+        .mcard {
+            position: relative;
+            overflow: hidden;
+            padding-top: 26px;
+            border-color: #e3ebe6;
+            border-radius: 14px;
+        }
+
+        .mcard::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--mcard-accent);
+        }
+
+        .mcard .card-title {
+            justify-content: flex-start;
+            gap: 14px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #eef2ef;
+        }
+
+        .mcard-icon {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            border-radius: 12px;
+            background: var(--mcard-soft);
+            color: var(--mcard-accent);
+            font-size: 18px;
+        }
+
+        .mcard-material {
+            --mcard-accent: #8b1d24;
+            --mcard-soft: #fbecec;
+        }
+
+        .mcard-submit {
+            --mcard-accent: #087443;
+            --mcard-soft: #e5f4ec;
+        }
+
+        .mcard-grade {
+            --mcard-accent: #c98a12;
+            --mcard-soft: #fdf3dc;
+        }
+
+        .mcard .file-row {
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+        }
+
+        .mcard-grade .score {
+            justify-content: center;
+            padding: 16px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #fdf6e4, #f6fbf8);
+        }
+
+        .mcard-grade .score + p {
+            text-align: center;
+        }
+
         .description {
             line-height: 1.7;
             white-space: pre-wrap;
@@ -255,8 +325,9 @@
     <template id="layoutTemplate">
         <div class="layout">
             <div class="stack">
-                <section class="card">
+                <section class="card mcard mcard-material">
                     <div class="card-title">
+                        <span class="mcard-icon" aria-hidden="true"><i class="fa-solid fa-book-open"></i></span>
                         <div>
                             <h3>Module material</h3>
                             <p>Read or download the learning material for this module.</p>
@@ -266,8 +337,9 @@
                     <div id="material"></div>
                 </section>
 
-                <section class="card" id="submitCard" hidden>
+                <section class="card mcard mcard-submit" id="submitCard" hidden>
                     <div class="card-title">
+                        <span class="mcard-icon" aria-hidden="true"><i class="fa-solid fa-cloud-arrow-up"></i></span>
                         <div>
                             <h3>Submit your activity</h3>
                             <p>One file: PDF, DOC or DOCX, up to 10 MB. You can unsubmit it until your instructor grades it.</p>
@@ -301,19 +373,23 @@
             </div>
 
             <div class="stack">
-                <section class="card" id="mySubmissionCard" hidden>
+                <section class="card mcard mcard-submit" id="mySubmissionCard" hidden>
                     <div class="card-title">
+                        <span class="mcard-icon" aria-hidden="true"><i class="fa-solid fa-paper-plane"></i></span>
                         <div>
                             <h3>Your submission</h3>
+                            <p>The file you handed in.</p>
                         </div>
                     </div>
                     <div id="mySubmission"></div>
                 </section>
 
-                <section class="card" id="gradeCard">
+                <section class="card mcard mcard-grade" id="gradeCard">
                     <div class="card-title">
+                        <span class="mcard-icon" aria-hidden="true"><i class="fa-solid fa-star"></i></span>
                         <div>
                             <h3>Grade</h3>
+                            <p>Your score from the instructor.</p>
                         </div>
                     </div>
                     <div id="grade"></div>
