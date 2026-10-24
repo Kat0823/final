@@ -35,8 +35,17 @@
             </button>
 
             <header class="lp-profile-cover">
-                <div class="lp-profile-photo" id="lpProfilePhoto" aria-hidden="true">
-                    <i class="fa-regular fa-user"></i>
+                <div class="lp-photo-wrap">
+                    <div class="lp-profile-photo" id="lpProfilePhoto" aria-hidden="true">
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                    <!-- Pen on the photo: choose a new profile picture -->
+                    <label class="lp-photo-edit" title="Change profile picture">
+                        <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                        <span class="visually-hidden">Change profile picture</span>
+                        <input type="file" id="lpPhotoInput" class="visually-hidden"
+                            accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+                    </label>
                 </div>
                 <div>
                     <h2 id="lpProfileName">Loading...</h2>
@@ -48,16 +57,12 @@
                 </div>
             </header>
 
-            <div class="lp-profile-photo-upload">
+            <!-- Shown only after choosing a picture (or for a message) -->
+            <div class="lp-profile-photo-upload" id="lpPhotoStrip" hidden>
                 <div class="lp-profile-photo-actions">
-                    <span>Profile Picture</span>
-                    <label class="lp-change-photo">
-                        Change Profile Picture
-                        <input type="file" id="lpPhotoInput" class="visually-hidden"
-                            accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
-                    </label>
                     <span class="lp-photo-name" id="lpPhotoName"></span>
                     <button type="button" class="lp-upload-photo" id="lpUploadPhoto" hidden>Upload Photo</button>
+                    <button type="button" class="lp-cancel-photo" id="lpCancelPhoto" hidden>Cancel</button>
                 </div>
                 <p class="lp-message" id="lpPhotoMessage" role="status" aria-live="polite"></p>
             </div>
@@ -351,12 +356,28 @@
 
     /* ---------- Profile Picture ---------- */
 
+    let previewUrl = null;
+    let stripTimer = null;
+
+    function photoMessage(text, type) {
+        message("lpPhotoMessage", text, type);
+        clearTimeout(stripTimer);
+        $("lpPhotoStrip").hidden = !text && !chosenPhoto;
+    }
+
     function resetPhoto() {
         chosenPhoto = null;
         $("lpPhotoInput").value = "";
         $("lpPhotoName").textContent = "";
         $("lpUploadPhoto").hidden = true;
-        message("lpPhotoMessage", "");
+        $("lpCancelPhoto").hidden = true;
+        if (previewUrl) {
+            URL.revokeObjectURL(previewUrl);
+            previewUrl = null;
+            // Back to the saved photo.
+            showPhoto(profile?.profile_photo_url, profile?.name);
+        }
+        photoMessage("");
     }
 
     $("lpPhotoInput").addEventListener("change", event => {
@@ -365,18 +386,27 @@
         if (!file) return;
 
         if (!PHOTO_TYPES.includes(file.type)) {
-            message("lpPhotoMessage", "Please choose a JPG, PNG or WEBP image.", "error");
+            photoMessage("Please choose a JPG, PNG or WEBP image.", "error");
             return;
         }
         if (file.size > MAX_PHOTO) {
-            message("lpPhotoMessage", "The image is larger than 2 MB.", "error");
+            photoMessage("The image is larger than 2 MB.", "error");
             return;
         }
 
         chosenPhoto = file;
-        $("lpPhotoName").textContent = file.name;
+
+        // Preview the new picture in the photo circle until it is uploaded.
+        previewUrl = URL.createObjectURL(file);
+        $("lpProfilePhoto").innerHTML = `<img src="${previewUrl}" alt="">`;
+
+        $("lpPhotoName").textContent = `New picture: ${file.name}`;
         $("lpUploadPhoto").hidden = false;
+        $("lpCancelPhoto").hidden = false;
+        photoMessage("");
     });
+
+    $("lpCancelPhoto").addEventListener("click", resetPhoto);
 
     $("lpUploadPhoto").addEventListener("click", async () => {
         if (!chosenPhoto) return;
@@ -389,11 +419,16 @@
 
         try {
             const data = await api("/student/profile/photo", { method: "POST", body: form });
+            if (previewUrl) {
+                URL.revokeObjectURL(previewUrl);
+                previewUrl = null;
+            }
             fill(data.user);
             resetPhoto();
-            message("lpPhotoMessage", "Profile picture updated.", "success");
+            photoMessage("Profile picture updated.", "success");
+            stripTimer = setTimeout(() => photoMessage(""), 4000);
         } catch (error) {
-            message("lpPhotoMessage", error.message, "error");
+            photoMessage(error.message, "error");
         } finally {
             button.disabled = false;
             button.textContent = "Upload Photo";
