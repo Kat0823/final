@@ -10,17 +10,33 @@
     <!-- Class cards shared with the Instructor portal -->
     <link rel="stylesheet" href="../shared/class-cards.css">
     <style>
+        .classes-header {
+            align-items: flex-start;
+        }
+
         .toolbar {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
-            margin-bottom: 18px;
+            width: 360px;
+            max-width: 100%;
+            margin-left: auto;
+        }
+
+        .toolbar[hidden] {
+            display: none;
         }
 
         .search {
             position: relative;
             flex: 1 1 260px;
-            max-width: 420px;
+        }
+
+        @media (max-width: 700px) {
+            .toolbar {
+                width: 100%;
+                margin-left: 0;
+            }
         }
 
         .search i {
@@ -48,19 +64,21 @@
 </head>
 <body data-page="classes">
     <main class="main-content" id="main">
-        <div class="page-header">
+        <!-- Title on the left; search on the right, just under the
+             name and photo in the header. -->
+        <div class="page-header classes-header">
             <div>
                 <h2>My Classes</h2>
                 <p id="classSummary">Loading your classes...</p>
             </div>
-        </div>
 
-        <div class="toolbar" id="toolbar" hidden>
-            <label class="search">
-                <span class="visually-hidden">Search classes</span>
-                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-                <input type="search" id="searchInput" placeholder="Search by class, code or instructor">
-            </label>
+            <div class="toolbar" id="toolbar" hidden>
+                <label class="search">
+                    <span class="visually-hidden">Search classes</span>
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input type="search" id="searchInput" placeholder="Search by class, code or instructor">
+                </label>
+            </div>
         </div>
 
         <div id="classList" class="sk-class-grid" aria-live="polite">

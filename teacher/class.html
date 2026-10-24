@@ -340,11 +340,36 @@
             font-size: 13px;
         }
 
+        /* TITLE ROW: heading on the left, search on the right */
+        .page-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px 24px;
+            margin-bottom: 20px;
+        }
+
+        .page-top .page-description {
+            margin-bottom: 0;
+        }
+
         /* SEARCH */
         .controls-row {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 16px;
+            justify-content: flex-end;
+            margin-left: auto;
+        }
+
+        @media (max-width: 700px) {
+            .page-top .controls-row {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .page-top .search-wrapper {
+                width: 100%;
+            }
         }
 
         .search-wrapper {
@@ -1006,8 +1031,13 @@
 <!-- MAIN CONTENT -->
 <main class="main-content" id="mainContent">
     <div class="page-container">
-        <h1 class="page-title">My Classes</h1>
-        <p class="page-description">View and manage the classes assigned to you.</p>
+        <!-- Title on the left; search on the right, just under the
+             name and photo in the header. -->
+        <div class="page-top">
+        <div class="page-heading-text">
+            <h1 class="page-title">My Classes</h1>
+            <p class="page-description">View and manage the classes assigned to you.</p>
+        </div>
 
         <div class="controls-row">
             <div class="search-wrapper">
@@ -1024,6 +1054,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </div>
 
         <section class="classes-card-container" aria-label="Assigned classes">
@@ -1647,8 +1678,7 @@ function renderClasses(classes) {
                 chips: [
                     { icon: "fa-solid fa-users", text: `${learners} learner${learners === 1 ? "" : "s"}` },
                     { icon: "fa-solid fa-layer-group", text: `${modules} module${modules === 1 ? "" : "s"}` }
-                ],
-                open: "Open class →"
+                ]
             }
         });
 
