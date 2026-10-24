@@ -10,6 +10,7 @@ use App\Models\Submission;
 use App\Support\AdminNotifier;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class GradeController extends Controller
@@ -275,6 +276,16 @@ class GradeController extends Controller
                 $submission->id
             )->first();
 
+            // Scores already given stay as they are; only new activities
+            // can be added (the feedback can still change).
+            if ($existingGrade) {
+                $lockError = self::lockedScoreError($existingGrade, $items, $validated);
+
+                if ($lockError) {
+                    return ['locked' => $lockError];
+                }
+            }
+
 
             /*
             |--------------------------------------------------------------------------
@@ -384,6 +395,13 @@ class GradeController extends Controller
         });
 
 
+        if (isset($result['locked'])) {
+            return response()->json([
+                'success' => false,
+                'message' => $result['locked'],
+            ], 422);
+        }
+
         if ($result === null) {
             return response()->json([
                 'success' => false,
@@ -401,5 +419,60 @@ class GradeController extends Controller
 
             'grade' => $result['grade']->load('items'),
         ]);
+    }
+
+
+    /**
+     * A grade that was already given cannot be lowered or raised: every
+     * saved activity row must come back unchanged and in the same order,
+     * and new rows may only be added after them. A grade saved as a single
+     * score counts as one locked row. Returns the message to show, or null.
+     */
+    private static function lockedScoreError(Grade $grade, ?Collection $items, array $validated): ?string
+    {
+        $message = 'Scores already given can\'t be changed. You can only add new activities.';
+        $same = fn ($a, $b) => abs((float) $a - (float) $b) < 0.005;
+
+        $locked = $grade->items()->get()->map(fn ($item) => [
+            'title' => $item->title,
+            'score' => $item->score,
+            'max_score' => $item->max_score,
+        ])->values();
+
+        // Saved as a single score (no rows): that score is the locked row.
+        if ($locked->isEmpty()) {
+            $locked = collect([[
+                'title' => null,
+                'score' => $grade->score,
+                'max_score' => $grade->max_score,
+            ]]);
+        }
+
+        // A single score sent again must be the same score.
+        if ($items === null) {
+            return $locked->count() === 1
+                && $same($validated['score'] ?? null, $locked[0]['score'])
+                && $same($validated['max_score'] ?? null, $locked[0]['max_score'])
+                ? null
+                : $message;
+        }
+
+        if ($items->count() < $locked->count()) {
+            return $message;
+        }
+
+        foreach ($locked as $index => $row) {
+            $sent = $items[$index];
+
+            if (
+                !$same($sent['score'], $row['score']) ||
+                !$same($sent['max_score'], $row['max_score']) ||
+                ($row['title'] !== null && $sent['title'] !== $row['title'])
+            ) {
+                return $message;
+            }
+        }
+
+        return null;
     }
 }

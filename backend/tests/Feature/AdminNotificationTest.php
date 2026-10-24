@@ -81,15 +81,18 @@ class AdminNotificationTest extends TestCase
             'status' => 'submitted',
         ]);
 
-        $grade = fn (int $score) => $this->actingAs($instructor)
+        $grade = fn (int $score, ?string $feedback = null) => $this->actingAs($instructor)
             ->postJson("/api/instructor/submissions/{$submission->id}/grade", [
                 'score' => $score,
                 'max_score' => 100,
+                'feedback' => $feedback,
             ])
             ->assertSuccessful();
 
         $grade(95);
-        $grade(97); // a re-grade doesn't notify again
+        // Saving again (the score can't change, only e.g. the feedback)
+        // doesn't notify again.
+        $grade(95, 'Well done');
 
         $notes = $this->notificationsFor($admin);
         $this->assertCount(1, $notes);

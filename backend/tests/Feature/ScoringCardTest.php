@@ -88,17 +88,49 @@ class ScoringCardTest extends TestCase
             ->assertOk()->assertJsonFragment(['title' => 'Quiz']);
     }
 
-    public function test_regrading_replaces_the_rows(): void
+    public function test_scores_already_given_cannot_be_changed(): void
     {
-        $this->grade(['items' => [['title' => 'A', 'score' => 5, 'max_score' => 10], ['title' => 'B', 'score' => 5, 'max_score' => 10]]])->assertOk();
-        $this->grade(['items' => [['title' => 'Only one', 'score' => 40, 'max_score' => 50]]])
-            ->assertOk()->assertJsonPath('grade.score', '40.00');
+        $a = ['title' => 'A', 'score' => 5, 'max_score' => 10];
+        $b = ['title' => 'B', 'score' => 7, 'max_score' => 10];
+        $this->grade(['items' => [$a, $b], 'feedback' => 'Good'])->assertOk();
 
-        $this->assertSame(1, GradeItem::count());
+        $locked = "Scores already given can't be changed. You can only add new activities.";
 
-        // A single score (old style) clears the rows.
+        // Changing a score, the "over", a title, the order, or removing a row is refused.
+        $this->grade(['items' => [['title' => 'A', 'score' => 9, 'max_score' => 10], $b]])->assertStatus(422)->assertJsonPath('message', $locked);
+        $this->grade(['items' => [['title' => 'A', 'score' => 5, 'max_score' => 20], $b]])->assertStatus(422);
+        $this->grade(['items' => [['title' => 'Renamed', 'score' => 5, 'max_score' => 10], $b]])->assertStatus(422);
+        $this->grade(['items' => [$b, $a]])->assertStatus(422);
+        $this->grade(['items' => [$a]])->assertStatus(422);
+        $this->grade(['score' => 20, 'max_score' => 20])->assertStatus(422);
+
+        $grade = $this->submission->fresh()->grade;
+        $this->assertSame('12.00', (string) $grade->score);
+        $this->assertSame(2, GradeItem::count());
+
+        // Adding activities after the saved ones (and new feedback) is allowed.
+        $this->grade(['items' => [$a, $b, ['title' => 'C', 'score' => 8, 'max_score' => 10]], 'feedback' => 'Better'])
+            ->assertOk()
+            ->assertJsonPath('grade.score', '20.00')
+            ->assertJsonPath('grade.max_score', '30.00')
+            ->assertJsonPath('grade.feedback', 'Better');
+        $this->assertSame(3, GradeItem::count());
+    }
+
+    public function test_a_single_score_is_locked_and_can_gain_activities(): void
+    {
         $this->grade(['score' => 45, 'max_score' => 50])->assertOk();
-        $this->assertSame(0, GradeItem::count());
+
+        // Sending the same single score again (e.g. only new feedback) is fine.
+        $this->grade(['score' => 45, 'max_score' => 50, 'feedback' => 'Note'])->assertOk();
+        $this->grade(['score' => 40, 'max_score' => 50])->assertStatus(422);
+
+        // The single score becomes the first row; more rows can follow.
+        $this->grade(['items' => [
+            ['title' => 'Module activity', 'score' => 45, 'max_score' => 50],
+            ['title' => 'Extra', 'score' => 10, 'max_score' => 10],
+        ]])->assertOk()->assertJsonPath('grade.score', '55.00');
+        $this->grade(['items' => [['title' => 'Module activity', 'score' => 30, 'max_score' => 50]]])->assertStatus(422);
     }
 
     public function test_invalid_rows_are_refused(): void

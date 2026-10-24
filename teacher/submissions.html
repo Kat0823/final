@@ -1600,6 +1600,33 @@ body {
     text-align: center;
 }
 
+/* Saved rows of a graded submission are locked. */
+.score-row.locked input {
+    background: #f5f6f4;
+    color: #4b5563;
+}
+
+.score-row.locked .score-remove {
+    visibility: hidden;
+}
+
+.score-lock-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0 8px;
+    padding: 8px 12px;
+    border-left: 3px solid #e2ac2f;
+    border-radius: 0 6px 6px 0;
+    background: #fff8e6;
+    color: #6b4e00;
+    font-size: 12px;
+}
+
+.score-lock-note[hidden] {
+    display: none;
+}
+
 .score-remove {
     width: 34px;
     height: 34px;
@@ -2393,6 +2420,11 @@ body {
                 </div>
 
                 <div id="scoreRows" class="score-rows"></div>
+
+                <p class="score-lock-note" id="scoreLockNote" hidden>
+                    <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                    Scores already given can't be changed. You can add more activities.
+                </p>
 
                 <button type="button" class="score-add" id="addScoreRow">
                     <i class="fa-solid fa-plus" aria-hidden="true"></i>
@@ -3302,7 +3334,7 @@ function openGradingModal(
                 ? [{ title: module.name || module.title || "Activity", score: grade.score, max_score: grade.max_score }]
                 : [{ title: "Activity 1", score: "", max_score: "" }];
 
-    setScoreRows(savedItems);
+    setScoreRows(savedItems, grade ? savedItems.length : 0);
 
 
     document.getElementById(
@@ -3498,54 +3530,17 @@ async function openSubmissionFile(
             await response.blob();
 
 
-        const fileUrl =
-            URL.createObjectURL(
-                blob
-            );
+        // View shows the file (PDF, image or Word .docx) instead of
+        // downloading it; see js/file-viewer.js.
+        const fileName =
+            findSubmissionById(submissionId)?.file_name ||
+            "submission";
 
-
-        if (newWindow) {
-
-            newWindow.location.href =
-                fileUrl;
-
-        } else {
-
-            /*
-             * Popup was blocked.
-             * Download/open through the current page.
-             */
-
-            const link =
-                document.createElement("a");
-
-            link.href =
-                fileUrl;
-
-            link.target =
-                "_blank";
-
-            link.rel =
-                "noopener";
-
-            document.body.appendChild(
-                link
-            );
-
-            link.click();
-
-            link.remove();
-
-        }
-
-
-        setTimeout(() => {
-
-            URL.revokeObjectURL(
-                fileUrl
-            );
-
-        }, 60000);
+        await window.SiknayanFileViewer.show(
+            blob,
+            fileName,
+            newWindow
+        );
 
 
     } catch (error) {
@@ -3584,10 +3579,10 @@ async function openSubmissionFile(
 
 const MAX_SCORE_ROWS = 30;
 
-function scoreRowHtml(item, index) {
+function scoreRowHtml(item, index, locked = false) {
     const value = v => (v === null || v === undefined || v === "" ? "" : escapeHtml(String(Number(v))));
     return `
-        <div class="score-row" data-score-row>
+        <div class="score-row${locked ? " locked" : ""}" data-score-row${locked ? " data-locked" : ""}>
             <input type="text" class="score-title" maxlength="150"
                 aria-label="Activity ${index + 1} title"
                 placeholder="e.g. Activity ${index + 1}"
@@ -3606,9 +3601,11 @@ function scoreRowHtml(item, index) {
         </div>`;
 }
 
-function setScoreRows(items) {
+// The first "lockedCount" rows are scores already given: they stay
+// read-only (the server refuses changes to them too).
+function setScoreRows(items, lockedCount = 0) {
     document.getElementById("scoreRows").innerHTML =
-        items.map((item, index) => scoreRowHtml(item, index)).join("");
+        items.map((item, index) => scoreRowHtml(item, index, index < lockedCount)).join("");
     updateScoreTotal();
 }
 
@@ -3676,7 +3673,9 @@ function updateScoreTotal() {
     const rows = container.querySelectorAll("[data-score-row]");
     rows.forEach(row => {
         row.querySelector("[data-remove-score-row]").disabled =
-            rows.length === 1 || container.dataset.readonly === "true";
+            rows.length === 1 ||
+            container.dataset.readonly === "true" ||
+            row.hasAttribute("data-locked");
     });
 }
 
@@ -3689,7 +3688,11 @@ function showScoreError(message) {
 function setGradeEditable(editable) {
     const rows = document.getElementById("scoreRows");
     rows.dataset.readonly = String(!editable);
-    rows.querySelectorAll("input").forEach(input => { input.disabled = !editable; });
+    rows.querySelectorAll("input").forEach(input => {
+        input.disabled = !editable || Boolean(input.closest("[data-locked]"));
+    });
+    document.getElementById("scoreLockNote").hidden =
+        !editable || !rows.querySelector("[data-locked]");
     document.getElementById("addScoreRow").hidden = !editable;
     document.getElementById("modalFeedback").disabled = !editable;
     document.getElementById("saveGradeButton").style.display = editable ? "inline-block" : "none";
@@ -3703,8 +3706,9 @@ function setGradeEditable(editable) {
 // Graded work opens read-only; this switches it to editing.
 function enableGradeEditing() {
     setGradeEditable(true);
-    const first = document.querySelector("#scoreRows .score-value");
+    const first = document.querySelector("#scoreRows [data-score-row]:not([data-locked]) .score-value");
     if (first) first.focus();
+    else document.getElementById("addScoreRow").focus();
 }
 
 document.getElementById("addScoreRow").addEventListener("click", addScoreRow);
@@ -3716,7 +3720,7 @@ document.getElementById("scoreRows").addEventListener("input", () => {
 
 document.getElementById("scoreRows").addEventListener("click", event => {
     const button = event.target.closest("[data-remove-score-row]");
-    if (!button || button.disabled) return;
+    if (!button || button.disabled || button.closest("[data-locked]")) return;
     button.closest("[data-score-row]").remove();
     updateScoreTotal();
 });
@@ -4639,6 +4643,8 @@ document.addEventListener(
     <script src="js/sidebar.js"></script>
     <!-- Logout confirmation, same as the other portals -->
     <script src="js/logout.js"></script>
+    <!-- View opens files in the browser (PDF, images, Word .docx) -->
+    <script src="js/file-viewer.js"></script>
     <script src="js/profile-modal.js"></script>
 </body>
 
