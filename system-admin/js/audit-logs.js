@@ -151,6 +151,13 @@ function describeAuditEntry(entry) {
                 ? `Updated own profile: ${changes.join("; ")}`
                 : "Updated own profile";
         }
+        case "backup": {
+            const file = details.file || target;
+            if (details.event === "downloaded") return `Downloaded the backup ${file}${fromIp}`;
+            if (details.event === "deleted") return `Deleted the backup ${file}${fromIp}`;
+            const sizeMb = details.size ? ` (${(Number(details.size) / 1024 / 1024).toFixed(1)} MB${details.encrypted ? ", password-protected" : ""})` : "";
+            return `Made a backup of the database and uploaded files: ${file}${sizeMb}${fromIp}`;
+        }
         case "create":
             return `Created Academic Admin account ${target}${schoolId}`;
         case "delete":

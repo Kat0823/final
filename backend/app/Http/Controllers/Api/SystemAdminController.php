@@ -99,6 +99,7 @@ class SystemAdminController extends Controller
     // Which part of the system each action belongs to (the page's Module
     // column). Anything not listed is an Academic Admin account change.
     private const AUDIT_MODULES = [
+        'backup' => 'Data Backup',
         'login' => 'Sign-in',
         'login_failed' => 'Sign-in',
         'login_blocked' => 'Sign-in',

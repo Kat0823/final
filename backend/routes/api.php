@@ -31,6 +31,7 @@ use App\Http\Controllers\Api\AcademicAdminController;
 use App\Http\Controllers\Api\SystemAdminController;
 use App\Http\Controllers\Api\SystemAdminProfileController;
 use App\Http\Controllers\Api\SystemAdminAcademicAdminController;
+use App\Http\Controllers\Api\SystemAdminBackupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -104,6 +105,14 @@ Route::middleware([
             Route::put('/academic-administrators/{id}', [SystemAdminAcademicAdminController::class, 'update']);
             Route::delete('/academic-administrators/{id}', [SystemAdminAcademicAdminController::class, 'destroy']);
             Route::post('/academic-administrators/{id}/reset-password', [SystemAdminAcademicAdminController::class, 'resetPassword']);
+
+            // Data Backup: database + uploaded files in one zip
+            Route::get('/backups', [SystemAdminBackupController::class, 'index']);
+            Route::post('/backups', [SystemAdminBackupController::class, 'store'])->middleware('throttle:5,10');
+            Route::get('/backups/{name}/download', [SystemAdminBackupController::class, 'download'])
+                ->where('name', 'siknayan-backup-[0-9]{8}-[0-9]{6}\.zip');
+            Route::delete('/backups/{name}', [SystemAdminBackupController::class, 'destroy'])
+                ->where('name', 'siknayan-backup-[0-9]{8}-[0-9]{6}\.zip');
         });
 
 

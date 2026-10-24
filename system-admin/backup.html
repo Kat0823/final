@@ -23,59 +23,59 @@
     ></script>
 
     <style>
-        .backup-soon-tag {
-            display: inline-block;
-            margin-left: 8px;
-            padding: 2px 10px;
-            border-radius: 999px;
-            background: #FFF4DB;
-            color: #8A5A00;
-            font-size: 12px;
-            font-weight: 600;
-            vertical-align: middle;
-        }
-
-        .backup-soon-panel {
-            max-width: 760px;
+        .backup-panel {
+            max-width: 980px;
+            margin-bottom: 22px;
             padding: 24px 28px;
             box-sizing: border-box;
             line-height: 1.6;
         }
 
-        .backup-soon-panel h3 {
-            margin-top: 0;
+        .backup-panel h3 {
+            margin: 0 0 12px;
         }
 
-        .backup-soon-panel ol {
-            padding-left: 22px;
+        .backup-panel-head p {
+            margin: -4px 0 14px;
+            color: #5b6760;
+            font-size: 14px;
         }
 
-        .backup-soon-panel li {
-            margin-bottom: 6px;
+        .backup-includes {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 14px;
         }
 
-        .backup-soon-panel h4 {
+        .backup-include {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 22px 0 8px;
-            font-size: 16px;
+            gap: 12px;
+            padding: 14px;
+            border: 1px solid #ebe7da;
+            border-radius: 10px;
+            background: #fcfaf3;
         }
 
-        .backup-step-number {
+        .backup-include svg {
             width: 26px;
             height: 26px;
-            display: inline-grid;
-            place-items: center;
             flex-shrink: 0;
-            border-radius: 50%;
-            background: #e2ac2f;
-            color: #3f070b;
-            font-size: 13px;
-            font-weight: 800;
+            color: #086b3c;
         }
 
-        .backup-soon-panel code {
+        .backup-include strong {
+            display: block;
+            color: #1d2a23;
+        }
+
+        .backup-include span {
+            color: #5b6760;
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        .backup-panel code {
             padding: 1px 6px;
             border-radius: 5px;
             background: #f4f1e6;
@@ -97,22 +97,200 @@
             background: #fbeeee;
         }
 
-        .backup-soon-actions {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 12px;
+        .backup-form {
             margin-top: 18px;
         }
 
-        .backup-soon-actions button[disabled] {
-            opacity: 0.55;
-            cursor: not-allowed;
+        .backup-check {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            cursor: pointer;
         }
 
-        .backup-soon-actions span {
-            color: var(--muted, #6B7280);
+        .backup-check input {
+            width: 18px;
+            height: 18px;
+            accent-color: #086b3c;
+        }
+
+        .backup-password {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px 16px;
+            margin-top: 12px;
+        }
+
+        .backup-password[hidden] {
+            display: none;
+        }
+
+        .backup-password label {
+            display: block;
+            margin-bottom: 4px;
             font-size: 13px;
+            font-weight: 600;
+        }
+
+        .backup-password input {
+            width: 100%;
+            height: 42px;
+            padding: 0 12px;
+            border: 1px solid #d0d5dd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font: inherit;
+        }
+
+        .backup-password input:focus {
+            outline: 2px solid rgba(8, 107, 60, 0.2);
+            border-color: #086b3c;
+        }
+
+        .backup-password .backup-note {
+            grid-column: 1 / -1;
+        }
+
+        .backup-message {
+            min-height: 0;
+            margin: 12px 0 0;
+            font-size: 14px;
+        }
+
+        .backup-message:empty {
+            display: none;
+        }
+
+        .backup-message.error {
+            color: #b42318;
+        }
+
+        .backup-message.success {
+            color: #08683c;
+        }
+
+        .backup-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .backup-actions button[disabled] {
+            opacity: 0.65;
+            cursor: wait;
+        }
+
+        .backup-table-wrap {
+            overflow-x: auto;
+        }
+
+        .backup-table {
+            width: 100%;
+            min-width: 720px;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .backup-table th,
+        .backup-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #ebe7da;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .backup-table th {
+            background: #f7f4ea;
+            color: #08482b;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .backup-table td small {
+            display: block;
+            color: #7a857f;
+            font-size: 12px;
+        }
+
+        .backup-empty {
+            padding: 24px !important;
+            color: #6b7280;
+            text-align: center;
+        }
+
+        .backup-lock {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .backup-lock.yes {
+            background: #e3f3ea;
+            color: #08683c;
+        }
+
+        .backup-lock.no {
+            background: #f1f2f4;
+            color: #6b7280;
+        }
+
+        .backup-row-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .backup-row-actions button {
+            min-height: 34px;
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+
+        .backup-guide ol {
+            padding-left: 22px;
+        }
+
+        .backup-guide li {
+            margin-bottom: 6px;
+        }
+
+        .backup-manual {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border: 1px solid #ebe7da;
+            border-radius: 10px;
+        }
+
+        .backup-manual summary {
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .sa-visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+        }
+
+        @media (max-width: 800px) {
+            .backup-includes,
+            .backup-password {
+                grid-template-columns: 1fr;
+            }
+
+            .backup-panel {
+                padding: 20px 18px;
+            }
         }
     </style>
     <!-- Header and sidebar: same as the Academic Admin portal -->
@@ -380,83 +558,142 @@
 
             <section class="page-header">
                 <div>
-                    <h2>
-                        Data Backup
-                        <span class="backup-soon-tag">Coming soon</span>
-                    </h2>
+                    <h2>Data Backup</h2>
                     <p>
-                        Automatic backups from this page aren't available yet.
+                        Save the database and every uploaded file in one zip,
+                        then keep a copy away from this computer.
                     </p>
                 </div>
             </section>
 
-            <section class="panel backup-soon-panel" aria-labelledby="manualBackupTitle">
-                <h3 id="manualBackupTitle">Back up the database manually</h3>
-                <p>
-                    Until backups are built into Siknayan, make a copy of the
-                    database with phpMyAdmin (included with XAMPP). Do this on
-                    the server computer, where Siknayan is installed.
-                </p>
+            <!-- MAKE A BACKUP -->
+            <section class="panel backup-panel" aria-labelledby="makeBackupTitle">
+                <h3 id="makeBackupTitle">Make a backup</h3>
 
-                <h4><span class="backup-step-number">1</span> Before you start</h4>
-                <p>
-                    Open the <strong>XAMPP Control Panel</strong> and make sure
-                    <strong>Apache</strong> and <strong>MySQL</strong> are both running.
-                    phpMyAdmin will not open without Apache.
-                </p>
+                <div class="backup-includes">
+                    <div class="backup-include">
+                        <i data-lucide="database"></i>
+                        <div>
+                            <strong>Database</strong>
+                            <span>Accounts, classes, enrolments, modules, submissions, grades, progress, notifications and audit logs.</span>
+                        </div>
+                    </div>
+                    <div class="backup-include">
+                        <i data-lucide="folder-archive"></i>
+                        <div>
+                            <strong>Uploaded files</strong>
+                            <span>Learners' submitted work, module materials and profile photos.</span>
+                        </div>
+                    </div>
+                    <div class="backup-include">
+                        <i data-lucide="file-text"></i>
+                        <div>
+                            <strong>Restore guide</strong>
+                            <span>Step-by-step instructions inside the zip.</span>
+                        </div>
+                    </div>
+                </div>
 
-                <h4><span class="backup-step-number">2</span> Back up the database</h4>
-                <ol>
-                    <li>Open <strong>http://localhost/phpmyadmin</strong>.</li>
-                    <li>Select the <strong>siknayan</strong> database, then open the <strong>Export</strong> tab.</li>
-                    <li>Keep <strong>Quick</strong> and <strong>SQL</strong> selected, and choose <strong>Export</strong>.</li>
-                    <li>
-                        Rename the downloaded file with the date, for example
-                        <code>siknayan-2026-10-23.sql</code>, so older copies are not overwritten.
-                    </li>
-                </ol>
-                <p class="backup-note warning">
-                    Store the <strong>.sql</strong> file somewhere private. It contains
-                    every account, including password hashes.
-                </p>
-
-                <h4><span class="backup-step-number">3</span> Back up the uploaded files</h4>
-                <p>
-                    Module materials, submissions and profile photos are stored
-                    separately from the database. Copy this whole folder next to
-                    your <strong>.sql</strong> file:
-                </p>
-                <p><code>Siknayan LMS\final\backend\storage\app</code></p>
-
-                <h4><span class="backup-step-number">4</span> Restore from a backup</h4>
-                <ol>
-                    <li>In phpMyAdmin, create an empty database named <strong>siknayan</strong> (or select the existing one).</li>
-                    <li>Open the <strong>Import</strong> tab, choose your <strong>.sql</strong> file, and choose <strong>Import</strong>.</li>
-                    <li>Copy the saved <strong>app</strong> folder back into <code>backend\storage\</code>.</li>
-                </ol>
                 <p class="backup-note">
+                    <strong>Not included:</strong> the settings file <code>backend\.env</code>
+                    (database and email passwords). Keep your own private copy of it,
+                    separate from the backups. Sign-in sessions are not saved either:
+                    after a restore, everyone simply logs in again.
+                </p>
+
+                <form id="backupForm" class="backup-form" novalidate>
+                    <label class="backup-check">
+                        <input type="checkbox" id="backupProtect">
+                        <span>Protect the backup with a password (recommended)</span>
+                    </label>
+
+                    <div class="backup-password" id="backupPasswordFields" hidden>
+                        <div>
+                            <label for="backupPassword">Backup password</label>
+                            <input type="password" id="backupPassword" minlength="8" maxlength="100" autocomplete="new-password">
+                        </div>
+                        <div>
+                            <label for="backupPasswordConfirm">Type it again</label>
+                            <input type="password" id="backupPasswordConfirm" minlength="8" maxlength="100" autocomplete="new-password">
+                        </div>
+                        <p class="backup-note warning">
+                            Write this password down and keep it away from this computer.
+                            It is not saved anywhere: without it, the backup cannot be opened.
+                            Open protected backups with 7-Zip or WinRAR.
+                        </p>
+                    </div>
+
+                    <p class="backup-message" id="backupMessage" role="status" aria-live="polite"></p>
+
+                    <div class="backup-actions">
+                        <button type="submit" class="primary-button" id="runBackupButton">
+                            <i data-lucide="database-backup"></i>
+                            <span>Run backup now</span>
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- SAVED BACKUPS -->
+            <section class="panel backup-panel" aria-labelledby="savedBackupsTitle">
+                <div class="backup-panel-head">
+                    <div>
+                        <h3 id="savedBackupsTitle">Saved backups</h3>
+                        <p>Kept on the server in <code>backend\storage\app\backups</code>. Download each one and copy it to a USB drive or another computer: a backup that stays on this computer is lost with it.</p>
+                    </div>
+                </div>
+
+                <div class="backup-table-wrap">
+                    <table class="backup-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Size</th>
+                                <th>Contents</th>
+                                <th>Password</th>
+                                <th>Made by</th>
+                                <th><span class="sa-visually-hidden">Actions</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="backupRows">
+                            <tr><td colspan="6" class="backup-empty">Loading backups...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- RESTORE -->
+            <section class="panel backup-panel backup-guide" aria-labelledby="restoreTitle">
+                <h3 id="restoreTitle">Restore a backup</h3>
+                <p>
+                    Restoring replaces the current data, so it is done by hand, on the
+                    server computer. The same steps are in <strong>RESTORE.txt</strong> inside each backup.
+                    Try one restore before you rely on your backups.
+                </p>
+
+                <ol>
+                    <li>Make a fresh backup of the current system first, if it still runs.</li>
+                    <li>Open the <strong>XAMPP Control Panel</strong> and make sure <strong>Apache</strong> and <strong>MySQL</strong> are running.</li>
+                    <li>Unzip the backup (7-Zip or WinRAR if it has a password).</li>
+                    <li>Open <strong>http://localhost/phpmyadmin</strong>, select (or create) the <strong>siknayan</strong> database, open <strong>Import</strong>, choose <strong>database.sql</strong> and choose <strong>Import</strong>.</li>
+                    <li>Copy <code>files\private</code> to <code>backend\storage\app\private</code> and <code>files\public\profile-photos</code> to <code>backend\storage\app\public\profile-photos</code>.</li>
+                    <li>Put your private copy of <code>backend\.env</code> in place, start the backend, and log in.</li>
+                </ol>
+
+                <p class="backup-note warning">
                     Importing into a database that already has data replaces it.
                     Make a fresh backup first if you are not sure.
                 </p>
 
-                <h4><span class="backup-step-number">5</span> Optional: the settings file</h4>
-                <p>
-                    Keep a private copy of <code>backend\.env</code>. It holds the
-                    database and email settings needed to run Siknayan again on a
-                    new computer.
-                </p>
-                <p class="backup-note warning">
-                    The settings file contains passwords. Never share it, email it,
-                    or upload it online.
-                </p>
-
-                <div class="backup-soon-actions">
-                    <button type="button" class="primary-button" disabled aria-disabled="true">
-                        <i data-lucide="database-backup"></i>
-                        Run backup now
-                    </button>
-                    <span>Not available yet</span>
-                </div>
+                <details class="backup-manual">
+                    <summary>Make a backup by hand instead (phpMyAdmin)</summary>
+                    <ol>
+                        <li>Open <strong>http://localhost/phpmyadmin</strong>, select <strong>siknayan</strong>, open <strong>Export</strong>, keep <strong>Quick</strong> and <strong>SQL</strong>, and choose <strong>Export</strong>.</li>
+                        <li>Rename the file with the date, for example <code>siknayan-2026-10-24.sql</code>.</li>
+                        <li>Copy the folders <code>backend\storage\app\private</code> and <code>backend\storage\app\public\profile-photos</code> next to it.</li>
+                    </ol>
+                    <p class="backup-note warning">The .sql file contains every account, including password hashes. Store it somewhere private.</p>
+                </details>
             </section>
 
         </main>
@@ -470,6 +707,8 @@
 
     <script src="../api-config.js"></script>
     <script src="js/shared.js"></script>
+    <!-- Data Backup: make, list, download and delete backups -->
+    <script src="js/backup.js"></script>
     <!-- My Profile pop-up, same as the other portals -->
     <script src="js/profile-modal.js"></script>
 
