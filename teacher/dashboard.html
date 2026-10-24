@@ -1173,12 +1173,51 @@
             gap: 14px;
         }
 
-        /* Class filter beside the search */
+        /* Class filter and search on the same line as "Learner Records" */
+        .records-header {
+            align-items: flex-start;
+            flex-wrap: nowrap;
+        }
+
+        .records-header .panel-title {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
         .records-tools {
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             align-items: center;
+            flex-shrink: 0;
             gap: 10px;
+        }
+
+        .records-tools .class-filter select {
+            min-width: 0;
+            width: 220px;
+        }
+
+        .records-tools .search-box {
+            width: 240px;
+        }
+
+        /* Tablets and phones: tools go under the title, full width */
+        @media (max-width: 1000px) {
+            .records-header {
+                flex-wrap: wrap;
+            }
+
+            .records-tools {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .records-tools .class-filter,
+            .records-tools .class-filter select,
+            .records-tools .search-box {
+                flex: 1 1 200px;
+                width: auto;
+            }
         }
 
         .class-filter {
@@ -1509,7 +1548,7 @@
         <!-- LEARNER RECORDS -->
         <section class="content-panel">
 
-            <div class="panel-header">
+            <div class="panel-header records-header">
                 <div class="panel-title">
                     <span class="records-icon" aria-hidden="true">
                         <i class="fa-solid fa-users"></i>
