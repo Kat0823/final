@@ -69,10 +69,6 @@
                     <h3>Personal Information</h3>
                     <div class="lp-profile-grid">
                         <div class="lp-profile-field">
-                            <span class="label">Full Name</span>
-                            <p id="lpFullName">—</p>
-                        </div>
-                        <div class="lp-profile-field">
                             <span class="label">School ID</span>
                             <p id="lpSchoolId">—</p>
                         </div>
@@ -83,22 +79,12 @@
                                 placeholder="name@example.com (optional)" hidden>
                         </div>
                         <div class="lp-profile-field">
-                            <label for="lpContactInput">Contact Number</label>
-                            <p id="lpContact">—</p>
-                            <input id="lpContactInput" type="tel" maxlength="30" autocomplete="tel"
-                                placeholder="09XX XXX XXXX (optional)" hidden>
-                        </div>
-                        <div class="lp-profile-field">
                             <span class="label">Program</span>
                             <p id="lpProgram">—</p>
                         </div>
-                        <div class="lp-profile-field">
-                            <span class="label">Account Role</span>
-                            <p>Learner</p>
-                        </div>
                     </div>
                     <p class="lp-profile-note" id="lpEditNote" hidden>
-                        You can change your email and contact number. Your name, school ID and program are managed by your administrator.
+                        You can change your email address. Your name, school ID and program are managed by your administrator.
                     </p>
                 </form>
 
@@ -152,24 +138,6 @@
                             </div>
                         </div>
                     </form>
-
-                    <div class="lp-profile-security-row">
-                        <div class="lp-profile-security-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></div>
-                        <div class="lp-profile-security-info">
-                            <h4>Account Status</h4>
-                            <p>Learner account access.</p>
-                        </div>
-                        <span class="lp-profile-status">Active</span>
-                    </div>
-
-                    <div class="lp-profile-security-row">
-                        <div class="lp-profile-security-icon"><i class="fa-solid fa-book" aria-hidden="true"></i></div>
-                        <div class="lp-profile-security-info">
-                            <h4>Enrolled Classes</h4>
-                            <p>Classes you can open from the Classes page.</p>
-                        </div>
-                        <span class="lp-profile-status" id="lpClassCount">—</span>
-                    </div>
                 </section>
 
                 <div class="lp-profile-actions" id="lpViewActions">
@@ -227,12 +195,9 @@
     function fill(user) {
         profile = user;
         $("lpProfileName").textContent = user.name;
-        $("lpFullName").textContent = shown(user.name);
         $("lpSchoolId").textContent = shown(user.school_id);
         $("lpEmail").textContent = shown(user.email);
-        $("lpContact").textContent = shown(user.contact);
         $("lpProgram").textContent = shown(user.program);
-        $("lpClassCount").textContent = user.class_count ?? "—";
         showPhoto(user.profile_photo_url, user.name);
         setUserName(user.name);
     }
@@ -283,18 +248,17 @@
         if (event.key === "Escape" && overlay.classList.contains("open")) close();
     });
 
-    /* ---------- Edit Profile (email and contact in place) ---------- */
+    /* ---------- Edit Profile (email in place) ---------- */
 
     function setEditing(editing) {
-        ["lpEmail", "lpContact"].forEach(id => { $(id).hidden = editing; });
-        ["lpEmailInput", "lpContactInput"].forEach(id => { $(id).hidden = !editing; });
+        $("lpEmail").hidden = editing;
+        $("lpEmailInput").hidden = !editing;
         $("lpEditNote").hidden = !editing;
         $("lpViewActions").hidden = editing;
         $("lpEditActions").hidden = !editing;
 
         if (editing) {
             $("lpEmailInput").value = profile?.email || "";
-            $("lpContactInput").value = profile?.contact || "";
             $("lpEmailInput").focus();
         }
     }
@@ -327,7 +291,8 @@
     $("lpProfileForm").addEventListener("submit", async event => {
         event.preventDefault();
         const email = $("lpEmailInput").value.trim();
-        const contact = $("lpContactInput").value.trim();
+        // The contact number is no longer shown; keep the saved one.
+        const contact = profile?.contact || "";
 
         if (email && !$("lpEmailInput").checkValidity()) {
             message("lpProfileMessage", "Please enter a valid email address.", "error");

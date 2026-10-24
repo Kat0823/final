@@ -78,11 +78,6 @@
             line-height: 1.5;
         }
 
-        .feedback-cell {
-            max-width: 300px;
-            white-space: pre-wrap;
-            overflow-wrap: anywhere;
-        }
 
         @media (max-width: 700px) {
             .module-cell {
@@ -96,7 +91,7 @@
         <div class="page-header">
             <div>
                 <h2>Grades</h2>
-                <p>Your classes and modules, with scores and feedback from your instructors.</p>
+                <p>Your classes and modules, with the scores from your instructors.</p>
             </div>
         </div>
 
@@ -126,12 +121,11 @@
                             <th scope="col">Class / Module</th>
                             <th scope="col">Status</th>
                             <th scope="col">Score</th>
-                            <th scope="col">Feedback</th>
                             <th scope="col">Graded</th>
                         </tr>
                     </thead>
                     <tbody id="gradeRows">
-                        <tr><td colspan="5">
+                        <tr><td colspan="4">
                             <div class="state"><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i><h3>Loading grades</h3></div>
                         </td></tr>
                     </tbody>
@@ -183,7 +177,7 @@
 
                 if (classes.length === 0) {
                     $("gradeRows").innerHTML = `
-                        <tr><td colspan="5">
+                        <tr><td colspan="4">
                             <div class="state">
                                 <i class="fa-solid fa-book-open" aria-hidden="true"></i>
                                 <h3>You are not enrolled in any class yet</h3>
@@ -204,7 +198,7 @@
                                 <a class="class-name" href="modules.html?course=${encodeURIComponent(item.id)}">${escape(item.name)}</a>
                                 <span class="class-meta">${escape([item.code, item.instructor?.name].filter(Boolean).join(" · "))}</span>
                             </td>
-                            <td colspan="3" class="class-average">
+                            <td colspan="2" class="class-average">
                                 ${classAvg === null
                                     ? '<span class="muted">No grades yet</span>'
                                     : `<strong>${classAvg.toFixed(1)}%</strong> <span class="muted">average</span>`}
@@ -213,11 +207,11 @@
                         </tr>`;
 
                     if (item.error) {
-                        return head + `<tr><td colspan="5" class="module-cell muted">Unable to load this class's modules. ${escape(item.error)}</td></tr>`;
+                        return head + `<tr><td colspan="4" class="module-cell muted">Unable to load this class's modules. ${escape(item.error)}</td></tr>`;
                     }
 
                     if (modules.length === 0) {
-                        return head + `<tr><td colspan="5" class="module-cell muted">${item.modules.length ? "No modules match this status." : "No modules published yet."}</td></tr>`;
+                        return head + `<tr><td colspan="4" class="module-cell muted">${item.modules.length ? "No modules match this status." : "No modules published yet."}</td></tr>`;
                     }
 
                     return head + modules.map(module => {
@@ -236,7 +230,6 @@
                                                 `<li>${escape(item.title)}: ${escape(Number(item.score))}/${escape(Number(item.max_score))}</li>`).join("")}</ul>`
                                             : ""}`
                                     : '<span class="muted">—</span>'}</td>
-                                <td class="feedback-cell">${grade?.feedback ? escape(grade.feedback) : '<span class="muted">—</span>'}</td>
                                 <td>${grade ? escape(formatDate(grade.graded_at, false)) : '<span class="muted">—</span>'}</td>
                             </tr>`;
                     }).join("");
@@ -247,7 +240,7 @@
 
             function showError(error) {
                 $("gradeRows").innerHTML = `
-                    <tr><td colspan="5">
+                    <tr><td colspan="4">
                         <div class="state">
                             <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
                             <h3>Unable to load your grades</h3>
