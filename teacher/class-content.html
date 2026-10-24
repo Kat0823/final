@@ -620,6 +620,110 @@
             cursor: pointer;
         }
 
+        /* Module rows: title on the left, eye and download on the right */
+        .module-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 16px 18px;
+            background: #fff;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .module-row:hover {
+            border-color: #8dbba0;
+            box-shadow: 0 4px 14px rgba(23, 40, 30, 0.06);
+        }
+
+        .module-text {
+            min-width: 0;
+        }
+
+        .module-text h3 {
+            overflow-wrap: anywhere;
+        }
+
+        .module-desc {
+            margin-bottom: 4px;
+            overflow-wrap: anywhere;
+        }
+
+        .module-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px 12px;
+        }
+
+        .module-status {
+            padding: 2px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .module-status.published {
+            background: #e7f4eb;
+            color: var(--green);
+        }
+
+        .module-status.draft {
+            background: #f1f2f4;
+            color: #6b7280;
+        }
+
+        .module-material {
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .module-material.pdf i {
+            color: #c0392b;
+        }
+
+        .icon-action {
+            width: 38px;
+            height: 38px;
+            display: inline-grid;
+            place-items: center;
+            flex-shrink: 0;
+            border: 1px solid var(--green);
+            border-radius: 50%;
+            background: #fff;
+            color: var(--green);
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        .icon-action.view {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .icon-action:hover {
+            background: #065330;
+            border-color: #065330;
+            color: #fff;
+        }
+
+        .icon-action:focus-visible {
+            outline: 3px solid rgba(8, 107, 60, 0.3);
+            outline-offset: 2px;
+        }
+
+        .icon-action:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        @media (max-width: 600px) {
+            .module-row {
+                align-items: flex-start;
+            }
+        }
+
         .material-btn.primary {
             background: var(--green);
             color: #fff;
@@ -2369,12 +2473,13 @@
                 `${modules.length} module${modules.length === 1 ? "" : "s"} in this class`;
 
             modules.forEach((module, index) => {
-                const card = document.createElement("details");
-                card.className = "module-card";
-                if (index === 0) card.open = true;
+                // A flat row (no expanding): everything is visible at once.
+                const card = document.createElement("article");
+                card.className = "module-card module-row";
 
                 const title = module.name || module.title || "Untitled Module";
-                const description = module.description || "No description available.";
+                // Shown only when the module really has a description.
+                const description = String(module.description || "").trim();
                 const order = module.module_order ?? module.order ?? index + 1;
 
                 const isPublished =
@@ -2390,43 +2495,47 @@
                     ? module.has_material
                     : Boolean(module.material_path || module.material_url || module.file_path);
 
-                card.innerHTML = `
-                    <summary>
-                        <div class="module-title-group">
-                            <span class="unit-badge">UNIT ${escapeHtml(order)}</span>
-                            <div>
-                                <h3>${escapeHtml(title)}</h3>
-                                <p>${escapeHtml(description)} · ${status}</p>
-                            </div>
-                        </div>
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </summary>
+                const fileName = module.material_name || title;
+                const isPdf = /\.pdf$/i.test(String(module.material_name || ""));
+                const fileIcon = isPdf
+                    ? "fa-solid fa-file-pdf"
+                    : /\.(png|jpe?g|gif|webp)$/i.test(String(module.material_name || ""))
+                        ? "fa-solid fa-file-image"
+                        : "fa-solid fa-file-lines";
 
-                    <div class="module-body">
-                        <div class="module-description">${escapeHtml(description)}</div>
-                        ${
-                            hasMaterial
-                                ? `<div class="material-row">
-                                       <span class="module-material">
-                                           <i class="fa-solid fa-paperclip"></i>
+                card.innerHTML = `
+                    <div class="module-title-group">
+                        <span class="unit-badge">UNIT ${escapeHtml(order)}</span>
+                        <div class="module-text">
+                            <h3>${escapeHtml(title)}</h3>
+                            ${description ? `<p class="module-desc">${escapeHtml(description)}</p>` : ""}
+                            <p class="module-meta">
+                                <span class="module-status ${isPublished ? "published" : "draft"}">${status}</span>
+                                ${hasMaterial
+                                    ? `<span class="module-material ${isPdf ? "pdf" : ""}">
+                                           <i class="${fileIcon}" aria-hidden="true"></i>
                                            ${escapeHtml(module.material_name || "Material attached")}
-                                       </span>
-                                       <div class="material-actions">
-                                           <button type="button" class="material-btn primary"
-                                               data-material-action="view" data-module-id="${escapeHtml(module.id)}"
-                                               data-file-name="${escapeHtml(module.material_name || title)}">
-                                               <i class="fa-solid fa-eye" aria-hidden="true"></i> View
-                                           </button>
-                                           <button type="button" class="material-btn"
-                                               data-material-action="download" data-module-id="${escapeHtml(module.id)}"
-                                               data-file-name="${escapeHtml(module.material_name || title)}">
-                                               <i class="fa-solid fa-download" aria-hidden="true"></i> Download
-                                           </button>
-                                       </div>
-                                   </div>`
-                                : `<span class="not-available">No material attached.</span>`
-                        }
-                    </div>`;
+                                       </span>`
+                                    : `<span class="not-available">No material attached</span>`}
+                            </p>
+                        </div>
+                    </div>
+                    ${hasMaterial
+                        ? `<div class="material-actions">
+                               <button type="button" class="icon-action view"
+                                   data-material-action="view" data-module-id="${escapeHtml(module.id)}"
+                                   data-file-name="${escapeHtml(fileName)}"
+                                   title="View" aria-label="View ${escapeHtml(fileName)}">
+                                   <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                               </button>
+                               <button type="button" class="icon-action"
+                                   data-material-action="download" data-module-id="${escapeHtml(module.id)}"
+                                   data-file-name="${escapeHtml(fileName)}"
+                                   title="Download" aria-label="Download ${escapeHtml(fileName)}">
+                                   <i class="fa-solid fa-download" aria-hidden="true"></i>
+                               </button>
+                           </div>`
+                        : ""}`;
 
                 container.appendChild(card);
             });
