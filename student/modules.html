@@ -342,7 +342,7 @@
     <script>
         (function () {
             if (!window.Portal) return;
-            const { api, escape, formatDate, openFile } = window.Portal;
+            const { api, escape, formatDate } = window.Portal;
             const $ = id => document.getElementById(id);
             const params = new URLSearchParams(window.location.search);
             const courseId = params.get("course") || params.get("course_id");
@@ -402,14 +402,6 @@
                                 </div>
                             </div>
                             <div class="module-actions">
-                                ${module.has_material ? `
-                                    <button class="btn secondary small" type="button" data-view="${escape(module.id)}">
-                                        <i class="fa-solid fa-eye" aria-hidden="true"></i> View
-                                    </button>
-                                    <button class="btn secondary small" type="button" data-download="${escape(module.id)}"
-                                        data-name="${escape(module.material_name || module.title)}">
-                                        <i class="fa-solid fa-download" aria-hidden="true"></i> Download
-                                    </button>` : ""}
                                 <i class="fa-solid fa-chevron-right module-go" aria-hidden="true"></i>
                             </div>
                         </article>`;
@@ -547,13 +539,6 @@
                     button.disabled = false;
                     window.Portal.toast(deleteError.message, "error");
                 }
-            });
-
-            $("moduleList").addEventListener("click", event => {
-                const view = event.target.closest("[data-view]");
-                const download = event.target.closest("[data-download]");
-                if (view) openFile(`/student/modules/${encodeURIComponent(view.dataset.view)}/material`, { inline: true });
-                if (download) openFile(`/student/modules/${encodeURIComponent(download.dataset.download)}/material`, { fileName: download.dataset.name });
             });
 
             function showError(message) {

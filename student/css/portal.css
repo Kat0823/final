@@ -1027,6 +1027,74 @@ table.data tbody tr:hover {
     display: none;
 }
 
+/* Change Password open: smaller header and spacing so the card fits
+   on a laptop screen without scrolling. */
+.lp-pw-open .lp-profile-cover {
+    padding-top: 18px;
+    padding-bottom: 18px;
+}
+
+.lp-pw-open .lp-profile-photo {
+    width: 68px;
+    height: 68px;
+    flex-basis: 68px;
+    font-size: 24px;
+}
+
+.lp-pw-open .lp-photo-edit {
+    width: 26px;
+    height: 26px;
+    font-size: 10px;
+}
+
+.lp-pw-open .lp-profile-cover h2 {
+    margin-bottom: 4px;
+    font-size: 20px;
+}
+
+.lp-pw-open .lp-profile-cover p {
+    margin-bottom: 6px;
+}
+
+.lp-pw-open .lp-profile-body {
+    padding-top: 16px;
+    padding-bottom: 18px;
+}
+
+.lp-pw-open .lp-profile-body h3 {
+    margin-bottom: 10px;
+    font-size: 17px;
+}
+
+.lp-pw-open .lp-profile-grid {
+    gap: 10px 25px;
+}
+
+.lp-pw-open .lp-profile-field label,
+.lp-pw-open .lp-profile-field .label {
+    margin-bottom: 3px;
+}
+
+.lp-pw-open .lp-profile-security {
+    margin-top: 14px;
+    padding-top: 14px;
+}
+
+.lp-pw-open .lp-profile-security-row {
+    margin-bottom: 12px;
+}
+
+.lp-pw-open .lp-profile-security-icon {
+    width: 38px;
+    height: 38px;
+    font-size: 16px;
+}
+
+.lp-pw-open .lp-password-form input {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
 /* Change Password: compact so the whole card fits. */
 .lp-password-form:not([hidden]) {
     display: grid;
@@ -1106,7 +1174,7 @@ table.data tbody tr:hover {
 }
 
 .lp-profile-photo-upload {
-    padding: 16px 28px;
+    padding: 10px 28px;
     border-bottom: 1px solid #e5e7eb;
     background: #f8fbf9;
 }
@@ -1115,7 +1183,31 @@ table.data tbody tr:hover {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 12px 16px;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+/* Upload Photo and Cancel: small, same size */
+.lp-profile-photo-actions .lp-upload-photo,
+.lp-profile-photo-actions .lp-cancel-photo {
+    min-width: 96px;
+    height: 34px;
+    padding: 0 14px;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.lp-profile-photo-actions .lp-cancel-photo {
+    border: 1px solid #d0d5dd;
+}
+
+.lp-profile-photo-upload .lp-message:empty {
+    display: none;
+}
+
+.lp-profile-photo-upload .lp-message {
+    margin-top: 6px;
+    text-align: right;
 }
 
 .lp-profile-photo-actions > span {

@@ -54,6 +54,19 @@
             font-size: 24px;
         }
 
+        /* Module material: red file icon on a soft red tile */
+        .file-name i.material-icon {
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            border-radius: 10px;
+            background: #fdecec;
+            color: #c62828;
+            font-size: 22px;
+        }
+
         .file-name strong {
             display: block;
             overflow-wrap: anywhere;
@@ -310,6 +323,8 @@
     </template>
 
     <script src="../api-config.js"></script>
+    <!-- Shows PDF and Word files in a tab instead of downloading them -->
+    <script src="../teacher/js/file-viewer.js"></script>
     <script src="js/portal.js"></script>
     <script src="js/profile-modal.js"></script>
     <script>
@@ -336,6 +351,13 @@
                     </div>`;
             }
 
+            function fileIcon(name) {
+                const extension = String(name || "").split(".").pop().toLowerCase();
+                if (extension === "pdf") return "fa-solid fa-file-pdf";
+                if (extension === "doc" || extension === "docx") return "fa-solid fa-file-word";
+                return "fa-solid fa-file-lines";
+            }
+
             function fileButtons(kind) {
                 return `
                     <button class="btn secondary small" type="button" data-file="${kind}" data-inline="1">
@@ -356,10 +378,7 @@
                 $("crumbModule").textContent = module.title;
                 $("crumbClass").textContent = module.course?.name || "Class";
                 $("crumbClass").href = `modules.html?course=${encodeURIComponent(module.course_id)}`;
-                $("moduleSubtitle").textContent = [
-                    module.course?.name,
-                    module.course?.instructor?.name && `Instructor: ${module.course.instructor.name}`
-                ].filter(Boolean).join(" · ");
+                $("moduleSubtitle").textContent = "";
 
                 $("statusBadge").innerHTML = !submission
                     ? '<span class="badge amber"><i class="fa-regular fa-clock" aria-hidden="true"></i> Not submitted</span>'
@@ -374,7 +393,7 @@
                     : "";
 
                 $("material").innerHTML = module.has_material
-                    ? fileRow("fa-solid fa-file-lines", module.material_name || "Module material", "Learning material", fileButtons("material"))
+                    ? fileRow(`${fileIcon(module.material_name)} material-icon`, module.material_name || "Module material", "Learning material", fileButtons("material"))
                     : '<div class="state" style="padding: 20px"><i class="fa-solid fa-file-circle-xmark" aria-hidden="true"></i><p>No material is attached to this module yet.</p></div>';
 
                 $("submitCard").hidden = Boolean(submission);

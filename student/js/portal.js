@@ -156,7 +156,15 @@
                 throw new Error(data?.message || "The file could not be opened.");
             }
 
-            const url = URL.createObjectURL(await response.blob());
+            const blob = await response.blob();
+
+            // View: show it in the tab (PDF, images, Word .docx).
+            if (inline && window.SiknayanFileViewer) {
+                await window.SiknayanFileViewer.show(blob, fileName, tab);
+                return;
+            }
+
+            const url = URL.createObjectURL(blob);
 
             if (inline) {
                 if (tab) tab.location.href = url;

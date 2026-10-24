@@ -67,7 +67,7 @@
             <!-- Shown only after choosing a picture (or for a message) -->
             <div class="lp-profile-photo-upload" id="lpPhotoStrip" hidden>
                 <div class="lp-profile-photo-actions">
-                    <span class="lp-photo-name" id="lpPhotoName"></span>
+                    <span class="lp-photo-name" id="lpPhotoName" hidden></span>
                     <button type="button" class="lp-upload-photo" id="lpUploadPhoto" hidden>Upload Photo</button>
                     <button type="button" class="lp-cancel-photo" id="lpCancelPhoto" hidden>Cancel</button>
                 </div>
@@ -276,6 +276,7 @@
 
     function setPasswordOpen(isOpen) {
         $("lpPasswordForm").hidden = !isOpen;
+        overlay.querySelector(".lp-profile-modal").classList.toggle("lp-pw-open", isOpen);
         // Keep the card short: the big buttons hide while the form is open.
         $("lpViewActions").hidden = isOpen || !$("lpEditActions").hidden;
         overlay.querySelectorAll('[aria-controls="lpPasswordForm"]').forEach(button =>
@@ -406,7 +407,7 @@
         previewUrl = URL.createObjectURL(file);
         $("lpProfilePhoto").innerHTML = `<img src="${previewUrl}" alt="">`;
 
-        $("lpPhotoName").textContent = `New picture: ${file.name}`;
+        $("lpPhotoName").textContent = file.name;
         $("lpUploadPhoto").hidden = false;
         $("lpCancelPhoto").hidden = false;
         photoMessage("");
