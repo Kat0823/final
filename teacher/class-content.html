@@ -1465,6 +1465,22 @@
             }
         }
 
+        .learner-avatar {
+            overflow: hidden;
+        }
+
+        .learner-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Opened from a reply notification */
+        .announcement-item.highlight {
+            border-color: #e2ac2f;
+            box-shadow: 0 0 0 3px rgba(226, 172, 47, 0.3);
+        }
+
         .course-description[hidden] {
             display: none;
         }
@@ -1873,38 +1889,6 @@
                 </p>
             </section>
 
-            <!-- STATISTICS -->
-            <section class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fa-solid fa-users"></i>
-                    </div>
-                    <div class="stat-info">
-                        <span>Enrolled Learners</span>
-                        <strong id="studentCount">0</strong>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fa-solid fa-book-open"></i>
-                    </div>
-                    <div class="stat-info">
-                        <span>Total Modules</span>
-                        <strong id="moduleCount">0</strong>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fa-solid fa-clock"></i>
-                    </div>
-                    <div class="stat-info">
-                        <span>Pending Reviews</span>
-                        <strong id="pendingCount">—</strong>
-                    </div>
-                </div>
-            </section>
 
             <!-- TABS -->
             <div class="tabs">
@@ -2301,9 +2285,6 @@
             $("courseDescription").textContent =
                 "The class information could not be loaded. Return to Classes and try again.";
             $("courseProgram").textContent = "Program not available";
-            $("studentCount").textContent = "0";
-            $("moduleCount").textContent = "0";
-            $("pendingCount").textContent = "—";
             $("modulesBadge").textContent = "0";
             $("learnersBadge").textContent = "0";
             $("moduleSummary").textContent = "Modules could not be loaded.";
@@ -2353,8 +2334,6 @@
             $("courseProgram").innerHTML =
                 `<i class="fa-solid fa-graduation-cap"></i> ${escapeHtml(program)}`;
 
-            $("studentCount").textContent = learnerCount;
-            $("moduleCount").textContent = moduleCount;
             $("modulesBadge").textContent = moduleCount;
             $("learnersBadge").textContent = learnerCount;
 
@@ -2365,7 +2344,6 @@
                 `${moduleCount} module${moduleCount === 1 ? "" : "s"} in this class`;
 
             // The current class endpoint does not provide pending-review data.
-            $("pendingCount").textContent = "—";
         }
 
         /* MODULES */
@@ -2381,13 +2359,11 @@
                         <p>No modules have been added to this class yet.</p>
                     </div>`;
 
-                $("moduleCount").textContent = "0";
                 $("modulesBadge").textContent = "0";
                 $("moduleSummary").textContent = "0 modules in this class";
                 return;
             }
 
-            $("moduleCount").textContent = modules.length;
             $("modulesBadge").textContent = modules.length;
             $("moduleSummary").textContent =
                 `${modules.length} module${modules.length === 1 ? "" : "s"} in this class`;
@@ -2540,6 +2516,7 @@
                 );
                 announcements = Array.isArray(data.announcements) ? data.announcements : [];
                 renderAnnouncements();
+                showAnnouncementFromLink();
             } catch (error) {
                 if (error.message === "Unauthorized") return;
                 $("announcementSummary").textContent = "Unable to load announcements.";
@@ -2549,6 +2526,27 @@
                         <h3>Unable to load announcements</h3>
                         <p>${escapeHtml(error.message)}</p>
                     </div>`;
+            }
+        }
+
+        /* Opened from a notification (for example a learner's reply):
+           ?tab=announcements&announcement=ID shows that announcement. */
+        let announcementLinkHandled = false;
+
+        function showAnnouncementFromLink() {
+            if (announcementLinkHandled) return;
+            announcementLinkHandled = true;
+
+            if (params.get("tab") !== "announcements") return;
+
+            document.querySelector('.tab-btn[data-tab="announcementsPanel"]')?.click();
+
+            const id = params.get("announcement");
+            const item = id && /^\d+$/.test(id) ? document.getElementById(`announcement-${id}`) : null;
+
+            if (item) {
+                item.classList.add("highlight");
+                item.scrollIntoView?.({ behavior: "smooth", block: "center" });
             }
         }
 
@@ -2573,7 +2571,7 @@
             list.innerHTML = announcements.map(item => {
                 const edited = item.updated_at && item.updated_at !== item.created_at;
                 return `
-                    <article class="announcement-item">
+                    <article class="announcement-item" id="announcement-${escapeHtml(item.id)}">
                         <div class="announcement-item-head">
                             <div>
                                 <h3>${escapeHtml(item.title)}</h3>
@@ -2828,13 +2826,11 @@
                     </td></tr>`;
 
                 $("learnersBadge").textContent = "0";
-                $("studentCount").textContent = "0";
                 $("learnerSummary").textContent = "0 enrolled learners";
                 return;
             }
 
             $("learnersBadge").textContent = learners.length;
-            $("studentCount").textContent = learners.length;
             $("learnerSummary").textContent =
                 `${learners.length} enrolled learner${learners.length === 1 ? "" : "s"}`;
 
@@ -2852,7 +2848,9 @@
                 row.innerHTML = `
                     <td>
                         <div class="learner-profile-cell">
-                            <div class="learner-avatar">${escapeHtml(getInitials(name))}</div>
+                            <div class="learner-avatar">${learner.profile_photo_url
+                                ? `<img src="${escapeHtml(learner.profile_photo_url)}" alt="" onerror="this.replaceWith(document.createTextNode('${escapeHtml(getInitials(name))}'))">`
+                                : escapeHtml(getInitials(name))}</div>
                             <div>
                                 <span class="learner-name">${escapeHtml(name)}</span>
                                 <span class="learner-id">
@@ -2955,8 +2953,6 @@
                             : ""}`;
             });
 
-            $("pendingCount").textContent =
-                classSubmissions.filter(item => !isScored(item)).length;
         }
 
         function scoreLink(submission, learnerId) {
@@ -3106,7 +3102,9 @@
             const name = learner.name || "Unknown Learner";
 
             overlay._returnFocus = document.activeElement;
-            $("learnerPanelAvatar").textContent = getInitials(name);
+            $("learnerPanelAvatar").innerHTML = learner.profile_photo_url
+                ? `<img src="${escapeHtml(learner.profile_photo_url)}" alt="">`
+                : escapeHtml(getInitials(name));
             $("learnerPanelName").textContent = name;
             $("learnerPanelId").textContent = learner.school_id || learner.student_id || "No School ID";
             $("learnerPanelModules").innerHTML = `

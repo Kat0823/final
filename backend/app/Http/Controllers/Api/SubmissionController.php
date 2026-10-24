@@ -258,6 +258,14 @@ class SubmissionController extends Controller
                 'type' =>
                     'submission',
 
+                // Opens this learner in the class (instructor portal).
+                'data' => [
+                    'course_id' => $module->course_id,
+                    'learner_id' => $learner->id,
+                    'module_id' => $module->id,
+                    'submission_id' => $submission->id,
+                ],
+
                 'is_read' =>
                     false,
 
@@ -351,6 +359,11 @@ class SubmissionController extends Controller
                     'title' => 'Submission Withdrawn',
                     'message' => $learner->name . ' unsubmitted "' . $module->title . '" for ' . $module->course->name . '.',
                     'type' => 'submission',
+                    'data' => [
+                        'course_id' => $module->course_id,
+                        'learner_id' => $learner->id,
+                        'module_id' => $module->id,
+                    ],
                     'is_read' => false,
                 ]);
             }

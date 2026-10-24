@@ -12,6 +12,7 @@ class Notification extends Model
         'title',
         'message',
         'type',
+        'data',
         'is_read',
     ];
 
@@ -19,6 +20,7 @@ class Notification extends Model
     {
         return [
             'is_read' => 'boolean',
+            'data' => 'array',
         ];
     }
 

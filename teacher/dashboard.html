@@ -1173,6 +1173,94 @@
             gap: 14px;
         }
 
+        /* Class filter beside the search */
+        .records-tools {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .class-filter {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .class-filter i {
+            position: absolute;
+            left: 12px;
+            color: #6b7280;
+            font-size: 13px;
+            pointer-events: none;
+        }
+
+        .class-filter select {
+            min-width: 200px;
+            height: 40px;
+            padding: 0 12px 0 34px;
+            border: 1px solid #d8dee4;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #1f2937;
+            font: inherit;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .class-filter select:focus {
+            outline: 2px solid rgba(8, 104, 60, 0.25);
+            border-color: #08683c;
+        }
+
+        .class-cell strong {
+            display: block;
+            color: #111827;
+            font-size: 13px;
+        }
+
+        .class-cell span {
+            display: block;
+            margin-top: 2px;
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .learner-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .learner-photo {
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            overflow: hidden;
+            border-radius: 50%;
+            background: #e3f3ea;
+            color: #08683c;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .learner-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+        }
+
         .records-icon {
             width: 46px;
             height: 46px;
@@ -1428,9 +1516,18 @@
                     </span>
                     <div>
                         <h2>Learner Records</h2>
-                        <p>Review learner information and overall progress.</p>
+                        <p>Each learner's progress in each of your classes.</p>
                     </div>
                 </div>
+
+                <div class="records-tools">
+                <label class="class-filter">
+                    <span class="visually-hidden">Class</span>
+                    <i class="fa-solid fa-chalkboard" aria-hidden="true"></i>
+                    <select id="classFilter" aria-label="Show learners of a class">
+                        <option value="all">All classes</option>
+                    </select>
+                </label>
 
                 <div class="search-box">
                     <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
@@ -1439,6 +1536,7 @@
                         id="learnerSearch"
                         placeholder="Search learner..."
                         aria-label="Search learners">
+                </div>
                 </div>
             </div>
 
@@ -2066,31 +2164,7 @@
 
             updateSidebarToggle();
 
-            /* Search learner records */
-            $("learnerSearch").addEventListener("input", () => {
-                const query = $("learnerSearch").value.trim().toLowerCase();
-                const body = $("learnersTableBody");
-
-                const rows = [...body.querySelectorAll("tr")].filter(row =>
-                    !row.querySelector(".loading-message")
-                );
-
-                let shown = 0;
-
-                rows.forEach(row => {
-                    const matches = row.innerText.toLowerCase().includes(query);
-
-                    row.style.display = matches ? "" : "none";
-
-                    if (matches) shown++;
-                });
-
-                $("emptyMessage").style.display =
-                    rows.length > 0 && shown === 0 ? "block" : "none";
-
-                $("learnerCount").textContent =
-                    `Showing ${shown} learner${shown === 1 ? "" : "s"}`;
-            });
+            /* Search and the class filter: js/dashboard.js */
 
             /* Logout */
             $("logoutNav").addEventListener("click", event => {

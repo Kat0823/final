@@ -164,7 +164,11 @@ async function loadDashboard() {
             ? data.learners
             : [];
 
-        renderLearners(learners);
+        fillClassFilter(
+            Array.isArray(data.courses) ? data.courses : []
+        );
+
+        applyLearnerFilters();
 
     } catch (error) {
         console.error("Dashboard error:", error);
@@ -283,7 +287,7 @@ function renderLearners(learnerList) {
 
     if (learnerCount) {
         learnerCount.textContent =
-            `Showing ${count} learner${count === 1 ? "" : "s"}`;
+            `Showing ${count} learner record${count === 1 ? "" : "s"}`;
     }
 
     /* Show empty message if there are no learners */
@@ -310,6 +314,27 @@ function renderLearners(learnerList) {
 
         const learnerCell = document.createElement("td");
 
+        const learnerBox = document.createElement("div");
+        learnerBox.className = "learner-cell";
+
+        // The learner's own profile picture, or their initials.
+        const photo = document.createElement("span");
+        photo.className = "learner-photo";
+        photo.setAttribute("aria-hidden", "true");
+        const initials = String(learner.name || "?").trim().split(/\s+/).slice(0, 2)
+            .map(part => part.charAt(0).toUpperCase()).join("");
+        if (learner.profile_photo_url) {
+            const img = document.createElement("img");
+            img.src = learner.profile_photo_url;
+            img.alt = "";
+            img.addEventListener("error", () => { photo.textContent = initials; });
+            photo.appendChild(img);
+        } else {
+            photo.textContent = initials;
+        }
+
+        const nameBox = document.createElement("div");
+
         const name = document.createElement("div");
         name.className = "learner-name";
         name.textContent = learner.name || "Unknown Learner";
@@ -318,27 +343,28 @@ function renderLearners(learnerList) {
         schoolId.className = "learner-id";
         schoolId.textContent = learner.school_id || "No School ID";
 
-        learnerCell.append(name, schoolId);
+        nameBox.append(name, schoolId);
+        learnerBox.append(photo, nameBox);
+        learnerCell.appendChild(learnerBox);
 
         /* Class codes */
 
+        // Each row is one learner in one class.
         const classCell = document.createElement("td");
+        classCell.className = "class-cell";
 
-        let classCodes = [];
+        const classCode = document.createElement("strong");
+        classCode.textContent =
+            learner.class_code ||
+            (Array.isArray(learner.class_codes) ? learner.class_codes.join(", ") : "") ||
+            "No class";
+        classCell.appendChild(classCode);
 
-        if (
-            Array.isArray(learner.class_codes) &&
-            learner.class_codes.length > 0
-        ) {
-            classCodes = learner.class_codes;
-        } else if (learner.class_code) {
-            classCodes = [learner.class_code];
+        if (learner.class_name) {
+            const className = document.createElement("span");
+            className.textContent = learner.class_name;
+            classCell.appendChild(className);
         }
-
-        classCell.textContent =
-            classCodes.length > 0
-                ? classCodes.join(", ")
-                : "No class";
 
         /* Modules */
 
@@ -438,41 +464,66 @@ function renderLearners(learnerList) {
    SEARCH LEARNERS
 ===================================================== */
 
-if (learnerSearch) {
-    learnerSearch.addEventListener("input", function () {
-        const searchTerm = this.value.trim().toLowerCase();
+/* Class filter: one class, or all */
+const classFilter =
+    document.getElementById("classFilter");
 
-        if (!searchTerm) {
-            renderLearners(learners);
-            return;
+function fillClassFilter(courses) {
+    if (!classFilter) {
+        return;
+    }
+
+    const current = classFilter.value;
+
+    classFilter.innerHTML = '<option value="all">All classes</option>';
+
+    courses.forEach(course => {
+        const option = document.createElement("option");
+        option.value = String(course.id);
+        option.textContent = [course.code, course.name].filter(Boolean).join(" | ") || "Class";
+        classFilter.appendChild(option);
+    });
+
+    if ([...classFilter.options].some(option => option.value === current)) {
+        classFilter.value = current;
+    }
+}
+
+/* Class filter and search together */
+function applyLearnerFilters() {
+    const classId = classFilter ? classFilter.value : "all";
+    const searchTerm = learnerSearch
+        ? learnerSearch.value.trim().toLowerCase()
+        : "";
+
+    const filtered = learners.filter(learner => {
+        if (classId !== "all" && String(learner.class_id) !== classId) {
+            return false;
         }
 
-        const filteredLearners = learners.filter(learner => {
-            const name = String(
-                learner.name || ""
-            ).toLowerCase();
+        if (!searchTerm) {
+            return true;
+        }
 
-            const schoolId = String(
-                learner.school_id || ""
-            ).toLowerCase();
-
-            const classCode = [
-                learner.class_code || "",
-                ...(Array.isArray(learner.class_codes)
-                    ? learner.class_codes
-                    : [])
-            ].join(" ").toLowerCase();
-
-            return (
-                name.includes(searchTerm) ||
-                schoolId.includes(searchTerm) ||
-                classCode.includes(searchTerm)
-            );
-        });
-
-        renderLearners(filteredLearners);
+        return [
+            learner.name,
+            learner.school_id,
+            learner.class_code,
+            learner.class_name
+        ].some(value => String(value || "").toLowerCase().includes(searchTerm));
     });
+
+    renderLearners(filtered);
 }
+
+if (classFilter) {
+    classFilter.addEventListener("change", applyLearnerFilters);
+}
+
+if (learnerSearch) {
+    learnerSearch.addEventListener("input", applyLearnerFilters);
+}
+
 
 
 /* =====================================================

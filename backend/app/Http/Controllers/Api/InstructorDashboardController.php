@@ -183,167 +183,83 @@ class InstructorDashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        // Submissions still waiting for a grade, per learner (this
-        // instructor's active classes only).
-        $instructorModuleIds = $learners
+        // Learner progress is per class: one row for each learner in each
+        // of this instructor's active classes, counting only that class's
+        // published modules (what the learner can see).
+        $publishedModuleIds = $learners
             ->flatMap(fn ($learner) => $learner->courses)
-            ->flatMap(fn ($course) => $course->modules)
+            ->flatMap(fn ($course) => $course->modules->where('is_published', true))
             ->pluck('id')
             ->unique()
             ->values();
 
-        $pendingByLearner = \App\Models\Submission::whereIn('module_id', $instructorModuleIds)
+        // Submissions still waiting for a grade, per learner and module.
+        $pendingSubmissionsList = \App\Models\Submission::whereIn('module_id', $publishedModuleIds)
             ->whereIn('learner_id', $learners->pluck('id'))
             ->whereDoesntHave('grade')
-            ->selectRaw('learner_id, COUNT(*) AS pending')
-            ->groupBy('learner_id')
-            ->pluck('pending', 'learner_id');
+            ->get(['learner_id', 'module_id']);
 
-        $learnerProgress = $learners->map(
-            function ($learner) use ($pendingByLearner) {
+        $learnerProgress = $learners->flatMap(
+            function ($learner) use ($pendingSubmissionsList) {
+                return $learner->courses
+                    ->sortBy('code')
+                    ->map(function ($course) use ($learner, $pendingSubmissionsList) {
+                        $modules = $course->modules->where('is_published', true)->values();
+                        $moduleCount = $modules->count();
+                        $moduleIds = $modules->pluck('id');
 
-                /*
-                |--------------------------------------------------------------------------
-                | Get all modules assigned through the instructor's courses
-                |--------------------------------------------------------------------------
-                */
+                        $progressRecords = $learner->progress->whereIn('module_id', $moduleIds);
 
-                $modules = $learner->courses
-                    ->flatMap(function ($course) {
+                        $progressPercentage = 0;
 
-                        return $course->modules;
+                        if ($moduleCount > 0) {
+                            $total = 0;
 
-                    });
+                            foreach ($modules as $module) {
+                                $total += (float) optional($progressRecords->firstWhere('module_id', $module->id))
+                                    ->completion_percentage;
+                            }
 
-                $moduleCount = $modules->count();
-
-                /*
-                |--------------------------------------------------------------------------
-                | Get module IDs
-                |--------------------------------------------------------------------------
-                */
-
-                $moduleIds = $modules->pluck('id');
-
-                /*
-                |--------------------------------------------------------------------------
-                | Get progress records for these modules
-                |--------------------------------------------------------------------------
-                */
-
-                $progressRecords = $learner->progress
-                    ->whereIn(
-                        'module_id',
-                        $moduleIds
-                    );
-
-                /*
-                |--------------------------------------------------------------------------
-                | Calculate average progress
-                |--------------------------------------------------------------------------
-                */
-
-                $progressPercentage = 0;
-
-                if ($moduleCount > 0) {
-
-                    $totalProgress = 0;
-
-                    foreach ($modules as $module) {
-
-                        $progress = $progressRecords
-                            ->firstWhere(
-                                'module_id',
-                                $module->id
-                            );
-
-                        if ($progress) {
-
-                            /*
-                            | IMPORTANT:
-                            | Progress model uses completion_percentage
-                            */
-
-                            $totalProgress += (float)
-                                $progress->completion_percentage;
+                            $progressPercentage = round($total / $moduleCount);
                         }
-                    }
 
-                    $progressPercentage = round(
-                        $totalProgress / $moduleCount
-                    );
-                }
+                        if ($moduleCount === 0) {
+                            $status = 'Pending Plan';
+                        } elseif ($progressPercentage >= 100) {
+                            $status = 'Completed';
+                        } elseif ($progressPercentage > 0) {
+                            $status = 'Active';
+                        } else {
+                            $status = 'Pending Plan';
+                        }
 
-                /*
-                |--------------------------------------------------------------------------
-                | Determine learner status
-                |--------------------------------------------------------------------------
-                */
+                        $pending = $pendingSubmissionsList
+                            ->where('learner_id', $learner->id)
+                            ->whereIn('module_id', $moduleIds)
+                            ->count();
 
-                if ($moduleCount === 0) {
-
-                    $status = 'Pending Plan';
-
-                } elseif ($progressPercentage >= 100) {
-
-                    $status = 'Completed';
-
-                } elseif ($progressPercentage > 0) {
-
-                    $status = 'Active';
-
-                } else {
-
-                    $status = 'Pending Plan';
-                }
-
-                /*
-                |--------------------------------------------------------------------------
-                | Get Class Codes
-                |--------------------------------------------------------------------------
-                */
-
-                $classCodes = $learner->courses
-                    ->pluck('code')
-                    ->filter()
-                    ->values();
-
-                /*
-                |--------------------------------------------------------------------------
-                | Return Learner Data
-                |--------------------------------------------------------------------------
-                */
-
-                return [
-
-                    'id' => $learner->id,
-
-                    'school_id' => $learner->school_id,
-
-                    'name' => $learner->name,
-
-                    'class_codes' => $classCodes,
-
-                    'class_code' => $classCodes->first(),
-
-                    'modules_assigned' => $moduleCount,
-
-                    'progress' => $progressPercentage,
-
-                    'pending_submissions' => (int) ($pendingByLearner[$learner->id] ?? 0),
-
-                    'status' => $status,
-
-                ];
+                        return [
+                            'id' => $learner->id,
+                            'school_id' => $learner->school_id,
+                            'name' => $learner->name,
+                            'profile_photo_url' => $learner->profile_photo_path
+                                ? url(\Illuminate\Support\Facades\Storage::disk('public')->url($learner->profile_photo_path))
+                                : null,
+                            'class_id' => $course->id,
+                            'class_code' => $course->code,
+                            'class_name' => $course->name,
+                            'class_codes' => array_values(array_filter([$course->code])),
+                            'modules_assigned' => $moduleCount,
+                            'progress' => $progressPercentage,
+                            'pending_submissions' => $pending,
+                            'status' => $status,
+                        ];
+                    });
             }
         )
+        ->sortBy([['class_code', 'asc'], ['name', 'asc']])
         ->values();
 
-        /*
-        |--------------------------------------------------------------------------
-        | COURSE DATA
-        |--------------------------------------------------------------------------
-        */
 
         $courseData = $courses->map(
             function ($course) {

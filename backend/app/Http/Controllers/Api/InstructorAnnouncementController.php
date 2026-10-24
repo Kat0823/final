@@ -72,6 +72,10 @@ class InstructorAnnouncementController extends Controller
                     'title' => 'New announcement in ' . $course->name,
                     'message' => Str::limit($validated['title'] . ': ' . $validated['message'], 250),
                     'type' => 'announcement',
+                    'data' => [
+                        'course_id' => $course->id,
+                        'announcement_id' => $announcement->id,
+                    ],
                     'is_read' => false,
                 ]);
             }

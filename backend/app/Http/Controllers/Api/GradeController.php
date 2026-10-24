@@ -373,6 +373,12 @@ class GradeController extends Controller
 
                     'type' => 'grade',
 
+                    'data' => [
+                        'course_id' => $submission->module->course_id,
+                        'module_id' => $submission->module_id,
+                        'submission_id' => $submission->id,
+                    ],
+
                     'is_read' => false,
                 ]);
 

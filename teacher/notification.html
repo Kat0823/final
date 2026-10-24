@@ -139,6 +139,34 @@
             min-width: 0;
         }
 
+        .notification-item.has-link {
+            cursor: pointer;
+        }
+
+        .notification-item.has-link:focus-visible {
+            outline: 2px solid #08683c;
+            outline-offset: 2px;
+        }
+
+        .notif-open {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: auto;
+            color: #08683c;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .notification-item.has-link:hover .notif-open {
+            text-decoration: underline;
+        }
+
+        .reply-icon {
+            background: #fbefd2;
+            color: #9a6a0a;
+        }
+
         .profile-modal-overlay {
             z-index: 2000;
         }
@@ -478,10 +506,13 @@
 
                     <button
                         class="tab-btn"
+                        data-filter="reply">
+                        Replies
+                    </button>
+                    <button
+                        class="tab-btn"
                         data-filter="system">
-
                         System
-
                     </button>
 
                 </div>
@@ -1114,6 +1145,17 @@
 
 
         else if (
+            currentFilter === "reply"
+        ) {
+            filteredNotifications =
+                filteredNotifications.filter(
+                    notification =>
+                        getNotificationCategory(
+                            notification
+                        ) === "reply"
+                );
+        }
+        else if (
             currentFilter === "system"
         ) {
 
@@ -1213,21 +1255,86 @@
 
                         }
 
-                        const notificationId =
-                            this.dataset
-                                .notificationId;
-
-                        markNotificationAsRead(
-                            notificationId
+                        openNotification(
+                            this.dataset.notificationId
                         );
-
                     }
                 );
 
+                item.addEventListener(
+                    "keydown",
+                    function (event) {
+                        if (event.key === "Enter") {
+                            event.preventDefault();
+                            openNotification(
+                                this.dataset.notificationId
+                            );
+                        }
+                    }
+                );
             });
 
     }
 
+
+    /* =====================================================
+       WHERE A NOTIFICATION LEADS
+       New submission -> that learner in the class (their
+       modules and activities); learner reply -> the class
+       announcements at that announcement. Older notifications
+       without details go to the Submissions or Classes page.
+       ===================================================== */
+    function notificationLink(notification) {
+        const data =
+            notification && typeof notification.data === "object" && notification.data
+                ? notification.data
+                : {};
+        const category = getNotificationCategory(notification);
+        const id = value => /^\d+$/.test(String(value ?? "")) ? String(value) : "";
+        const courseId = id(data.course_id);
+
+        if (category === "submission") {
+            if (courseId && id(data.learner_id)) {
+                return `class-content.html?course_id=${courseId}&learner=${id(data.learner_id)}`;
+            }
+            return "submissions.html";
+        }
+
+        if (category === "reply") {
+            if (courseId) {
+                const announcement = id(data.announcement_id);
+                return `class-content.html?course_id=${courseId}&tab=announcements` +
+                    (announcement ? `&announcement=${announcement}` : "");
+            }
+            return "class.html";
+        }
+
+        return "";
+    }
+
+    function notificationLinkLabel(notification) {
+        const category = getNotificationCategory(notification);
+        if (category === "submission") return "Open learner";
+        if (category === "reply") return "Open announcement";
+        return "Open";
+    }
+
+    async function openNotification(notificationId) {
+        const notification = allNotifications.find(
+            item => String(item.id) === String(notificationId)
+        );
+        const link = notificationLink(notification);
+
+        // Mark as read first (briefly wait so it is saved before leaving).
+        await Promise.race([
+            markNotificationAsRead(notificationId),
+            new Promise(resolve => setTimeout(resolve, 1500))
+        ]);
+
+        if (link) {
+            window.location.href = link;
+        }
+    }
 
     /* =====================================================
        CREATE NOTIFICATION HTML
@@ -1273,9 +1380,10 @@
         return `
 
             <div
-                class="notification-item ${readClass}"
+                class="notification-item ${readClass}${notificationLink(notification) ? " has-link" : ""}"
                 data-category="${category}"
-                data-notification-id="${notification.id}">
+                data-notification-id="${notification.id}"
+                ${notificationLink(notification) ? 'role="link" tabindex="0"' : ""}>
 
                 <div
                     class="notif-icon-box ${category}-icon">
@@ -1334,39 +1442,11 @@
                         </span>
 
 
-                        <div class="notif-actions">
-
-                            ${
-                                isSubmissionNotification(
-                                    notification
-                                )
-
-                                ?
-
-                                `
-
-                                    <a
-                                        href="submissions.html"
-                                        class="btn-action-primary"
-                                        onclick="
-                                            markNotificationAsRead(
-                                                ${notification.id}
-                                            );
-                                        ">
-
-                                        Review Submission
-
-                                    </a>
-
-                                `
-
-                                :
-
-                                ""
-
-                            }
-
-                        </div>
+                        ${
+                            notificationLink(notification)
+                                ? `<span class="notif-open">${escapeHtml(notificationLinkLabel(notification))} <i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>`
+                                : ""
+                        }
 
                     </div>
 
@@ -1404,21 +1484,21 @@
 
 
         if (
-
-            type.includes("submission")
-
+            type.includes("reply")
             ||
-
-            title.includes("submission")
-
-            ||
-
-            message.includes("submitted")
-
+            title.startsWith("new reply")
         ) {
+            return "reply";
+        }
 
+        if (
+            type.includes("submission")
+            ||
+            title.includes("submission")
+            ||
+            message.includes("submitted")
+        ) {
             return "submission";
-
         }
 
 
@@ -1439,9 +1519,13 @@
         if (
             category === "submission"
         ) {
-
             return "fa-solid fa-file-arrow-up";
+        }
 
+        if (
+            category === "reply"
+        ) {
+            return "fa-regular fa-comments";
         }
 
 

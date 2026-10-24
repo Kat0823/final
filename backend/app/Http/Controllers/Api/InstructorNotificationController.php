@@ -48,6 +48,10 @@ class InstructorNotificationController extends Controller
                         'type' =>
                             $notification->type,
 
+                        // What it is about (class, learner, ...), when known.
+                        'data' =>
+                            $notification->data,
+
                         'is_read' =>
                             (bool) $notification->is_read,
 

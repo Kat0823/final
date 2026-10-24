@@ -42,6 +42,13 @@ class AnnouncementReplyController extends Controller
                 'title' => 'New reply in ' . $announcement->course->name,
                 'message' => Str::limit($learner->name . ' replied to "' . $announcement->title . '": ' . $reply->message, 250),
                 'type' => 'announcement_reply',
+                // Opens the class's announcements at this one.
+                'data' => [
+                    'course_id' => $announcement->course_id,
+                    'announcement_id' => $announcement->id,
+                    'reply_id' => $reply->id,
+                    'learner_id' => $learner->id,
+                ],
                 'is_read' => false,
             ]);
         }

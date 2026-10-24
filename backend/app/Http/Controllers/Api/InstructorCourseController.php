@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class InstructorCourseController extends Controller
 {
@@ -343,6 +344,13 @@ class InstructorCourseController extends Controller
 
                     'contact' =>
                         $learner->contact,
+
+                    // The learner's own profile picture (changes as soon
+                    // as they upload a new one).
+                    'profile_photo_url' =>
+                        $learner->profile_photo_path
+                            ? url(Storage::disk('public')->url($learner->profile_photo_path))
+                            : null,
 
                 ];
 
