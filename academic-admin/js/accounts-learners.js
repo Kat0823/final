@@ -1357,8 +1357,9 @@ if (account) {
 
     // Actions depend on the account's state:
     //   Inactive   -> Activate
-    //   Not Set Up -> nothing extra (a new password can be set in Edit)
-    //   Active     -> Reset Password, Deactivate
+    //   Not Set Up -> nothing extra
+    //   Active     -> Deactivate
+    // A new password can be set in Edit (Temporary Password).
     if (!isActive) {
         actionsCell.appendChild(
             createActionButton(
@@ -1368,14 +1369,6 @@ if (account) {
             )
         );
     } else if (passwordSetupComplete) {
-        actionsCell.appendChild(
-            createActionButton(
-                "Reset Password",
-                "key-round",
-                () => openResetPasswordModal(account.id)
-            )
-        );
-
         actionsCell.appendChild(
             createActionButton(
                 "Deactivate",

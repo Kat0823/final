@@ -218,15 +218,6 @@ let instructorCredentialsExpiryTimer = null;
             "generateInstructorPasswordBtn"
         );
 
-    const statusGroup =
-        document.getElementById(
-            "instructorAccountStatusGroup"
-        );
-
-    const accountStatusInput =
-        document.getElementById(
-            "instructorAccountStatus"
-        );
 
 
 
@@ -1051,9 +1042,6 @@ let instructorCredentialsExpiryTimer = null;
         passwordInput.placeholder = "";
 
 
-        accountStatusInput.value =
-            "active";
-        accountStatusInput.disabled = false;
 
 
         instructorIdInput.readOnly =
@@ -1078,8 +1066,6 @@ let instructorCredentialsExpiryTimer = null;
         );
 
 
-        statusGroup.hidden =
-            false;
 
 
         accountModal.hidden =
@@ -1161,9 +1147,6 @@ let instructorCredentialsExpiryTimer = null;
         passwordInput.placeholder = "";
 
 
-        accountStatusInput.value =
-            "active";
-        accountStatusInput.disabled = false;
 
 
         instructorIdInput.readOnly =
@@ -1178,8 +1161,6 @@ let instructorCredentialsExpiryTimer = null;
             false;
 
 
-        statusGroup.hidden =
-            false;
 
 
         accountModal.hidden =
@@ -1262,28 +1243,20 @@ let instructorCredentialsExpiryTimer = null;
         passwordInput.required = false;
         passwordInput.placeholder = "Leave blank to keep the current password";
 
-        accountStatusInput.value =
-            account.isActive === false ? "inactive" : "active";
-
-
+        // The Instructor ID stays fixed; the name can be changed.
         instructorIdInput.readOnly =
             true;
 
 
         instructorNameInput.readOnly =
-            true;
+            false;
 
 
         emailInput.readOnly =
             false;
 
 
-        statusGroup.hidden =
-            false;
 
-        // Status can be changed for every account, including a new one.
-        accountStatusInput.disabled =
-            false;
 
         accountModal.hidden =
             false;
@@ -1330,8 +1303,6 @@ let instructorCredentialsExpiryTimer = null;
             false;
 
 
-        statusGroup.hidden =
-            false;
 
     }
 
@@ -1364,9 +1335,8 @@ let instructorCredentialsExpiryTimer = null;
             passwordInput.value
                 .trim();
 
-        const status =
-            accountStatusInput.value ||
-            "active";
+        // New accounts start active; Activate/Deactivate is in the table.
+        const status = "active";
 
         const isEditing =
             Boolean(editingId);
@@ -1488,12 +1458,7 @@ let instructorCredentialsExpiryTimer = null;
                         instructorName,
 
                     email:
-                        email || null,
-
-                    // Status can be changed for any account, including
-                    // one that hasn't signed in yet.
-                    is_active:
-                        status === "active"
+                        email || null
                 };
 
 
@@ -1828,7 +1793,7 @@ let instructorCredentialsExpiryTimer = null;
                 account,
                 assignedClasses,
                 accountStatus
-            }) => {
+            }, rowIndex) => {
 
                 const row =
                     document.createElement(
@@ -1840,6 +1805,18 @@ let instructorCredentialsExpiryTimer = null;
                     "learner-account-row";
 
 
+                const rowNumberCell =
+                    document.createElement(
+                        "td"
+                    );
+
+                rowNumberCell.className =
+                    "row-number";
+
+                rowNumberCell.textContent =
+                    String(rowIndex + 1);
+
+
 
                 /* -----------------------------------------
                    INSTRUCTOR ID
@@ -1849,6 +1826,9 @@ let instructorCredentialsExpiryTimer = null;
                     document.createElement(
                         "td"
                     );
+
+                instructorIdCell.className =
+                    "student-id";
 
 
                instructorIdCell.textContent =
@@ -2026,6 +2006,8 @@ let instructorCredentialsExpiryTimer = null;
                                     instructor.id
                                 ),
 
+                            true,
+
                             true
 
                         )
@@ -2053,17 +2035,22 @@ let instructorCredentialsExpiryTimer = null;
                             () =>
                                 openEditModal(
                                     account.id
-                                )
+                                ),
+
+                            false,
+
+                            true
 
                         )
 
                     );
 
 
-                    // Actions depend on the account's state:
+                    // Same as the learner table:
                     //   Inactive   -> Activate
-                    //   Not Set Up -> New Temporary Password (never signed in)
-                    //   Active     -> Reset Password, Deactivate
+                    //   Not Set Up -> nothing extra
+                    //   Active     -> Deactivate
+                    // A new password can be set in Edit (Temporary Password).
                     if (account.isActive === false) {
                         actionsCell.appendChild(
                             createActionButton(
@@ -2072,23 +2059,7 @@ let instructorCredentialsExpiryTimer = null;
                                 () => toggleAccountStatus(account.id)
                             )
                         );
-                    } else if (account.passwordSetupComplete !== true) {
-                        actionsCell.appendChild(
-                            createActionButton(
-                                "New Temporary Password",
-                                "key-round",
-                                () => openResetPasswordModal(account.id)
-                            )
-                        );
-                    } else {
-                        actionsCell.appendChild(
-                            createActionButton(
-                                "Reset Password",
-                                "key-round",
-                                () => openResetPasswordModal(account.id)
-                            )
-                        );
-
+                    } else if (account.passwordSetupComplete === true) {
                         actionsCell.appendChild(
                             createActionButton(
                                 "Deactivate",
@@ -2112,6 +2083,8 @@ let instructorCredentialsExpiryTimer = null;
                                     instructor.id
                                 ),
 
+                            true,
+
                             true
 
                         )
@@ -2125,6 +2098,10 @@ let instructorCredentialsExpiryTimer = null;
                 /* -----------------------------------------
                    APPEND CELLS
                 ----------------------------------------- */
+
+                row.appendChild(
+                    rowNumberCell
+                );
 
                 row.appendChild(
                     instructorIdCell
@@ -2172,7 +2149,8 @@ let instructorCredentialsExpiryTimer = null;
         label,
         icon,
         handler,
-        danger = false
+        danger = false,
+        iconOnly = false
     ) {
 
         const button =
@@ -2191,8 +2169,9 @@ let instructorCredentialsExpiryTimer = null;
                 : "table-action-button";
 
 
-        button.innerHTML =
-            `
+        button.innerHTML = iconOnly
+            ? `<i data-lucide="${escapeHtml(icon)}"></i>`
+            : `
             <i data-lucide="${escapeHtml(
                 icon
             )}"></i>
@@ -2203,6 +2182,12 @@ let instructorCredentialsExpiryTimer = null;
                 )}
             </span>
             `;
+
+        if (iconOnly) {
+            button.classList.add("icon-only");
+            button.title = label;
+            button.setAttribute("aria-label", label);
+        }
 
 
         button.addEventListener(
