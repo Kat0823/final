@@ -148,18 +148,8 @@
             outline-offset: 2px;
         }
 
-        .notif-open {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            margin-left: auto;
-            color: #08683c;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .notification-item.has-link:hover .notif-open {
-            text-decoration: underline;
+        .notification-item.has-link:hover {
+            background: #f3faf6;
         }
 
         .reply-icon {
@@ -1312,13 +1302,6 @@
         return "";
     }
 
-    function notificationLinkLabel(notification) {
-        const category = getNotificationCategory(notification);
-        if (category === "submission") return "Open learner";
-        if (category === "reply") return "Open announcement";
-        return "Open";
-    }
-
     async function openNotification(notificationId) {
         const notification = allNotifications.find(
             item => String(item.id) === String(notificationId)
@@ -1442,11 +1425,7 @@
                         </span>
 
 
-                        ${
-                            notificationLink(notification)
-                                ? `<span class="notif-open">${escapeHtml(notificationLinkLabel(notification))} <i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>`
-                                : ""
-                        }
+
 
                     </div>
 
