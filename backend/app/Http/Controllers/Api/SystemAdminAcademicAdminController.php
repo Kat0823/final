@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Support\AdminNotifier;
-use App\Support\AuditLog;
+use App\Support\AuditLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -395,7 +395,28 @@ class SystemAdminAcademicAdminController extends Controller
         User $target,
         array $details
     ): void {
-        // Adds the actor's role and the request's IP address.
-        AuditLog::record($actor, $action, $target, $details, request());
+        $who = "{$target->name} ({$target->school_id})";
+
+        // Updates carry field => [from, to]; create/delete carry a snapshot.
+        $isChange = $details !== [] && collect($details)->every(fn ($value) => is_array($value));
+        $old = $isChange ? array_map(fn ($c) => $c['from'] ?? null, $details) : ($action === 'delete' ? $details : null);
+        $new = $isChange ? array_map(fn ($c) => $c['to'] ?? ($c['removed'] ?? false ? 'removed' : 'changed'), $details) : ($action === 'create' ? $details : null);
+
+        AuditLogger::log($action, AuditLogger::ACADEMIC_ADMINS, [
+            'actor' => $actor,
+            'target' => $target,
+            'old' => $old,
+            'new' => $new,
+            'details' => match ($action) {
+                'create' => "Created Academic Admin account {$who}",
+                'delete' => "Deleted Academic Admin account {$who}",
+                'activate' => "Activated Academic Admin account {$who}",
+                'deactivate' => "Deactivated Academic Admin account {$who}",
+                'reset_password' => "Gave Academic Admin account {$who} a new temporary password",
+                default => "Updated Academic Admin account {$who}: " . implode(', ', array_map(
+                    fn ($field) => str_replace('_', ' ', $field), array_keys($details)
+                )),
+            },
+        ]);
     }
 }

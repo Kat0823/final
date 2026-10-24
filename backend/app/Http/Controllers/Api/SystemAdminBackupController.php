@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Support\AuditLog;
+use App\Support\AuditLogger;
 use App\Support\Backup\BackupManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -44,6 +44,14 @@ class SystemAdminBackupController extends Controller
         } catch (\Throwable $error) {
             report($error);
 
+            AuditLogger::log('backup_failed', AuditLogger::BACKUP, [
+                'target_type' => 'backup',
+                'result' => 'failed',
+                'details' => 'A backup could not be made: ' . ($error instanceof \RuntimeException
+                    ? $error->getMessage()
+                    : 'unexpected error'),
+            ]);
+
             return response()->json([
                 'success' => false,
                 'message' => $error instanceof \RuntimeException
@@ -52,12 +60,21 @@ class SystemAdminBackupController extends Controller
             ], 500);
         }
 
-        AuditLog::record($request->user(), 'backup', null, [
-            'event' => 'created',
-            'file' => $backup['name'],
-            'size' => $backup['size'],
-            'encrypted' => $backup['encrypted'],
-        ], $request, null, $backup['name']);
+        AuditLogger::log('backup_run', AuditLogger::BACKUP, [
+            'target_type' => 'backup',
+            'target_id' => $backup['name'],
+            'new' => [
+                'size_bytes' => $backup['size'],
+                'password_protected' => $backup['encrypted'],
+                'files' => $backup['files']['count'] ?? null,
+            ],
+            'details' => sprintf(
+                'Made a backup of the database and uploaded files (%.1f MB%s)',
+                $backup['size'] / 1048576,
+                $backup['encrypted'] ? ', password-protected' : ''
+            ),
+            'request' => $request,
+        ]);
 
         return response()->json([
             'success' => true,
@@ -74,10 +91,12 @@ class SystemAdminBackupController extends Controller
             return response()->json(['success' => false, 'message' => 'Backup not found.'], 404);
         }
 
-        AuditLog::record($request->user(), 'backup', null, [
-            'event' => 'downloaded',
-            'file' => $name,
-        ], $request, null, $name);
+        AuditLogger::log('backup_downloaded', AuditLogger::BACKUP, [
+            'target_type' => 'backup',
+            'target_id' => $name,
+            'details' => "Downloaded the backup {$name}",
+            'request' => $request,
+        ]);
 
         return response()->download($path, $name, [
             'Content-Type' => 'application/zip',
@@ -92,10 +111,12 @@ class SystemAdminBackupController extends Controller
             return response()->json(['success' => false, 'message' => 'Backup not found.'], 404);
         }
 
-        AuditLog::record($request->user(), 'backup', null, [
-            'event' => 'deleted',
-            'file' => $name,
-        ], $request, null, $name);
+        AuditLogger::log('backup_deleted', AuditLogger::BACKUP, [
+            'target_type' => 'backup',
+            'target_id' => $name,
+            'details' => "Deleted the backup {$name}",
+            'request' => $request,
+        ]);
 
         return response()->json(['success' => true, 'message' => 'Backup deleted.']);
     }

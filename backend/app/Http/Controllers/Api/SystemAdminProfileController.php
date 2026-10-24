@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Support\AuditLog;
+use App\Support\AuditLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -69,7 +69,14 @@ class SystemAdminProfileController extends Controller
             $changes['profile_photo'] = $user->profile_photo_path ? ['changed' => true] : ['removed' => true];
         }
         if ($changes !== []) {
-            AuditLog::self($user, AuditLog::PROFILE_UPDATE, $request, ['changes' => $changes]);
+            AuditLogger::log('update', AuditLogger::OWN_ACCOUNT, [
+                'actor' => $user,
+                'target' => $user,
+                'old' => array_map(fn ($change) => $change['from'] ?? null, $changes),
+                'new' => array_map(fn ($change) => $change['to'] ?? ($change['removed'] ?? false ? 'removed' : 'changed'), $changes),
+                'details' => 'Updated own profile: ' . implode(', ', array_map(fn ($field) => str_replace('_', ' ', $field), array_keys($changes))),
+                'request' => $request,
+            ]);
         }
 
         if (

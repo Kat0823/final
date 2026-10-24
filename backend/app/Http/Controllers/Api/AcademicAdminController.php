@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Support\AuditLogger;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
@@ -462,6 +463,8 @@ $learner = User::create([
     'password_setup_complete' => false,
     'is_active' => $validated['is_active'] ?? true,
 ]);
+        $this->auditAccountCreated($learner);
+
         return response()->json([
             'success' => true,
             'message' => 'Learner created successfully.',
@@ -523,6 +526,7 @@ $learner = User::create([
             'is_active' => ['sometimes', 'boolean'],
         ]);
 
+        $before = $this->accountSnapshot($learner);
         $passwordReset = !empty($validated['password']);
 
         if ($passwordReset) {
@@ -534,6 +538,7 @@ $learner = User::create([
         }
 
         $learner->update($validated);
+        $this->auditAccountUpdated($learner, $before, $passwordReset);
 
         if ($passwordReset || (array_key_exists('is_active', $validated) && !$learner->is_active)) {
             $learner->tokens()->delete();
@@ -584,10 +589,14 @@ $learner = User::create([
             ], 409);
         }
 
+        $snapshot = $this->accountSnapshot($learner);
+
         DB::transaction(function () use ($learner): void {
             $learner->tokens()->delete();
             $learner->delete();
         });
+
+        $this->auditAccountDeleted($learner, $snapshot);
 
         return response()->json([
             'success' => true,
@@ -657,6 +666,8 @@ $learner = User::create([
             'password_setup_complete' => false,
             'is_active' => $validated['is_active'] ?? true,
         ]);
+
+        $this->auditAccountCreated($instructor);
 
         return response()->json([
             'success' => true,
@@ -732,6 +743,7 @@ $learner = User::create([
             'is_active' => $validated['is_active'] ?? $instructor->is_active,
         ];
 
+        $before = $this->accountSnapshot($instructor);
         $passwordReset = !empty($validated['password']);
 
         if ($passwordReset) {
@@ -741,6 +753,7 @@ $learner = User::create([
         }
 
         $instructor->update($updateData);
+        $this->auditAccountUpdated($instructor, $before, $passwordReset);
 
         if ($passwordReset || (array_key_exists('is_active', $validated) && !$instructor->is_active)) {
             $instructor->tokens()->delete();
@@ -791,10 +804,14 @@ $learner = User::create([
             ], 409);
         }
 
+        $snapshot = $this->accountSnapshot($instructor);
+
         DB::transaction(function () use ($instructor): void {
             $instructor->tokens()->delete();
             $instructor->delete();
         });
+
+        $this->auditAccountDeleted($instructor, $snapshot);
 
         return response()->json([
             'success' => true,
@@ -869,6 +886,12 @@ public function storeClass(Request $request): JsonResponse
         'instructor:id,name,school_id',
     ]);
 
+    AuditLogger::log('create', AuditLogger::CLASSES, [
+        'target' => $class,
+        'new' => $this->classSnapshot($class),
+        'details' => "Created class {$class->code} | {$class->name}",
+    ]);
+
     return response()->json([
         'success' => true,
         'message' => 'Class created successfully.',
@@ -920,7 +943,18 @@ public function updateClass(Request $request, int $id): JsonResponse
         'is_active' => ['sometimes', 'boolean'],
     ]);
 
+    $before = $this->classSnapshot($class);
     $class->update($validated);
+    [$old, $new] = AuditLogger::changes($before, $this->classSnapshot($class));
+
+    if ($new !== []) {
+        AuditLogger::log('update', AuditLogger::CLASSES, [
+            'target' => $class,
+            'old' => $old,
+            'new' => $new,
+            'details' => "Updated class {$class->code}: " . implode(', ', array_map(fn ($f) => str_replace('_', ' ', $f), array_keys($new))),
+        ]);
+    }
 
     $class->load([
         'instructor:id,name,school_id',
@@ -967,7 +1001,14 @@ public function destroyClass(Request $request, int $id): JsonResponse
         ], 409);
     }
 
+    $snapshot = $this->classSnapshot($class);
     $class->delete();
+
+    AuditLogger::log('delete', AuditLogger::CLASSES, [
+        'target' => $class,
+        'old' => $snapshot,
+        'details' => "Deleted class {$class->code} | {$class->name}",
+    ]);
 
     return response()->json([
         'success' => true,
@@ -1045,6 +1086,12 @@ public function enrollLearner(Request $request, int $id): JsonResponse
 
     $learner = User::find($validated['learner_id']);
 
+    AuditLogger::log('enroll', AuditLogger::CLASSES, [
+        'target' => $learner,
+        'new' => ['class' => $class->code, 'class_name' => $class->name],
+        'details' => "Enrolled {$learner->name} ({$learner->school_id}) in {$class->code}",
+    ]);
+
     return response()->json([
         'success' => true,
         'message' => 'Learner enrolled successfully.',
@@ -1082,7 +1129,16 @@ public function removeLearner(
         ], 404);
     }
 
+    $removed = User::find($learnerId);
     $class->learners()->detach($learnerId);
+
+    AuditLogger::log('unenroll', AuditLogger::CLASSES, [
+        'target' => $removed,
+        'target_type' => 'user',
+        'target_id' => $removed?->school_id ?? '#' . $learnerId,
+        'old' => ['class' => $class->code, 'class_name' => $class->name],
+        'details' => 'Removed ' . ($removed ? "{$removed->name} ({$removed->school_id})" : "learner #{$learnerId}") . " from {$class->code}",
+    ]);
 
     return response()->json([
         'success' => true,
@@ -1113,6 +1169,13 @@ public function uploadModuleFile(Request $request): JsonResponse
 
     // Store the actual file on Laravel's private local disk.
     $path = $file->store('module-materials', 'local');
+
+    AuditLogger::log('upload', AuditLogger::MODULES, [
+        'target_type' => 'file',
+        'target_id' => $file->getClientOriginalName(),
+        'new' => ['file_name' => $file->getClientOriginalName(), 'size_bytes' => $file->getSize()],
+        'details' => 'Uploaded the module material "' . $file->getClientOriginalName() . '"',
+    ]);
 
     return response()->json([
         'success' => true,
@@ -1251,6 +1314,17 @@ public function storeModule(Request $request, int $id): JsonResponse
         'is_published' => $validated['is_published'] ?? false,
     ]);
 
+    AuditLogger::log('create', AuditLogger::MODULES, [
+        'target' => $module,
+        'new' => [
+            'class' => $class->code,
+            'title' => $module->title,
+            'material_name' => $module->material_name,
+            'is_published' => (bool) $module->is_published,
+        ],
+        'details' => "Added module \"{$module->title}\" to {$class->code}",
+    ]);
+
     return response()->json([
         'success' => true,
         'message' => 'Module created successfully.',
@@ -1333,6 +1407,13 @@ public function replaceLibraryMaterial(Request $request, string $libraryKey): Js
         'material_name' => ['nullable', 'string', 'max:255'],
     ]);
 
+    $previous = Module::where('library_key', $libraryKey)
+        ->whereHas('course', fn ($query) => $query->where('owner_admin_id', $this->adminId($request)))
+        ->pluck('material_name')
+        ->filter()
+        ->unique()
+        ->values();
+
     $updated = Module::where('library_key', $libraryKey)
         ->whereHas('course', fn ($query) => $query->where('owner_admin_id', $this->adminId($request)))
         ->update([
@@ -1340,6 +1421,14 @@ public function replaceLibraryMaterial(Request $request, string $libraryKey): Js
             'material_name' => $validated['material_name'] ?? null,
             'updated_at' => now(),
         ]);
+
+    AuditLogger::log('replace', AuditLogger::MODULES, [
+        'target_type' => 'library_module',
+        'target_id' => $libraryKey,
+        'old' => ['material_name' => $previous->implode(', ') ?: null],
+        'new' => ['material_name' => $validated['material_name'] ?? null, 'classes' => $updated],
+        'details' => 'Replaced the material of library module "' . $libraryKey . '" in ' . $updated . ' class(es)',
+    ]);
 
     return response()->json([
         'success' => true,
@@ -1374,6 +1463,12 @@ public function syncClassModules(Request $request, int $id): JsonResponse
     ]);
 
     $selectedModules = collect($validated['modules']);
+
+    // For the audit trail: what the class had before.
+    $beforeModules = Module::where('course_id', $class->id)
+        ->whereNotNull('library_key')
+        ->get(['library_key', 'title', 'material_path', 'material_name'])
+        ->keyBy('library_key');
 
     $selectedKeys = $selectedModules
         ->pluck('library_key')
@@ -1434,6 +1529,8 @@ public function syncClassModules(Request $request, int $id): JsonResponse
 
         $module->save();
     }
+
+    $this->auditModuleSync($class, $beforeModules, $selectedModules);
 
     /*
      * Return only currently active modules.
@@ -1845,6 +1942,13 @@ public function syncClassModules(Request $request, int $id): JsonResponse
             }
             unset($learnerData);
 
+            AuditLogger::log('import', AuditLogger::LEARNERS, [
+                'target_type' => 'learners',
+                'target_id' => count($created) . ' accounts',
+                'new' => ['school_ids' => array_values(array_map(fn ($row) => $row['school_id'] ?? null, $created))],
+                'details' => 'Imported ' . count($created) . ' learner account(s) from Excel',
+            ]);
+
             return response()->json([
                 'success' => true,
                 'message' => count($created) . ' learner account(s) imported.',
@@ -2060,6 +2164,13 @@ public function importInstructors(Request $request): JsonResponse
             return $results;
         });
 
+        AuditLogger::log('import', AuditLogger::INSTRUCTORS, [
+            'target_type' => 'instructors',
+            'target_id' => count($created) . ' accounts',
+            'new' => ['school_ids' => array_values(array_map(fn ($row) => $row['school_id'] ?? null, $created))],
+            'details' => 'Imported ' . count($created) . ' instructor account(s) from Excel',
+        ]);
+
         return response()->json([
             'success' => true,
             'message' => count($created) . ' instructor account(s) imported successfully.',
@@ -2113,4 +2224,152 @@ public function uploadProfilePhoto(Request $request): JsonResponse
 }
 
 
+    /* =====================================================
+       AUDIT TRAIL HELPERS (see App\Support\AuditLogger)
+    ===================================================== */
+
+    private function accountModule(User $user): string
+    {
+        return $user->role === 'instructor' ? AuditLogger::INSTRUCTORS : AuditLogger::LEARNERS;
+    }
+
+    /** What an account looks like (no password). */
+    private function accountSnapshot(User $user): array
+    {
+        return [
+            'name' => $user->name,
+            'school_id' => $user->school_id,
+            'email' => $user->email,
+            'program' => $user->program,
+            'contact' => $user->contact,
+            'role' => $user->role,
+            'is_active' => (bool) $user->is_active,
+        ];
+    }
+
+    private function auditAccountCreated(User $user): void
+    {
+        AuditLogger::log('create', $this->accountModule($user), [
+            'target' => $user,
+            'new' => $this->accountSnapshot($user),
+            'details' => 'Created ' . $user->role . " account {$user->name} ({$user->school_id})",
+        ]);
+    }
+
+    private function auditAccountUpdated(User $user, array $before, bool $passwordReset): void
+    {
+        $user->refresh();
+        [$old, $new] = AuditLogger::changes($before, $this->accountSnapshot($user));
+        $module = $this->accountModule($user);
+        $who = "{$user->name} ({$user->school_id})";
+
+        if (array_key_exists('is_active', $new)) {
+            AuditLogger::log($new['is_active'] ? 'activate' : 'deactivate', $module, [
+                'target' => $user,
+                'old' => ['is_active' => $old['is_active']],
+                'new' => ['is_active' => $new['is_active']],
+                'details' => ($new['is_active'] ? 'Activated ' : 'Deactivated ') . "{$user->role} account {$who}",
+            ]);
+            unset($old['is_active'], $new['is_active']);
+        }
+
+        if (array_key_exists('role', $new)) {
+            AuditLogger::log('update', $module, [
+                'target' => $user,
+                'old' => ['role' => $old['role']],
+                'new' => ['role' => $new['role']],
+                'details' => "Changed the role of {$who} from {$old['role']} to {$new['role']}",
+            ]);
+            unset($old['role'], $new['role']);
+        }
+
+        if ($new !== []) {
+            AuditLogger::log('update', $module, [
+                'target' => $user,
+                'old' => $old,
+                'new' => $new,
+                'details' => "Updated {$user->role} account {$who}: " . implode(', ', array_map(fn ($f) => str_replace('_', ' ', $f), array_keys($new))),
+            ]);
+        }
+
+        if ($passwordReset) {
+            AuditLogger::log('reset_password', $module, [
+                'target' => $user,
+                'details' => "Gave {$user->role} account {$who} a new temporary password",
+            ]);
+        }
+    }
+
+    private function auditAccountDeleted(User $user, array $snapshot): void
+    {
+        AuditLogger::log('delete', $this->accountModule($user), [
+            'target' => $user,
+            'old' => $snapshot,
+            'details' => 'Deleted ' . $user->role . " account {$user->name} ({$user->school_id})",
+        ]);
+    }
+
+    private function classSnapshot(Course $class): array
+    {
+        return [
+            'name' => $class->name,
+            'code' => $class->code,
+            'program' => $class->program,
+            'description' => $class->description,
+            'instructor_id' => $class->instructor_id,
+            'is_active' => (bool) $class->is_active,
+        ];
+    }
+
+    /** Modules added to / removed from a class, and material changes. */
+    private function auditModuleSync(Course $class, $beforeModules, $selectedModules): void
+    {
+        $selected = $selectedModules->keyBy(fn ($row) => (string) $row['library_key']);
+
+        foreach ($selected as $key => $row) {
+            $before = $beforeModules[$key] ?? null;
+            $title = $row['title'];
+            $newPath = $row['material_path'] ?? null;
+            $newName = $row['material_name'] ?? null;
+
+            if (!$before) {
+                AuditLogger::log('create', AuditLogger::MODULES, [
+                    'target_type' => 'module',
+                    'target_id' => $key,
+                    'target_label' => $title,
+                    'new' => ['class' => $class->code, 'title' => $title, 'material_name' => $newName],
+                    'details' => "Added module \"{$title}\" to {$class->code}",
+                ]);
+                continue;
+            }
+
+            if ($before->material_path !== $newPath) {
+                $action = $before->material_path === null ? 'upload' : ($newPath === null ? 'delete' : 'replace');
+                AuditLogger::log($action, AuditLogger::MODULES, [
+                    'target_type' => 'module',
+                    'target_id' => $key,
+                    'target_label' => $title,
+                    'old' => ['material_name' => $before->material_name],
+                    'new' => ['material_name' => $newName],
+                    'details' => match ($action) {
+                        'upload' => "Attached the material \"{$newName}\" to \"{$title}\" in {$class->code}",
+                        'delete' => "Removed the material \"{$before->material_name}\" from \"{$title}\" in {$class->code}",
+                        default => "Replaced the material of \"{$title}\" in {$class->code}: \"{$before->material_name}\" -> \"{$newName}\"",
+                    },
+                ]);
+            }
+        }
+
+        foreach ($beforeModules as $key => $before) {
+            if (!$selected->has((string) $key)) {
+                AuditLogger::log('delete', AuditLogger::MODULES, [
+                    'target_type' => 'module',
+                    'target_id' => $key,
+                    'target_label' => $before->title,
+                    'old' => ['class' => $class->code, 'title' => $before->title, 'material_name' => $before->material_name],
+                    'details' => "Removed module \"{$before->title}\" from {$class->code}",
+                ]);
+            }
+        }
+    }
 }

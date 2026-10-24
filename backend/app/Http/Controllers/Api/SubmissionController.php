@@ -7,6 +7,7 @@ use App\Models\Module;
 use App\Models\Notification;
 use App\Models\Progress;
 use App\Models\Submission;
+use App\Support\AuditLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -274,6 +275,18 @@ class SubmissionController extends Controller
         }
 
 
+        AuditLogger::log('submit', AuditLogger::SUBMISSIONS, [
+            'actor' => $learner,
+            'target' => $submission,
+            'target_label' => "{$learner->name} — {$module->title}",
+            'new' => [
+                'module' => $module->title,
+                'class' => $module->course->code ?: $module->course->name,
+                'file_name' => $submission->file_name,
+            ],
+            'details' => "Submitted \"{$module->title}\" for {$module->course->name}",
+        ]);
+
         /*
          * Return successful response.
          */
@@ -340,6 +353,18 @@ class SubmissionController extends Controller
             $module = $submission->module;
 
             $submission->delete();
+
+            AuditLogger::log('unsubmit', AuditLogger::SUBMISSIONS, [
+                'actor' => $learner,
+                'target' => $submission,
+                'target_label' => "{$learner->name} — " . ($module?->title ?? 'an activity'),
+                'old' => [
+                    'module' => $module?->title,
+                    'file_name' => $submission->file_name,
+                    'submitted_at' => (string) $submission->submitted_at,
+                ],
+                'details' => 'Unsubmitted "' . ($module?->title ?? 'an activity') . '" (the file was removed)',
+            ]);
 
             // The module goes back to "not started" for this learner.
             Progress::where('learner_id', $learner->id)

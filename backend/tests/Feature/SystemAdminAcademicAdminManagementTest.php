@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\SystemAdminAuditLog;
+use App\Models\AuditLogEntry;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -101,11 +101,12 @@ class SystemAdminAcademicAdminManagementTest extends TestCase
             'initial-password',
             User::findOrFail($targetId)->password
         ));
-        $this->assertDatabaseHas('system_admin_audit_logs', [
+        $this->assertDatabaseHas('audit_logs', [
             'actor_id' => $systemAdmin->id,
             'action' => 'create',
-            'target_id' => $targetId,
-            'target_name' => 'New Academic Admin',
+            'module' => 'Academic Admin Accounts',
+            'target_type' => 'user',
+            'target_label' => 'New Academic Admin',
         ]);
     }
 
@@ -172,12 +173,12 @@ class SystemAdminAcademicAdminManagementTest extends TestCase
             'tokenable_type' => User::class,
         ]);
 
-        $audit = SystemAdminAuditLog::where('target_id', $target->id)
+        $audit = AuditLogEntry::where('target_id', 'AA-UPDATED-01')
             ->where('action', 'deactivate')
             ->firstOrFail();
         $this->assertSame($systemAdmin->id, $audit->actor_id);
-        $this->assertSame('AA-UPDATE-01', $audit->details['school_id']['from']);
-        $this->assertSame('AA-UPDATED-01', $audit->details['school_id']['to']);
+        $this->assertSame('AA-UPDATE-01', $audit->old_values['school_id']);
+        $this->assertSame('AA-UPDATED-01', $audit->new_values['school_id']);
     }
 
     public function test_system_admin_can_reactivate_an_academic_admin(): void
@@ -196,10 +197,10 @@ class SystemAdminAcademicAdminManagementTest extends TestCase
             ->assertOk()
             ->assertJsonPath('administrator.is_active', true);
 
-        $this->assertDatabaseHas('system_admin_audit_logs', [
+        $this->assertDatabaseHas('audit_logs', [
             'actor_id' => $systemAdmin->id,
             'action' => 'activate',
-            'target_id' => $target->id,
+            'target_id' => $target->school_id,
         ]);
     }
 
@@ -222,11 +223,11 @@ class SystemAdminAcademicAdminManagementTest extends TestCase
             ->assertJsonPath('success', true);
 
         $this->assertDatabaseMissing('users', ['id' => $target->id]);
-        $this->assertDatabaseHas('system_admin_audit_logs', [
+        $this->assertDatabaseHas('audit_logs', [
             'actor_id' => $systemAdmin->id,
             'action' => 'delete',
-            'target_id' => $target->id,
-            'target_name' => 'Deleted Admin',
+            'target_id' => $target->school_id,
+            'target_label' => 'Deleted Admin',
         ]);
     }
 
@@ -254,7 +255,7 @@ class SystemAdminAcademicAdminManagementTest extends TestCase
             'id' => $target->id,
             'is_active' => true,
         ]);
-        $this->assertDatabaseCount('system_admin_audit_logs', 0);
+        $this->assertDatabaseCount('audit_logs', 0);
     }
 
     public function test_system_admin_endpoints_cannot_target_a_different_role(): void

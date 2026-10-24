@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Support\AdminNotifier;
-use App\Support\AuditLog;
+use App\Support\AuditLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,9 +16,14 @@ use Laravel\Sanctum\TransientToken;
 
 class AuthController extends Controller
 {
+    // 5 wrong passwords for the same account within 15 minutes lock that
+    // account for 15 minutes (from any computer).
     private const MAX_ATTEMPTS_PER_ACCOUNT = 5;
+    private const ACCOUNT_WINDOW_SECONDS = 900;
+
+    // Separately, one computer (IP) may try at most 20 times a minute.
     private const MAX_ATTEMPTS_PER_IP = 20;
-    private const LOCKOUT_SECONDS = 60;
+    private const IP_WINDOW_SECONDS = 60;
 
     // bcrypt hash of a random string; used only to keep timing constant.
     private const DUMMY_HASH = '$2y$12$xbCXUaGCC.0LUYG6tdx2ieIdxF74k0gojg.JWYBBqiu57UccNNLqq';
@@ -31,22 +36,44 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        // Limit failed attempts: per account+IP, and per IP across accounts.
-        $accountKey = 'login:' . Str::lower(trim($validated['school_id'])) . '|' . $request->ip();
+        $typedId = Str::limit(trim($validated['school_id']), 100, '');
+        $accountKey = 'login-account:' . Str::lower($typedId);
         $ipKey = 'login-ip:' . $request->ip();
 
-        if (
-            RateLimiter::tooManyAttempts($accountKey, self::MAX_ATTEMPTS_PER_ACCOUNT)
-            || RateLimiter::tooManyAttempts($ipKey, self::MAX_ATTEMPTS_PER_IP)
-        ) {
-            $seconds = max(
-                RateLimiter::availableIn($accountKey),
-                RateLimiter::availableIn($ipKey)
-            );
+        // Locked account: refuse without checking the password.
+        if (RateLimiter::tooManyAttempts($accountKey, self::MAX_ATTEMPTS_PER_ACCOUNT)) {
+            $seconds = RateLimiter::availableIn($accountKey);
+            $minutes = max(1, (int) ceil($seconds / 60));
+            $locked = User::where('school_id', $validated['school_id'])->first();
+
+            AuditLogger::log('sign_in_failed', AuditLogger::AUTH, [
+                'actor' => null,
+                'actor_name' => 'Unknown',
+                'target' => $locked,
+                'target_type' => 'user',
+                'target_id' => $locked?->school_id ?? $typedId,
+                'result' => 'failed',
+                'details' => 'Sign-in attempt while the account is locked'
+                    . ($locked ? " ({$locked->name}, {$locked->school_id})" : " (ID \"{$typedId}\")"),
+                'request' => $request,
+            ]);
 
             return response()->json([
                 'success' => false,
-                'message' => "Too many failed login attempts. Please try again in {$seconds} seconds.",
+                'locked' => true,
+                'message' => "This account is temporarily locked after " . self::MAX_ATTEMPTS_PER_ACCOUNT
+                    . " failed sign-in attempts. Please try again in {$minutes} minute" . ($minutes === 1 ? '' : 's')
+                    . ', or use "Forgot Password?".',
+                'retry_after' => $seconds,
+            ], 429);
+        }
+
+        if (RateLimiter::tooManyAttempts($ipKey, self::MAX_ATTEMPTS_PER_IP)) {
+            $seconds = RateLimiter::availableIn($ipKey);
+
+            return response()->json([
+                'success' => false,
+                'message' => "Too many sign-in attempts from this computer. Please try again in {$seconds} seconds.",
                 'retry_after' => $seconds,
             ], 429);
         }
@@ -63,40 +90,53 @@ class AuthController extends Controller
         );
 
         if (!$user || !$passwordValid) {
-            $attempts = RateLimiter::hit($accountKey, self::LOCKOUT_SECONDS);
-            RateLimiter::hit($ipKey, self::LOCKOUT_SECONDS);
+            $attempts = RateLimiter::hit($accountKey, self::ACCOUNT_WINDOW_SECONDS);
+            RateLimiter::hit($ipKey, self::IP_WINDOW_SECONDS);
 
-            // Audit: the person trying is unknown, so the actor is "Unknown".
-            AuditLog::record(
-                null,
-                AuditLog::LOGIN_FAILED,
-                $user,
-                [
-                    'school_id' => Str::limit(trim($validated['school_id']), 100, ''),
-                    'account_exists' => (bool) $user,
-                    'attempt' => $attempts,
-                ],
-                $request,
-                'Unknown',
-                $user?->name ?? Str::limit(trim($validated['school_id']), 100, '')
-            );
+            // The person trying is unknown, so the actor is "Unknown".
+            AuditLogger::log('sign_in_failed', AuditLogger::AUTH, [
+                'actor' => null,
+                'actor_name' => 'Unknown',
+                'target' => $user,
+                'target_type' => 'user',
+                'target_id' => $user?->school_id ?? $typedId,
+                'result' => 'failed',
+                'new' => ['attempt' => $attempts],
+                'details' => $user
+                    ? "Wrong password for {$user->name} ({$user->school_id}), attempt {$attempts} of " . self::MAX_ATTEMPTS_PER_ACCOUNT
+                    : "Sign-in attempt with unknown ID \"{$typedId}\"",
+                'request' => $request,
+            ]);
 
-            // Tell the admins once, on the attempt that starts the lockout.
-            if ($user && $attempts === self::MAX_ATTEMPTS_PER_ACCOUNT) {
-                AdminNotifier::accountLocked($user, self::LOCKOUT_SECONDS);
+            // The attempt that reaches the limit locks the account.
+            if ($attempts === self::MAX_ATTEMPTS_PER_ACCOUNT) {
+                $minutes = intdiv(self::ACCOUNT_WINDOW_SECONDS, 60);
 
-                AuditLog::record(
-                    null,
-                    AuditLog::ACCOUNT_LOCKED,
-                    $user,
-                    [
-                        'school_id' => $user->school_id,
-                        'target_role' => $user->role,
-                        'seconds' => self::LOCKOUT_SECONDS,
-                    ],
-                    $request,
-                    'System'
-                );
+                if ($user) {
+                    AdminNotifier::accountLocked($user, self::ACCOUNT_WINDOW_SECONDS);
+                }
+
+                AuditLogger::log('account_locked', AuditLogger::AUTH, [
+                    'actor' => null,
+                    'actor_name' => 'System',
+                    'target' => $user,
+                    'target_type' => 'user',
+                    'target_id' => $user?->school_id ?? $typedId,
+                    'new' => ['locked_minutes' => $minutes, 'target_role' => $user?->role],
+                    'details' => ($user
+                        ? ucfirst(str_replace('_', ' ', (string) $user->role)) . " {$user->name} ({$user->school_id})"
+                        : "Unknown ID \"{$typedId}\"")
+                        . " locked for {$minutes} minutes after " . self::MAX_ATTEMPTS_PER_ACCOUNT . ' failed sign-ins',
+                    'request' => $request,
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'locked' => true,
+                    'message' => 'This account is now temporarily locked after ' . self::MAX_ATTEMPTS_PER_ACCOUNT
+                        . " failed sign-in attempts. Please try again in {$minutes} minutes, or use \"Forgot Password?\".",
+                    'retry_after' => self::ACCOUNT_WINDOW_SECONDS,
+                ], 429);
             }
 
             return response()->json([
@@ -108,7 +148,13 @@ class AuthController extends Controller
         RateLimiter::clear($accountKey);
 
         if (!$user->is_active) {
-            AuditLog::self($user, AuditLog::LOGIN_BLOCKED, $request, ['reason' => 'deactivated']);
+            AuditLogger::log('sign_in_blocked', AuditLogger::AUTH, [
+                'actor' => $user,
+                'target' => $user,
+                'result' => 'failed',
+                'details' => 'Sign-in refused: the account is deactivated',
+                'request' => $request,
+            ]);
 
             return response()->json([
                 'success' => false,
@@ -119,8 +165,11 @@ class AuthController extends Controller
         // Create an authentication token
         $token = $user->createToken('siknayan-login')->plainTextToken;
 
-        AuditLog::self($user, AuditLog::LOGIN, $request, [
-            'first_login' => !$user->password_setup_complete,
+        AuditLogger::log('sign_in', AuditLogger::AUTH, [
+            'actor' => $user,
+            'target' => $user,
+            'details' => $user->password_setup_complete ? 'Signed in' : 'Signed in with a temporary password',
+            'request' => $request,
         ]);
 
         // Return login information
@@ -157,7 +206,11 @@ class AuthController extends Controller
             $currentAccessToken?->delete();
         }
 
-        AuditLog::self($request->user(), AuditLog::LOGOUT, $request);
+        AuditLogger::log('sign_out', AuditLogger::AUTH, [
+            'target' => $request->user(),
+            'details' => 'Signed out',
+            'request' => $request,
+        ]);
 
         return response()->json([
             'success' => true,

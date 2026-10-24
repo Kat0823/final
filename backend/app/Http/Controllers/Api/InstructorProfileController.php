@@ -135,7 +135,11 @@ class InstructorProfileController extends Controller
             ->when($currentTokenId, fn ($query) => $query->whereKeyNot($currentTokenId))
             ->delete();
 
-        \App\Support\AuditLog::self($instructor, \App\Support\AuditLog::PASSWORD_CHANGE, $request);
+        \App\Support\AuditLogger::log('password_change', \App\Support\AuditLogger::OWN_ACCOUNT, [
+            'target' => $instructor,
+            'details' => 'Changed their own password',
+            'request' => $request,
+        ]);
 
         return response()->json([
             'success' => true,

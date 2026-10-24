@@ -278,6 +278,14 @@ class GradeController extends Controller
 
             // Scores already given stay as they are; only new activities
             // can be added (the feedback can still change).
+            // What the grade was, for the audit trail (old -> new).
+            $before = $existingGrade ? [
+                'score' => (float) $existingGrade->score,
+                'max_score' => (float) $existingGrade->max_score,
+                'feedback' => $existingGrade->feedback,
+                'activities' => $existingGrade->items()->count(),
+            ] : null;
+
             if ($existingGrade) {
                 $lockError = self::lockedScoreError($existingGrade, $items, $validated);
 
@@ -393,6 +401,39 @@ class GradeController extends Controller
                 );
             }
 
+
+            $after = [
+                'score' => (float) $grade->score,
+                'max_score' => (float) $grade->max_score,
+                'feedback' => $grade->feedback,
+                'activities' => $grade->items()->count(),
+            ];
+            $learnerName = $submission->learner?->name ?? 'a learner';
+            $moduleTitle = $submission->module?->title ?? 'an activity';
+
+            if ($before) {
+                [$old, $new] = \App\Support\AuditLogger::changes($before, $after);
+
+                if ($new !== []) {
+                    \App\Support\AuditLogger::log('update', \App\Support\AuditLogger::GRADES, [
+                        'actor' => $instructor,
+                        'target' => $grade,
+                        'target_label' => "{$learnerName} — {$moduleTitle}",
+                        'old' => $old,
+                        'new' => $new,
+                        'details' => "Changed the grade of {$learnerName} for \"{$moduleTitle}\" from "
+                            . "{$before['score']}/{$before['max_score']} to {$after['score']}/{$after['max_score']}",
+                    ]);
+                }
+            } else {
+                \App\Support\AuditLogger::log('create', \App\Support\AuditLogger::GRADES, [
+                    'actor' => $instructor,
+                    'target' => $grade,
+                    'target_label' => "{$learnerName} — {$moduleTitle}",
+                    'new' => $after,
+                    'details' => "Graded {$learnerName} for \"{$moduleTitle}\": {$after['score']}/{$after['max_score']}",
+                ]);
+            }
 
             return [
                 'grade' => $grade,

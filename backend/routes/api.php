@@ -32,6 +32,7 @@ use App\Http\Controllers\Api\SystemAdminController;
 use App\Http\Controllers\Api\SystemAdminProfileController;
 use App\Http\Controllers\Api\SystemAdminAcademicAdminController;
 use App\Http\Controllers\Api\SystemAdminBackupController;
+use App\Http\Controllers\Api\SystemAdminAuditLogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -87,7 +88,9 @@ Route::middleware([
             ]));
 
             Route::get('/dashboard', [SystemAdminController::class, 'dashboard']);
-            Route::get('/audit-logs', [SystemAdminController::class, 'auditLogs']);
+            // Audit Logs: read only (no update or delete route, for any role)
+            Route::get('/audit-logs', [SystemAdminAuditLogController::class, 'index']);
+            Route::get('/audit-logs/export', [SystemAdminAuditLogController::class, 'export'])->middleware('throttle:10,1');
 
             // Own profile (POST so the form can include a photo file)
             Route::get('/profile', [SystemAdminProfileController::class, 'show']);

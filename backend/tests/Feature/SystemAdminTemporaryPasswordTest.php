@@ -87,13 +87,14 @@ class SystemAdminTemporaryPasswordTest extends TestCase
         $this->assertSame(0, $admin->tokens()->count());
 
         // Recorded in the audit log, without the password.
-        $this->assertDatabaseHas('system_admin_audit_logs', [
+        $this->assertDatabaseHas('audit_logs', [
             'action' => 'reset_password',
-            'target_id' => $admin->id,
+            'module' => 'Academic Admin Accounts',
+            'target_id' => $admin->school_id,
         ]);
         $this->assertStringNotContainsString(
             $temporary,
-            (string) \DB::table('system_admin_audit_logs')->where('action', 'reset_password')->value('details')
+            (string) json_encode(\DB::table('audit_logs')->get())
         );
     }
 

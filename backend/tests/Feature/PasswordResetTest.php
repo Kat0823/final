@@ -69,7 +69,9 @@ class PasswordResetTest extends TestCase
 
         $mail = (new ResetPasswordCode($code, 15))->toMail($this->learner);
         $this->assertStringContainsString($code, $mail->subject);
-        $this->assertDatabaseHas('system_admin_audit_logs', ['action' => 'password_reset_request', 'target_id' => $this->learner->id]);
+        // Authentication, not 'Academic Admin Accounts', for a learner too.
+        $this->assertDatabaseHas('audit_logs', ['action' => 'reset_code_sent', 'module' => 'Authentication', 'target_id' => $this->learner->school_id, 'actor_role' => 'learner']);
+        $this->assertDatabaseMissing('audit_logs', ['module' => 'Academic Admin Accounts']);
     }
 
     public function test_same_answer_when_no_account_or_inactive_and_only_emails_accepted(): void
@@ -100,7 +102,7 @@ class PasswordResetTest extends TestCase
         $this->assertTrue(Hash::check('brand-new-pass', $this->learner->password));
         $this->assertSame(0, $this->learner->tokens()->count());
         $this->assertDatabaseMissing('password_reset_tokens', ['email' => 'ana@example.com']);
-        $this->assertDatabaseHas('system_admin_audit_logs', ['action' => 'password_reset_email', 'target_id' => $this->learner->id]);
+        $this->assertDatabaseHas('audit_logs', ['action' => 'password_reset', 'module' => 'Authentication', 'target_id' => $this->learner->school_id]);
 
         $this->postJson('/api/login', ['school_id' => '24-RS001', 'password' => 'brand-new-pass'])->assertOk();
 

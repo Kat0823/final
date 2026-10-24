@@ -25,6 +25,123 @@
 
     <!-- Header and sidebar: same as the Academic Admin portal -->
     <link rel="stylesheet" href="css/shell.css">
+    <style>
+        .audit-filter-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px 16px;
+            align-items: end;
+        }
+
+        .audit-filter-grid .audit-search-field {
+            grid-column: span 2;
+        }
+
+        .audit-filter-grid .audit-filter-actions {
+            grid-column: span 2;
+            justify-content: flex-end;
+        }
+
+        .audit-status {
+            margin: 0 22px 10px;
+            font-size: 13px;
+        }
+
+        .audit-status:empty {
+            display: none;
+        }
+
+        .audit-status.error {
+            color: #b42318;
+        }
+
+        .audit-table td {
+            vertical-align: top;
+        }
+
+        .audit-actor small,
+        .audit-target small,
+        .audit-when small {
+            display: block;
+            color: #6b7280;
+            font-size: 11.5px;
+        }
+
+        .audit-result {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 999px;
+            font-size: 11.5px;
+            font-weight: 700;
+            text-transform: capitalize;
+        }
+
+        .audit-result.success {
+            background: #e3f3ea;
+            color: #08683c;
+        }
+
+        .audit-result.failed {
+            background: #fde8e8;
+            color: #b42318;
+        }
+
+        .audit-ip {
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .audit-changes {
+            margin-top: 6px;
+        }
+
+        .audit-changes summary {
+            color: #08683c;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .audit-changes table {
+            margin-top: 6px;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .audit-changes th,
+        .audit-changes td {
+            padding: 3px 8px !important;
+            border: 1px solid #ebe7da !important;
+            text-align: left;
+        }
+
+        .audit-changes .old {
+            color: #9b1c22;
+        }
+
+        .audit-changes .new {
+            color: #08683c;
+        }
+
+        @media (max-width: 1100px) {
+            .audit-filter-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .audit-filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .audit-filter-grid .audit-search-field,
+            .audit-filter-grid .audit-filter-actions {
+                grid-column: auto;
+            }
+        }
+    </style>
+
 
 </head>
 
@@ -316,201 +433,84 @@
 
 
             <!-- =================================================
-                 FILTERS
+                 FILTERS (applied by the server)
             ================================================== -->
 
-            <section class="panel audit-filter-panel">
-
+            <section class="panel audit-filter-panel" aria-labelledby="auditFilterTitle">
                 <div class="audit-panel-header">
-
-                    <div>
-
-                        <h3>
-                            Filter Audit Logs
-                        </h3>
-
-                        <p>
-                            Narrow the audit trail by date, actor, action, or keyword.
-                        </p>
-
-                    </div>
-
+                    <h3 id="auditFilterTitle">Filter Audit Logs</h3>
+                    <p>Dates are Philippine time (Asia/Manila).</p>
                 </div>
 
-
-                <div class="audit-filter-body">
-
-
-                    <!-- Date From -->
-
+                <form class="audit-filter-body audit-filter-grid" id="auditFilterForm" novalidate>
                     <div class="audit-filter-field">
-
-                        <label
-                            for="auditDateFrom"
-                        >
-                            Date From
-                        </label>
-
-                        <input
-                            type="date"
-                            id="auditDateFrom"
-                        >
-
+                        <label for="auditDateFrom">Date From</label>
+                        <input type="date" id="auditDateFrom">
                     </div>
 
-
-
-                    <!-- Date To -->
-
                     <div class="audit-filter-field">
-
-                        <label
-                            for="auditDateTo"
-                        >
-                            Date To
-                        </label>
-
-                        <input
-                            type="date"
-                            id="auditDateTo"
-                        >
-
+                        <label for="auditDateTo">Date To</label>
+                        <input type="date" id="auditDateTo">
                     </div>
 
-
-
-                    <!-- Actor -->
-
                     <div class="audit-filter-field">
-
-                        <label
-                            for="auditAdministrator"
-                        >
-                            Actor
-                        </label>
-
-                        <select
-                            id="auditAdministrator"
-                        >
-
-                            <option value="">
-                                All Actors
-                            </option>
-
+                        <label for="auditActor">Actor</label>
+                        <select id="auditActor">
+                            <option value="">All Actors</option>
                         </select>
-
                     </div>
 
-
-
-                    <!-- Action -->
+                    <div class="audit-filter-field">
+                        <label for="auditRole">Actor Role</label>
+                        <select id="auditRole">
+                            <option value="">All Roles</option>
+                        </select>
+                    </div>
 
                     <div class="audit-filter-field">
-
-                        <label
-                            for="auditAction"
-                        >
-                            Action
-                        </label>
-
-                        <select
-                            id="auditAction"
-                        >
+                        <label for="auditAction">Action</label>
+                        <select id="auditAction">
                             <option value="">All Actions</option>
-                            <optgroup label="Sign-in">
-                                <option value="login">Sign-in</option>
-                                <option value="logout">Sign-out</option>
-                                <option value="login_failed">Failed Sign-in</option>
-                                <option value="login_blocked">Sign-in Refused</option>
-                                <option value="account_locked">Account Locked</option>
-                            </optgroup>
-                            <optgroup label="Own account">
-                                <option value="profile_update">Profile Update</option>
-                                <option value="password_change">Password Change</option>
-                                <option value="password_setup">Password Set</option>
-                                <option value="password_reset_request">Reset Code Sent</option>
-                                <option value="password_reset_email">Password Reset by Email</option>
-                            </optgroup>
-                            <optgroup label="Academic Admin accounts">
-                                <option value="create">Create</option>
-                                <option value="update">Update</option>
-                                <option value="activate">Activate</option>
-                                <option value="deactivate">Deactivate</option>
-                                <option value="reset_password">Password Reset</option>
-                                <option value="delete">Delete</option>
-                            </optgroup>
                         </select>
-
                     </div>
 
+                    <div class="audit-filter-field">
+                        <label for="auditModule">Module</label>
+                        <select id="auditModule">
+                            <option value="">All Modules</option>
+                        </select>
+                    </div>
 
-
-                    <!-- Search -->
+                    <div class="audit-filter-field">
+                        <label for="auditResult">Result</label>
+                        <select id="auditResult">
+                            <option value="">Success and Failed</option>
+                            <option value="success">Success</option>
+                            <option value="failed">Failed</option>
+                        </select>
+                    </div>
 
                     <div class="audit-filter-field audit-search-field">
-
-                        <label
-                            for="auditSearch"
-                        >
-                            Search
-                        </label>
-
+                        <label for="auditSearch">Search</label>
                         <div class="audit-search-wrapper">
-
                             <i data-lucide="search"></i>
-
-                            <input
-                                type="search"
-                                id="auditSearch"
-                                placeholder="Search actor, role, module, or details..."
-                                autocomplete="off"
-                            >
-
+                            <input type="search" id="auditSearch" maxlength="200"
+                                placeholder="Search actor, target, IP or details..." autocomplete="off">
                         </div>
-
                     </div>
-
-
-
-                    <!-- Filter Actions -->
 
                     <div class="audit-filter-actions">
-
-                        <button
-                            type="button"
-                            class="secondary-button"
-                            id="clearAuditFilters"
-                        >
-
+                        <button type="button" class="secondary-button" id="clearAuditFilters">
                             <i data-lucide="rotate-ccw"></i>
-
-                            <span>
-                                Clear
-                            </span>
-
+                            <span>Clear</span>
                         </button>
-
-
-                        <button
-                            type="button"
-                            class="primary-button"
-                            id="applyAuditFilters"
-                        >
-
+                        <button type="submit" class="primary-button" id="applyAuditFilters">
                             <i data-lucide="filter"></i>
-
-                            <span>
-                                Apply Filters
-                            </span>
-
+                            <span>Apply Filters</span>
                         </button>
-
                     </div>
-
-                </div>
-
+                </form>
             </section>
-
 
 
             <!-- =================================================
@@ -518,171 +518,62 @@
             ================================================== -->
 
             <section class="panel audit-log-panel">
-
-
                 <div class="audit-log-header">
-
                     <div>
-
-                        <span class="audit-section-label">
-                            Activity
-                        </span>
-
-                        <h3>
-                            System Audit Log
-                        </h3>
-
-                        <p>
-                            Centralized record of significant actions performed within the LMS.
-                        </p>
-
+                        <span class="audit-section-label">Activity</span>
+                        <h3>System Audit Log</h3>
+                        <p>Every sign-in, account, class, module, submission, grade and backup action. Entries cannot be changed or deleted.</p>
                     </div>
 
-
-                    <button
-                        type="button"
-                        class="secondary-button"
-                        id="exportAuditLog"
-                    >
-
+                    <button type="button" class="secondary-button" id="exportAuditLog">
                         <i data-lucide="download"></i>
-
-                        <span>
-                            Export Log
-                        </span>
-
+                        <span>Export CSV</span>
                     </button>
-
                 </div>
 
-
+                <p class="audit-status" id="auditStatus" role="status" aria-live="polite"></p>
 
                 <div class="audit-table-wrapper">
-
                     <table class="audit-table">
-
                         <thead>
-
                             <tr>
-
-                                <th>
-                                    Date &amp; Time
-                                </th>
-
-                                <th>
-                                    Actor
-                                </th>
-
-                                <th>
-                                    Role
-                                </th>
-
-                                <th>
-                                    Action
-                                </th>
-
-                                <th>
-                                    Module
-                                </th>
-
-                                <th>
-                                    Details
-                                </th>
-
+                                <th scope="col">Date &amp; Time</th>
+                                <th scope="col">Actor</th>
+                                <th scope="col">Action</th>
+                                <th scope="col">Module</th>
+                                <th scope="col">Target</th>
+                                <th scope="col">Result</th>
+                                <th scope="col">IP Address</th>
+                                <th scope="col">Details</th>
                             </tr>
-
                         </thead>
-
-
                         <tbody id="auditLogBody">
-
-                            <tr>
-
-                                <td
-                                    colspan="6"
-                                    class="audit-empty-state"
-                                >
-
-                                    <div class="audit-empty-content">
-
-                                        <i
-                                            data-lucide="file-clock"
-                                        ></i>
-
-                                        <strong>
-                                            No audit records yet
-                                        </strong>
-
-                                        <span>
-                                            System activity will appear here once audit logging is connected to the system.
-                                        </span>
-
-                                    </div>
-
-                                </td>
-
-                            </tr>
-
+                            <tr><td colspan="8" class="audit-empty-state">Loading audit logs...</td></tr>
                         </tbody>
-
                     </table>
-
                 </div>
-
-
-
-                <!-- =================================================
-                     TABLE FOOTER
-                ================================================== -->
 
                 <div class="audit-table-footer">
+                    <span id="auditRecordCount">Showing 0 records</span>
 
-                    <span id="auditRecordCount">
-                        Showing 0 of 0 records
-                    </span>
-
-                    <div class="audit-pagination"
-                        aria-label="Audit log pagination">
-
-                        <label for="auditPageSize">Rows per page</label>
-
+                    <div class="audit-pagination">
+                        <label for="auditPageSize">Rows</label>
                         <select id="auditPageSize" class="audit-page-size">
-                            <option value="10" selected>10</option>
                             <option value="25">25</option>
                             <option value="50">50</option>
+                            <option value="100">100</option>
                         </select>
 
-                        <button
-                            type="button"
-                            class="audit-page-button"
-                            id="auditPreviousPage"
-                            aria-label="Previous page"
-                            disabled
-                        >
+                        <button type="button" class="audit-page-button" id="auditPreviousPage" aria-label="Previous page">
                             <i data-lucide="chevron-left"></i>
                         </button>
-
-                        <span id="auditPageIndicator"
-                            class="audit-page-indicator">
-                            Page 1 of 1
-                        </span>
-
-                        <button
-                            type="button"
-                            class="audit-page-button"
-                            id="auditNextPage"
-                            aria-label="Next page"
-                            disabled
-                        >
+                        <span id="auditPageIndicator">Page 1 of 1</span>
+                        <button type="button" class="audit-page-button" id="auditNextPage" aria-label="Next page">
                             <i data-lucide="chevron-right"></i>
                         </button>
-
                     </div>
-
                 </div>
-
             </section>
-
 
         </main>
 

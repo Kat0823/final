@@ -1,1374 +1,281 @@
 /* =========================================================
-   SIKNAYAN - SYSTEM ADMINISTRATOR
-   AUDIT LOGS
+   SIKNAYAN - SYSTEM ADMIN
+   AUDIT LOGS (audit-logs.js)
+
+   Read-only view of the audit trail (table audit_logs). The server
+   filters and pages the entries (GET /api/system-admin/audit-logs);
+   Export CSV downloads every entry that matches the filters
+   (GET /api/system-admin/audit-logs/export) and is logged itself.
+   Times are stored in UTC and shown in Philippine time.
 ========================================================= */
 
-/* =========================================================
-   STORAGE
-========================================================= */
+(function () {
+    "use strict";
 
-const AUDIT_LOG_STORAGE_KEY =
-    "siknayan_system_admin_audit_logs";
+    const $ = id => document.getElementById(id);
+    if (!$("auditLogBody")) return;
 
-/* =========================================================
-   ELEMENTS
-========================================================= */
-
-const auditLogBody =
-    document.getElementById("auditLogBody");
-
-const auditRecordCount =
-    document.getElementById("auditRecordCount");
-
-const dateFromInput =
-    document.getElementById("auditDateFrom");
-
-const dateToInput =
-    document.getElementById("auditDateTo");
-
-const administratorFilter =
-    document.getElementById("auditAdministrator");
-
-const actionFilter =
-    document.getElementById("auditAction");
-
-const searchInput =
-    document.getElementById("auditSearch");
-
-const clearFiltersButton =
-    document.getElementById("clearAuditFilters");
-
-const applyFiltersButton =
-    document.getElementById("applyAuditFilters");
-
-const exportButton =
-    document.getElementById("exportAuditLog");
-
-const auditPageSizeSelect =
-    document.getElementById("auditPageSize");
-
-const auditPreviousPageButton =
-    document.getElementById("auditPreviousPage");
-
-const auditNextPageButton =
-    document.getElementById("auditNextPage");
-
-const auditPageIndicator =
-    document.getElementById("auditPageIndicator");
-
-let auditCurrentPage = 1;
-
-/* =========================================================
-   STORAGE HELPERS
-========================================================= */
-
-/*
- * Audit records come from the server (GET /api/system-admin/audit-logs).
- * They're loaded once into this list; filtering, paging and export then
- * work on the list in the browser.
- */
-let auditLogCache = [];
-
-function getAuditLogs() {
-    return auditLogCache;
-}
-
-const AUDIT_FIELD_LABELS = {
-    name: "name",
-    school_id: "school ID",
-    email: "email",
-    is_active: "status",
-    profile_photo: "profile photo"
-};
-
-function formatAuditValue(value) {
-    if (value === true) return "active";
-    if (value === false) return "inactive";
-    if (value === null || value === undefined || value === "") return "(none)";
-    return String(value);
-}
-
-const AUDIT_ROLE_LABELS = {
-    system_admin: "System Administrator",
-    academic_admin: "Academic Administrator",
-    instructor: "Instructor",
-    learner: "Learner"
-};
-
-// "name: Old → New; changed profile photo"
-function describeChanges(changes) {
-    return Object.entries(changes || {}).map(([field, change]) => {
-        const label = AUDIT_FIELD_LABELS[field] || field;
-
-        if (field === "profile_photo") {
-            return change && change.removed
-                ? "removed profile photo"
-                : "changed profile photo";
-        }
-
-        if (change && typeof change === "object" && "from" in change) {
-            return `${label}: ${formatAuditValue(change.from)} → ${formatAuditValue(change.to)}`;
-        }
-
-        return label;
-    });
-}
-
-function describeAuditEntry(entry) {
-    const target = entry.target_name || "an account";
-    const details = entry.details || {};
-    const schoolId = details.school_id ? ` (${details.school_id})` : "";
-    const fromIp = entry.ip ? ` from ${entry.ip}` : "";
-
-    switch (String(entry.action || "").toLowerCase()) {
-        case "login":
-            return details.first_login
-                ? `Signed in with a temporary password${fromIp}`
-                : `Signed in${fromIp}`;
-        case "logout":
-            return `Signed out${fromIp}`;
-        case "login_failed":
-            return details.account_exists
-                ? `Wrong password for ${target}${schoolId}${fromIp}`
-                : `Sign-in attempt with unknown ID "${details.school_id || target}"${fromIp}`;
-        case "login_blocked":
-            return `Sign-in refused: account is deactivated${fromIp}`;
-        case "account_locked": {
-            const role = AUDIT_ROLE_LABELS[details.target_role] || "Account";
-            return `${role} ${target}${schoolId} locked for ${details.seconds || 60} seconds after repeated failed sign-ins${fromIp}`;
-        }
-        case "password_setup":
-            return "Replaced the temporary password with their own";
-        case "password_change":
-            return "Changed their own password";
-        case "password_reset_request":
-            return `Asked for a password reset code by email${fromIp}`;
-        case "password_reset_email":
-            return `Reset their password with the emailed code${fromIp}`;
-        case "profile_update": {
-            const changes = describeChanges(details.changes);
-            return changes.length
-                ? `Updated own profile: ${changes.join("; ")}`
-                : "Updated own profile";
-        }
-        case "backup": {
-            const file = details.file || target;
-            if (details.event === "downloaded") return `Downloaded the backup ${file}${fromIp}`;
-            if (details.event === "deleted") return `Deleted the backup ${file}${fromIp}`;
-            const sizeMb = details.size ? ` (${(Number(details.size) / 1024 / 1024).toFixed(1)} MB${details.encrypted ? ", password-protected" : ""})` : "";
-            return `Made a backup of the database and uploaded files: ${file}${sizeMb}${fromIp}`;
-        }
-        case "create":
-            return `Created Academic Admin account ${target}${schoolId}`;
-        case "delete":
-            return `Deleted Academic Admin account ${target}${schoolId}`;
-        case "activate":
-            return `Activated Academic Admin account ${target}`;
-        case "deactivate":
-            return `Deactivated Academic Admin account ${target}`;
-        case "reset_password":
-            return `Reset the password for Academic Admin account ${target}${schoolId}`;
-        case "update": {
-            const changes = describeChanges(details);
-
-            return changes.length
-                ? `Updated ${target}: ${changes.join("; ")}`
-                : `Updated ${target}`;
-        }
-        default:
-            return `${formatAction(entry.action)} ${target}`;
-    }
-}
-
-function toAuditRow(entry) {
-    return {
-        id: entry.id,
-        timestamp: entry.created_at,
-        actorName: entry.actor_name || "—",
-        actorRole: AUDIT_ROLE_LABELS[entry.actor_role] || "—",
-        action: entry.action,
-        module: entry.module || "Academic Admin Accounts",
-        details: describeAuditEntry(entry)
-    };
-}
-
-async function loadAuditLogs() {
-    renderEmptyState(
-        "Loading audit records...",
-        "Fetching the latest activity from the server."
-    );
-
-    try {
-        const response = await fetch(
-            `${window.SIKNAYAN_API_ROOT}/system-admin/audit-logs`,
-            {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: `Bearer ${systemAdminToken}`
-                }
-            }
-        );
-
-        if (response.status === 401) {
-            redirectToLogin();
-            return;
-        }
-
-        const payload = await response.json().catch(() => null);
-
-        if (!response.ok || !payload?.success || !Array.isArray(payload.logs)) {
-            throw new Error(
-                payload?.message || `The server returned an error (${response.status}).`
-            );
-        }
-
-        auditLogCache = payload.logs.map(toAuditRow);
-        refreshAuditLogs();
-    } catch (error) {
-        console.error("Unable to load audit records:", error);
-        auditLogCache = [];
-        renderEmptyState(
-            "Unable to load audit records",
-            error.message || "Check that the backend is running, then refresh the page."
-        );
-    }
-}
-
-/* =========================================================
-   DATE HELPERS
-========================================================= */
-
-function getDateOnly(value) {
-    if (!value) {
-        return "";
-    }
-
-    const date =
-        new Date(value);
-
-    if (Number.isNaN(date.getTime())) {
-        return "";
-    }
-
-    const year =
-        date.getFullYear();
-
-    const month =
-        String(date.getMonth() + 1).padStart(
-            2,
-            "0"
-        );
-
-    const day =
-        String(date.getDate()).padStart(
-            2,
-            "0"
-        );
-
-    return (
-        year +
-        "-" +
-        month +
-        "-" +
-        day
-    );
-}
-
-
-function formatDateTime(value) {
-    if (!value) {
-        return "—";
-    }
-
-    const date =
-        new Date(value);
-
-    if (Number.isNaN(date.getTime())) {
-        return "—";
-    }
-
-    return date.toLocaleString(
-        undefined,
-        {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-            hour: "numeric",
-            minute: "2-digit"
-        }
-    );
-}
-
-/* =========================================================
-   ACTION LABEL
-========================================================= */
-
-function formatAction(action) {
-    if (!action) {
-        return "—";
-    }
-
-    const labels = {
-        login: "Sign-in",
-        logout: "Sign-out",
-        login_failed: "Failed Sign-in",
-        login_blocked: "Sign-in Refused",
-        account_locked: "Account Locked",
-        password_setup: "Password Set",
-        password_change: "Password Change",
-        password_reset_request: "Reset Code Sent",
-        password_reset_email: "Password Reset by Email",
-        profile_update: "Profile Update",
-        create: "Create",
-        update: "Update",
-        activate: "Activate",
-        deactivate: "Deactivate",
-        reset_password: "Password Reset",
-        delete: "Delete",
-        backup: "Backup"
+    const TIMEZONE = "Asia/Manila";
+    const ROLE_LABELS = {
+        system_admin: "System Admin",
+        academic_admin: "Academic Admin",
+        instructor: "Instructor",
+        learner: "Learner"
     };
 
-    const normalizedAction =
-        String(action).toLowerCase();
+    const state = { page: 1, perPage: 25, lastPage: 1, optionsLoaded: false };
 
-    return (
-        labels[normalizedAction] ||
-        String(action).charAt(0).toUpperCase() +
-        String(action).slice(1)
-    );
-}
-
-/* =========================================================
-   AUDIT FIELD HELPERS
-========================================================= */
-
-function getAuditActor(log) {
-    return (
-        log.actorName ||
-        log.actor ||
-        log.administrator ||
-        log.adminName ||
-        "—"
-    );
-}
-
-
-function getAuditRole(log) {
-    return (
-        log.actorRole ||
-        log.role ||
-        (
-            log.administrator ||
-            log.adminName
-                ? "System Administrator"
-                : "—"
-        )
-    );
-}
-
-
-function getAuditModule(log) {
-    return (
-        log.module ||
-        log.area ||
-        log.resource ||
-        "—"
-    );
-}
-
-/* =========================================================
-   HTML ESCAPING
-========================================================= */
-
-function escapeHtml(value) {
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-/* =========================================================
-   SORT LOGS
-========================================================= */
-
-function sortAuditLogs(logs) {
-    return [...logs].sort(
-        (a, b) => {
-
-            const dateA =
-                new Date(
-                    a.timestamp ||
-                    a.dateTime ||
-                    a.createdAt ||
-                    0
-                ).getTime();
-
-            const dateB =
-                new Date(
-                    b.timestamp ||
-                    b.dateTime ||
-                    b.createdAt ||
-                    0
-                ).getTime();
-
-            return dateB - dateA;
-        }
-    );
-}
-
-/* =========================================================
-   POPULATE ACTOR FILTER
-========================================================= */
-
-function populateAdministratorFilter(logs) {
-
-    if (!administratorFilter) {
-        return;
+    function token() {
+        return sessionStorage.getItem("authToken") || localStorage.getItem("siknayan_api_token") || "";
     }
 
-    const currentValue =
-        administratorFilter.value;
-
-    const actors = [
-
-        ...new Set(
-
-            logs
-                .map(
-                    log =>
-                        getAuditActor(log)
-                )
-                .filter(
-                    actor =>
-                        actor &&
-                        actor !== "—"
-                )
-
-        )
-
-    ].sort(
-        (a, b) =>
-            a.localeCompare(b)
-    );
-
-    administratorFilter.innerHTML = `
-        <option value="">
-            All Actors
-        </option>
-    `;
-
-    actors.forEach(
-        actor => {
-
-            const option =
-                document.createElement(
-                    "option"
-                );
-
-            option.value =
-                actor;
-
-            option.textContent =
-                actor;
-
-            administratorFilter.appendChild(
-                option
-            );
-
-        }
-    );
-
-    if (
-        actors.includes(
-            currentValue
-        )
-    ) {
-
-        administratorFilter.value =
-            currentValue;
-
-    }
-}
-
-/* =========================================================
-   FILTER LOGS
-========================================================= */
-
-function filterAuditLogs(logs) {
-
-    const dateFrom =
-        dateFromInput?.value ||
-        "";
-
-    const dateTo =
-        dateToInput?.value ||
-        "";
-
-    const actor =
-        administratorFilter?.value ||
-        "";
-
-    const action =
-        actionFilter?.value ||
-        "";
-
-    const search =
-        (searchInput?.value || "")
-            .trim()
-            .toLowerCase();
-
-    return logs.filter(
-        log => {
-
-            const timestamp =
-                log.timestamp ||
-                log.dateTime ||
-                log.createdAt ||
-                "";
-
-            const logDate =
-                getDateOnly(
-                    timestamp
-                );
-
-            const logActor =
-                getAuditActor(log);
-
-            const logRole =
-                getAuditRole(log);
-
-            const logModule =
-                getAuditModule(log);
-
-            const logAction =
-                String(
-                    log.action || ""
-                ).toLowerCase();
-
-            const logDetails =
-                log.details ||
-                "";
-
-            if (
-                dateFrom &&
-                (
-                    !logDate ||
-                    logDate < dateFrom
-                )
-            ) {
-
-                return false;
-
-            }
-
-            if (
-                dateTo &&
-                (
-                    !logDate ||
-                    logDate > dateTo
-                )
-            ) {
-
-                return false;
-
-            }
-
-            if (
-                actor &&
-                logActor !== actor
-            ) {
-
-                return false;
-
-            }
-
-            if (
-                action &&
-                logAction !==
-                    action.toLowerCase()
-            ) {
-
-                return false;
-
-            }
-
-            if (search) {
-
-                const searchableText =
-                    (
-                        logActor +
-                        " " +
-                        logRole +
-                        " " +
-                        logModule +
-                        " " +
-                        logAction +
-                        " " +
-                        logDetails
-                    )
-                        .toLowerCase();
-
-                if (
-                    !searchableText.includes(
-                        search
-                    )
-                ) {
-
-                    return false;
-
-                }
-
-            }
-
-            return true;
-
-        }
-    );
-}
-
-/* =========================================================
-   RENDER EMPTY STATE
-========================================================= */
-
-function renderEmptyState(
-    message,
-    description
-) {
-
-    if (!auditLogBody) {
-        return;
+    function escapeHtml(value) {
+        return String(value ?? "").replace(/[&<>"']/g, character => ({
+            "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+        }[character]));
     }
 
-    const columnCount =
-        document.querySelector(
-            ".audit-table thead tr"
-        )?.children.length || 4;
-
-    auditLogBody.innerHTML = `
-        <tr>
-
-            <td
-                colspan="${columnCount}"
-                class="audit-empty-state"
-            >
-
-                <div
-                    class="audit-empty-content"
-                >
-
-                    <i
-                        data-lucide="file-clock"
-                    ></i>
-
-                    <strong>
-                        ${escapeHtml(
-                            message
-                        )}
-                    </strong>
-
-                    <span>
-                        ${escapeHtml(
-                            description
-                        )}
-                    </span>
-
-                </div>
-
-            </td>
-
-        </tr>
-    `;
-
-    refreshIcons();
-}
-
-/* =========================================================
-   RENDER LOGS
-========================================================= */
-
-function renderAuditLogs(logs) {
-
-    if (!auditLogBody) {
-        return;
+    function icons() {
+        if (window.lucide && typeof window.lucide.createIcons === "function") window.lucide.createIcons();
     }
 
-    const pageSize = Math.max(
-        1,
-        Number(auditPageSizeSelect?.value || 10)
-    );
+    function status(text, isError = false) {
+        const box = $("auditStatus");
+        box.textContent = text || "";
+        box.className = `audit-status${isError ? " error" : ""}`;
+    }
 
-    const filteredCount = logs.length;
+    /* ---------------- Filters ---------------- */
 
-    const totalPages = Math.max(
-        1,
-        Math.ceil(filteredCount / pageSize)
-    );
+    function filters() {
+        const values = {
+            from: $("auditDateFrom").value,
+            to: $("auditDateTo").value,
+            actor: $("auditActor").value,
+            actor_role: $("auditRole").value,
+            action: $("auditAction").value,
+            module: $("auditModule").value,
+            result: $("auditResult").value,
+            q: $("auditSearch").value.trim()
+        };
 
-    auditCurrentPage = Math.min(
-        auditCurrentPage,
-        totalPages
-    );
+        return Object.fromEntries(Object.entries(values).filter(([, value]) => value !== ""));
+    }
 
-    const startIndex = filteredCount > 0
-        ? (auditCurrentPage - 1) * pageSize
-        : 0;
+    function queryString(extra = {}) {
+        return new URLSearchParams({ ...filters(), ...extra }).toString();
+    }
 
-    const pageLogs = logs.slice(
-        startIndex,
-        startIndex + pageSize
-    );
-
-    if (!logs.length) {
-
-        const allLogs =
-            getAuditLogs();
-
-        if (!allLogs.length) {
-
-            renderEmptyState(
-                "No audit records yet",
-                "Changes to Academic Admin accounts will appear here."
-            );
-
-        } else {
-
-            renderEmptyState(
-                "No matching records",
-                "No audit records match the selected filters."
-            );
-
+    async function request(path, raw = false) {
+        let response;
+        try {
+            response = await fetch(`${window.SIKNAYAN_API_ROOT}/system-admin${path}`, {
+                headers: { Accept: raw ? "text/csv, application/json" : "application/json", Authorization: `Bearer ${token()}` }
+            });
+        } catch (error) {
+            throw new Error("Cannot reach the server. Check that the backend is running.");
         }
 
-    } else {
+        if (response.status === 401 || response.status === 403) {
+            if (typeof redirectToLogin === "function") redirectToLogin();
+            throw new Error("Your session has ended. Please log in again.");
+        }
 
-        const columnCount =
-            document.querySelector(
-                ".audit-table thead tr"
-            )?.children.length || 4;
+        if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            const firstError = data.errors && Object.values(data.errors)[0];
+            throw new Error((Array.isArray(firstError) ? firstError[0] : firstError) || data.message || "The audit log could not be loaded.");
+        }
 
-        auditLogBody.innerHTML =
-            pageLogs
-                .map(
-                    log => {
+        return raw ? response : response.json();
+    }
 
-                        const timestamp =
-                            log.timestamp ||
-                            log.dateTime ||
-                            log.createdAt ||
-                            "";
+    function fillSelect(select, items, allLabel) {
+        const current = select.value;
+        select.innerHTML = `<option value="">${escapeHtml(allLabel)}</option>` + items;
+        if ([...select.options].some(option => option.value === current)) select.value = current;
+    }
 
-                        const actor =
-                            getAuditActor(
-                                log
-                            );
+    function fillOptions(options) {
+        const actors = Array.isArray(options.actors) ? options.actors : [];
+        const byRole = {};
+        actors.forEach(actor => {
+            const role = ROLE_LABELS[actor.role] || "Other";
+            (byRole[role] = byRole[role] || []).push(actor);
+        });
 
-                        const role =
-                            getAuditRole(
-                                log
-                            );
+        fillSelect($("auditActor"),
+            '<option value="unknown">Unknown (failed sign-ins)</option>' +
+            Object.keys(byRole).sort().map(role => `
+                <optgroup label="${escapeHtml(role)}">
+                    ${byRole[role].map(actor => `<option value="${escapeHtml(actor.id)}">${escapeHtml(actor.name)}</option>`).join("")}
+                </optgroup>`).join(""),
+            "All Actors");
 
-                        const action =
-                            log.action ||
-                            "";
+        fillSelect($("auditRole"),
+            (options.roles || []).map(role => `<option value="${escapeHtml(role)}">${escapeHtml(ROLE_LABELS[role] || role)}</option>`).join(""),
+            "All Roles");
 
-                        const module =
-                            getAuditModule(
-                                log
-                            );
+        fillSelect($("auditAction"),
+            (options.actions || []).map(action => `<option value="${escapeHtml(action.value)}">${escapeHtml(action.label)}</option>`).join(""),
+            "All Actions");
 
-                        const details =
-                            log.details ||
-                            "—";
+        fillSelect($("auditModule"),
+            (options.modules || []).map(module => `<option value="${escapeHtml(module)}">${escapeHtml(module)}</option>`).join(""),
+            "All Modules");
+    }
 
-                        /*
-                         * Supports both the current 4-column
-                         * Audit Logs HTML and the upcoming
-                         * 6-column system-wide layout.
-                         */
+    /* ---------------- Table ---------------- */
 
-                        if (
-                            columnCount >= 6
-                        ) {
+    function when(entry) {
+        const date = new Date(entry.created_at);
+        if (Number.isNaN(date.getTime())) return { day: entry.created_at_manila || "—", time: "" };
 
-                            return `
-                                <tr>
+        return {
+            day: date.toLocaleDateString("en-US", { timeZone: TIMEZONE, year: "numeric", month: "short", day: "numeric" }),
+            time: date.toLocaleTimeString("en-US", { timeZone: TIMEZONE, hour: "numeric", minute: "2-digit", second: "2-digit" })
+        };
+    }
 
-                                    <td>
-                                        ${escapeHtml(
-                                            formatDateTime(
-                                                timestamp
-                                            )
-                                        )}
-                                    </td>
+    function show(value) {
+        if (value === null || value === undefined || value === "") return "—";
+        if (typeof value === "boolean") return value ? "Yes" : "No";
+        if (typeof value === "object") return JSON.stringify(value);
+        return String(value);
+    }
 
-                                    <td>
-                                        ${escapeHtml(
-                                            actor
-                                        )}
-                                    </td>
+    function changes(entry) {
+        const oldValues = entry.old_values || {};
+        const newValues = entry.new_values || {};
+        const keys = [...new Set([...Object.keys(oldValues), ...Object.keys(newValues)])];
+        if (!keys.length) return "";
 
-                                    <td>
-                                        ${escapeHtml(
-                                            role
-                                        )}
-                                    </td>
+        const both = Object.keys(oldValues).length && Object.keys(newValues).length;
 
-                                    <td>
-                                        ${escapeHtml(
-                                            formatAction(
-                                                action
-                                            )
-                                        )}
-                                    </td>
-
-                                    <td>
-                                        ${escapeHtml(
-                                            module
-                                        )}
-                                    </td>
-
-                                    <td>
-                                        ${escapeHtml(
-                                            details
-                                        )}
-                                    </td>
-
-                                </tr>
-                            `;
-
-                        }
-
-                        /*
-                         * Current layout fallback
-                         */
-
-                        return `
+        return `
+            <details class="audit-changes">
+                <summary>${both ? "Old → new" : (Object.keys(newValues).length ? "Values" : "Previous values")}</summary>
+                <table>
+                    <thead><tr><th>Field</th>${Object.keys(oldValues).length ? "<th>Old</th>" : ""}${Object.keys(newValues).length ? "<th>New</th>" : ""}</tr></thead>
+                    <tbody>
+                        ${keys.map(key => `
                             <tr>
-
-                                <td>
-                                    ${escapeHtml(
-                                        formatDateTime(
-                                            timestamp
-                                        )
-                                    )}
-                                </td>
-
-                                <td>
-                                    ${escapeHtml(
-                                        actor
-                                    )}
-                                </td>
-
-                                <td>
-                                    ${escapeHtml(
-                                        formatAction(
-                                            action
-                                        )
-                                    )}
-                                </td>
-
-                                <td>
-                                    ${escapeHtml(
-                                        details
-                                    )}
-                                </td>
-
-                            </tr>
-                        `;
-
-                    }
-                )
-                .join("");
-
-        refreshIcons();
-
+                                <td>${escapeHtml(key.replace(/_/g, " "))}</td>
+                                ${Object.keys(oldValues).length ? `<td class="old">${escapeHtml(show(oldValues[key]))}</td>` : ""}
+                                ${Object.keys(newValues).length ? `<td class="new">${escapeHtml(show(newValues[key]))}</td>` : ""}
+                            </tr>`).join("")}
+                    </tbody>
+                </table>
+            </details>`;
     }
 
-    if (auditRecordCount) {
+    function render(logs, pagination) {
+        const body = $("auditLogBody");
 
-    if (filteredCount === 0) {
+        if (!logs.length) {
+            body.innerHTML = '<tr><td colspan="8" class="audit-empty-state">No audit entries match these filters.</td></tr>';
+        } else {
+            body.innerHTML = logs.map(entry => {
+                const time = when(entry);
+                const target = entry.target_type
+                    ? `${escapeHtml(entry.target_type)} ${escapeHtml(entry.target_id || "")}`
+                    : "—";
 
-        auditRecordCount.textContent =
-            "Showing 0 of 0 records";
-
-    } else {
-
-            const firstRecord = startIndex + 1;
-
-            const lastRecord = Math.min(
-                startIndex + pageSize,
-                filteredCount
-            );
-
-            auditRecordCount.textContent =
-                `Showing ${firstRecord}–${lastRecord} of ${filteredCount} records`;
-
+                return `
+                    <tr>
+                        <td class="audit-when"><strong>${escapeHtml(time.day)}</strong><small>${escapeHtml(time.time)}</small></td>
+                        <td class="audit-actor">${escapeHtml(entry.actor_name || "Unknown")}<small>${escapeHtml(ROLE_LABELS[entry.actor_role] || entry.actor_role || "—")}</small></td>
+                        <td>${escapeHtml(entry.action_label || entry.action)}</td>
+                        <td>${escapeHtml(entry.module)}</td>
+                        <td class="audit-target">${target}${entry.target_label && entry.target_label !== entry.target_id ? `<small>${escapeHtml(entry.target_label)}</small>` : ""}</td>
+                        <td><span class="audit-result ${entry.result === "failed" ? "failed" : "success"}">${escapeHtml(entry.result)}</span></td>
+                        <td class="audit-ip">${escapeHtml(entry.ip_address || "—")}</td>
+                        <td>${escapeHtml(entry.details)}${changes(entry)}</td>
+                    </tr>`;
+            }).join("");
         }
 
+        state.page = pagination.page || 1;
+        state.lastPage = pagination.last_page || 1;
+
+        const total = pagination.total || 0;
+        const start = total ? (state.page - 1) * state.perPage + 1 : 0;
+        const end = Math.min(total, state.page * state.perPage);
+        $("auditRecordCount").textContent = `Showing ${start}–${end} of ${total} record${total === 1 ? "" : "s"}`;
+        $("auditPageIndicator").textContent = `Page ${state.page} of ${state.lastPage}`;
+        $("auditPreviousPage").disabled = state.page <= 1;
+        $("auditNextPage").disabled = state.page >= state.lastPage;
+        icons();
     }
 
-    if (auditPageIndicator) {
+    async function load(page = 1) {
+        status("Loading audit logs...");
 
-        auditPageIndicator.textContent =
-            `Page ${auditCurrentPage} of ${totalPages}`;
-
-    }
-
-    if (auditPreviousPageButton) {
-
-        auditPreviousPageButton.disabled =
-            filteredCount === 0 || auditCurrentPage <= 1;
-
-    }
-
-    if (auditNextPageButton) {
-
-        auditNextPageButton.disabled =
-            filteredCount === 0 || auditCurrentPage >= totalPages;
-
-    }
-}
-
-/* =========================================================
-   REFRESH DISPLAY
-========================================================= */
-
-function refreshAuditLogs(resetPage = true) {
-
-    if (resetPage) {
-        auditCurrentPage = 1;
-    }
-
-    const allLogs =
-        sortAuditLogs(
-            getAuditLogs()
-        );
-
-    populateAdministratorFilter(
-        allLogs
-    );
-
-    const filteredLogs =
-        filterAuditLogs(
-            allLogs
-        );
-
-    renderAuditLogs(filteredLogs);
-}
-
-/* =========================================================
-   CSV ESCAPING
-========================================================= */
-
-function escapeCsv(value) {
-
-    const text =
-        String(
-            value ?? ""
-        );
-
-    return (
-        '"' +
-        text.replace(
-            /"/g,
-            '""'
-        ) +
-        '"'
-    );
-}
-
-/* =========================================================
-   EXPORT CSV
-========================================================= */
-
-function exportAuditLogs() {
-
-    const allLogs =
-        sortAuditLogs(
-            getAuditLogs()
-        );
-
-    const filteredLogs =
-        filterAuditLogs(
-            allLogs
-        );
-
-    if (!filteredLogs.length) {
-
-        showAuditNotification(
-            "There are no audit records to export."
-        );
-
-        return;
-    }
-
-    const rows = [];
-
-    rows.push(
-        [
-            "Date & Time",
-            "Actor",
-            "Role",
-            "Action",
-            "Module",
-            "Details"
-        ]
-            .map(
-                escapeCsv
-            )
-            .join(",")
-    );
-
-    filteredLogs.forEach(
-        log => {
-
-            const timestamp =
-                log.timestamp ||
-                log.dateTime ||
-                log.createdAt ||
-                "";
-
-            const actor =
-                getAuditActor(
-                    log
-                );
-
-            const role =
-                getAuditRole(
-                    log
-                );
-
-            const action =
-                formatAction(
-                    log.action
-                );
-
-            const module =
-                getAuditModule(
-                    log
-                );
-
-            const details =
-                log.details ||
-                "";
-
-            rows.push(
-                [
-                    formatDateTime(
-                        timestamp
-                    ),
-                    actor,
-                    role,
-                    action,
-                    module,
-                    details
-                ]
-                    .map(
-                        escapeCsv
-                    )
-                    .join(",")
-            );
-
+        try {
+            const data = await request(`/audit-logs?${queryString({ page, per_page: state.perPage })}`);
+            if (data.options) fillOptions(data.options);
+            render(Array.isArray(data.logs) ? data.logs : [], data.pagination || {});
+            status("");
+        } catch (error) {
+            status(error.message, true);
+            $("auditLogBody").innerHTML = `<tr><td colspan="8" class="audit-empty-state">${escapeHtml(error.message)}</td></tr>`;
         }
-    );
-
-    const csv =
-        rows.join(
-            "\r\n"
-        );
-
-    const blob =
-        new Blob(
-            [csv],
-            {
-                type:
-                    "text/csv;charset=utf-8;"
-            }
-        );
-
-    const url =
-        URL.createObjectURL(
-            blob
-        );
-
-    const link =
-        document.createElement(
-            "a"
-        );
-
-    const date =
-        new Date()
-            .toISOString()
-            .slice(
-                0,
-                10
-            );
-
-    link.href =
-        url;
-
-    link.download =
-        `siknayan-audit-log-${date}.csv`;
-
-    document.body.appendChild(
-        link
-    );
-
-    link.click();
-
-    link.remove();
-
-    URL.revokeObjectURL(
-        url
-    );
-
-    showAuditNotification(
-        "Audit log exported successfully."
-    );
-}
-
-/* =========================================================
-   NOTIFICATION
-========================================================= */
-
-function showAuditNotification(
-    message
-) {
-
-    const existing =
-        document.getElementById(
-            "auditNotification"
-        );
-
-    if (existing) {
-
-        existing.remove();
-
     }
 
-    const notification =
-        document.createElement(
-            "div"
-        );
+    /* ---------------- Export ---------------- */
 
-    notification.id =
-        "auditNotification";
+    async function exportCsv() {
+        const button = $("exportAuditLog");
+        button.disabled = true;
+        status("Preparing the CSV...");
 
-    notification.textContent =
-        message;
-
-    notification.style.position =
-        "fixed";
-
-    notification.style.right =
-        "24px";
-
-    notification.style.bottom =
-        "24px";
-
-    notification.style.zIndex =
-        "3000";
-
-    notification.style.padding =
-        "13px 16px";
-
-    notification.style.borderRadius =
-        "7px";
-
-    notification.style.background =
-        "#08683c";
-
-    notification.style.color =
-        "#ffffff";
-
-    notification.style.fontSize =
-        "13px";
-
-    notification.style.fontWeight =
-        "600";
-
-    notification.style.boxShadow =
-        "0 5px 18px rgba(0, 0, 0, 0.15)";
-
-    document.body.appendChild(
-        notification
-    );
-
-    setTimeout(
-        () => {
-
-            notification.remove();
-
-        },
-        3000
-    );
-}
-
-/* =========================================================
-   ICON REFRESH
-========================================================= */
-
-function refreshIcons() {
-
-    if (
-        typeof lucide !==
-        "undefined"
-    ) {
-
-        lucide.createIcons();
-
+        try {
+            const response = await request(`/audit-logs/export?${queryString()}`, true);
+            const disposition = response.headers.get("Content-Disposition") || "";
+            const match = disposition.match(/filename="?([^";]+)"?/i);
+            const url = URL.createObjectURL(await response.blob());
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = match ? match[1] : "siknayan-audit-log.csv";
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 60000);
+            status("CSV downloaded. The export was recorded in the audit log.");
+            load(1);
+        } catch (error) {
+            status(error.message, true);
+        } finally {
+            button.disabled = false;
+        }
     }
-}
 
-/* =========================================================
-   EVENT LISTENERS
-========================================================= */
+    /* ---------------- Events ---------------- */
 
-if (applyFiltersButton) {
+    $("auditFilterForm").addEventListener("submit", event => {
+        event.preventDefault();
+        load(1);
+    });
 
-    applyFiltersButton.addEventListener(
-        "click",
-        () => {
+    $("clearAuditFilters").addEventListener("click", () => {
+        $("auditFilterForm").reset();
+        load(1);
+    });
 
-            refreshAuditLogs();
+    $("auditPageSize").addEventListener("change", () => {
+        state.perPage = Number($("auditPageSize").value) || 25;
+        load(1);
+    });
 
-        }
-    );
-}
+    $("auditPreviousPage").addEventListener("click", () => {
+        if (state.page > 1) load(state.page - 1);
+    });
 
+    $("auditNextPage").addEventListener("click", () => {
+        if (state.page < state.lastPage) load(state.page + 1);
+    });
 
-if (clearFiltersButton) {
+    $("exportAuditLog").addEventListener("click", exportCsv);
 
-    clearFiltersButton.addEventListener(
-        "click",
-        () => {
-
-            if (dateFromInput) {
-
-                dateFromInput.value =
-                    "";
-
-            }
-
-            if (dateToInput) {
-
-                dateToInput.value =
-                    "";
-
-            }
-
-            if (administratorFilter) {
-
-                administratorFilter.value =
-                    "";
-
-            }
-
-            if (actionFilter) {
-
-                actionFilter.value =
-                    "";
-
-            }
-
-            if (searchInput) {
-
-                searchInput.value =
-                    "";
-
-            }
-
-            refreshAuditLogs();
-
-        }
-    );
-}
-
-
-if (searchInput) {
-
-    searchInput.addEventListener(
-        "keydown",
-        event => {
-
-            if (
-                event.key ===
-                "Enter"
-            ) {
-
-                refreshAuditLogs();
-
-            }
-
-        }
-    );
-}
-
-
-if (exportButton) {
-
-    exportButton.addEventListener(
-        "click",
-        exportAuditLogs
-    );
-}
-
-
-/* =========================================================
-   PAGINATION EVENTS
-========================================================= */
-
-if (auditPageSizeSelect) {
-
-    auditPageSizeSelect.addEventListener(
-        "change",
-        () => {
-            auditCurrentPage = 1;
-            refreshAuditLogs(false);
-        }
-    );
-
-}
-
-if (auditPreviousPageButton) {
-
-    auditPreviousPageButton.addEventListener(
-        "click",
-        () => {
-
-            if (auditCurrentPage > 1) {
-
-                auditCurrentPage--;
-
-                refreshAuditLogs(false);
-
-            }
-
-        }
-    );
-
-}
-
-if (auditNextPageButton) {
-
-    auditNextPageButton.addEventListener(
-        "click",
-        () => {
-
-            auditCurrentPage++;
-
-            refreshAuditLogs(false);
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   INITIALIZE
-========================================================= */
-
-loadAuditLogs();
+    load(1);
+})();

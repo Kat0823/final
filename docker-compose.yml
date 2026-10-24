@@ -39,6 +39,10 @@ services:
       DB_DATABASE: ${MYSQL_DATABASE:-siknayan}
       DB_USERNAME: ${MYSQL_USER:-siknayan}
       DB_PASSWORD: ${MYSQL_PASSWORD}
+      # Proxies allowed to pass the visitor's real IP (X-Forwarded-For).
+      # Set when the API is reached through a reverse proxy on the Docker
+      # network, e.g. 172.16.0.0/12. Empty: trust none.
+      TRUSTED_PROXIES: ${TRUSTED_PROXIES:-}
     volumes:
       - ./backend:/var/www/html
     ports:

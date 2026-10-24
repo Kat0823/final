@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Module;
+use App\Support\AuditLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -64,6 +65,12 @@ class InstructorModuleController extends Controller
             'is_published' => $validated['is_published'] ?? false,
         ]);
 
+        AuditLogger::log('create', AuditLogger::MODULES, [
+            'target' => $module,
+            'new' => ['class' => $course->code, 'title' => $module->title, 'is_published' => (bool) $module->is_published],
+            'details' => "Added module \"{$module->title}\" to {$course->code}",
+        ]);
+
         return response()->json([
             'success' => true,
             'message' => 'Module created successfully.',
@@ -94,7 +101,18 @@ class InstructorModuleController extends Controller
             'is_published' => ['sometimes', 'boolean'],
         ]);
 
+        $before = $module->only(['title', 'description', 'module_order', 'is_published']);
         $module->update($validated);
+        [$old, $new] = AuditLogger::changes($before, $module->only(array_keys($before)));
+
+        if ($new !== []) {
+            AuditLogger::log('update', AuditLogger::MODULES, [
+                'target' => $module,
+                'old' => $old,
+                'new' => $new,
+                'details' => "Updated module \"{$module->title}\": " . implode(', ', array_map(fn ($f) => str_replace('_', ' ', $f), array_keys($new))),
+            ]);
+        }
 
         return response()->json([
             'success' => true,

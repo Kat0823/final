@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\SystemAdminAuditLog;
+use App\Models\AuditLogEntry;
 use App\Models\User;
 use App\Support\Backup\DatabaseDumper;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -114,8 +114,10 @@ class SystemAdminBackupTest extends TestCase
         // Listed, and recorded in the Audit Logs.
         $this->actingAs($this->admin)->getJson('/api/system-admin/backups')
             ->assertOk()->assertJsonPath('backups.0.name', $name)->assertJsonPath('backups.0.files.count', 3);
-        $log = SystemAdminAuditLog::where('action', 'backup')->latest('id')->first();
-        $this->assertSame('created', $log->details['event']);
+        $log = AuditLogEntry::where('action', 'backup_run')->latest('id')->first();
+        $this->assertSame('Data Backup', $log->module);
+        $this->assertSame($name, $log->target_id);
+        $this->assertSame('success', $log->result);
         $this->actingAs($this->admin)->getJson('/api/system-admin/audit-logs')
             ->assertOk()->assertJsonPath('logs.0.module', 'Data Backup');
 
@@ -153,7 +155,7 @@ class SystemAdminBackupTest extends TestCase
 
         $this->actingAs($this->admin)->get("/api/system-admin/backups/{$name}/download")
             ->assertOk()->assertHeader('Content-Type', 'application/zip');
-        $this->assertSame('downloaded', SystemAdminAuditLog::where('action', 'backup')->latest('id')->first()->details['event']);
+        $this->assertSame($name, AuditLogEntry::where('action', 'backup_downloaded')->latest('id')->first()->target_id);
 
         $this->actingAs($this->admin)->deleteJson("/api/system-admin/backups/{$name}")->assertOk();
         $this->assertFileDoesNotExist($this->root . '/backups/' . $name);

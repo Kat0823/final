@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Notifications\ResetPasswordCode;
-use App\Support\AuditLog;
+use App\Support\AuditLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -89,7 +89,13 @@ class PasswordResetController extends Controller
                     ], 503);
                 }
 
-                AuditLog::self($user, AuditLog::PASSWORD_RESET_REQUEST, $request);
+                // Authentication (never 'Academic Admin Accounts'), whatever the role.
+                AuditLogger::log('reset_code_sent', AuditLogger::AUTH, [
+                    'actor' => $user,
+                    'target' => $user,
+                    'details' => 'Asked for a password reset code by email',
+                    'request' => $request,
+                ]);
             }
         }
 
@@ -145,7 +151,12 @@ class PasswordResetController extends Controller
         });
 
         RateLimiter::clear($this->triesKey($user->email));
-        AuditLog::self($user, AuditLog::PASSWORD_RESET_EMAIL, $request);
+        AuditLogger::log('password_reset', AuditLogger::AUTH, [
+            'actor' => $user,
+            'target' => $user,
+            'details' => 'Reset their password with the emailed code',
+            'request' => $request,
+        ]);
 
         return response()->json([
             'success' => true,
