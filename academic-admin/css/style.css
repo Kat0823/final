@@ -3401,9 +3401,34 @@ select:focus-visible {
 .learner-accounts-table {
     width: 100%;
 
-    min-width: 1050px;
-
     border-collapse: collapse;
+}
+
+/* Fits the card: no sideways scrolling. */
+.learner-accounts-table th,
+.learner-accounts-table td {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.learner-accounts-table .student-id,
+.learner-accounts-table .status-badge {
+    white-space: nowrap;
+}
+
+.learner-account-email {
+    overflow-wrap: anywhere;
+}
+
+.table-action-button.icon-only {
+    width: 30px;
+    justify-content: center;
+    padding: 5px;
+}
+
+.table-action-button.icon-only svg {
+    width: 15px;
+    height: 15px;
 }
 
 

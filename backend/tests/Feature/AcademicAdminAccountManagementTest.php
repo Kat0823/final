@@ -58,6 +58,24 @@ class AcademicAdminAccountManagementTest extends TestCase
             ->assertJsonPath('learner.is_active', true);
     }
 
+    public function test_academic_admin_can_change_a_learner_school_id_and_name(): void
+    {
+        $admin = $this->admin();
+        $learner = User::factory()->create(['role' => 'learner', 'owner_admin_id' => $admin->id, 'school_id' => '23-00013', 'name' => 'Ana Cruz']);
+        User::factory()->create(['role' => 'learner', 'owner_admin_id' => $admin->id, 'school_id' => '23-00014']);
+
+        $this->actingAs($admin)
+            ->putJson("/api/admin/learners/{$learner->id}", ['school_id' => '23-00099', 'name' => 'Ana M. Cruz'])
+            ->assertOk()
+            ->assertJsonPath('learner.school_id', '23-00099')
+            ->assertJsonPath('learner.name', 'Ana M. Cruz');
+
+        // Another learner's school ID, or the wrong format, is refused.
+        $this->actingAs($admin)->putJson("/api/admin/learners/{$learner->id}", ['school_id' => '23-00014'])->assertStatus(422);
+        $this->actingAs($admin)->putJson("/api/admin/learners/{$learner->id}", ['school_id' => '2300099'])->assertStatus(422);
+        $this->assertSame('23-00099', $learner->fresh()->school_id);
+    }
+
     public function test_academic_admin_can_deactivate_an_instructor(): void
     {
         $admin = $this->admin();

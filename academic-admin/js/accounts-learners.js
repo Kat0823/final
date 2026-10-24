@@ -57,8 +57,6 @@
         document.getElementById("accountPassword");
     const generatePasswordButton =
         document.getElementById("generatePasswordBtn");
-    const accountStatusInput =
-        document.getElementById("accountStatus");
     const saveLearnerAccountButton =
         document.getElementById("saveLearnerAccountBtn");
 
@@ -461,7 +459,6 @@
         passwordInput.readOnly = false;
         passwordInput.required = true;
         passwordInput.placeholder = "";
-        accountStatusInput.disabled = false;
 
         saveLearnerAccountButton.innerHTML = `
             <i data-lucide="user-plus"></i>
@@ -476,14 +473,13 @@
         accountModalDescription.textContent =
             "Update this learner's login account information.";
 
-        studentIdInput.readOnly = true;
-        fullNameInput.readOnly = true;
+        studentIdInput.readOnly = false;
+        fullNameInput.readOnly = false;
         programInput.disabled = true;
         emailInput.readOnly = false;
         passwordInput.readOnly = false;
         passwordInput.required = false;
         passwordInput.placeholder = "Leave blank to keep the current password";
-        accountStatusInput.disabled = false;
 
         saveLearnerAccountButton.innerHTML = `
             <i data-lucide="save"></i>
@@ -504,7 +500,6 @@
         passwordInput.readOnly = false;
         passwordInput.required = true;
         passwordInput.placeholder = "";
-        accountStatusInput.disabled = false;
     }
 
     /* ---------------- OPEN CREATE ---------------- */
@@ -516,9 +511,6 @@
 
         passwordInput.value =
             generateTemporaryPassword();
-
-        accountStatusInput.value =
-            "active";
 
         accountModal.hidden = false;
 
@@ -565,9 +557,6 @@
         emailInput.value = "";
         passwordInput.value =
             generateTemporaryPassword();
-
-        accountStatusInput.value =
-            "active";
 
         studentIdInput.readOnly = true;
         fullNameInput.readOnly = true;
@@ -619,8 +608,9 @@
         accountEditId.value =
             account.id;
 
+        // The school ID (e.g. 23-00013), not the database number.
         studentIdInput.value =
-            learner.id;
+            learner.schoolId || "";
 
         fullNameInput.value =
             learner.name;
@@ -633,18 +623,12 @@
 
         passwordInput.value = "";
 
-        accountStatusInput.value =
-            account.isActive === false ? "inactive" : "active";
-
         setEditMode();
-        // Status can be changed for every account, including a new one.
-        accountStatusInput.disabled =
-            false;
 
         accountModal.hidden = false;
 
         setTimeout(
-            () => emailInput.focus(),
+            () => studentIdInput.focus(),
             50
         );
 
@@ -779,9 +763,8 @@
         const password =
             passwordInput.value.trim();
 
-        const status =
-            accountStatusInput.value ||
-            "active";
+        // New accounts start active; Activate/Deactivate is in the table.
+        const status = "active";
 
         if (!studentId) {
             alert("Please enter a Student ID.");
@@ -872,16 +855,14 @@
 
             try {
                 const requestData = {
+                    school_id: studentId,
+                    name: fullName,
                     email: email || null
                 };
 
                 if (password) {
                     requestData.password = password;
                 }
-
-                // Status can be changed for any account, including one
-                // that hasn't signed in yet.
-                requestData.is_active = status === "active";
 
                 const payload = await learnerAccountsApiRequest(
                     `/admin/learners/${encodeURIComponent(account.backendId)}`,
@@ -902,6 +883,18 @@
                     status: payload.learner.is_active === false ? "inactive" : "active"
                 };
                 saveAccounts(accounts);
+
+                // Show the new school ID and name in the table.
+                const learnerState = loadLearnerState();
+                const savedLearner = learnerState.learners.find(
+                    item => String(item.id) === String(account.learnerId)
+                );
+                if (savedLearner) {
+                    savedLearner.schoolId = payload.learner.school_id || studentId;
+                    savedLearner.name = payload.learner.name || fullName;
+                    savedLearner.email = payload.learner.email || "";
+                    saveLearnerState(learnerState);
+                }
                 closeAccountModal();
                 renderTable();
                 alert(payload.message || "Learner account updated successfully.");
@@ -1146,7 +1139,8 @@
         label,
         icon,
         handler,
-        danger = false
+        danger = false,
+        iconOnly = false
     ) {
         const button =
             document.createElement("button");
@@ -1158,10 +1152,18 @@
                 ? "table-action-button danger"
                 : "table-action-button";
 
-        button.innerHTML = `
+        button.innerHTML = iconOnly
+            ? `<i data-lucide="${icon}"></i>`
+            : `
             <i data-lucide="${icon}"></i>
             <span>${escapeHtml(label)}</span>
         `;
+
+        if (iconOnly) {
+            button.classList.add("icon-only");
+            button.title = label;
+            button.setAttribute("aria-label", label);
+        }
 
         button.addEventListener(
             "click",
@@ -1347,13 +1349,15 @@ if (account) {
         createActionButton(
             "Edit",
             "pencil",
-            () => openEditModal(account.id)
+            () => openEditModal(account.id),
+            false,
+            true
         )
     );
 
     // Actions depend on the account's state:
     //   Inactive   -> Activate
-    //   Not Set Up -> New Temporary Password (never signed in)
+    //   Not Set Up -> nothing extra (a new password can be set in Edit)
     //   Active     -> Reset Password, Deactivate
     if (!isActive) {
         actionsCell.appendChild(
@@ -1363,15 +1367,7 @@ if (account) {
                 () => toggleAccountStatus(account.id)
             )
         );
-    } else if (!passwordSetupComplete) {
-        actionsCell.appendChild(
-            createActionButton(
-                "New Temporary Password",
-                "key-round",
-                () => openResetPasswordModal(account.id)
-            )
-        );
-    } else {
+    } else if (passwordSetupComplete) {
         actionsCell.appendChild(
             createActionButton(
                 "Reset Password",
@@ -1406,6 +1402,7 @@ if (account) {
                         openDeleteAccountModal(
                             learner.id
                         ),
+                    true,
                     true
                 )
             );
