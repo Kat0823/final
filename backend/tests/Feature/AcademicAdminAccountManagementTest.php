@@ -76,6 +76,22 @@ class AcademicAdminAccountManagementTest extends TestCase
         $this->assertSame('23-00099', $learner->fresh()->school_id);
     }
 
+    public function test_academic_admin_can_change_an_instructor_id(): void
+    {
+        $admin = $this->admin();
+        $instructor = User::factory()->create(['role' => 'instructor', 'owner_admin_id' => $admin->id, 'school_id' => 'INS-001']);
+        User::factory()->create(['role' => 'instructor', 'owner_admin_id' => $admin->id, 'school_id' => 'INS-002']);
+
+        $this->actingAs($admin)
+            ->putJson("/api/admin/instructors/{$instructor->id}", ['school_id' => 'INS-100', 'name' => $instructor->name])
+            ->assertOk();
+        $this->assertSame('INS-100', $instructor->fresh()->school_id);
+
+        // Another instructor's ID is refused.
+        $this->actingAs($admin)->putJson("/api/admin/instructors/{$instructor->id}", ['school_id' => 'INS-002'])->assertStatus(422);
+        $this->assertSame('INS-100', $instructor->fresh()->school_id);
+    }
+
     public function test_academic_admin_can_deactivate_an_instructor(): void
     {
         $admin = $this->admin();

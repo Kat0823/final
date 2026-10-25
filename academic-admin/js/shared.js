@@ -1131,6 +1131,291 @@ aspect-ratio: 1 / 1;
             display: none !important;
         }
 
+        /* ===== Same look as the learner's profile pop-up ===== */
+        .sik-visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+        }
+
+        .sik-photo-wrap {
+            position: relative;
+            flex: 0 0 auto;
+        }
+
+        .sik-profile-avatar {
+            display: grid !important;
+            place-items: center;
+            background: #e7f4ed !important;
+            color: #086642;
+            cursor: default !important;
+        }
+
+        .sik-profile-avatar svg {
+            width: 38px;
+            height: 38px;
+        }
+
+        .sik-photo-edit {
+            position: absolute;
+            right: -2px;
+            bottom: -2px;
+            width: 32px;
+            height: 32px;
+            display: grid;
+            place-items: center;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            background: #e2ac2f;
+            color: #3d0a0d;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, .25);
+            transition: transform .15s ease, background .15s ease;
+        }
+
+        .sik-photo-edit:hover {
+            background: #f2cf74;
+            transform: scale(1.08);
+        }
+
+        .sik-photo-edit svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .sik-profile-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .sik-profile-tags .sik-profile-role {
+            display: inline-flex;
+            padding: 4px 11px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .14);
+        }
+
+        .sik-profile-role svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Upload strip: only after a picture is chosen (or for a message) */
+        .sik-profile-photo-upload {
+            padding: 10px 28px;
+        }
+
+        .sik-profile-photo-upload:not(:has(#sikUploadProfilePhoto:not([hidden]))):not(:has(#sikProfilePhotoMessage:not(:empty))) {
+            display: none;
+        }
+
+        .sik-profile-photo-actions {
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .sik-profile-photo-actions:not(:has(#sikUploadProfilePhoto:not([hidden]))) {
+            display: none;
+        }
+
+        #sikUploadProfilePhoto,
+        #sikCancelProfilePhoto {
+            min-width: 96px;
+            height: 34px;
+            padding: 0 14px;
+            border-radius: 8px;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        #sikCancelProfilePhoto {
+            border: 1px solid #d0d5dd;
+            background: #fff;
+            color: #344054;
+        }
+
+        #sikProfilePhotoMessage {
+            margin: 6px 0 0;
+            text-align: right;
+        }
+
+        #sikProfilePhotoMessage:empty {
+            display: none;
+        }
+
+        #sikProfileMessage:empty {
+            display: none;
+        }
+
+        /* Password form */
+        #sikChangePasswordForm {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px 14px;
+            margin: -4px 0 0;
+            padding: 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            background: #fafbfa;
+        }
+
+        #sikChangePasswordForm .sik-pw-wide {
+            grid-column: 1 / -1;
+        }
+
+        #sikChangePasswordForm label {
+            display: block;
+            margin-bottom: 6px;
+            color: #344054;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        #sikChangePasswordForm input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 9px 12px;
+            border: 1px solid #d0d5dd;
+            border-radius: 8px;
+            font: inherit;
+        }
+
+        #sikChangePasswordForm input:focus {
+            outline: 2px solid rgba(8, 116, 67, .2);
+            border-color: #087443;
+        }
+
+        #sikChangePasswordMessage {
+            margin: 0;
+            font-size: 13px;
+        }
+
+        #sikChangePasswordMessage:empty {
+            display: none;
+        }
+
+        .sik-pw-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .sik-pw-buttons span {
+            color: #667085;
+            font-size: 12px;
+        }
+
+        .sik-pw-buttons div {
+            display: flex;
+            gap: 10px;
+        }
+
+        #sikCancelPasswordChange,
+        #sikSubmitPasswordChange {
+            height: 36px;
+            padding: 0 14px;
+            border-radius: 8px;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        #sikCancelPasswordChange {
+            border: 1px solid #d0d5dd;
+            background: #fff;
+            color: #344054;
+        }
+
+        #sikSubmitPasswordChange {
+            border: 1px solid #087443;
+            background: #087443;
+            color: #fff;
+        }
+
+        #sikChangePasswordForm #sikCancelPasswordChange,
+        #sikChangePasswordForm #sikSubmitPasswordChange {
+            box-sizing: border-box;
+            width: auto;
+            height: 36px !important;
+            min-height: 0;
+            margin: 0;
+            padding: 0 14px !important;
+            line-height: 1;
+        }
+
+        /* No photo: show the icon, never a broken image */
+        .sik-profile-avatar img[hidden] {
+            display: none !important;
+        }
+
+        #sikSubmitPasswordChange:disabled {
+            opacity: .6;
+        }
+
+        .sik-profile-actions[hidden] {
+            display: none;
+        }
+
+        /* Compact card while changing the password, so it fits */
+        .sik-compact .sik-profile-cover {
+            padding-top: 18px;
+            padding-bottom: 18px;
+        }
+
+        .sik-compact .sik-profile-avatar {
+            width: 68px;
+            height: 68px;
+            min-width: 68px;
+            min-height: 68px;
+            flex-basis: 68px;
+        }
+
+        .sik-compact .sik-profile-cover h2 {
+            margin-bottom: 4px;
+            font-size: 20px;
+        }
+
+        .sik-compact .sik-profile-cover p {
+            margin-bottom: 6px;
+        }
+
+        .sik-compact .sik-profile-body {
+            padding-top: 16px;
+            padding-bottom: 18px;
+        }
+
+        .sik-compact .sik-profile-body h3 {
+            margin-bottom: 10px;
+            font-size: 17px;
+        }
+
+        .sik-compact .sik-profile-grid {
+            gap: 10px 25px;
+        }
+
+        .sik-compact .sik-profile-security {
+            margin-top: 14px;
+            padding-top: 14px;
+        }
+
+        .sik-compact .sik-profile-security-row {
+            margin-bottom: 12px;
+        }
+
+        @media (max-width: 600px) {
+            #sikChangePasswordForm {
+                grid-template-columns: 1fr;
+            }
+        }
+
         /* Responsive photo upload spacing */
         @media (max-width: 600px) {
             .sik-profile-photo-upload {
@@ -1160,43 +1445,38 @@ aspect-ratio: 1 / 1;
             </button>
 
 <header class="sik-profile-cover">
-    <button
-        type="button"
-        class="sik-profile-avatar"
-        id="sikOpenPhotoViewer"
-        aria-label="View profile picture"
-    >
-        <img
-            id="sikProfileCoverPhoto"
-            src=""
-            alt="Administrator profile picture"
-            hidden
-        >
-        <i data-lucide="user-round" id="sikProfileCoverIcon"></i>
-    </button>
+    <div class="sik-photo-wrap">
+        <div class="sik-profile-avatar" id="sikOpenPhotoViewer">
+            <img
+                id="sikProfileCoverPhoto"
+                src=""
+                alt="Administrator profile picture"
+                hidden
+            >
+            <i data-lucide="user-round" id="sikProfileCoverIcon"></i>
+        </div>
+        <!-- Pen on the photo: choose a new profile picture -->
+        <label for="sikProfilePhotoInput" class="sik-photo-edit" title="Change profile picture">
+            <i data-lucide="pencil"></i>
+            <span class="sik-visually-hidden">Change profile picture</span>
+        </label>
+    </div>
 
     <div>
         <h2 id="sikProfileName"></h2>
         <p>Mountain Province State University</p>
-        <div class="sik-profile-role">
-            <i data-lucide="shield-check"></i>
-            <span id="sikProfileRole">Academic Administrator</span>
+        <div class="sik-profile-tags">
+            <span class="sik-profile-role">
+                <i data-lucide="shield-check"></i>
+                <span id="sikProfileRole">Academic Administrator</span>
+            </span>
         </div>
     </div>
 </header>
 
 
 <div class="sik-profile-photo-upload">
-    <label for="sikProfilePhotoInput">Profile Picture</label>
-
     <div class="sik-profile-photo-actions">
-        <label
-            for="sikProfilePhotoInput"
-            class="sik-change-profile-photo"
-        >
-            Change Profile Picture
-        </label>
-
         <input
             id="sikProfilePhotoInput"
             class="sik-profile-photo-file-input"
@@ -1211,6 +1491,7 @@ aspect-ratio: 1 / 1;
         >
             Upload Photo
         </button>
+        <button type="button" id="sikCancelProfilePhoto">Cancel</button>
     </div>
     <p id="sikProfilePhotoMessage" role="status" aria-live="polite"></p>
 </div>
@@ -1249,10 +1530,7 @@ aspect-ratio: 1 / 1;
             <p id="sikProfileEmail">—</p>
         </div>
 
-        <div class="sik-profile-field">
-            <label>Account Role</label>
-            <p id="sikProfileRoleDetail">—</p>
-        </div>
+        <p id="sikProfileRoleDetail" hidden></p>
     </div>
 </section>
 
@@ -1276,7 +1554,7 @@ aspect-ratio: 1 / 1;
                 </section>
 
                 
-<div class="sik-profile-actions">
+<div class="sik-profile-actions" id="sikProfileActions">
     <button
         type="button"
         class="sik-profile-button primary"
@@ -1284,6 +1562,16 @@ aspect-ratio: 1 / 1;
     >
         <i data-lucide="pencil"></i>
         Edit Profile
+    </button>
+
+    <button
+        type="button"
+        class="sik-profile-button"
+        id="sikOpenPassword"
+        data-sik-action="password"
+    >
+        <i data-lucide="lock"></i>
+        Change Password
     </button>
 
     <button
@@ -1663,6 +1951,7 @@ const role = String(profile.role || "academic_admin")
 
 const savedName = String(profile.name || "").trim();
 const savedPhotoUrl = String(profile.profile_photo_url || "").trim();
+window.siknayanAdminSavedPhotoUrl = savedPhotoUrl;
 updateSessionUser({
     id: profile.id,
     name: profile.name || "",
@@ -1786,6 +2075,7 @@ function setProfileEditMode(editing) {
     $("sikProfileNameInput").hidden = !editing;
 
     $("sikEditProfile").hidden = editing;
+    $("sikOpenPassword").hidden = editing;
     $("sikSaveProfile").hidden = !editing;
     $("sikCancelProfileEdit").hidden = !editing;
 
@@ -1943,38 +2233,47 @@ overlay.querySelectorAll('[data-sik-action="password"]').forEach(button => {
             form.hidden = true;
 
             form.innerHTML = `
-                <h3>Change Password </h3>
+                <div class="sik-pw-field sik-pw-wide">
+                    <label for="sikCurrentPassword">Current Password</label>
+                    <input id="sikCurrentPassword"
+                           name="current_password"
+                           type="password"
+                           autocomplete="current-password"
+                           required>
+                </div>
 
-                <label for="sikCurrentPassword">Current Password</label>
-                <input id="sikCurrentPassword"
-                       name="current_password"
-                       type="password"
-                       autocomplete="current-password"
-                       required>
+                <div class="sik-pw-field">
+                    <label for="sikNewPassword">New Password</label>
+                    <input id="sikNewPassword"
+                           name="password"
+                           type="password"
+                           autocomplete="new-password"
+                           minlength="8"
+                           required>
+                </div>
 
-                <label for="sikNewPassword">New Password</label>
-                <input id="sikNewPassword"
-                       name="password"
-                       type="password"
-                       autocomplete="new-password"
-                       minlength="8"
-                       required>
-
-                <label for="sikConfirmPassword">Confirm New Password</label>
-                <input id="sikConfirmPassword"
-                       name="password_confirmation"
-                       type="password"
-                       autocomplete="new-password"
-                       minlength="8"
-                       required>
-
-                <button id="sikSubmitPasswordChange" type="submit">
-                    Update Password
-                </button>
+                <div class="sik-pw-field">
+                    <label for="sikConfirmPassword">Confirm New Password</label>
+                    <input id="sikConfirmPassword"
+                           name="password_confirmation"
+                           type="password"
+                           autocomplete="new-password"
+                           minlength="8"
+                           required>
+                </div>
 
                 <p id="sikChangePasswordMessage"
-   role="status"
-   aria-live="polite"></p>
+                   class="sik-pw-wide"
+                   role="status"
+                   aria-live="polite"></p>
+
+                <div class="sik-pw-buttons sik-pw-wide">
+                    <span>At least 8 characters.</span>
+                    <div>
+                        <button id="sikCancelPasswordChange" type="button">Cancel</button>
+                        <button id="sikSubmitPasswordChange" type="submit">Update Password</button>
+                    </div>
+                </div>
             `;
 
             form.addEventListener("submit", async event => {
@@ -2057,9 +2356,21 @@ overlay.querySelectorAll('[data-sik-action="password"]').forEach(button => {
             });
         }
 
-      // Find the Password row inside Account & Security.
+      // The form opens under the Password row (from either button).
 
-const passwordRow = button.closest(
+if (!form.dataset.cancelReady) {
+    form.dataset.cancelReady = "1";
+    form.querySelector("#sikCancelPasswordChange").addEventListener("click", () => {
+        form.hidden = true;
+        form.style.removeProperty("display");
+        form.reset();
+        $("sikChangePasswordMessage").textContent = "";
+        overlay.querySelector(".sik-profile-modal").classList.remove("sik-compact");
+        $("sikProfileActions").hidden = false;
+    });
+}
+
+const passwordRow = overlay.querySelector(
     ".sik-profile-security-row"
 );
 
@@ -2073,12 +2384,13 @@ if (form.hidden) {
     passwordRow.insertAdjacentElement("afterend", form);
     form.hidden = false;
     form.style.display = "grid";
+    // Compact card; the big buttons hide while the form is open.
+    overlay.querySelector(".sik-profile-modal").classList.add("sik-compact");
+    $("sikProfileActions").hidden = true;
 
     $("sikCurrentPassword")?.focus();
 } else {
-    form.hidden = true;
-    form.style.removeProperty("display");
-    form.reset();
+    form.querySelector("#sikCancelPasswordChange").click();
 }
     });
 });
@@ -2091,11 +2403,13 @@ if (form.hidden) {
 
     let selectedProfilePhoto = null;
     let uploadInProgress = false;
+    let currentSavedPhotoUrl = "";
     if (photoInput && uploadPhotoButton) {
         uploadPhotoButton.hidden = true;
 
         function restoreSavedPhoto() {
             if (!coverPhoto || !coverIcon) return;
+            currentSavedPhotoUrl = currentSavedPhotoUrl || window.siknayanAdminSavedPhotoUrl || "";
 
             if (currentSavedPhotoUrl) {
                 coverPhoto.src = currentSavedPhotoUrl;
@@ -2176,6 +2490,17 @@ if (form.hidden) {
             };
             reader.readAsDataURL(file);
         });
+
+    $("sikCancelProfilePhoto").addEventListener("click", () => {
+        selectedProfilePhoto = null;
+        photoInput.value = "";
+        uploadPhotoButton.hidden = true;
+        if (photoMessage) {
+            photoMessage.classList.remove("error");
+            photoMessage.textContent = "";
+        }
+        restoreSavedPhoto();
+    });
 
     uploadPhotoButton.addEventListener("click", async () => {
         if (!selectedProfilePhoto || uploadInProgress) return;
@@ -2263,6 +2588,11 @@ if (form.hidden) {
                 photoMessage.classList.remove("error");
                 photoMessage.textContent =
                     "Profile picture updated successfully.";
+                setTimeout(() => {
+                    if (photoMessage.textContent === "Profile picture updated successfully.") {
+                        photoMessage.textContent = "";
+                    }
+                }, 4000);
             }
         } catch (error) {
             console.error("Profile photo upload error:", error);

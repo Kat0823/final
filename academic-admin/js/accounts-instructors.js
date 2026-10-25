@@ -1243,9 +1243,9 @@ let instructorCredentialsExpiryTimer = null;
         passwordInput.required = false;
         passwordInput.placeholder = "Leave blank to keep the current password";
 
-        // The Instructor ID stays fixed; the name can be changed.
+        // The admin can change the Instructor ID and the name.
         instructorIdInput.readOnly =
-            true;
+            false;
 
 
         instructorNameInput.readOnly =
@@ -1454,6 +1454,9 @@ let instructorCredentialsExpiryTimer = null;
 
 
                 const requestData = {
+                    school_id:
+                        instructorId,
+
                     name:
                         instructorName,
 
