@@ -394,6 +394,27 @@ body {
    SEARCH
 ========================================================= */
 
+.submissions-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.submissions-header .search-container {
+    margin: 0 0 0 auto;
+    padding: 0;
+}
+
+@media (max-width: 700px) {
+    .submissions-header .search-container {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
 .search-container {
     display: flex;
 
@@ -1875,6 +1896,9 @@ body {
         id="mainContent">
 
 
+        <!-- Title on the left, search on the right at the same level -->
+        <div class="submissions-header">
+        <div>
         <h1 class="page-title">
             Submissions
         </h1>
@@ -1883,6 +1907,7 @@ body {
         <p class="page-subtitle">
             Review learner activities and manage submitted work.
         </p>
+        </div>
 
 
         <!-- Search -->
@@ -1919,6 +1944,7 @@ body {
 
             </div>
 
+        </div>
         </div>
 
 
