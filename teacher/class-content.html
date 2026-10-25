@@ -1968,7 +1968,10 @@
         .tm-module {
             position: relative;
             overflow: hidden;
-            padding: 20px 20px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px 14px 22px;
             border: 1px solid #e3ebe6;
             border-radius: 14px;
             background: #fff;
@@ -1979,10 +1982,34 @@
             content: "";
             position: absolute;
             top: 0;
+            bottom: 0;
             left: 0;
-            right: 0;
-            height: 4px;
+            width: 4px;
             background: #8b1d24;
+        }
+
+        .tm-module:hover {
+            border-color: #d9e6de;
+            box-shadow: 0 4px 12px rgba(16, 24, 40, 0.08);
+        }
+
+        .tm-module-file {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 4px 0 0;
+            color: #667085;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .tm-module-file i {
+            color: #c62828;
+            font-size: 15px;
+        }
+
+        .tm-module .tm-no-material {
+            margin-top: 4px;
         }
 
         .tm-module-head {
@@ -2135,7 +2162,7 @@
         }
 
         @media (max-width: 600px) {
-            .tm-file-row {
+            .tm-module {
                 flex-wrap: wrap;
             }
         }
@@ -2784,37 +2811,31 @@
                             ? "fa-solid fa-file-image"
                             : "fa-solid fa-file-lines";
 
+                // One line: unit number, title and file, then View / Download.
                 card.innerHTML = `
-                    <div class="tm-module-head">
-                        <span class="tm-module-unit" aria-hidden="true">${escapeHtml(order)}</span>
-                        <div class="tm-module-text">
-                            <h3>${escapeHtml(title)}</h3>
-                            ${description ? `<p>${escapeHtml(description)}</p>` : ""}
-                        </div>
-                        <span class="module-status ${isPublished ? "published" : "draft"}">${status}</span>
+                    <span class="tm-module-unit" aria-hidden="true">${escapeHtml(order)}</span>
+                    <div class="tm-module-text">
+                        <h3>${escapeHtml(title)}</h3>
+                        ${hasMaterial
+                            ? `<p class="tm-module-file"><i class="${fileIcon}" aria-hidden="true"></i> ${escapeHtml(module.material_name || "Module material")}</p>`
+                            : `<p class="tm-no-material">No material attached</p>`}
                     </div>
                     ${hasMaterial
-                        ? `<div class="tm-file-row">
-                               <div class="tm-file-name">
-                                   <i class="${fileIcon} tm-file-icon" aria-hidden="true"></i>
-                                   <div><strong>${escapeHtml(module.material_name || "Module material")}</strong><span>Learning material</span></div>
-                               </div>
-                               <div class="tm-file-actions">
-                                   <button type="button" class="tm-file-btn view"
-                                       data-material-action="view" data-module-id="${escapeHtml(module.id)}"
-                                       data-file-name="${escapeHtml(fileName)}"
-                                       title="View" aria-label="View ${escapeHtml(fileName)}">
-                                       <i class="fa-solid fa-eye" aria-hidden="true"></i> View
-                                   </button>
-                                   <button type="button" class="tm-file-btn download"
-                                       data-material-action="download" data-module-id="${escapeHtml(module.id)}"
-                                       data-file-name="${escapeHtml(fileName)}"
-                                       title="Download" aria-label="Download ${escapeHtml(fileName)}">
-                                       <i class="fa-solid fa-download" aria-hidden="true"></i> Download
-                                   </button>
-                               </div>
+                        ? `<div class="tm-file-actions">
+                               <button type="button" class="tm-file-btn view"
+                                   data-material-action="view" data-module-id="${escapeHtml(module.id)}"
+                                   data-file-name="${escapeHtml(fileName)}"
+                                   title="View" aria-label="View ${escapeHtml(fileName)}">
+                                   <i class="fa-solid fa-eye" aria-hidden="true"></i> View
+                               </button>
+                               <button type="button" class="tm-file-btn download"
+                                   data-material-action="download" data-module-id="${escapeHtml(module.id)}"
+                                   data-file-name="${escapeHtml(fileName)}"
+                                   title="Download" aria-label="Download ${escapeHtml(fileName)}">
+                                   <i class="fa-solid fa-download" aria-hidden="true"></i> Download
+                               </button>
                            </div>`
-                        : `<p class="tm-no-material"><i class="fa-solid fa-file-circle-xmark" aria-hidden="true"></i> No material attached</p>`}`;
+                        : ""}`;
 
                 container.appendChild(card);
             });
