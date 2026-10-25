@@ -147,9 +147,90 @@
             font-size: 12px;
         }
 
+        /* View and Download sit on the right of the file */
+        .file-row {
+            flex-wrap: nowrap;
+        }
+
+        .file-name {
+            flex: 1;
+        }
+
         .file-actions {
             display: flex;
+            flex-shrink: 0;
             gap: 8px;
+            margin-left: auto;
+        }
+
+        .file-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            height: 34px;
+            padding: 0 14px;
+            border: 1px solid #087443;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+        }
+
+        .file-btn.view {
+            background: #e8f5ee;
+            color: #087443;
+        }
+
+        .file-btn.view:hover {
+            background: #087443;
+            color: #fff;
+        }
+
+        .file-btn.download {
+            background: #087443;
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(8, 116, 67, 0.25);
+        }
+
+        .file-btn.download:hover {
+            background: #065c36;
+            border-color: #065c36;
+        }
+
+        .file-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .file-btn:focus-visible {
+            outline: 2px solid #e2ac2f;
+            outline-offset: 2px;
+        }
+
+        /* Narrow card (Your submission): icons only, so they stay on the right */
+        .mcard-submit .file-btn {
+            width: 34px;
+            justify-content: center;
+            padding: 0;
+            font-size: 0;
+        }
+
+        .mcard-submit .file-btn i {
+            font-size: 13px;
+        }
+
+        @media (max-width: 1000px) {
+            .mcard-submit .file-btn {
+                width: auto;
+                padding: 0 14px;
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .file-row {
+                flex-wrap: wrap;
+            }
         }
 
         .dropzone {
@@ -330,7 +411,6 @@
                         <span class="mcard-icon" aria-hidden="true"><i class="fa-solid fa-book-open"></i></span>
                         <div>
                             <h3>Module material</h3>
-                            <p>Read or download the learning material for this module.</p>
                         </div>
                     </div>
                     <div id="description"></div>
@@ -378,7 +458,6 @@
                         <span class="mcard-icon" aria-hidden="true"><i class="fa-solid fa-paper-plane"></i></span>
                         <div>
                             <h3>Your submission</h3>
-                            <p>The file you handed in.</p>
                         </div>
                     </div>
                     <div id="mySubmission"></div>
@@ -389,7 +468,6 @@
                         <span class="mcard-icon" aria-hidden="true"><i class="fa-solid fa-star"></i></span>
                         <div>
                             <h3>Grade</h3>
-                            <p>Your score from the instructor.</p>
                         </div>
                     </div>
                     <div id="grade"></div>
@@ -436,10 +514,10 @@
 
             function fileButtons(kind) {
                 return `
-                    <button class="btn secondary small" type="button" data-file="${kind}" data-inline="1">
+                    <button class="file-btn view" type="button" title="View" data-file="${kind}" data-inline="1">
                         <i class="fa-solid fa-eye" aria-hidden="true"></i> View
                     </button>
-                    <button class="btn secondary small" type="button" data-file="${kind}">
+                    <button class="file-btn download" type="button" title="Download" data-file="${kind}">
                         <i class="fa-solid fa-download" aria-hidden="true"></i> Download
                     </button>`;
             }
