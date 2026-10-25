@@ -259,12 +259,20 @@
 
     /* ---------- Edit Profile (email in place) ---------- */
 
+    // Smaller header and spacing while editing or changing the password,
+    // so the whole card fits without a scroll bar.
+    function compact() {
+        const busy = !$("lpPasswordForm").hidden || !$("lpEditActions").hidden;
+        overlay.querySelector(".lp-profile-modal").classList.toggle("lp-compact", busy);
+    }
+
     function setEditing(editing) {
         $("lpEmail").hidden = editing;
         $("lpEmailInput").hidden = !editing;
         $("lpEditNote").hidden = !editing;
         $("lpViewActions").hidden = editing;
         $("lpEditActions").hidden = !editing;
+        compact();
 
         if (editing) {
             $("lpEmailInput").value = profile?.email || "";
@@ -276,7 +284,7 @@
 
     function setPasswordOpen(isOpen) {
         $("lpPasswordForm").hidden = !isOpen;
-        overlay.querySelector(".lp-profile-modal").classList.toggle("lp-pw-open", isOpen);
+        compact();
         // Keep the card short: the big buttons hide while the form is open.
         $("lpViewActions").hidden = isOpen || !$("lpEditActions").hidden;
         overlay.querySelectorAll('[aria-controls="lpPasswordForm"]').forEach(button =>

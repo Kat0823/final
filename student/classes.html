@@ -56,6 +56,74 @@
             background: var(--white);
         }
 
+        /* Smaller class cards: 3 per row, 6 fit on a laptop screen. */
+        .sk-class-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .sk-class-banner {
+            min-height: 100px;
+            gap: 8px;
+            padding: 12px 14px 16px;
+        }
+
+        .sk-class-code {
+            padding: 3px 10px;
+            font-size: 11px;
+        }
+
+        .sk-class-go {
+            width: 26px;
+            height: 26px;
+            font-size: 11px;
+        }
+
+        .sk-class-title {
+            padding-right: 44px;
+            font-size: 15px;
+        }
+
+        .sk-class-badge {
+            top: 80px;
+            right: 14px;
+            width: 40px;
+            height: 40px;
+            border-width: 2px;
+            font-size: 15px;
+        }
+
+        .sk-class-body {
+            gap: 6px;
+            padding: 14px 14px 12px;
+        }
+
+        .sk-class-meta {
+            font-size: 12.5px;
+        }
+
+        .sk-class-meta-icon {
+            width: 24px;
+            height: 24px;
+            font-size: 11px;
+        }
+
+        .sk-class-footer {
+            padding-top: 8px;
+        }
+
+        @media (max-width: 1000px) {
+            .sk-class-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 620px) {
+            .sk-class-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .search input:focus {
             outline: 2px solid rgba(8, 104, 60, 0.22);
             border-color: var(--green);

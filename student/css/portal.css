@@ -1027,70 +1027,82 @@ table.data tbody tr:hover {
     display: none;
 }
 
-/* Change Password open: smaller header and spacing so the card fits
-   on a laptop screen without scrolling. */
-.lp-pw-open .lp-profile-cover {
+/* Edit Profile or Change Password open: smaller header and spacing so
+   the card fits on a laptop screen without scrolling. */
+.lp-compact .lp-profile-actions {
+    margin-top: 14px;
+    padding-top: 14px;
+}
+
+.lp-compact .lp-profile-button {
+    min-height: 44px;
+}
+
+.lp-compact .lp-profile-note {
+    margin-top: 8px;
+}
+.lp-compact .lp-profile-cover {
     padding-top: 18px;
     padding-bottom: 18px;
 }
 
-.lp-pw-open .lp-profile-photo {
+.lp-compact .lp-profile-photo {
     width: 68px;
     height: 68px;
     flex-basis: 68px;
     font-size: 24px;
 }
 
-.lp-pw-open .lp-photo-edit {
+.lp-compact .lp-photo-edit {
     width: 26px;
     height: 26px;
     font-size: 10px;
 }
 
-.lp-pw-open .lp-profile-cover h2 {
+.lp-compact .lp-profile-cover h2 {
     margin-bottom: 4px;
     font-size: 20px;
 }
 
-.lp-pw-open .lp-profile-cover p {
+.lp-compact .lp-profile-cover p {
     margin-bottom: 6px;
 }
 
-.lp-pw-open .lp-profile-body {
+.lp-compact .lp-profile-body {
     padding-top: 16px;
     padding-bottom: 18px;
 }
 
-.lp-pw-open .lp-profile-body h3 {
+.lp-compact .lp-profile-body h3 {
     margin-bottom: 10px;
     font-size: 17px;
 }
 
-.lp-pw-open .lp-profile-grid {
+.lp-compact .lp-profile-grid {
     gap: 10px 25px;
 }
 
-.lp-pw-open .lp-profile-field label,
-.lp-pw-open .lp-profile-field .label {
+.lp-compact .lp-profile-field label,
+.lp-compact .lp-profile-field .label {
     margin-bottom: 3px;
 }
 
-.lp-pw-open .lp-profile-security {
+.lp-compact .lp-profile-security {
     margin-top: 14px;
     padding-top: 14px;
 }
 
-.lp-pw-open .lp-profile-security-row {
+.lp-compact .lp-profile-security-row {
     margin-bottom: 12px;
 }
 
-.lp-pw-open .lp-profile-security-icon {
+.lp-compact .lp-profile-security-icon {
     width: 38px;
     height: 38px;
     font-size: 16px;
 }
 
-.lp-pw-open .lp-password-form input {
+.lp-compact .lp-password-form input {
     padding-top: 8px;
     padding-bottom: 8px;
 }
