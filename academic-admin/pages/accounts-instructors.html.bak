@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Siknayan | Instructor Accounts</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         TOP HEADER
+    ========================== -->
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <img
+                src="../assets/images/mpsu_logo.png"
+                alt="MPSU Logo"
+                class="brand-logo"
+            >
+
+            <div class="brand-text">
+
+                <h1>
+                    MPSU ETEEAP LMS
+                </h1>
+
+                <p>
+                    Mountain Province State University
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="topbar-right">
+
+            <button
+                class="icon-button notification-button"
+                type="button"
+                aria-label="Notifications"
+            >
+
+                <i data-lucide="bell"></i>
+
+                <span class="notification-dot"></span>
+
+            </button>
+
+
+            <div class="profile">
+
+                <img
+                    src="../assets/images/macross.jpg"
+                    alt="Macross Arsel"
+                    class="profile-avatar"
+                >
+
+                <div class="profile-info">
+
+                    <strong>
+                        Macross Arsel
+                    </strong>
+
+                    <span>
+                        Administrator
+                    </span>
+
+                </div>
+
+                <i
+                    data-lucide="chevron-down"
+                    class="profile-chevron"
+                ></i>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =========================
+         APPLICATION LAYOUT
+    ========================== -->
+
+    <div class="app-layout">
+
+
+        <!-- =====================
+             SIDEBAR
+        ====================== -->
+
+        <aside
+            class="sidebar"
+            id="sidebar"
+        >
+
+            <div class="sidebar-top">
+
+                <span class="sidebar-view-text">
+                    View
+                </span>
+
+                <button
+                    class="sidebar-toggle"
+                    id="sidebarToggle"
+                    aria-label="Toggle sidebar"
+                    type="button"
+                >
+
+                    <i data-lucide="panel-left"></i>
+
+                </button>
+
+            </div>
+
+
+            <!-- Profile -->
+
+            <div class="sidebar-profile">
+
+                <img
+                    src="../assets/images/macross.jpg"
+                    alt="Macross Arsel"
+                    class="sidebar-avatar"
+                >
+
+                <span class="sidebar-profile-name">
+                    Macross
+                </span>
+
+            </div>
+
+
+            <!-- Navigation -->
+
+            <nav class="sidebar-nav">
+
+
+                <a
+                    href="../index.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="layout-dashboard"></i>
+
+                    <span class="nav-label">
+                        Dashboard
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="learners.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="users"></i>
+
+                    <span class="nav-label">
+                        Learners
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="classes.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="book-open"></i>
+
+                    <span class="nav-label">
+                        Classes
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="module-library.html"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="folder"></i>
+
+                    <span class="nav-label">
+                        Module Library
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="accounts.html"
+                    class="nav-item active"
+                    aria-current="page"
+                >
+
+                    <i data-lucide="circle-user-round"></i>
+
+                    <span class="nav-label">
+                        Accounts
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="pie-chart"></i>
+
+                    <span class="nav-label">
+                        Reports
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="#"
+                    class="nav-item"
+                >
+
+                    <i data-lucide="bell"></i>
+
+                    <span class="nav-label">
+                        Notifications
+                    </span>
+
+                </a>
+
+            </nav>
+
+
+            <!-- Logout -->
+
+            <div class="sidebar-bottom">
+
+                <a
+                    href="#"
+                    class="nav-item logout"
+                >
+
+                    <i data-lucide="log-out"></i>
+
+                    <span class="nav-label">
+                        Logout
+                    </span>
+
+                </a>
+
+            </div>
+
+        </aside>
+
+
+
+        <!-- =====================
+             MAIN CONTENT
+        ====================== -->
+
+        <main
+            class="main-content learner-accounts-page instructor-accounts-page"
+        >
+
+
+            <!-- =====================
+                 PAGE HEADING
+            ====================== -->
+
+           
+<section class="learner-accounts-heading">
+    <div>
+        <a href="accounts.html" class="back-link">
+            <i data-lucide="arrow-left"></i>
+            <span>Back to Accounts</span>
+        </a>
+
+        <h2>Instructor Accounts</h2>
+        <p>Manage instructor accounts, access, and class assignments.</p>
+    </div>
+
+    <div class="instructor-account-actions">
+       <button
+    type="button"
+    class="secondary-action-button"
+    id="importInstructorsExcelBtn">
+    <i data-lucide="file-spreadsheet"></i>
+    <span>Import Instructors from Excel</span>
+</button>
+
+<button
+    type="button"
+    class="secondary-action-button"
+    id="downloadInstructorCredentialsBtn"
+    disabled>
+    <i data-lucide="download"></i>
+    <span>Download Temporary Credentials</span>
+</button>
+
+<input
+    type="file"
+    id="instructorsExcelFile"
+    accept=".xlsx"
+    hidden
+>
+
+    </div>
+</section>
+            <!-- =====================
+                 TABLE
+            ====================== -->
+
+            <section class="learner-accounts-table-card">
+
+                <table class="learner-accounts-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Instructor ID
+                            </th>
+
+                            <th>
+                                Instructor
+                            </th>
+
+                            <th>
+                                Email
+                            </th>
+
+                            <th>
+                                Assigned Classes
+                            </th>
+
+                            <th>
+                                Last Login
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody
+                        id="instructorAccountsTableBody"
+                    ></tbody>
+
+                </table>
+
+
+                <!-- Empty State -->
+
+                <div
+                    class="learner-accounts-empty"
+                    id="instructorAccountsEmpty"
+                    hidden
+                >
+
+                    <div class="empty-icon">
+
+                        <i data-lucide="user-round-x"></i>
+
+                    </div>
+
+                    <h3>
+                        No instructors found
+                    </h3>
+
+                    <p>
+                        No instructors match the current search or filter.
+                    </p>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         ADD / EDIT ACCOUNT MODAL
+    ====================================================== -->
+
+    <div
+        class="account-modal-overlay"
+        id="instructorAccountModal"
+        hidden
+    >
+
+        <div
+            class="account-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="instructorAccountModalTitle"
+        >
+
+
+            <div class="account-modal-header">
+
+                <div>
+
+                    <h3 id="instructorAccountModalTitle">
+                        Add Instructor Account
+                    </h3>
+
+                    <p id="instructorAccountModalDescription">
+                        Create a new instructor and account.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="account-modal-close"
+                    id="closeInstructorAccountModal"
+                    aria-label="Close"
+                >
+
+                    <i data-lucide="x"></i>
+
+                </button>
+
+            </div>
+
+
+
+            <form
+                id="instructorAccountForm"
+                style="padding: 22px 24px;"
+            >
+
+                <input
+                    type="hidden"
+                    id="instructorAccountEditId"
+                >
+
+
+                <div class="account-form-group">
+
+                    <label for="instructorAccountId">
+                        Instructor ID
+                    </label>
+
+                    <input
+                        type="text"
+                        id="instructorAccountId"
+                        placeholder="e.g. INS-005"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="account-form-group">
+
+                    <label for="instructorAccountName">
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="instructorAccountName"
+                        placeholder="Enter instructor name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="account-form-group">
+
+                    <label for="instructorAccountEmail">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="instructorAccountEmail"
+                        placeholder="instructor@mpsu.edu.ph"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="account-form-group">
+
+                    <label for="instructorAccountPassword">
+                        Temporary Password
+                    </label>
+
+
+                    <div class="password-input-row">
+
+                        <input
+                            type="text"
+                            id="instructorAccountPassword"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="secondary-action-button"
+                            id="generateInstructorPasswordBtn"
+                        >
+
+                            Regenerate
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="account-form-group"
+                    id="instructorAccountStatusGroup"
+                >
+
+                    <label for="instructorAccountStatus">
+                        Account Status
+                    </label>
+
+                    <select
+                        id="instructorAccountStatus"
+                    >
+
+                        <option value="active">
+                            Active
+                        </option>
+
+                        <option value="inactive">
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </form>
+
+
+            <div class="account-modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-action-button"
+                    id="cancelInstructorAccount"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="submit"
+                    form="instructorAccountForm"
+                    class="primary-action-button"
+                >
+
+                    <i data-lucide="save"></i>
+
+                    <span>
+                        Save Account
+                    </span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         RESET PASSWORD MODAL
+    ====================================================== -->
+
+    <div
+        class="account-modal-overlay"
+        id="resetInstructorPasswordModal"
+        hidden
+    >
+
+        <div
+            class="account-modal account-small-modal"
+            role="dialog"
+            aria-modal="true"
+        >
+
+            <div class="account-modal-header">
+
+                <div>
+
+                    <h3>
+                        Reset Password
+                    </h3>
+
+                    <p id="resetInstructorPasswordDescription">
+                        Generate a new temporary password.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="account-modal-close"
+                    id="closeResetInstructorPasswordModal"
+                    aria-label="Close"
+                >
+
+                    <i data-lucide="x"></i>
+
+                </button>
+
+            </div>
+
+
+            <div class="reset-password-content">
+
+                <label for="resetInstructorPasswordValue">
+                    New Temporary Password
+                </label>
+
+
+                <div class="password-input-row">
+
+                    <input
+                        type="text"
+                        id="resetInstructorPasswordValue"
+                        readonly
+                    >
+
+                    <button
+                        type="button"
+                        class="secondary-action-button"
+                        id="regenerateResetInstructorPassword"
+                    >
+                        Regenerate
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="account-modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-action-button"
+                    id="cancelResetInstructorPassword"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="button"
+                    class="primary-action-button"
+                    id="confirmResetInstructorPassword"
+                >
+
+                    <i data-lucide="key-round"></i>
+
+                    <span>
+                        Reset Password
+                    </span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         DELETE INSTRUCTOR MODAL
+    ====================================================== -->
+
+    <div
+        class="account-modal-overlay"
+        id="deleteInstructorAccountModal"
+        hidden
+    >
+
+        <div
+            class="account-modal account-small-modal"
+            role="dialog"
+            aria-modal="true"
+        >
+
+            <div class="account-modal-header">
+
+                <div>
+
+                    <h3>
+                        Delete Instructor
+                    </h3>
+
+                    <p>
+                        This permanently deletes the instructor
+                        and their account.
+                        Assigned classes will be unassigned.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="account-modal-close"
+                    id="closeDeleteInstructorAccountModal"
+                    aria-label="Close"
+                >
+
+                    <i data-lucide="x"></i>
+
+                </button>
+
+            </div>
+
+
+            <div class="delete-account-content">
+
+                <p id="deleteInstructorAccountMessage">
+                </p>
+
+
+                <label
+                    class="delete-confirm-row"
+                    style="
+                        display:flex;
+                        align-items:center;
+                        gap:8px;
+                        margin-top:18px;
+                        font-size:12px;
+                    "
+                >
+
+                    <input
+                        type="checkbox"
+                        id="confirmDeleteInstructorAccount"
+                    >
+
+                    <span>
+                        I understand that the instructor and their
+                        account will be permanently deleted, and
+                        assigned classes will be unassigned.
+                    </span>
+
+                </label>
+
+            </div>
+
+
+            <div class="account-modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-action-button"
+                    id="cancelDeleteInstructorAccount"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="button"
+                    class="danger-action-button"
+                    id="confirmDeleteInstructorAccountBtn"
+                    disabled
+                >
+
+                    <i data-lucide="trash-2"></i>
+
+                    <span>
+                        Delete Instructor
+                    </span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         SCRIPTS
+    ========================== -->
+
+    <script src="../js/shared.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="../js/accounts-instructors.js"></script>
+    
+</body>
+
+</html>

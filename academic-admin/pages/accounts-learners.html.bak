@@ -343,18 +343,7 @@
                 </div>
 
 
-                <button
-                    type="button"
-                    id="addLearnerAccountBtn"
-                    class="primary-action-button"
-                >
-
-                    <i data-lucide="plus"></i>
-
-                    Add Learner Account
-
-                </button>
-
+          
                 <button
                     type="button"
                     id="importLearnersExcelBtn"
@@ -372,6 +361,7 @@
                 >
 
                 <button
+                    disabled
                     type="button"
                     id="downloadLearnerCredentialsBtn"
                     class="primary-action-button"
