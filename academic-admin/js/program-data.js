@@ -78,6 +78,60 @@
 
 
     /* =====================================================
+       ALL PROGRAMS = the list above + every program in the
+       Module Library (including ones the admin added there),
+       so dropdowns always match the Module Library.
+    ===================================================== */
+
+    const LIBRARY_STORAGE_KEY =
+        "siknayan_academic_admin_module_library_v3";
+
+    function libraryPrograms() {
+        try {
+            if (
+                window.SiknayanModuleLibraryData &&
+                typeof window.SiknayanModuleLibraryData.getPrograms === "function"
+            ) {
+                return window.SiknayanModuleLibraryData.getPrograms();
+            }
+
+            const stored = JSON.parse(
+                localStorage.getItem(LIBRARY_STORAGE_KEY) || "null"
+            );
+
+            return stored && stored.programs
+                ? Object.values(stored.programs)
+                : [];
+        } catch (error) {
+            return [];
+        }
+    }
+
+    function allPrograms() {
+        const list = PROGRAMS.map(program => ({ ...program }));
+
+        libraryPrograms().forEach(program => {
+            const code = String(program?.code || "").trim();
+            if (!code) return;
+
+            const known = list.some(
+                item => item.code.toLowerCase() === code.toLowerCase()
+            );
+
+            if (!known) {
+                list.push({
+                    id: code.toLowerCase(),
+                    code,
+                    name: program.name || code
+                });
+            }
+        });
+
+        return list;
+    }
+
+
+    /* =====================================================
        NORMALIZATION
     ===================================================== */
 
@@ -100,7 +154,7 @@
 
     function getAll() {
 
-        return PROGRAMS.map(
+        return allPrograms().map(
             program => ({
                 ...program
             })
@@ -115,7 +169,7 @@
 
     function getCodes() {
 
-        return PROGRAMS.map(
+        return allPrograms().map(
             program =>
                 program.code
         );
@@ -137,7 +191,7 @@
             );
 
 
-        return PROGRAMS.find(
+        return allPrograms().find(
             program =>
                 normalizeCode(
                     program.code
@@ -164,7 +218,7 @@
                 .toLowerCase();
 
 
-        return PROGRAMS.find(
+        return allPrograms().find(
             program =>
                 String(
                     program.id
@@ -281,7 +335,7 @@
            PROGRAM OPTIONS
         ------------------------------------------------- */
 
-        PROGRAMS.forEach(
+        allPrograms().forEach(
             program => {
 
                 html += `
@@ -306,7 +360,7 @@
 
         if (
             preserveValue &&
-            PROGRAMS.some(
+            allPrograms().some(
                 program =>
                     program.code ===
                     previousValue
