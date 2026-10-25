@@ -220,29 +220,32 @@
 
 /* Stat cards */
 .dashboard-overview-grid {
-    gap: 18px;
+    gap: 14px;
 }
 
+/* Compact stat cards */
 .dashboard-stat-card {
     position: relative;
     overflow: hidden;
-    align-items: flex-start;
-    min-height: 150px;
-    padding: 22px;
+    align-items: center;
+    gap: 14px;
+    min-height: 0;
+    padding: 14px 16px;
     border: 1px solid #ebeee9;
     border-radius: 14px;
     box-shadow: var(--theme-card-shadow);
 }
 
 .dashboard-stat-icon {
-    width: 62px;
-    height: 62px;
-    border-radius: 14px;
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    border-radius: 12px;
 }
 
 .dashboard-stat-icon svg {
-    width: 28px;
-    height: 28px;
+    width: 22px;
+    height: 22px;
 }
 
 .dashboard-stat-content {
@@ -253,22 +256,23 @@
 .dashboard-stat-content > span {
     color: #2d3a33;
     font-family: var(--theme-serif);
-    font-size: 15px;
+    font-size: 13.5px;
 }
 
 .dashboard-stat-content > strong {
-    margin-top: 6px;
+    margin-top: 2px;
     color: #1d2a23;
     font-family: var(--theme-serif);
-    font-size: 40px;
+    font-size: 28px;
+    line-height: 1.1;
     font-weight: 900;
 }
 
 .dashboard-stat-content > small {
-    margin-top: 6px;
+    margin-top: 2px;
     color: #5b6760;
     font-family: var(--theme-serif);
-    font-size: 13px;
+    font-size: 12px;
 }
 
 /* Decorative mountains along the bottom of each card (not data). */
@@ -276,9 +280,9 @@
     position: absolute;
     right: 0;
     bottom: 0;
-    width: 62%;
-    height: 46px;
-    opacity: 0.55;
+    width: 55%;
+    height: 30px;
+    opacity: 0.5;
     pointer-events: none;
     -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 46' preserveAspectRatio='none'%3E%3Cpath d='M0 46 L40 26 L70 36 L110 12 L140 28 L170 8 L200 20 L200 46 Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 46' preserveAspectRatio='none'%3E%3Cpath d='M0 46 L40 26 L70 36 L110 12 L140 28 L170 8 L200 20 L200 46 Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
