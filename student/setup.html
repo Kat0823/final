@@ -618,6 +618,8 @@
     ========================= -->
 
     <script src="../api-config.js"></script>
+    <!-- Step 2: add your email -->
+    <script src="../shared/email-step.js"></script>
 <script>
 
         const API_BASE_URL = window.SIKNAYAN_API_ORIGIN;
@@ -1050,45 +1052,16 @@
 
 
                     /*
-                     * SUCCESS
+                     * SUCCESS: next, add the email (required).
                      */
 
-                    showMessage(
-                        "Password setup completed successfully. Please log in again.",
-                        "success"
-                    );
+                    if (data.token) {
+                        sessionStorage.setItem("authToken", data.token);
+                    }
+                    sessionStorage.removeItem("firstLogin");
 
-
-                    /*
-                     * CLEAR OLD LOGIN SESSION
-                     */
-
-                    sessionStorage.removeItem(
-                        "authToken"
-                    );
-
-                    sessionStorage.removeItem(
-                        "user"
-                    );
-
-                    sessionStorage.removeItem(
-                        "firstLogin"
-                    );
-
-
-                    /*
-                     * RETURN TO LOGIN
-                     */
-
-                    setTimeout(
-                        function () {
-
-                            window.location.href =
-                                "../index.html";
-
-                        },
-                        1500
-                    );
+                    hideMessage();
+                    startEmailStep();
 
                 } catch (error) {
 
@@ -1112,6 +1085,39 @@
 
             }
         );
+
+
+        /*
+         * STEP 2: ADD YOUR EMAIL, then log in again.
+         */
+
+        function startEmailStep() {
+            window.SiknayanEmailStep.start({
+                form: form,
+                description: document.querySelector(".password-card .description"),
+                buttonClass: "set-password-btn",
+                showMessage: showMessage,
+                onDone: function () {
+                    showMessage(
+                        "Your account is ready. Please log in again.",
+                        "success"
+                    );
+
+                    sessionStorage.removeItem("authToken");
+                    sessionStorage.removeItem("user");
+                    sessionStorage.removeItem("firstLogin");
+
+                    setTimeout(function () {
+                        window.location.href = "../index.html";
+                    }, 1500);
+                }
+            });
+        }
+
+        // Sign-in sends people here when the email is still missing.
+        if (window.SiknayanEmailStep.requested()) {
+            startEmailStep();
+        }
 
 
         /*

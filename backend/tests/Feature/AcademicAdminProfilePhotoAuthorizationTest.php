@@ -13,6 +13,7 @@ class AcademicAdminProfilePhotoAuthorizationTest extends TestCase
         $learner->role = 'learner';
         $learner->is_active = true;
         $learner->password_setup_complete = true;
+        $learner->email = "learner@example.com";
 
         $this->actingAs($learner, 'sanctum')
             ->postJson('/api/admin/profile/photo')
@@ -30,6 +31,7 @@ class AcademicAdminProfilePhotoAuthorizationTest extends TestCase
         $instructor->role = 'instructor';
         $instructor->is_active = true;
         $instructor->password_setup_complete = true;
+        $instructor->email = "instructor@example.com";
 
         $this->actingAs($instructor, 'sanctum')
             ->postJson('/api/admin/profile/photo')

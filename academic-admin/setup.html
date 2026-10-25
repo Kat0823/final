@@ -242,6 +242,8 @@
     </main>
 
     <script src="../api-config.js"></script>
+    <!-- Step 2: add your email -->
+    <script src="../shared/email-step.js"></script>
     <script>
         const API_BASE_URL = window.SIKNAYAN_API_ORIGIN;
         const setupForm = document.getElementById("setupForm");
@@ -249,7 +251,8 @@
         const confirmPassword = document.getElementById("confirmPassword");
         const setupButton = document.getElementById("setupButton");
         const setupMessage = document.getElementById("setupMessage");
-        const token = sessionStorage.getItem("authToken");
+        let token = sessionStorage.getItem("authToken");
+        const emailStepOnly = window.SiknayanEmailStep.requested();
         let user = null;
 
         try {
@@ -259,7 +262,7 @@
         }
 
         if (!token || !user || user.role !== "academic_admin" ||
-            sessionStorage.getItem("firstLogin") !== "true") {
+            (sessionStorage.getItem("firstLogin") !== "true" && !emailStepOnly)) {
             sessionStorage.removeItem("authToken");
             sessionStorage.removeItem("user");
             sessionStorage.removeItem("firstLogin");
@@ -337,19 +340,39 @@
 
                 sessionStorage.setItem("authToken", data.token);
                 localStorage.setItem("siknayan_api_token", data.token);
+                token = data.token;
                 sessionStorage.removeItem("firstLogin");
-                showMessage("Password setup completed. Opening your dashboard...", "success");
                 setupButton.textContent = "Password Saved";
 
-                setTimeout(() => {
-                    window.location.href = "index.html";
-                }, 1000);
+                // Next: add the email (required), then the dashboard.
+                startEmailStep();
             } catch (error) {
                 showMessage(error.message || "Unable to connect to the server.", "error");
                 setupButton.disabled = false;
                 setupButton.textContent = "Set Password";
             }
         });
+
+        // Step 2: add your email, then open the dashboard.
+        function startEmailStep() {
+            window.SiknayanEmailStep.start({
+                form: setupForm,
+                description: document.querySelector(".setup-card .subtitle"),
+                buttonClass: "setup-button",
+                showMessage,
+                onDone: () => {
+                    showMessage("Your account is ready. Opening your dashboard...", "success");
+                    setTimeout(() => {
+                        window.location.href = "index.html";
+                    }, 1000);
+                }
+            });
+        }
+
+        // Sign-in sends people here when the email is still missing.
+        if (token && user && user.role === "academic_admin" && emailStepOnly) {
+            startEmailStep();
+        }
     </script>
 </body>
 </html>

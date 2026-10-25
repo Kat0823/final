@@ -69,6 +69,9 @@ Route::middleware([
     // Revokes the current token (all roles)
     Route::post('/logout', [AuthController::class, 'logout']);
 
+    // Add your own email (the step after setting a new password)
+    Route::post('/account/email', [\App\Http\Controllers\Api\AccountEmailController::class, 'store']);
+
     // Change your own password (all roles; needs the current password)
     Route::put('/account/password', [PasswordController::class, 'changeOwnPassword']);
 

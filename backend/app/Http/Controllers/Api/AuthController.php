@@ -178,6 +178,8 @@ class AuthController extends Controller
             'message' => 'Login successful.',
             'token' => $token,
             'first_login' => !$user->password_setup_complete,
+            // Password already set but no email yet: add it first.
+            'email_required' => $user->needsEmail(),
 
             'user' => [
                 'id' => $user->id,

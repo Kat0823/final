@@ -43,6 +43,17 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Learners, instructors and academic admins must add their own
+     * email after setting their password, before using the LMS.
+     */
+    public function needsEmail(): bool
+    {
+        return in_array($this->role, ['learner', 'instructor', 'academic_admin'], true)
+            && (bool) $this->password_setup_complete
+            && trim((string) $this->email) === '';
+    }
+
     public function courses(): BelongsToMany
     {
         return $this->belongsToMany(Course::class, 'course_user');

@@ -558,6 +558,8 @@
     </main>
 
     <script src="../api-config.js"></script>
+    <!-- Step 2: add your email -->
+    <script src="../shared/email-step.js"></script>
 <script>
         const API_BASE_URL = window.SIKNAYAN_API_ORIGIN;
 
@@ -797,9 +799,8 @@
                 setupButton.innerHTML =
                     '<i class="fa-solid fa-check"></i> Password Saved';
 
-                setTimeout(function () {
-                    window.location.href = "dashboard.html";
-                }, 1000);
+                // Next: add the email (required), then the dashboard.
+                startEmailStep();
 
             } catch (error) {
                 console.error("Password setup error:", error);
@@ -817,6 +818,27 @@
                 setupButton.textContent = "Set Password";
             }
         });
+
+        // Step 2: add your email, then open the dashboard.
+        function startEmailStep() {
+            window.SiknayanEmailStep.start({
+                form: setupForm,
+                description: document.querySelector(".setup-card .subtitle"),
+                buttonClass: "setup-button",
+                showMessage: showMessage,
+                onDone: function () {
+                    showMessage("Your account is ready. Opening your dashboard...", "success");
+                    setTimeout(function () {
+                        window.location.href = "dashboard.html";
+                    }, 1000);
+                }
+            });
+        }
+
+        // Sign-in sends people here when the email is still missing.
+        if (token && window.SiknayanEmailStep.requested()) {
+            startEmailStep();
+        }
 
         // Initialize requirement indicators.
         updatePasswordStrength();

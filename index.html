@@ -1529,6 +1529,20 @@ sessionStorage.setItem(
 
                 sessionStorage.removeItem("firstLogin");
 
+                // Password already set, but no email yet: add it first.
+                if (data.email_required === true) {
+                    const emailPages = {
+                        learner: "student/setup.html",
+                        instructor: "teacher/setup.html",
+                        academic_admin: "academic-admin/setup.html"
+                    };
+
+                    if (emailPages[role]) {
+                        window.location.href = emailPages[role] + "?step=email";
+                        return;
+                    }
+                }
+
                 // Existing accounts go to their own page.
                 window.location.href = destination;
 

@@ -8,7 +8,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Accounts still on an admin-chosen password can only set a new password
- * or log out. Everything else is refused until setup is complete.
+ * or log out. After that, an account without an email can only add its
+ * email or log out. Everything else is refused until setup is complete.
  */
 class EnsurePasswordSetupComplete
 {
@@ -17,6 +18,11 @@ class EnsurePasswordSetupComplete
         'api/student/setup-password',
         'api/instructor/setup-password',
         'api/admin/setup-password',
+    ];
+
+    private const EMAIL_STEP_PATHS = [
+        'api/logout',
+        'api/account/email',
     ];
 
     public function handle(Request $request, Closure $next): Response
@@ -32,6 +38,18 @@ class EnsurePasswordSetupComplete
                 'success' => false,
                 'code' => 'password_setup_required',
                 'message' => 'Please set a new password before continuing.',
+            ], 403);
+        }
+
+        if (
+            $user
+            && $user->needsEmail()
+            && !in_array($request->path(), self::EMAIL_STEP_PATHS, true)
+        ) {
+            return response()->json([
+                'success' => false,
+                'code' => 'email_required',
+                'message' => 'Please add your email address before continuing.',
             ], 403);
         }
 

@@ -89,6 +89,7 @@ class AuditLogger
         'password_reset' => 'Password Reset',
         'password_set' => 'Password Set',
         'password_change' => 'Password Change',
+        'email_added' => 'Email Added',
         'create' => 'Create',
         'update' => 'Update',
         'delete' => 'Delete',
