@@ -1953,6 +1953,192 @@
             clip: rect(0, 0, 0, 0);
             white-space: nowrap;
         }
+
+        /* ===== Module cards (same style as the learner's Module material card) ===== */
+        #moduleSummary:empty {
+            display: none;
+        }
+
+        #modulesContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .tm-module {
+            position: relative;
+            overflow: hidden;
+            padding: 20px 20px 18px;
+            border: 1px solid #e3ebe6;
+            border-radius: 14px;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(16, 24, 40, 0.05);
+        }
+
+        .tm-module::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #8b1d24;
+        }
+
+        .tm-module-head {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding-bottom: 14px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid #eef2ef;
+        }
+
+        .tm-module-unit {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            border-radius: 12px;
+            background: #fbecec;
+            color: #8b1d24;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .tm-module-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .tm-module-text h3 {
+            margin: 0;
+            font-size: 16px;
+            overflow-wrap: anywhere;
+        }
+
+        .tm-module-text p {
+            margin: 4px 0 0;
+            color: #667085;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .tm-module .module-status {
+            flex-shrink: 0;
+        }
+
+        .tm-file-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 16px;
+            border: 1px solid #e8eeea;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+        }
+
+        .tm-file-name {
+            display: flex;
+            flex: 1;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .tm-file-name strong {
+            display: block;
+            overflow-wrap: anywhere;
+        }
+
+        .tm-file-name span {
+            color: #667085;
+            font-size: 12px;
+        }
+
+        .tm-file-icon {
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            border-radius: 10px;
+            background: #fdecec;
+            color: #c62828;
+            font-size: 22px;
+        }
+
+        .tm-file-actions {
+            display: flex;
+            flex-shrink: 0;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        .tm-file-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            height: 34px;
+            padding: 0 14px;
+            border: 1px solid #087443;
+            border-radius: 999px;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+        }
+
+        .tm-file-btn.view {
+            background: #e8f5ee;
+            color: #087443;
+        }
+
+        .tm-file-btn.view:hover {
+            background: #087443;
+            color: #fff;
+        }
+
+        .tm-file-btn.download {
+            background: #087443;
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(8, 116, 67, 0.25);
+        }
+
+        .tm-file-btn.download:hover {
+            background: #065c36;
+            border-color: #065c36;
+        }
+
+        .tm-file-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .tm-file-btn:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .tm-file-btn:focus-visible {
+            outline: 2px solid #e2ac2f;
+            outline-offset: 2px;
+        }
+
+        .tm-no-material {
+            margin: 0;
+            color: #667085;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            .tm-file-row {
+                flex-wrap: wrap;
+            }
+        }
     </style>
     <!-- Header and sidebar shared by all Instructor pages (load last) -->
     <link rel="stylesheet" href="CSS/shell.css">
@@ -2116,8 +2302,8 @@
                 <div class="content-panel">
                     <div class="section-header">
                         <div>
-                            <h2>Modules &amp; Syllabus</h2>
-                            <p id="moduleSummary">Loading modules...</p>
+                            <h2>Modules</h2>
+                            <p id="moduleSummary"></p>
                         </div>
                     </div>
 
@@ -2540,8 +2726,6 @@
             $("learnerSummary").textContent =
                 `${learnerCount} enrolled learner${learnerCount === 1 ? "" : "s"}`;
 
-            $("moduleSummary").textContent =
-                `${moduleCount} module${moduleCount === 1 ? "" : "s"} in this class`;
 
             // The current class endpoint does not provide pending-review data.
         }
@@ -2560,18 +2744,17 @@
                     </div>`;
 
                 $("modulesBadge").textContent = "0";
-                $("moduleSummary").textContent = "0 modules in this class";
+                $("moduleSummary").textContent = "";
                 return;
             }
 
             $("modulesBadge").textContent = modules.length;
-            $("moduleSummary").textContent =
-                `${modules.length} module${modules.length === 1 ? "" : "s"} in this class`;
+            $("moduleSummary").textContent = "";
 
             modules.forEach((module, index) => {
                 // A flat row (no expanding): everything is visible at once.
                 const card = document.createElement("article");
-                card.className = "module-card module-row";
+                card.className = "tm-module";
 
                 const title = module.name || module.title || "Untitled Module";
                 // Shown only when the module really has a description.
@@ -2595,43 +2778,43 @@
                 const isPdf = /\.pdf$/i.test(String(module.material_name || ""));
                 const fileIcon = isPdf
                     ? "fa-solid fa-file-pdf"
-                    : /\.(png|jpe?g|gif|webp)$/i.test(String(module.material_name || ""))
-                        ? "fa-solid fa-file-image"
-                        : "fa-solid fa-file-lines";
+                    : /\.docx?$/i.test(String(module.material_name || ""))
+                        ? "fa-solid fa-file-word"
+                        : /\.(png|jpe?g|gif|webp)$/i.test(String(module.material_name || ""))
+                            ? "fa-solid fa-file-image"
+                            : "fa-solid fa-file-lines";
 
                 card.innerHTML = `
-                    <div class="module-title-group">
-                        <span class="unit-badge">UNIT ${escapeHtml(order)}</span>
-                        <div class="module-text">
+                    <div class="tm-module-head">
+                        <span class="tm-module-unit" aria-hidden="true">${escapeHtml(order)}</span>
+                        <div class="tm-module-text">
                             <h3>${escapeHtml(title)}</h3>
-                            ${description ? `<p class="module-desc">${escapeHtml(description)}</p>` : ""}
-                            <p class="module-meta">
-                                <span class="module-status ${isPublished ? "published" : "draft"}">${status}</span>
-                                ${hasMaterial
-                                    ? `<span class="module-material ${isPdf ? "pdf" : ""}">
-                                           <i class="${fileIcon}" aria-hidden="true"></i>
-                                           ${escapeHtml(module.material_name || "Material attached")}
-                                       </span>`
-                                    : `<span class="not-available">No material attached</span>`}
-                            </p>
+                            ${description ? `<p>${escapeHtml(description)}</p>` : ""}
                         </div>
+                        <span class="module-status ${isPublished ? "published" : "draft"}">${status}</span>
                     </div>
                     ${hasMaterial
-                        ? `<div class="material-actions">
-                               <button type="button" class="icon-action view"
-                                   data-material-action="view" data-module-id="${escapeHtml(module.id)}"
-                                   data-file-name="${escapeHtml(fileName)}"
-                                   title="View" aria-label="View ${escapeHtml(fileName)}">
-                                   <i class="fa-solid fa-eye" aria-hidden="true"></i>
-                               </button>
-                               <button type="button" class="icon-action"
-                                   data-material-action="download" data-module-id="${escapeHtml(module.id)}"
-                                   data-file-name="${escapeHtml(fileName)}"
-                                   title="Download" aria-label="Download ${escapeHtml(fileName)}">
-                                   <i class="fa-solid fa-download" aria-hidden="true"></i>
-                               </button>
+                        ? `<div class="tm-file-row">
+                               <div class="tm-file-name">
+                                   <i class="${fileIcon} tm-file-icon" aria-hidden="true"></i>
+                                   <div><strong>${escapeHtml(module.material_name || "Module material")}</strong><span>Learning material</span></div>
+                               </div>
+                               <div class="tm-file-actions">
+                                   <button type="button" class="tm-file-btn view"
+                                       data-material-action="view" data-module-id="${escapeHtml(module.id)}"
+                                       data-file-name="${escapeHtml(fileName)}"
+                                       title="View" aria-label="View ${escapeHtml(fileName)}">
+                                       <i class="fa-solid fa-eye" aria-hidden="true"></i> View
+                                   </button>
+                                   <button type="button" class="tm-file-btn download"
+                                       data-material-action="download" data-module-id="${escapeHtml(module.id)}"
+                                       data-file-name="${escapeHtml(fileName)}"
+                                       title="Download" aria-label="Download ${escapeHtml(fileName)}">
+                                       <i class="fa-solid fa-download" aria-hidden="true"></i> Download
+                                   </button>
+                               </div>
                            </div>`
-                        : ""}`;
+                        : `<p class="tm-no-material"><i class="fa-solid fa-file-circle-xmark" aria-hidden="true"></i> No material attached</p>`}`;
 
                 container.appendChild(card);
             });
