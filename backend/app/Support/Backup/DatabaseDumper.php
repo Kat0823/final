@@ -37,12 +37,22 @@ class DatabaseDumper
             ));
             @chmod($optionsFile, 0600);
 
+            $binary = config('backup.mysqldump');
+
             $base = [
-                config('backup.mysqldump'),
+                $binary,
                 '--defaults-extra-file=' . $optionsFile,
                 '--single-transaction',
                 '--default-character-set=utf8mb4',
             ];
+
+            // Newer MariaDB dump tools (the one Debian/Docker installs) refuse
+            // MySQL's self-signed certificate by default. The connection stays
+            // encrypted when the server offers it; only the certificate check
+            // is skipped, unless BACKUP_VERIFY_DB_CERT=true.
+            if (!config('backup.verify_server_cert') && $this->isMariaDbTool($binary)) {
+                $base[] = '--skip-ssl-verify-server-cert';
+            }
 
             // 1) Every table's structure (and stored routines / triggers).
             $structure = $this->run(array_merge($base, ['--no-data', '--routines', '--triggers', $database]));
@@ -62,6 +72,16 @@ class DatabaseDumper
         } finally {
             @unlink($optionsFile);
         }
+    }
+
+    /** True for MariaDB's mysqldump / mariadb-dump (they say "MariaDB" in --version). */
+    private function isMariaDbTool(string $binary): bool
+    {
+        $process = new Process([$binary, '--version'], null, null, null, 15.0);
+        $process->run();
+
+        return $process->isSuccessful()
+            && stripos($process->getOutput() . $process->getErrorOutput(), 'mariadb') !== false;
     }
 
     private function run(array $command): string

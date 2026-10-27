@@ -43,7 +43,7 @@ class SystemAdminProfileTest extends TestCase
         $this->actingAs($admin)
             ->postJson('/api/system-admin/profile', [
                 'name' => 'New Name',
-                'email' => 'new@example.com',
+                'email' => $admin->email, // unchanged: emails change only after verification
                 'school_id' => 'HACKED', // ignored: login ID is read-only
             ])
             ->assertOk()
@@ -52,9 +52,16 @@ class SystemAdminProfileTest extends TestCase
         $this->assertDatabaseHas('users', [
             'id' => $admin->id,
             'name' => 'New Name',
-            'email' => 'new@example.com',
+            'email' => $admin->email,
             'school_id' => 'SYS-P1',
         ]);
+
+        // A new email through the profile form is refused.
+        $this->actingAs($admin)
+            ->postJson('/api/system-admin/profile', ['name' => 'New Name', 'email' => 'new@example.com'])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['email']);
+        $this->assertNotSame('new@example.com', $admin->fresh()->email);
     }
 
     public function test_photo_upload_replaces_and_removes_the_old_file(): void
@@ -99,9 +106,14 @@ class SystemAdminProfileTest extends TestCase
         User::factory()->create(['school_id' => 'X-1', 'email' => 'taken@example.com', 'role' => 'learner']);
 
         $this->actingAs($admin)
-            ->postJson('/api/system-admin/profile', ['name' => '', 'email' => 'taken@example.com'])
+            ->postJson('/api/system-admin/profile', ['name' => ''])
             ->assertStatus(422)
-            ->assertJsonValidationErrors(['name', 'email']);
+            ->assertJsonValidationErrors(['name']);
+
+        $this->actingAs($admin)
+            ->postJson('/api/system-admin/profile', ['name' => 'Ok', 'email' => 'taken@example.com'])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['email']);
 
         $this->actingAs($admin)
             ->post('/api/system-admin/profile', [

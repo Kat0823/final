@@ -148,4 +148,23 @@ class LoginSecurityTest extends TestCase
             ->getJson('/api/system-admin/session')
             ->assertUnauthorized();
     }
+
+    public function test_older_slower_password_hash_is_resaved_on_sign_in(): void
+    {
+        $user = $this->account();
+
+        // A password saved at a different (older) strength.
+        $old = password_hash('correct-password', PASSWORD_BCRYPT, ['cost' => 11]);
+        \Illuminate\Support\Facades\DB::table('users')->where('id', $user->id)->update(['password' => $old]);
+        $this->assertTrue(Hash::needsRehash($user->fresh()->password));
+
+        $this->attempt('LS-00001', 'correct-password')->assertOk();
+
+        $saved = $user->fresh()->password;
+        $this->assertNotSame($old, $saved);
+        $this->assertFalse(Hash::needsRehash($saved));
+
+        // The same password still works.
+        $this->attempt('LS-00001', 'correct-password')->assertOk();
+    }
 }

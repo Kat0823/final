@@ -146,6 +146,65 @@ class ScoringCardTest extends TestCase
         $this->assertNull($this->submission->fresh()->grade);
     }
 
+    private function confirmEdit(string $password, ?User $as = null)
+    {
+        return $this->actingAs($as ?? $this->instructor)
+            ->postJson("/api/instructor/submissions/{$this->submission->id}/grade/confirm-edit", ['password' => $password]);
+    }
+
+    public function test_saved_scores_can_be_changed_after_password_confirmation(): void
+    {
+        $a = ['title' => 'A', 'score' => 5, 'max_score' => 10];
+        $this->grade(['items' => [$a]])->assertOk();
+
+        // Without confirming, the change is refused and the page is told to ask for the password.
+        $this->grade(['items' => [['title' => 'A', 'score' => 9, 'max_score' => 10]]])
+            ->assertStatus(422)
+            ->assertJsonPath('password_required', true);
+
+        // A wrong password does not unlock anything.
+        $this->confirmEdit('wrong-password')->assertStatus(422)->assertJsonMissingPath('edit_pass');
+        $this->grade(['items' => [['title' => 'A', 'score' => 9, 'max_score' => 10]], 'edit_pass' => 'made-up'])
+            ->assertStatus(422);
+
+        // The right password gives a one-time pass for this submission.
+        $pass = $this->confirmEdit('password')->assertOk()->json('edit_pass');
+        $this->assertNotEmpty($pass);
+
+        $this->grade(['items' => [['title' => 'A (rechecked)', 'score' => 9, 'max_score' => 10]], 'edit_pass' => $pass])
+            ->assertOk()
+            ->assertJsonPath('grade.score', '9.00')
+            ->assertJsonPath('grade.items.0.title', 'A (rechecked)');
+
+        // The learner is told, and the change is in the audit log.
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $this->learner->id,
+            'title' => 'Grade Updated',
+        ]);
+        $this->assertDatabaseHas('audit_logs', ['module' => 'Grades', 'action' => 'update']);
+
+        // The pass works only once.
+        $this->grade(['items' => [['title' => 'A', 'score' => 2, 'max_score' => 10]], 'edit_pass' => $pass])
+            ->assertStatus(422)
+            ->assertJsonPath('password_required', true);
+        $this->assertSame('9.00', (string) $this->submission->fresh()->grade->score);
+    }
+
+    public function test_confirming_a_score_change_is_limited_to_the_class_instructor(): void
+    {
+        $this->grade(['items' => [['title' => 'A', 'score' => 5, 'max_score' => 10]]])->assertOk();
+
+        $other = User::factory()->create(['role' => 'instructor', 'school_id' => 'INS-SC3', 'is_active' => true]);
+        $this->confirmEdit('password', $other)->assertForbidden();
+        $this->confirmEdit('password', $this->learner)->assertForbidden();
+
+        // Five wrong passwords stop further tries for a while.
+        for ($i = 0; $i < 5; $i++) {
+            $this->confirmEdit('wrong-password')->assertStatus(422);
+        }
+        $this->confirmEdit('password')->assertStatus(429);
+    }
+
     public function test_other_instructors_cannot_grade(): void
     {
         $other = User::factory()->create(['role' => 'instructor', 'school_id' => 'INS-SC2', 'is_active' => true]);

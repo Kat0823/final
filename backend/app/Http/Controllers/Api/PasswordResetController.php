@@ -17,10 +17,10 @@ use Illuminate\Support\Facades\RateLimiter;
 /**
  * "Forgot password" with a 5-digit code sent by email, for every role.
  *
- * 1. POST /api/password/forgot       {email}
- *    Emails a 5-digit code when an active account has that email. The
- *    answer is the same either way, so the page can't be used to find
- *    out which emails have accounts.
+ * 1. POST /api/password/forgot       {school_id, email}
+ *    Emails a 5-digit code when the School ID and the email saved during
+ *    account setup belong to the same active account. Anything else is
+ *    refused with a "failed" message (rate limited: 5 per minute).
  * 2. POST /api/password/verify-code  {email, code}
  *    Checks the code so the page can move on to the new password.
  * 3. POST /api/password/reset        {email, code, password, password_confirmation}
@@ -37,8 +37,12 @@ class PasswordResetController extends Controller
     private const RESEND_SECONDS = 60;
 
     private const SENT_MESSAGE =
-        'If an account uses this email address, a 5-digit verification code has been sent to it. '
+        'A 5-digit verification code has been sent to your email address. '
         . 'Check your inbox (and spam folder). The code expires in 15 minutes.';
+
+    private const EMAIL_NOT_FOUND =
+        'The School ID and email address do not match any account. '
+        . 'Use your School ID and the email you added when you set up your account, or contact your administrator.';
 
     private const INVALID_CODE =
         'The verification code is incorrect or has expired.';
@@ -49,54 +53,73 @@ class PasswordResetController extends Controller
     public function forgot(Request $request): JsonResponse
     {
         $validated = $request->validate([
+            'school_id' => ['required', 'string', 'max:100'],
             'email' => ['required', 'string', 'email', 'max:255'],
         ], [
+            'school_id.required' => 'Please enter your School ID.',
             'email.required' => 'Please enter your email address.',
             'email.email' => 'Please enter a valid email address.',
         ]);
 
         $user = $this->findByEmail($validated['email']);
 
-        if ($user && $user->is_active) {
-            $existing = DB::table('password_reset_tokens')->where('email', $user->email)->first();
-            $recentlySent = $existing
-                && Carbon::parse($existing->created_at)->gt(now()->subSeconds(self::RESEND_SECONDS));
+        // The School ID and the email saved when the account was set up
+        // must both belong to the same account. Anything else fails.
+        $schoolIdMatches = $user
+            && mb_strtolower(trim((string) $user->school_id)) === mb_strtolower(trim($validated['school_id']));
 
-            if (!$recentlySent) {
-                // 5 digits, leading zeros allowed (00000 to 99999).
-                $code = str_pad((string) random_int(0, 99999), 5, '0', STR_PAD_LEFT);
+        if (!$user || !$schoolIdMatches || !$user->password_setup_complete) {
+            return response()->json([
+                'success' => false,
+                'message' => self::EMAIL_NOT_FOUND,
+            ], 422);
+        }
 
-                DB::table('password_reset_tokens')->updateOrInsert(
-                    ['email' => $user->email],
-                    ['token' => Hash::make($code), 'created_at' => now()]
-                );
-                RateLimiter::clear($this->triesKey($user->email));
+        if (!$user->is_active) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This account is deactivated. Please contact your administrator.',
+            ], 422);
+        }
 
-                try {
-                    $user->notify(new ResetPasswordCode($code, self::CODE_MINUTES));
-                } catch (\Throwable $error) {
-                    DB::table('password_reset_tokens')->where('email', $user->email)->delete();
+        $existing = DB::table('password_reset_tokens')->where('email', $user->email)->first();
+        $recentlySent = $existing
+            && Carbon::parse($existing->created_at)->gt(now()->subSeconds(self::RESEND_SECONDS));
 
-                    // Mail server problems are logged for the administrator.
-                    Log::error('Password reset code could not be emailed.', [
-                        'user_id' => $user->id,
-                        'error' => $error->getMessage(),
-                    ]);
+        if (!$recentlySent) {
+            // 5 digits, leading zeros allowed (00000 to 99999).
+            $code = str_pad((string) random_int(0, 99999), 5, '0', STR_PAD_LEFT);
 
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'The verification code could not be sent right now. Please try again later or contact your administrator.',
-                    ], 503);
-                }
+            DB::table('password_reset_tokens')->updateOrInsert(
+                ['email' => $user->email],
+                ['token' => Hash::make($code), 'created_at' => now()]
+            );
+            RateLimiter::clear($this->triesKey($user->email));
 
-                // Authentication (never 'Academic Admin Accounts'), whatever the role.
-                AuditLogger::log('reset_code_sent', AuditLogger::AUTH, [
-                    'actor' => $user,
-                    'target' => $user,
-                    'details' => 'Asked for a password reset code by email',
-                    'request' => $request,
+            try {
+                $user->notify(new ResetPasswordCode($code, self::CODE_MINUTES));
+            } catch (\Throwable $error) {
+                DB::table('password_reset_tokens')->where('email', $user->email)->delete();
+
+                // Mail server problems are logged for the administrator.
+                Log::error('Password reset code could not be emailed.', [
+                    'user_id' => $user->id,
+                    'error' => $error->getMessage(),
                 ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'The verification code could not be sent right now. Please try again later or contact your administrator.',
+                ], 503);
             }
+
+            // Authentication (never 'Academic Admin Accounts'), whatever the role.
+            AuditLogger::log('reset_code_sent', AuditLogger::AUTH, [
+                'actor' => $user,
+                'target' => $user,
+                'details' => 'Asked for a password reset code by email',
+                'request' => $request,
+            ]);
         }
 
         return response()->json([

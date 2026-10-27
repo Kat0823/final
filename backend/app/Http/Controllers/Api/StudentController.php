@@ -102,6 +102,7 @@ class StudentController extends Controller
                 'modules' => $course->modules
                     ->map(fn (Module $module) => self::module($module, $submissions->get($module->id)))
                     ->values(),
+                'resources' => LessonResourceController::listFor($course),
                 'announcements' => $course->announcements->map(fn ($announcement) => [
                     'id' => $announcement->id,
                     'title' => $announcement->title,

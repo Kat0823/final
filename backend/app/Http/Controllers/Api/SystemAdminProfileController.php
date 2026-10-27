@@ -32,14 +32,13 @@ class SystemAdminProfileController extends Controller
     {
         $user = $request->user();
 
+        // The email changes only through the verified "Change Email" steps.
+        if ($response = \App\Support\ProfileEmailGuard::refuseChange($request, $user)) {
+            return $response;
+        }
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => [
-                'nullable',
-                'email',
-                'max:255',
-                Rule::unique('users', 'email')->ignore($user->id),
-            ],
             'photo' => ['nullable', 'image', 'mimes:jpeg,png,webp', 'max:2048'],
             'remove_photo' => ['sometimes', 'boolean'],
         ]);
@@ -48,7 +47,6 @@ class SystemAdminProfileController extends Controller
         $before = ['name' => $user->name, 'email' => $user->email];
 
         $user->name = $validated['name'];
-        $user->email = $validated['email'] ?? null;
 
         if ($request->hasFile('photo')) {
             $user->profile_photo_path = $request->file('photo')->store('profile-photos', 'public');

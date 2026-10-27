@@ -28,9 +28,12 @@ class PasswordResetTest extends TestCase
         ]);
     }
 
-    private function requestCode(string $email)
+    /** Sends the email with its account's School ID unless one is given. */
+    private function requestCode(string $email, ?string $schoolId = null)
     {
-        return $this->postJson('/api/password/forgot', ['email' => $email]);
+        $schoolId ??= User::whereRaw('LOWER(email) = ?', [mb_strtolower($email)])->value('school_id') ?? 'NO-ID';
+
+        return $this->postJson('/api/password/forgot', ['school_id' => $schoolId, 'email' => $email]);
     }
 
     private function sentCode(User $user): string
@@ -74,17 +77,61 @@ class PasswordResetTest extends TestCase
         $this->assertDatabaseMissing('audit_logs', ['module' => 'Academic Admin Accounts']);
     }
 
-    public function test_same_answer_when_no_account_or_inactive_and_only_emails_accepted(): void
+    public function test_an_email_not_used_during_account_setup_fails(): void
     {
-        $inactive = User::factory()->create(['role' => 'learner', 'school_id' => '24-RS003', 'email' => 'x@example.com', 'is_active' => false]);
-        $expected = $this->requestCode('ana@example.com')->json('message');
+        $this->requestCode('nobody@example.com')
+            ->assertStatus(422)
+            ->assertJsonPath('success', false)
+            ->assertJsonPath('message', fn ($message) => str_starts_with($message, 'The School ID and email address do not match'));
 
-        foreach (['nobody@example.com', 'x@example.com'] as $email) {
-            $this->requestCode($email)->assertOk()->assertJsonPath('message', $expected);
-        }
-        Notification::assertNotSentTo($inactive, ResetPasswordCode::class);
+        // An email on an account that never finished setup does not count.
+        $notSetUp = User::factory()->create([
+            'role' => 'learner', 'school_id' => '24-RS004', 'email' => 'new@example.com',
+            'is_active' => true, 'password_setup_complete' => false,
+        ]);
+        $this->requestCode('new@example.com')->assertStatus(422)->assertJsonPath('success', false);
+
+        Notification::assertNotSentTo($notSetUp, ResetPasswordCode::class);
+        $this->assertDatabaseCount('password_reset_tokens', 0);
 
         $this->requestCode('24-RS001')->assertStatus(422)->assertJsonValidationErrors('email');
+    }
+
+    public function test_the_school_id_must_belong_to_the_same_account_as_the_email(): void
+    {
+        $other = User::factory()->create([
+            'role' => 'learner', 'school_id' => '24-RS009', 'email' => 'ben@example.com',
+            'is_active' => true, 'password_setup_complete' => true,
+        ]);
+
+        // Ana's email with Ben's School ID, and a School ID nobody has.
+        $this->requestCode('ana@example.com', '24-RS009')->assertStatus(422)->assertJsonPath('success', false);
+        $this->requestCode('ana@example.com', '99-99999')->assertStatus(422)->assertJsonPath('success', false);
+        Notification::assertNothingSent();
+
+        // Missing School ID.
+        $this->postJson('/api/password/forgot', ['email' => 'ana@example.com'])
+            ->assertStatus(422)->assertJsonValidationErrors('school_id');
+
+        // The matching School ID works (any letter case).
+        $this->requestCode('ana@example.com', '24-rs001')->assertOk();
+        Notification::assertSentTo($this->learner, ResetPasswordCode::class);
+        Notification::assertNotSentTo($other, ResetPasswordCode::class);
+    }
+
+    public function test_a_deactivated_account_is_refused(): void
+    {
+        $inactive = User::factory()->create([
+            'role' => 'learner', 'school_id' => '24-RS003', 'email' => 'x@example.com',
+            'is_active' => false, 'password_setup_complete' => true,
+        ]);
+
+        $this->requestCode('x@example.com')
+            ->assertStatus(422)
+            ->assertJsonPath('success', false)
+            ->assertJsonPath('message', 'This account is deactivated. Please contact your administrator.');
+
+        Notification::assertNotSentTo($inactive, ResetPasswordCode::class);
     }
 
     public function test_verify_then_reset_signs_out_everywhere_and_code_works_once(): void
@@ -180,7 +227,7 @@ class PasswordResetTest extends TestCase
     public function test_requests_are_rate_limited(): void
     {
         for ($i = 0; $i < 5; $i++) {
-            $this->requestCode('nobody@example.com')->assertOk();
+            $this->requestCode('nobody@example.com')->assertStatus(422);
         }
         $this->requestCode('nobody@example.com')->assertStatus(429);
     }

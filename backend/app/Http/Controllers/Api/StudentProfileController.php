@@ -29,20 +29,18 @@ class StudentProfileController extends Controller
     {
         $learner = $request->user();
 
+        // The email changes only through the verified "Change Email" steps.
+        if ($response = \App\Support\ProfileEmailGuard::refuseChange($request, $learner)) {
+            return $response;
+        }
+
         $validated = $request->validate([
-            'email' => [
-                'nullable',
-                'email',
-                'max:255',
-                Rule::unique('users', 'email')->ignore($learner->id),
-            ],
             'contact' => ['nullable', 'string', 'max:30', 'regex:/^[0-9+()\-\s]*$/'],
         ], [
             'contact.regex' => 'The contact number may only contain numbers, spaces, +, - and brackets.',
         ]);
 
         $learner->update([
-            'email' => $validated['email'] ?? null,
             'contact' => $validated['contact'] ?? null,
         ]);
 

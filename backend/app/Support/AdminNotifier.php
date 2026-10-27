@@ -8,14 +8,13 @@ use App\Models\User;
 /**
  * Creates notifications for administrators.
  *
- * Academic Admins hear about learner and instructor activity; System
+ * Academic Admins hear about grading and locked accounts; System
  * Admins hear about Academic Admin accounts. Every active account with the
  * role gets its own copy, so each admin can mark it read independently.
  */
 class AdminNotifier
 {
     // Notification "type" values the admin pages group by.
-    public const TYPE_ACCOUNT_SETUP = 'account_setup';
     public const TYPE_GRADE = 'grade';
     public const TYPE_ACCOUNT_LOCKED = 'account_locked';
     public const TYPE_ADMIN_ACCOUNT = 'admin_account';
@@ -26,21 +25,6 @@ class AdminNotifier
         'academic_admin' => 'Academic Admin',
         'system_admin' => 'System Admin',
     ];
-
-    public static function accountSetupCompleted(User $user): void
-    {
-        if (!in_array($user->role, ['learner', 'instructor'], true)) {
-            return;
-        }
-
-        self::notifyRole(
-            'academic_admin',
-            'Account Now in Use',
-            self::describe($user) . ' set their own password and can now use their account.',
-            self::TYPE_ACCOUNT_SETUP,
-            $user->owner_admin_id
-        );
-    }
 
     public static function submissionGraded(
         User $instructor,

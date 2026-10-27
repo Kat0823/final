@@ -46,23 +46,19 @@ class InstructorProfileController extends Controller
             ], 403);
         }
 
+        // The email changes only through the verified "Change Email" steps.
+        if ($response = \App\Support\ProfileEmailGuard::refuseChange($request, $instructor)) {
+            return $response;
+        }
+
         $validated = $request->validate([
-            // Optional: the profile pop-up only edits email and contact,
+            // Optional: the profile pop-up only edits the contact number,
             // like the learner's (the name is managed by the admin).
             'name' => [
                 'sometimes',
                 'required',
                 'string',
                 'max:255',
-            ],
-
-            // Optional, as for learners: some instructors have no email.
-            'email' => [
-                'nullable',
-                'email',
-                'max:255',
-                Rule::unique('users', 'email')
-                    ->ignore($instructor->id),
             ],
 
             'contact' => [
@@ -74,7 +70,6 @@ class InstructorProfileController extends Controller
 
         $instructor->update([
             'name' => $validated['name'] ?? $instructor->name,
-            'email' => $validated['email'] ?? null,
             'contact' => $validated['contact'] ?? null,
         ]);
 

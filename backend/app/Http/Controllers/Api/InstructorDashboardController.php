@@ -224,13 +224,13 @@ class InstructorDashboardController extends Controller
                         }
 
                         if ($moduleCount === 0) {
-                            $status = 'Pending Plan';
+                            $status = 'Pending';
                         } elseif ($progressPercentage >= 100) {
                             $status = 'Completed';
                         } elseif ($progressPercentage > 0) {
                             $status = 'Active';
                         } else {
-                            $status = 'Pending Plan';
+                            $status = 'Pending';
                         }
 
                         $pending = $pendingSubmissionsList

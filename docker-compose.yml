@@ -43,6 +43,9 @@ services:
       # Set when the API is reached through a reverse proxy on the Docker
       # network, e.g. 172.16.0.0/12. Empty: trust none.
       TRUSTED_PROXIES: ${TRUSTED_PROXIES:-}
+      # Answer several API requests at the same time (a page loads a few
+      # at once). Without this, "artisan serve" handles one at a time.
+      PHP_CLI_SERVER_WORKERS: ${PHP_CLI_SERVER_WORKERS:-4}
     volumes:
       - ./backend:/var/www/html
     ports:

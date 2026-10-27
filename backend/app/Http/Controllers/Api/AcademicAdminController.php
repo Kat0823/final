@@ -344,8 +344,13 @@ $user->save();
 
     $learners = $this->ownedUsers($request, 'learner')
         ->with([
-            'courses.modules',
+            // Only published modules: the ones the learner can see.
+            'courses.modules' => fn ($query) => $query
+                ->where('is_published', true)
+                ->orderBy('module_order')
+                ->orderBy('id'),
             'progress',
+            'submissions.grade',
         ])
         ->latest()
         ->get([
@@ -362,10 +367,37 @@ $user->save();
         ->map(function (User $learner) {
             $assignedModules = $learner->courses
                 ->flatMap(function ($course) {
-                    return $course->modules;
+                    return $course->modules->each(
+                        fn ($module) => $module->setRelation('course', $course)
+                    );
                 })
                 ->unique('id')
                 ->values();
+
+            // Each module with where the learner is: graded = completed,
+            // handed in = submitted, otherwise in progress.
+            $submissionsByModule = $learner->submissions->keyBy('module_id');
+
+            $moduleList = $assignedModules->map(function ($module) use ($submissionsByModule) {
+                $submission = $submissionsByModule->get($module->id);
+
+                $state = match (true) {
+                    $submission && $submission->grade !== null => 'completed',
+                    $submission !== null => 'submitted',
+                    default => 'in-progress',
+                };
+
+                return [
+                    'id' => $module->id,
+                    'title' => $module->title,
+                    'course' => $module->course?->name,
+                    'course_code' => $module->course?->code,
+                    'state' => $state,
+                    'submitted_at' => $submission?->submitted_at ?? $submission?->created_at,
+                    'score' => $submission?->grade ? (float) $submission->grade->score : null,
+                    'max_score' => $submission?->grade ? (float) $submission->grade->max_score : null,
+                ];
+            })->values();
 
             $modulesAssigned = $assignedModules->count();
 
@@ -408,6 +440,7 @@ $user->save();
 
                 'modules_assigned' => $modulesAssigned,
                 'progress' => $progressPercentage,
+                'modules' => $moduleList,
 
                 'last_activity' => $latestProgress?->updated_at,
             ];

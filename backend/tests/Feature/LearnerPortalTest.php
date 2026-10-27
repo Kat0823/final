@@ -152,20 +152,25 @@ class LearnerPortalTest extends TestCase
             ->assertJsonPath('user.school_id', '24-LP001')
             ->assertJsonPath('user.class_count', 1);
 
+        $email = $this->learner->email;
+
+        // The current email may be sent back unchanged with the contact.
         $this->actingAs($this->learner)
-            ->putJson('/api/student/profile', ['email' => 'ana.cruz@x.edu', 'contact' => '0917 123 4567', 'name' => 'Hacker'])
+            ->putJson('/api/student/profile', ['email' => $email, 'contact' => '0917 123 4567', 'name' => 'Hacker'])
             ->assertOk()
-            ->assertJsonPath('user.email', 'ana.cruz@x.edu')
+            ->assertJsonPath('user.email', $email)
+            ->assertJsonPath('user.contact', '0917 123 4567')
             ->assertJsonPath('user.name', 'Ana Cruz'); // name is managed by the admin
 
-        $this->actingAs($this->learner)->putJson('/api/student/profile', ['email' => 'reyes@x.edu'])
+        // A different (or cleared) email is refused here: it needs the verified "Change Email" steps.
+        $this->actingAs($this->learner)->putJson('/api/student/profile', ['email' => 'ana.cruz@x.edu'])
             ->assertStatus(422)->assertJsonValidationErrors('email');
+        $this->actingAs($this->learner)->putJson('/api/student/profile', ['email' => '', 'contact' => ''])
+            ->assertStatus(422)->assertJsonValidationErrors('email');
+        $this->assertSame($email, $this->learner->fresh()->email);
+
         $this->actingAs($this->learner)->putJson('/api/student/profile', ['contact' => '<script>'])
             ->assertStatus(422)->assertJsonValidationErrors('contact');
-
-        // Email is optional.
-        $this->actingAs($this->learner)->putJson('/api/student/profile', ['email' => '', 'contact' => ''])
-            ->assertOk()->assertJsonPath('user.email', null);
     }
 
     public function test_profile_photo_upload_replaces_the_old_one(): void

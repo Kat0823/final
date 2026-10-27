@@ -26,6 +26,7 @@ use App\Http\Controllers\Api\InstructorCourseController;
 use App\Http\Controllers\Api\InstructorModuleController;
 use App\Http\Controllers\Api\InstructorNotificationController;
 use App\Http\Controllers\Api\InstructorProfileController;
+use App\Http\Controllers\Api\LessonResourceController;
 
 use App\Http\Controllers\Api\AcademicAdminController;
 use App\Http\Controllers\Api\SystemAdminController;
@@ -71,6 +72,14 @@ Route::middleware([
 
     // Add your own email (the step after setting a new password)
     Route::post('/account/email', [\App\Http\Controllers\Api\AccountEmailController::class, 'store']);
+
+    // Change your own email (all roles): current password + a code sent
+    // to the new address. The email changes only after verification.
+    Route::get('/account/email-change', [\App\Http\Controllers\Api\EmailChangeController::class, 'show']);
+    Route::post('/account/email-change', [\App\Http\Controllers\Api\EmailChangeController::class, 'store'])->middleware('throttle:10,1');
+    Route::post('/account/email-change/verify', [\App\Http\Controllers\Api\EmailChangeController::class, 'verify'])->middleware('throttle:10,1');
+    Route::post('/account/email-change/resend', [\App\Http\Controllers\Api\EmailChangeController::class, 'resend'])->middleware('throttle:5,1');
+    Route::delete('/account/email-change', [\App\Http\Controllers\Api\EmailChangeController::class, 'destroy']);
 
     // Change your own password (all roles; needs the current password)
     Route::put('/account/password', [PasswordController::class, 'changeOwnPassword']);
@@ -138,6 +147,7 @@ Route::middleware([
 
         Route::get('/student/modules/{moduleId}', [ModuleController::class, 'show']);
         Route::get('/student/modules/{moduleId}/material', [ModuleController::class, 'material']);
+        Route::get('/student/resources/{resourceId}/file', [LessonResourceController::class, 'studentFile']);
 
         Route::post('/student/submissions', [SubmissionController::class, 'store']);
         Route::delete('/student/submissions/{submissionId}', [SubmissionController::class, 'destroy']);
@@ -180,6 +190,12 @@ Route::middleware([
         Route::put('/instructor/modules/{moduleId}', [InstructorModuleController::class, 'update']);
         Route::get('/instructor/modules/{moduleId}/material', [InstructorModuleController::class, 'material']);
 
+        // Lesson resources: links, PPT, videos and other files for a class
+        Route::get('/instructor/classes/{courseId}/resources', [LessonResourceController::class, 'index']);
+        Route::post('/instructor/classes/{courseId}/resources', [LessonResourceController::class, 'store']);
+        Route::get('/instructor/resources/{resourceId}/file', [LessonResourceController::class, 'instructorFile']);
+        Route::delete('/instructor/resources/{resourceId}', [LessonResourceController::class, 'destroy']);
+
         // Class announcements
         Route::get('/instructor/classes/{courseId}/announcements', [InstructorAnnouncementController::class, 'index']);
         Route::post('/instructor/classes/{courseId}/announcements', [InstructorAnnouncementController::class, 'store']);
@@ -192,6 +208,8 @@ Route::middleware([
         Route::get('/instructor/submissions', [InstructorController::class, 'submissions']);
         Route::get('/instructor/submissions/{submissionId}/file', [InstructorController::class, 'file']);
         Route::post('/instructor/submissions/{submissionId}/grade', [GradeController::class, 'store']);
+        // Password check before changing scores already given.
+        Route::post('/instructor/submissions/{submissionId}/grade/confirm-edit', [GradeController::class, 'confirmEdit']);
 
         // Notifications
         Route::get('/instructor/notifications', [InstructorNotificationController::class, 'index']);

@@ -34,4 +34,15 @@ fi
 php artisan migrate --force
 php artisan storage:link >/dev/null 2>&1 || true
 
+# On a hosted (production) server, keep Laravel's settings, routes and
+# events in a cache so each request starts faster. Re-done on every start,
+# so changes take effect after a restart.
+if grep -q '^APP_ENV=production' .env; then
+    php artisan config:cache
+    php artisan route:cache
+    php artisan event:cache
+else
+    php artisan optimize:clear >/dev/null 2>&1 || true
+fi
+
 exec "$@"

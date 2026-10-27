@@ -26,7 +26,9 @@ class AuthController extends Controller
     private const IP_WINDOW_SECONDS = 60;
 
     // bcrypt hash of a random string; used only to keep timing constant.
-    private const DUMMY_HASH = '$2y$12$xbCXUaGCC.0LUYG6tdx2ieIdxF74k0gojg.JWYBBqiu57UccNNLqq';
+    // Its strength (10) matches BCRYPT_ROUNDS so an unknown ID takes as
+    // long to check as a real one.
+    private const DUMMY_HASH = '$2y$10$2l60Zr2mtRnbOpydpaGE7uY1jEIevlKyEQNCUYRwThE57.p2FqovS';
 
     public function login(Request $request): JsonResponse
     {
@@ -146,6 +148,13 @@ class AuthController extends Controller
         }
 
         RateLimiter::clear($accountKey);
+
+        // Passwords saved with an older, slower hash strength are re-saved
+        // at the current strength (BCRYPT_ROUNDS), so later sign-ins are
+        // faster. The password itself does not change.
+        if (Hash::needsRehash($user->password)) {
+            $user->forceFill(['password' => Hash::make($validated['password'])])->saveQuietly();
+        }
 
         if (!$user->is_active) {
             AuditLogger::log('sign_in_blocked', AuditLogger::AUTH, [

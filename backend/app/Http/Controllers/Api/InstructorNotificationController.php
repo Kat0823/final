@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class InstructorNotificationController extends Controller
 {
@@ -30,11 +32,28 @@ class InstructorNotificationController extends Controller
         ->latest()
         ->get();
 
+        // The learner each notification is about (name and photo), so the
+        // page can show their picture instead of a bell.
+        $learnerIds = $notifications
+            ->map(fn ($notification) => $notification->data['learner_id'] ?? null)
+            ->filter()
+            ->unique()
+            ->values();
+
+        $learners = $learnerIds->isEmpty()
+            ? collect()
+            : User::whereIn('id', $learnerIds)
+                ->where('role', 'learner')
+                ->get(['id', 'name', 'profile_photo_path'])
+                ->keyBy('id');
+
         return response()->json([
             'success' => true,
 
             'notifications' => $notifications->map(
-                function ($notification) {
+                function ($notification) use ($learners) {
+
+                    $learner = $learners->get($notification->data['learner_id'] ?? null);
 
                     return [
                         'id' => $notification->id,
@@ -51,6 +70,14 @@ class InstructorNotificationController extends Controller
                         // What it is about (class, learner, ...), when known.
                         'data' =>
                             $notification->data,
+
+                        'learner' => $learner ? [
+                            'id' => $learner->id,
+                            'name' => $learner->name,
+                            'profile_photo_url' => $learner->profile_photo_path
+                                ? url(Storage::disk('public')->url($learner->profile_photo_path))
+                                : null,
+                        ] : null,
 
                         'is_read' =>
                             (bool) $notification->is_read,

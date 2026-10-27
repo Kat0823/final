@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Support\AdminNotifier;
 use App\Support\AuditLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -75,7 +74,6 @@ class PasswordController extends Controller
             'password_setup_complete' => true,
         ]);
 
-        AdminNotifier::accountSetupCompleted($user);
         AuditLogger::log('password_set', AuditLogger::OWN_ACCOUNT, [
             'actor' => $user,
             'target' => $user,

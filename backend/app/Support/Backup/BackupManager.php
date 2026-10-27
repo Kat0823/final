@@ -225,28 +225,49 @@ SIKNAYAN LMS - HOW TO RESTORE THIS BACKUP
 ==========================================
 
 This backup holds:
-  database.sql   every table (temporary tables such as sessions and
-                 sign-in tokens without their rows: everyone logs in again)
+  database.sql   every table (temporary tables such as sessions, sign-in
+                 tokens and pending email codes without their rows:
+                 everyone simply logs in again)
   files/         uploaded files
-                 files/private                -> backend\storage\app\private
-                 files/public/profile-photos  -> backend\storage\app\public\profile-photos
+                 files/private                -> backend/storage/app/private
+                 files/public/profile-photos  -> backend/storage/app/public/profile-photos
   manifest.json  when it was made, by whom, and what it holds
 
-NOT included: the backend\.env settings file. Keep your own private copy
-of it (it holds the database and email passwords and APP_KEY).
+NOT included: the backend/.env settings file. Keep your own private copy
+of it (it holds the database and email passwords and APP_KEY). Without the
+same APP_KEY, the restored system still works, but everyone must log in again.
 
-1. Make a fresh backup of the current system first, if it still runs.
-2. In the XAMPP Control Panel, start Apache and MySQL.
-3. Open http://localhost/phpmyadmin, select (or create) the "siknayan"
-   database, open Import, choose database.sql and click Import.
-   Importing replaces the tables that are already there.
-4. Copy the folders inside files\ back to the places listed above.
-5. Make sure backend\.env is in place, then start the backend and log in.
+XAMPP is NOT required. Use whichever applies to your server.
 
-If this zip asks for a password: it is the password typed when the
-backup was made. It is not stored anywhere; without it the backup
-cannot be opened. Use 7-Zip or WinRAR (Windows' built-in zip tool
-cannot open AES-protected zips).
+BEFORE YOU START
+  If the current system still runs, make a fresh backup of it first.
+  If this zip asks for a password, it is the password typed when the
+  backup was made. It is not stored anywhere; without it the backup
+  cannot be opened. Use 7-Zip or WinRAR (Windows' built-in zip tool
+  cannot open AES-protected zips), or "7z x backup.zip" on Linux.
+
+STEP 1 - PUT BACK THE DATABASE (importing replaces the tables already there)
+  A) Hosted server (a web host or cloud database):
+     Open the host's database panel (for example phpMyAdmin, Adminer or the
+     provider's "Import" tool), select the Siknayan database and import
+     database.sql. Or, from a terminal that can reach the database:
+         mysql -h DB_HOST -P DB_PORT -u DB_USERNAME -p DB_DATABASE < database.sql
+     (use the DB_ values from backend/.env; it asks for the password).
+  B) Docker (docker compose):
+         docker compose exec -T mysql sh -c 'mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE"' < database.sql
+  C) This computer (Herd, Laragon, XAMPP or any local MySQL/MariaDB):
+     Use phpMyAdmin / HeidiSQL / MySQL Workbench -> Import database.sql,
+     or the same "mysql ... < database.sql" command as in A.
+
+STEP 2 - PUT BACK THE UPLOADED FILES
+  Copy the folders inside files/ to the places listed above.
+  Docker: they are inside the project's backend folder on the host,
+  so copy them there.
+
+STEP 3 - START THE SYSTEM
+  Make sure backend/.env is in place, then start the backend (it runs any
+  missing database updates by itself under Docker; otherwise run
+  "php artisan migrate") and log in.
 TXT;
     }
 }

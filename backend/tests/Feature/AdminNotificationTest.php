@@ -31,13 +31,11 @@ class AdminNotificationTest extends TestCase
         return Notification::where('user_id', $user->id)->orderBy('id')->get();
     }
 
-    public function test_academic_admins_are_told_when_a_learner_finishes_password_setup(): void
+    public function test_admins_are_not_notified_when_a_learner_finishes_password_setup(): void
     {
         $adminA = $this->user('academic_admin', 'ADM-N1');
-        $adminB = $this->user('academic_admin', 'ADM-N2');
-        $inactiveAdmin = $this->user('academic_admin', 'ADM-N3', ['is_active' => false]);
         $systemAdmin = $this->user('system_admin', 'SYS-N1');
-        $learner = $this->user('learner', '24-10001', ['password_setup_complete' => false]);
+        $this->user('learner', '24-10001', ['password_setup_complete' => false]);
 
         $token = $this->postJson('/api/login', [
             'school_id' => '24-10001',
@@ -51,15 +49,24 @@ class AdminNotificationTest extends TestCase
             ])
             ->assertOk();
 
-        foreach ([$adminA, $adminB] as $admin) {
-            $notes = $this->notificationsFor($admin);
-            $this->assertCount(1, $notes);
-            $this->assertSame('account_setup', $notes[0]->type);
-            $this->assertStringContainsString('24-10001', $notes[0]->message);
-        }
-
-        $this->assertCount(0, $this->notificationsFor($inactiveAdmin));
+        $this->assertCount(0, $this->notificationsFor($adminA));
         $this->assertCount(0, $this->notificationsFor($systemAdmin));
+    }
+
+    public function test_old_account_setup_notifications_are_hidden_from_admins(): void
+    {
+        $admin = $this->user('academic_admin', 'ADM-N9');
+
+        Notification::insert([
+            ['user_id' => $admin->id, 'title' => 'Account Now in Use', 'message' => 'old', 'type' => 'account_setup', 'is_read' => false, 'created_at' => now(), 'updated_at' => now()],
+            ['user_id' => $admin->id, 'title' => 'Account Locked', 'message' => 'kept', 'type' => 'account_locked', 'is_read' => false, 'created_at' => now(), 'updated_at' => now()],
+        ]);
+
+        $this->actingAs($admin)
+            ->getJson('/api/admin/notifications')
+            ->assertOk()
+            ->assertJsonCount(1, 'notifications')
+            ->assertJsonPath('notifications.0.type', 'account_locked');
     }
 
     public function test_academic_admins_are_told_when_work_is_graded_once(): void

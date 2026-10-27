@@ -42,8 +42,11 @@ class NotificationController extends Controller
             return $response;
         }
 
+        // "Account set up" notices are no longer shown to admins;
+        // older ones still stored are left out.
         $notifications = $request->user()
             ->notifications()
+            ->where(fn ($query) => $query->whereNull('type')->orWhere('type', '!=', 'account_setup'))
             ->latest()
             ->latest('id')
             ->limit(200)
