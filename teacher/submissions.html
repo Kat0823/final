@@ -1160,18 +1160,19 @@ body {
    GRADING INFORMATION
 ========================================================= */
 
+/* Plain lines (no cards) for Learner, Class, Module and File */
 .grading-info-group {
-    font-size: 0.85rem;
+    font-size: 0.88rem;
 
     color: #475569;
 
-    padding: 0.7rem;
+    padding: 0.15rem 0;
 
-    background-color: var(--light-gray);
+    background: none;
 
-    border-radius: 6px;
+    border: none;
 
-    border: 1px solid #e2e8f0;
+    border-radius: 0;
 }
 
 
@@ -1648,6 +1649,169 @@ body {
     display: none;
 }
 
+.score-lock-note.unlocked {
+    border-left-color: #086b3c;
+    background: #ecf7f0;
+    color: #0b5a34;
+}
+
+.score-unlock {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    margin-left: auto;
+    padding: 6px 12px;
+    border: 1px solid #c99223;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #6b4e00;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.score-unlock:hover,
+.score-unlock:focus-visible {
+    background: #fbefd2;
+    outline: none;
+}
+
+.score-unlock[hidden] {
+    display: none;
+}
+
+/* Password confirmation before changing saved scores */
+.confirm-edit-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.confirm-edit-overlay.active {
+    display: flex;
+}
+
+.confirm-edit-box {
+    width: min(440px, 100%);
+    padding: 26px;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.confirm-edit-icon {
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 12px;
+    border-radius: 50%;
+    background: #fbefd2;
+    color: #9a6a0a;
+    font-size: 20px;
+}
+
+.confirm-edit-box h3 {
+    margin: 0 0 8px;
+    color: #1f2a24;
+    font-size: 19px;
+}
+
+.confirm-edit-box p {
+    margin: 0 0 14px;
+    color: #4b5563;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.confirm-edit-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    margin-bottom: 14px;
+    color: #1f2a24;
+    font-size: 14px;
+    line-height: 1.4;
+    cursor: pointer;
+}
+
+.confirm-edit-check input {
+    width: 18px;
+    height: 18px;
+    margin: 1px 0 0;
+    flex-shrink: 0;
+    accent-color: #086b3c;
+}
+
+.confirm-edit-box label[for="confirmEditPassword"] {
+    display: block;
+    margin-bottom: 6px;
+    color: #1f2a24;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.confirm-edit-password {
+    position: relative;
+}
+
+.confirm-edit-password input {
+    width: 100%;
+    height: 42px;
+    padding: 0 42px 0 12px;
+    border: 1px solid #cfd8d2;
+    border-radius: 6px;
+    font: inherit;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.confirm-edit-password input:focus {
+    outline: none;
+    border-color: #086b3c;
+    box-shadow: 0 0 0 3px rgba(8, 107, 60, 0.12);
+}
+
+.confirm-edit-password button {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    background: transparent;
+    color: #66736c;
+    cursor: pointer;
+    transform: translateY(-50%);
+}
+
+.confirm-edit-error {
+    margin: 10px 0 0;
+    padding: 9px 12px;
+    border-radius: 6px;
+    background: #fdecec;
+    color: #9b1c22;
+    font-size: 13px;
+}
+
+.confirm-edit-error[hidden] {
+    display: none;
+}
+
+.confirm-edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
 .score-remove {
     width: 34px;
     height: 34px;
@@ -1734,6 +1898,14 @@ body {
     display: none;
 }
 
+/* A row with a mistake (e.g. score higher than its total) */
+.score-row.invalid .score-value,
+.score-row.invalid .score-max {
+    border-color: #d92d20;
+    background: #fff5f4;
+    box-shadow: 0 0 0 3px rgba(217, 45, 32, 0.12);
+}
+
 @media (max-width: 560px) {
     .score-row {
         grid-template-columns: minmax(0, 1fr) 64px 10px 64px 30px;
@@ -1765,6 +1937,16 @@ body {
 
 .grading-modal-body > .score-card {
     margin: 6px 0 0;
+}
+
+/* Learner, Class, Module and File are plain lines, so keep them close */
+.grading-modal-body {
+    row-gap: 0.35rem;
+}
+
+.grading-modal-body > .score-card,
+.grading-modal-body > .grading-form-group {
+    margin-top: 0.6rem;
 }
 
 @media (max-width: 560px) {
@@ -1993,23 +2175,8 @@ body {
                 </thead>
 
 
-                <tbody id="submissionsTableBody">
-
-                    <tr>
-
-                        <td
-                            colspan="7"
-                            class="empty-row">
-
-                            <i class="fa-solid fa-spinner fa-spin"></i>
-
-                            Loading submissions...
-
-                        </td>
-
-                    </tr>
-
-                </tbody>
+                <!-- Rows appear when the submissions arrive (no loading message). -->
+                <tbody id="submissionsTableBody"></tbody>
 
             </table>
 
@@ -2433,7 +2600,7 @@ body {
                 <div class="score-card-head">
                     <div>
                         <h4 id="scoreCardTitle">Scoring Card</h4>
-                        <p>Score each activity in the submitted file. The total is the grade.</p>
+                        <p>Score each activity in the submitted file.</p>
                     </div>
                 </div>
 
@@ -2447,21 +2614,19 @@ body {
 
                 <div id="scoreRows" class="score-rows"></div>
 
-                <p class="score-lock-note" id="scoreLockNote" hidden>
+                <div class="score-lock-note" id="scoreLockNote" hidden>
                     <i class="fa-solid fa-lock" aria-hidden="true"></i>
-                    Scores already given can't be changed. You can add more activities.
-                </p>
+                    <span id="scoreLockText">These scores are locked because the learner has already received them. This protects grades from accidental or unauthorized changes. To edit a score, click “Change saved scores” and enter your password.</span>
+                    <button type="button" class="score-unlock" id="unlockScoresButton">
+                        <i class="fa-solid fa-key" aria-hidden="true"></i>
+                        Change saved scores
+                    </button>
+                </div>
 
                 <button type="button" class="score-add" id="addScoreRow">
                     <i class="fa-solid fa-plus" aria-hidden="true"></i>
                     Add activity
                 </button>
-
-                <div class="score-total" aria-live="polite">
-                    <span>Total</span>
-                    <strong id="scoreTotal">0 / 0</strong>
-                    <span class="score-percent" id="scorePercent"></span>
-                </div>
 
                 <p class="score-error" id="scoreError" role="alert" hidden></p>
 
@@ -2522,6 +2687,56 @@ body {
         </div>
 
     </div>
+
+</div>
+
+
+<!-- =====================================================
+     CONFIRM BEFORE CHANGING SAVED SCORES
+     The instructor ticks the confirmation and enters their
+     password; only then are the saved scores unlocked.
+====================================================== -->
+
+<div class="confirm-edit-overlay" id="confirmEditModal" aria-hidden="true">
+
+    <form class="confirm-edit-box" id="confirmEditForm" role="dialog" aria-modal="true"
+        aria-labelledby="confirmEditTitle" aria-describedby="confirmEditText" novalidate>
+
+        <div class="confirm-edit-icon" aria-hidden="true">
+            <i class="fa-solid fa-user-shield"></i>
+        </div>
+
+        <h3 id="confirmEditTitle">Change a Score Already Given?</h3>
+
+        <p id="confirmEditText">
+            This learner already received these scores. If you change them, the learner
+            will be notified and the change is recorded in the audit log.
+        </p>
+
+        <label class="confirm-edit-check">
+            <input type="checkbox" id="confirmEditCheck">
+            <span>I confirm that I want to edit this learner's saved score.</span>
+        </label>
+
+        <label for="confirmEditPassword">Enter your password to continue</label>
+        <div class="confirm-edit-password">
+            <input type="password" id="confirmEditPassword" autocomplete="current-password" maxlength="255">
+            <button type="button" id="confirmEditShow" aria-label="Show password" title="Show password">
+                <i class="fa-solid fa-eye" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <p class="confirm-edit-error" id="confirmEditError" role="alert" hidden></p>
+
+        <div class="confirm-edit-actions">
+            <button type="button" class="btn-cancel" id="confirmEditCancel">Cancel</button>
+            <button type="submit" class="btn-save" id="confirmEditSubmit">
+                <i class="fa-solid fa-unlock" aria-hidden="true"></i>
+                Confirm and Edit
+            </button>
+        </div>
+
+    </form>
 
 </div>
 
@@ -2822,24 +3037,8 @@ async function loadSubmissions() {
     }
 
 
-    submissionsTableBody.innerHTML = `
-
-        <tr>
-
-            <td
-                colspan="7"
-                class="empty-row">
-
-                <i class="fa-solid fa-spinner fa-spin"></i>
-
-                Loading submissions...
-
-            </td>
-
-        </tr>
-
-    `;
-
+    // No loading message: the table keeps what it shows until the
+    // new submissions arrive.
 
     try {
 
@@ -3398,6 +3597,10 @@ function closeGradingModal() {
     currentSubmission =
         null;
 
+    // The password confirmation ends with the grading window.
+    gradeEditPass =
+        null;
+
 
     // Opened from a learner on the class page: go back there.
     if (wasOpen && GRADING_RETURN_URL) {
@@ -3627,9 +3830,15 @@ function scoreRowHtml(item, index, locked = false) {
         </div>`;
 }
 
+// One-time pass from the password confirmation; while set, the saved
+// scores of the open submission can be changed.
+let gradeEditPass = null;
+
 // The first "lockedCount" rows are scores already given: they stay
-// read-only (the server refuses changes to them too).
+// read-only until the instructor confirms with their password (the
+// server refuses changes to them too).
 function setScoreRows(items, lockedCount = 0) {
+    gradeEditPass = null;
     document.getElementById("scoreRows").innerHTML =
         items.map((item, index) => scoreRowHtml(item, index, index < lockedCount)).join("");
     updateScoreTotal();
@@ -3670,7 +3879,7 @@ function readScoreRows() {
         if (!title) return { error: `Please enter a title for activity ${index + 1}.` };
         if (scoreText === "" || Number.isNaN(score) || score < 0) return { error: `Please enter a valid score for "${name}".` };
         if (maxText === "" || Number.isNaN(max) || max <= 0) return { error: `Please enter what "${name}" is scored over (more than 0).` };
-        if (score > max) return { error: `The score of "${name}" cannot be greater than ${max}.` };
+        if (score > max) return { error: `"${name}": the score (${score}) is higher than its total (${max}). A score cannot be more than the total it is scored over. Please check for a typo.` };
 
         items.push({ title, score, max_score: max });
     }
@@ -3689,10 +3898,10 @@ function updateScoreTotal() {
         if (!Number.isNaN(over)) max += over;
     });
 
+    // No overall total or percentage is shown on the card.
     const round = n => Math.round(n * 100) / 100;
-    document.getElementById("scoreTotal").textContent = `${round(score)} / ${round(max)}`;
-    document.getElementById("scorePercent").textContent =
-        max > 0 ? `${round((score / max) * 100)}%` : "";
+    const totalBox = document.getElementById("scoreTotal");
+    if (totalBox) totalBox.textContent = `${round(score)} / ${round(max)}`;
 
     // The last remaining row stays (a card needs at least one).
     const container = document.getElementById("scoreRows");
@@ -3717,8 +3926,14 @@ function setGradeEditable(editable) {
     rows.querySelectorAll("input").forEach(input => {
         input.disabled = !editable || Boolean(input.closest("[data-locked]"));
     });
-    document.getElementById("scoreLockNote").hidden =
-        !editable || !rows.querySelector("[data-locked]");
+    const note = document.getElementById("scoreLockNote");
+    note.hidden = !editable || !(rows.querySelector("[data-locked]") || gradeEditPass);
+    note.classList.toggle("unlocked", Boolean(gradeEditPass));
+    note.querySelector("i").className = gradeEditPass ? "fa-solid fa-lock-open" : "fa-solid fa-lock";
+    document.getElementById("scoreLockText").textContent = gradeEditPass
+        ? "Saved scores are unlocked. Your changes will be recorded and the learner will be notified."
+        : "These scores are locked because the learner has already received them. This protects grades from accidental or unauthorized changes. To edit a score, click “Change saved scores” and enter your password.";
+    document.getElementById("unlockScoresButton").hidden = Boolean(gradeEditPass);
     document.getElementById("addScoreRow").hidden = !editable;
     document.getElementById("modalFeedback").disabled = !editable;
     document.getElementById("saveGradeButton").style.display = editable ? "inline-block" : "none";
@@ -3726,6 +3941,8 @@ function setGradeEditable(editable) {
     document.getElementById("gradingModalTitle").textContent =
         editable ? (currentSubmission && currentSubmission.grade ? "Edit Grade" : "Grade Submission") : "View Grade";
     showScoreError("");
+    document.getElementById("saveGradeButton").disabled = false;
+    if (editable) checkScoreRowsLive();
     updateScoreTotal();
 }
 
@@ -3737,10 +3954,169 @@ function enableGradeEditing() {
     else document.getElementById("addScoreRow").focus();
 }
 
+/* ---------------------------------------------------------
+   CONFIRM BEFORE CHANGING SAVED SCORES
+   Tick "I confirm" + enter the password -> the server checks it
+   and returns a one-time pass -> the saved rows are unlocked.
+--------------------------------------------------------- */
+
+const confirmEditModal = document.getElementById("confirmEditModal");
+const confirmEditForm = document.getElementById("confirmEditForm");
+const confirmEditCheck = document.getElementById("confirmEditCheck");
+const confirmEditPassword = document.getElementById("confirmEditPassword");
+const confirmEditError = document.getElementById("confirmEditError");
+const confirmEditSubmit = document.getElementById("confirmEditSubmit");
+
+function showConfirmEditError(message) {
+    confirmEditError.textContent = message || "";
+    confirmEditError.hidden = !message;
+}
+
+function openConfirmEdit(message) {
+    if (!currentSubmission) return;
+
+    confirmEditCheck.checked = false;
+    confirmEditPassword.value = "";
+    confirmEditPassword.type = "password";
+    showConfirmEditError(message || "");
+    confirmEditModal.classList.add("active");
+    confirmEditModal.setAttribute("aria-hidden", "false");
+    setTimeout(() => confirmEditCheck.focus(), 50);
+}
+
+function closeConfirmEdit() {
+    confirmEditModal.classList.remove("active");
+    confirmEditModal.setAttribute("aria-hidden", "true");
+    confirmEditPassword.value = "";
+    document.getElementById("unlockScoresButton").focus();
+}
+
+function unlockSavedScores() {
+    document.querySelectorAll("#scoreRows [data-locked]").forEach(row => {
+        row.removeAttribute("data-locked");
+        row.classList.remove("locked");
+    });
+    setGradeEditable(true);
+    const first = document.querySelector("#scoreRows .score-value");
+    if (first) first.focus();
+}
+
+document.getElementById("unlockScoresButton").addEventListener("click", () => openConfirmEdit());
+document.getElementById("confirmEditCancel").addEventListener("click", closeConfirmEdit);
+
+confirmEditModal.addEventListener("click", event => {
+    if (event.target === confirmEditModal) closeConfirmEdit();
+});
+
+document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && confirmEditModal.classList.contains("active")) {
+        // Close only this window, not the grading window behind it.
+        event.stopImmediatePropagation();
+        closeConfirmEdit();
+    }
+});
+
+document.getElementById("confirmEditShow").addEventListener("click", event => {
+    const show = confirmEditPassword.type === "password";
+    confirmEditPassword.type = show ? "text" : "password";
+    const button = event.currentTarget;
+    button.querySelector("i").className = show ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
+    button.setAttribute("aria-label", show ? "Hide password" : "Show password");
+    button.title = show ? "Hide password" : "Show password";
+});
+
+confirmEditForm.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    if (!confirmEditCheck.checked) {
+        showConfirmEditError("Please tick the box to confirm that you want to edit the saved score.");
+        confirmEditCheck.focus();
+        return;
+    }
+
+    if (!confirmEditPassword.value) {
+        showConfirmEditError("Please enter your password.");
+        confirmEditPassword.focus();
+        return;
+    }
+
+    if (!currentSubmission) return;
+
+    showConfirmEditError("");
+    confirmEditSubmit.disabled = true;
+
+    try {
+        const response = await fetch(
+            `${API_BASE_URL}/instructor/submissions/${currentSubmission.id}/grade/confirm-edit`,
+            {
+                method: "POST",
+                headers: { ...getAuthHeaders(), "Content-Type": "application/json" },
+                body: JSON.stringify({ password: confirmEditPassword.value })
+            }
+        );
+
+        if (response.status === 401) {
+            handleUnauthorized();
+            return;
+        }
+
+        const data = await parseJsonResponse(response);
+
+        if (!response.ok || !data.success || !data.edit_pass) {
+            throw new Error(data.message || "Unable to confirm your password.");
+        }
+
+        gradeEditPass = data.edit_pass;
+        confirmEditModal.classList.remove("active");
+        confirmEditModal.setAttribute("aria-hidden", "true");
+        confirmEditPassword.value = "";
+        unlockSavedScores();
+        showToast("Password confirmed. You can now change the saved scores.", "success");
+    } catch (error) {
+        showConfirmEditError(error.message || "Unable to confirm your password.");
+        confirmEditPassword.select();
+    } finally {
+        confirmEditSubmit.disabled = false;
+    }
+});
+
 document.getElementById("addScoreRow").addEventListener("click", addScoreRow);
 
+/* Checks the scores while the instructor types, so a typo such as a
+   score higher than its "Over" total is pointed out right away. The
+   row is marked in red and Save Grade stays off until it is fixed. */
+function checkScoreRowsLive() {
+    const problems = [];
+
+    document.querySelectorAll("#scoreRows [data-score-row]").forEach((row, index) => {
+        const name = row.querySelector(".score-title").value.trim() || `Activity ${index + 1}`;
+        const scoreText = row.querySelector(".score-value").value.trim();
+        const maxText = row.querySelector(".score-max").value.trim();
+        const score = Number(scoreText);
+        const max = Number(maxText);
+
+        let problem = "";
+
+        if (scoreText !== "" && (Number.isNaN(score) || score < 0)) {
+            problem = `"${name}": the score cannot be negative. Please check the score you typed.`;
+        } else if (maxText !== "" && (Number.isNaN(max) || max <= 0)) {
+            problem = `"${name}": the "Over" total must be more than 0. Please check the total you typed.`;
+        } else if (scoreText !== "" && maxText !== "" && score > max) {
+            problem = `"${name}": the score (${score}) is higher than its total (${max}). ` +
+                `A score cannot be more than the total it is scored over. Please check for a typo.`;
+        }
+
+        row.classList.toggle("invalid", Boolean(problem));
+        if (problem) problems.push(problem);
+    });
+
+    showScoreError(problems.join(" "));
+    document.getElementById("saveGradeButton").disabled = problems.length > 0;
+    return problems.length === 0;
+}
+
 document.getElementById("scoreRows").addEventListener("input", () => {
-    showScoreError("");
+    checkScoreRowsLive();
     updateScoreTotal();
 });
 
@@ -3748,6 +4124,7 @@ document.getElementById("scoreRows").addEventListener("click", event => {
     const button = event.target.closest("[data-remove-score-row]");
     if (!button || button.disabled || button.closest("[data-locked]")) return;
     button.closest("[data-score-row]").remove();
+    checkScoreRowsLive();
     updateScoreTotal();
 });
 
@@ -3819,7 +4196,10 @@ async function saveGrade() {
                         items: card.items,
 
                         feedback:
-                            feedback || null
+                            feedback || null,
+
+                        // Only after the password confirmation.
+                        ...(gradeEditPass ? { edit_pass: gradeEditPass } : {})
                     })
                 }
             );
@@ -3839,6 +4219,17 @@ async function saveGrade() {
             );
 
 
+        // Saved scores were changed without a (still valid) confirmation,
+        // e.g. the 10 minutes ran out: ask for the password again.
+        if (!response.ok && data.password_required) {
+            gradeEditPass = null;
+            openConfirmEdit(
+                "Please confirm with your password again to save changes to scores already given."
+            );
+            return;
+        }
+
+
         if (
             !response.ok ||
             !data.success
@@ -3851,6 +4242,8 @@ async function saveGrade() {
 
         }
 
+
+        gradeEditPass = null;
 
         showToast(
             data.message ||

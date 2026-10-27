@@ -70,8 +70,9 @@ async function apiRequest(
 
     if (!token) {
 
+        window.handleAdminSessionExpired?.();
         throw new Error(
-            "No API token found. Please save a fresh Laravel token as siknayan_api_token."
+            "Your session has ended. Please log in again."
         );
     }
 
@@ -124,8 +125,9 @@ async function apiRequest(
             401
         ) {
 
+            window.handleAdminSessionExpired?.();
             throw new Error(
-                "Your API session is not authenticated. Please save a fresh Laravel token as siknayan_api_token."
+                "Your session has ended. Please log in again."
             );
         }
 

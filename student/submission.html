@@ -677,7 +677,9 @@
                         return;
                     }
 
-                    if (!window.confirm(`Submit "${chosenFile.name}"?`)) return;
+                    if (!(await window.Portal.confirmDialog(`Submit "${chosenFile.name}"?`, {
+                        title: "Submit activity", confirmText: "Submit"
+                    }))) return;
 
                     const button = $("submitButton");
                     button.disabled = true;
@@ -707,7 +709,10 @@
                 const submission = currentModule?.my_submission;
                 if (!submission || submission.grade) return;
 
-                if (!window.confirm(`Unsubmit "${submission.file_name || "your work"}"? Your file will be removed and you can submit again.`)) return;
+                if (!(await window.Portal.confirmDialog(
+                    `Unsubmit "${submission.file_name || "your work"}"? Your file will be removed and you can submit again.`,
+                    { title: "Unsubmit activity", confirmText: "Unsubmit", danger: true }
+                ))) return;
 
                 const button = $("unsubmitButton");
                 button.disabled = true;

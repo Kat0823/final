@@ -3,6 +3,22 @@
    shared.js
 ========================================================= */
 
+/* Readable sidebar hover for every portal (shared/sidebar-hover.js). */
+(function () {
+    const current = document.currentScript;
+
+    // Where the verified "Change Email" row lives (used by the profile pop-up).
+    if (current) {
+        window.SIKNAYAN_EMAIL_CHANGE_SRC = new URL("../../shared/email-change.js", current.src).href;
+    }
+
+    if (!current || window.SiknayanSidebarHover) return;
+    const script = document.createElement("script");
+    script.src = new URL("../../shared/sidebar-hover.js", current.src).href;
+    document.head.appendChild(script);
+})();
+
+
 
 /* =========================================================
    PER-ADMIN BROWSER STORAGE
@@ -1428,6 +1444,48 @@ aspect-ratio: 1 / 1;
             }
         }
 
+        /* Wider card: Full Name, School ID and Email on one row,
+           and the password fields side by side, so changing the
+           password fits without a scroll bar. */
+        .sik-profile-modal {
+            max-width: 880px;
+        }
+
+        .sik-profile-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        #sikChangePasswordForm {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        #sikChangePasswordForm .sik-pw-field.sik-pw-wide {
+            grid-column: auto;
+        }
+
+        @media (max-width: 760px) {
+            .sik-profile-grid,
+            #sikChangePasswordForm {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            #sikChangePasswordForm .sik-pw-field.sik-pw-wide {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 600px) {
+            #sikChangePasswordForm {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .sik-profile-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
     `;
     document.head.appendChild(style);
 
@@ -2030,7 +2088,35 @@ function openProfileModal() {
 
     $("sikProfileClose").focus();
 
-    
+    mountEmailChange();
+}
+
+
+// The verified "Change Email" row in Account & Security
+// (shared/email-change.js); added the first time the pop-up opens.
+let emailChangeMounted = false;
+
+function mountEmailChange() {
+    if (emailChangeMounted) return;
+    emailChangeMounted = true;
+
+    const start = () => window.SiknayanEmailChange.mount(overlay.querySelector(".sik-profile-security"), {
+        email: window.siknayanAdminProfile && window.siknayanAdminProfile.email,
+        onChanged: email => {
+            if (window.siknayanAdminProfile) {
+                window.siknayanAdminProfile.email = email;
+                cacheProfile(window.siknayanAdminProfile);
+            }
+            setText("sikProfileEmail", email);
+        }
+    });
+
+    if (window.SiknayanEmailChange) return start();
+
+    const script = document.createElement("script");
+    script.src = window.SIKNAYAN_EMAIL_CHANGE_SRC || "../shared/email-change.js";
+    script.onload = start;
+    document.head.appendChild(script);
 }
 
 
@@ -2785,4 +2871,77 @@ window.chooseWorkbookSheets = async function chooseWorkbookSheets(file, options 
         sync();
         boxes[0]?.focus();
     });
+};
+
+
+/* =========================================================
+   IN-PAGE TOAST
+   ---------------------------------------------------------
+   A small message in the corner of the page. Used instead of
+   alert(), which shows the site address and port
+   (e.g. "127.0.0.1:5501 says").
+========================================================= */
+
+window.showAdminToast = function showAdminToast(message, type = "success") {
+    let stack = document.getElementById("adminToastStack");
+
+    if (!stack) {
+        stack = document.createElement("div");
+        stack.id = "adminToastStack";
+        stack.style.cssText =
+            "position:fixed;top:84px;right:24px;z-index:10000;" +
+            "display:flex;flex-direction:column;gap:10px;pointer-events:none;";
+        document.body.appendChild(stack);
+    }
+
+    const toast = document.createElement("div");
+    const isError = type === "error";
+
+    toast.setAttribute("role", "status");
+    toast.textContent = message;
+    toast.style.cssText =
+        "min-width:220px;max-width:360px;padding:12px 18px;border-radius:8px;" +
+        "font-size:14px;font-weight:600;color:#fff;pointer-events:auto;" +
+        "box-shadow:0 8px 24px rgba(0,0,0,.18);transition:opacity .3s,transform .3s;" +
+        "opacity:0;transform:translateY(-6px);" +
+        `background:${isError ? "#b42318" : "#1f7a3f"};`;
+
+    stack.appendChild(toast);
+
+    requestAnimationFrame(() => {
+        toast.style.opacity = "1";
+        toast.style.transform = "translateY(0)";
+    });
+
+    setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateY(-6px)";
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+};
+
+
+/* =========================================================
+   SESSION ENDED
+   ---------------------------------------------------------
+   Sign-ins last 8 hours (and end after a password change).
+   When the server says the sign-in is no longer valid, clear
+   it and go back to the login page.
+========================================================= */
+
+window.handleAdminSessionExpired = function handleAdminSessionExpired() {
+    ["authToken", "token", "isLoggedIn", "userRole", "userName"].forEach(key => {
+        try { sessionStorage.removeItem(key); } catch (error) { /* ignore */ }
+    });
+    ["siknayan_api_token", "token", "access_token"].forEach(key => {
+        try { localStorage.removeItem(key); } catch (error) { /* ignore */ }
+    });
+
+    if (window.showAdminToast) {
+        window.showAdminToast("Your session has ended. Please log in again.", "error");
+    }
+
+    setTimeout(() => {
+        window.location.replace("../../index.html");
+    }, 1200);
 };

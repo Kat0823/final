@@ -19,7 +19,7 @@
 
     <!-- Lucide Icons -->
     <script
-        src="https://unpkg.com/lucide@latest"
+        src="../shared/lucide-icons.js"
     ></script>
 
     <style>
@@ -595,7 +595,7 @@
                 </div>
 
                 <p class="backup-note">
-                    <strong>Not included:</strong> the settings file <code>backend\.env</code>
+                    <strong>Not included:</strong> the settings file <code>backend/.env</code>
                     (database and email passwords). Keep your own private copy of it,
                     separate from the backups. Sign-in sessions are not saved either:
                     after a restore, everyone simply logs in again.
@@ -639,7 +639,7 @@
                 <div class="backup-panel-head">
                     <div>
                         <h3 id="savedBackupsTitle">Saved backups</h3>
-                        <p>Kept on the server in <code>backend\storage\app\backups</code>. Download each one and copy it to a USB drive or another computer: a backup that stays on this computer is lost with it.</p>
+                        <p>Kept on the server in <code>backend/storage/app/backups</code>. Download each one and keep it somewhere else (a USB drive, another computer or cloud storage): a backup that stays only on the server is lost if the server is lost.</p>
                     </div>
                 </div>
 
@@ -666,18 +666,21 @@
             <section class="panel backup-panel backup-guide" aria-labelledby="restoreTitle">
                 <h3 id="restoreTitle">Restore a backup</h3>
                 <p>
-                    Restoring replaces the current data, so it is done by hand, on the
-                    server computer. The same steps are in <strong>RESTORE.txt</strong> inside each backup.
-                    Try one restore before you rely on your backups.
+                    Restoring replaces the current data, so it is done by hand by the person who manages
+                    the server. <strong>XAMPP is not required.</strong> The same steps are in
+                    <strong>RESTORE.txt</strong> inside each backup. Try one restore before you rely on your backups.
                 </p>
 
                 <ol>
                     <li>Make a fresh backup of the current system first, if it still runs.</li>
-                    <li>Open the <strong>XAMPP Control Panel</strong> and make sure <strong>Apache</strong> and <strong>MySQL</strong> are running.</li>
-                    <li>Unzip the backup (7-Zip or WinRAR if it has a password).</li>
-                    <li>Open <strong>http://localhost/phpmyadmin</strong>, select (or create) the <strong>siknayan</strong> database, open <strong>Import</strong>, choose <strong>database.sql</strong> and choose <strong>Import</strong>.</li>
-                    <li>Copy <code>files\private</code> to <code>backend\storage\app\private</code> and <code>files\public\profile-photos</code> to <code>backend\storage\app\public\profile-photos</code>.</li>
-                    <li>Put your private copy of <code>backend\.env</code> in place, start the backend, and log in.</li>
+                    <li>Download the backup and unzip it (use 7-Zip or WinRAR if it has a password).</li>
+                    <li>
+                        Import <strong>database.sql</strong> into the Siknayan database with your server's database tool
+                        (for example phpMyAdmin, Adminer, HeidiSQL or your web host's <strong>Import</strong> page).
+                        See <em>Import commands</em> below for other ways.
+                    </li>
+                    <li>Copy <code>files/private</code> to <code>backend/storage/app/private</code> and <code>files/public/profile-photos</code> to <code>backend/storage/app/public/profile-photos</code>.</li>
+                    <li>Put your private copy of <code>backend/.env</code> in place, start the backend, and log in.</li>
                 </ol>
 
                 <p class="backup-note warning">
@@ -686,11 +689,34 @@
                 </p>
 
                 <details class="backup-manual">
-                    <summary>Make a backup by hand instead (phpMyAdmin)</summary>
+                    <summary>Import commands (hosted server, Docker, this computer)</summary>
                     <ol>
-                        <li>Open <strong>http://localhost/phpmyadmin</strong>, select <strong>siknayan</strong>, open <strong>Export</strong>, keep <strong>Quick</strong> and <strong>SQL</strong>, and choose <strong>Export</strong>.</li>
-                        <li>Rename the file with the date, for example <code>siknayan-2026-10-24.sql</code>.</li>
-                        <li>Copy the folders <code>backend\storage\app\private</code> and <code>backend\storage\app\public\profile-photos</code> next to it.</li>
+                        <li>
+                            <strong>Hosted server or any computer with the MySQL/MariaDB client</strong>
+                            (use the DB_ values from <code>backend/.env</code>; it asks for the password):<br>
+                            <code>mysql -h DB_HOST -P DB_PORT -u DB_USERNAME -p DB_DATABASE &lt; database.sql</code>
+                        </li>
+                        <li>
+                            <strong>Docker</strong> (run in the project folder):<br>
+                            <code>docker compose exec -T mysql sh -c 'mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE"' &lt; database.sql</code>
+                        </li>
+                        <li>
+                            <strong>This computer</strong> (Herd, Laragon, XAMPP or any local database):
+                            open your database tool, select the Siknayan database, choose <strong>Import</strong> and pick <strong>database.sql</strong>.
+                        </li>
+                    </ol>
+                </details>
+
+                <details class="backup-manual">
+                    <summary>Make a backup by hand instead</summary>
+                    <ol>
+                        <li>
+                            Export the Siknayan database as an <strong>SQL</strong> file, either with your database tool's
+                            <strong>Export</strong> page, or with:<br>
+                            <code>mysqldump -h DB_HOST -P DB_PORT -u DB_USERNAME -p --single-transaction DB_DATABASE &gt; siknayan-2026-10-24.sql</code>
+                        </li>
+                        <li>Name the file with the date, for example <code>siknayan-2026-10-24.sql</code>.</li>
+                        <li>Copy the folders <code>backend/storage/app/private</code> and <code>backend/storage/app/public/profile-photos</code> next to it.</li>
                     </ol>
                     <p class="backup-note warning">The .sql file contains every account, including password hashes. Store it somewhere private.</p>
                 </details>

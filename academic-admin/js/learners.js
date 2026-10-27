@@ -205,6 +205,34 @@ async function syncLearnersFromApi() {
         );
 
 
+    /* Each learner's modules (from their classes) for Learner Details.
+       The server's list replaces any older copy kept in this browser. */
+    if (
+        !state.modules ||
+        typeof state.modules !== "object"
+    ) {
+        state.modules = {};
+    }
+
+    apiLearners.forEach(
+        learner => {
+            if (Array.isArray(learner?.modules)) {
+                state.modules[String(learner.id)] =
+                    learner.modules.map(module => ({
+                        id: String(module.id),
+                        title: module.title || "Untitled Module",
+                        course: module.course || "",
+                        courseCode: module.course_code || "",
+                        state: module.state || "in-progress",
+                        submittedAt: module.submitted_at || null,
+                        score: module.score ?? null,
+                        maxScore: module.max_score ?? null
+                    }));
+            }
+        }
+    );
+
+
     saveLearnerState(
         state
     );

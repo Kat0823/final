@@ -146,6 +146,78 @@
             font-size: 15px;
         }
 
+        /* Learning resources from the instructor */
+        .resource-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .resource {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 14px 16px;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            background: var(--white);
+            box-shadow: var(--shadow);
+        }
+
+        .resource-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            font-size: 19px;
+        }
+
+        .resource-icon.link  { background: #e8efff; color: #1d4ed8; }
+        .resource-icon.video { background: #fde8e8; color: #c81e1e; }
+        .resource-icon.ppt   { background: #fff0e6; color: #c2410c; }
+        .resource-icon.pdf   { background: #fde8ee; color: #b42318; }
+
+        .resource-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .resource-info h3 {
+            font-size: 15px;
+            overflow-wrap: anywhere;
+        }
+
+        .resource-info .meta {
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .resource-info .text {
+            margin-top: 6px;
+            white-space: pre-line;
+            overflow-wrap: anywhere;
+        }
+
+        .resource-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        @media (max-width: 640px) {
+            .resource {
+                flex-wrap: wrap;
+            }
+
+            .resource-actions {
+                width: 100%;
+            }
+        }
+
         .announcement .meta {
             margin-top: 3px;
             color: var(--muted);
@@ -320,6 +392,10 @@
                 <i class="fa-solid fa-bullhorn" aria-hidden="true"></i> Announcements
                 <span class="count" id="announcementCount">0</span>
             </button>
+            <button class="tab" type="button" role="tab" aria-selected="false" data-tab="resourcesPanel" id="resourcesTab">
+                <i class="fa-solid fa-photo-film" aria-hidden="true"></i> Learning Resources
+                <span class="count" id="resourceCount">0</span>
+            </button>
         </div>
 
         <section id="modulesPanel" role="tabpanel" aria-labelledby="modulesTab">
@@ -334,9 +410,15 @@
         <section id="announcementsPanel" role="tabpanel" aria-labelledby="announcementsTab" hidden>
             <div class="announcement-list" id="announcementList"></div>
         </section>
+
+        <section id="resourcesPanel" role="tabpanel" aria-labelledby="resourcesTab" hidden>
+            <div class="resource-list" id="resourceList"></div>
+        </section>
     </main>
 
     <script src="../api-config.js"></script>
+    <!-- View shows PDF, images, Word, video and audio in a new tab -->
+    <script src="../teacher/js/file-viewer.js"></script>
     <script src="js/portal.js"></script>
     <script src="js/profile-modal.js"></script>
     <script>
@@ -525,7 +607,9 @@
             $("announcementList").addEventListener("click", async event => {
                 const button = event.target.closest("[data-delete-reply]");
                 if (!button) return;
-                if (!window.confirm("Delete your reply?")) return;
+                if (!(await window.Portal.confirmDialog("Delete your reply?", {
+                    title: "Delete reply", confirmText: "Delete", danger: true
+                }))) return;
 
                 button.disabled = true;
                 try {
@@ -539,6 +623,72 @@
                     button.disabled = false;
                     window.Portal.toast(deleteError.message, "error");
                 }
+            });
+
+            /* Learning resources: links, PPT, videos from the instructor */
+            let resources = [];
+
+            function resourceKind(resource) {
+                if (resource.type === "link") {
+                    return /youtube\.com|youtu\.be|vimeo\.com/i.test(resource.url || "")
+                        ? { icon: "fa-brands fa-youtube", label: "Video link", tone: "video" }
+                        : { icon: "fa-solid fa-link", label: "Link", tone: "link" };
+                }
+                const ext = (String(resource.file_name || "").toLowerCase().match(/\.([a-z0-9]+)$/) || [])[1] || "";
+                if (["ppt", "pptx"].includes(ext)) return { icon: "fa-solid fa-file-powerpoint", label: "PowerPoint", tone: "ppt" };
+                if (["mp4", "webm", "mov", "m4v"].includes(ext)) return { icon: "fa-solid fa-file-video", label: "Video", tone: "video" };
+                if (["mp3", "wav"].includes(ext)) return { icon: "fa-solid fa-file-audio", label: "Audio", tone: "video" };
+                if (ext === "pdf") return { icon: "fa-solid fa-file-pdf", label: "PDF", tone: "pdf" };
+                return { icon: "fa-solid fa-file", label: "File", tone: "link" };
+            }
+
+            function renderResources(items) {
+                resources = items;
+                $("resourceCount").textContent = items.length;
+
+                if (items.length === 0) {
+                    $("resourceList").innerHTML = `
+                        <div class="card state">
+                            <i class="fa-solid fa-photo-film" aria-hidden="true"></i>
+                            <h3>No learning resources</h3>
+                            <p>Links, slides and videos from your instructor will appear here.</p>
+                        </div>`;
+                    return;
+                }
+
+                $("resourceList").innerHTML = items.map(item => {
+                    const kind = resourceKind(item);
+                    const meta = [kind.label, item.module_title ? `Module: ${escape(item.module_title)}` : "", escape(formatDate(item.created_at, false))]
+                        .filter(Boolean).join(" · ");
+                    const actions = item.type === "link"
+                        ? `<a class="btn small" href="${escape(item.url)}" target="_blank" rel="noopener noreferrer">
+                               <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> Open</a>`
+                        : `<button type="button" class="btn small secondary" data-resource="${escape(item.id)}" data-inline="1">
+                               <i class="fa-solid fa-eye" aria-hidden="true"></i> View</button>
+                           <button type="button" class="btn small" data-resource="${escape(item.id)}">
+                               <i class="fa-solid fa-download" aria-hidden="true"></i> Download</button>`;
+                    return `
+                        <article class="resource">
+                            <span class="resource-icon ${kind.tone}"><i class="${kind.icon}" aria-hidden="true"></i></span>
+                            <div class="resource-info">
+                                <h3>${escape(item.title)}</h3>
+                                <p class="meta">${meta}</p>
+                                ${item.description ? `<p class="text">${escape(item.description)}</p>` : ""}
+                            </div>
+                            <div class="resource-actions">${actions}</div>
+                        </article>`;
+                }).join("");
+            }
+
+            $("resourceList").addEventListener("click", event => {
+                const button = event.target.closest("[data-resource]");
+                if (!button) return;
+                const item = resources.find(resource => String(resource.id) === button.dataset.resource);
+                if (!item) return;
+                window.Portal.openFile(`/student/resources/${encodeURIComponent(item.id)}/file`, {
+                    inline: Boolean(button.dataset.inline),
+                    fileName: item.file_name || item.title
+                });
             });
 
             function showError(message) {
@@ -573,6 +723,7 @@
 
                     renderModules(course.modules || []);
                     renderAnnouncements(course.announcements || []);
+                    renderResources(course.resources || []);
                 } catch (error) {
                     showError(error.message);
                 }

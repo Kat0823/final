@@ -2715,10 +2715,7 @@ async function confirmDeleteAccount() {
 
         refreshPageIcons();
 
-        alert(
-            payload?.message ||
-            `The instructor ${instructorName} has been deleted.`
-        );
+        window.showAdminToast("Deleted successfully.");
 
     } catch (
         error

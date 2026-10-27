@@ -4,6 +4,16 @@
    GLOBAL JAVASCRIPT
 ========================================================= */
 
+/* Readable sidebar hover for every portal (shared/sidebar-hover.js). */
+(function () {
+    const current = document.currentScript;
+    if (!current || window.SiknayanSidebarHover) return;
+    const script = document.createElement("script");
+    script.src = new URL("../../shared/sidebar-hover.js", current.src).href;
+    document.head.appendChild(script);
+})();
+
+
 /* =========================================================
    SYSTEM ADMIN API SESSION
 ========================================================= */

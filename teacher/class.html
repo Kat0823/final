@@ -429,6 +429,25 @@
             gap: 24px;
         }
 
+        /* Compact class cards: 3 per row, so 6 (two rows) fit on a
+           normal screen. The id beats shared/class-cards.css. */
+        #classesGrid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        @media (max-width: 1100px) {
+            #classesGrid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            #classesGrid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .class-card {
             min-height: 145px;
             padding: 20px 22px;
@@ -1670,8 +1689,9 @@ function renderClasses(classes) {
                 : "#",
             code: course.code || course.course_code || "No Code",
             name: course.name || course.class_name || course.course_name || "Unnamed Class",
+            program: course.program || "",
+            compact: true,
             meta: [
-                { icon: "fa-solid fa-graduation-cap", text: course.program || "" },
                 { icon: "fa-regular fa-file-lines", text: course.description || "" }
             ],
             footer: {

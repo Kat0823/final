@@ -72,7 +72,7 @@
        LOAD LEARNER
     ===================================================== */
 
-    const learner =
+    let learner =
         getLearnerById(
             learnerId
         );
@@ -1158,7 +1158,24 @@
        BACK BUTTON
     ===================================================== */
 
+    /* Back goes to the page the learner was opened from: Reports
+       (?from=reports) or, by default, Learners. */
+    const BACK_PAGES = {
+        reports: { href: "reports.html", label: "Back to Reports" },
+        learners: { href: "learners.html", label: "Back to Learners" }
+    };
+
+    const backTarget =
+        BACK_PAGES[params.get("from")] ||
+        BACK_PAGES.learners;
+
     if (backButton) {
+
+        backButton.href =
+            backTarget.href;
+
+        backButton.innerHTML =
+            `<i data-lucide="arrow-left"></i> ${backTarget.label}`;
 
         backButton.addEventListener(
             "click",
@@ -1166,8 +1183,25 @@
 
                 event.preventDefault();
 
+                // Coming straight from that page: go back in history so its
+                // filters and position stay as they were.
+                let cameFromTarget = false;
+                try {
+                    cameFromTarget =
+                        new URL(document.referrer).pathname.endsWith(
+                            "/" + backTarget.href
+                        );
+                } catch (error) {
+                    cameFromTarget = false;
+                }
+
+                if (cameFromTarget && window.history.length > 1) {
+                    window.history.back();
+                    return;
+                }
+
                 window.location.href =
-                    "learners.html";
+                    backTarget.href;
             }
         );
     }
@@ -1194,5 +1228,21 @@
     ===================================================== */
 
     renderPage();
+
+
+    /* The learner list (with each learner's modules) is refreshed from
+       the server when the page opens; draw again with the fresh data so
+       the counts and the module list always match. */
+    window.addEventListener(
+        "siknayan:learners-refreshed",
+        () => {
+            learner =
+                getLearnerById(
+                    learnerId
+                ) || learner;
+
+            renderPage();
+        }
+    );
 
 })();

@@ -536,3 +536,137 @@
 }
 
 
+
+/* =========================================================
+   Same structure as the Academic Admin profile
+   - wider card; Full Name, Instructor ID and Email on one row
+   - pen on the photo to change the picture
+   - while changing the password the card is compact, the
+     password fields sit side by side and the big buttons hide,
+     so there is no scroll bar
+========================================================= */
+
+.lp-profile-modal {
+    max-width: 880px;
+}
+
+.lp-profile-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.lp-photo-wrap {
+    position: relative;
+    flex: 0 0 90px;
+}
+
+.lp-photo-edit {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: #e2ac2f;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.lp-photo-edit:hover {
+    background: #c9961f;
+}
+
+.lp-photo-wrap:focus-within .lp-photo-edit {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+.lp-profile-photo-upload[hidden] {
+    display: none;
+}
+
+.lp-password-form {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px 14px;
+}
+
+.lp-password-form[hidden] {
+    display: none;
+}
+
+.lp-password-form > .lp-message,
+.lp-password-form > .lp-password-buttons {
+    grid-column: 1 / -1;
+}
+
+.lp-profile-actions[hidden] {
+    display: none;
+}
+
+/* Compact card while the password form is open */
+.lp-compact .lp-profile-cover {
+    padding-top: 18px;
+    padding-bottom: 18px;
+}
+
+.lp-compact .lp-profile-photo,
+.lp-compact .lp-photo-wrap {
+    width: 68px;
+    height: 68px;
+    flex-basis: 68px;
+}
+
+.lp-compact .lp-profile-cover h2 {
+    margin-bottom: 4px;
+    font-size: 20px;
+}
+
+.lp-compact .lp-profile-cover p {
+    margin-bottom: 6px;
+}
+
+.lp-compact .lp-profile-body {
+    padding-top: 16px;
+    padding-bottom: 18px;
+}
+
+.lp-compact .lp-profile-body h3 {
+    margin-bottom: 10px;
+    font-size: 17px;
+}
+
+.lp-compact .lp-profile-grid {
+    gap: 10px 25px;
+}
+
+.lp-compact .lp-profile-security {
+    margin-top: 14px;
+    padding-top: 14px;
+}
+
+.lp-compact .lp-profile-security-row {
+    margin-bottom: 12px;
+}
+
+@media (max-width: 760px) {
+    .lp-profile-grid,
+    .lp-password-form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .lp-profile-grid,
+    .lp-password-form {
+        grid-template-columns: 1fr;
+    }
+
+    .lp-photo-wrap {
+        flex-basis: 65px;
+    }
+}

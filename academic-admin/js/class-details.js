@@ -33,8 +33,9 @@ async function classDetailsApiRequest(
 
     if (!token) {
 
+        window.handleAdminSessionExpired?.();
         throw new Error(
-            "No API token found. Please save a fresh Laravel token as siknayan_api_token."
+            "Your session has ended. Please log in again."
         );
 
     }
@@ -72,6 +73,16 @@ async function classDetailsApiRequest(
     } catch {
 
         payload = null;
+
+    }
+
+
+    if (response.status === 401) {
+
+        window.handleAdminSessionExpired?.();
+        throw new Error(
+            "Your session has ended. Please log in again."
+        );
 
     }
 

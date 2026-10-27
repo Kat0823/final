@@ -149,6 +149,23 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("PROFILE REQUEST", new Date().toISOString());
     loadProfile();
 
+    // The verified "Change Email" row in Account & Security (shared/email-change.js).
+    (function mountEmailChange() {
+        const section = document.querySelector(".profile-security");
+        if (!section) return;
+
+        const start = () => window.SiknayanEmailChange.mount(section, {
+            onChanged: email => setText("profileEmail", email)
+        });
+
+        if (window.SiknayanEmailChange) return start();
+
+        const script = document.createElement("script");
+        script.src = window.SIKNAYAN_EMAIL_CHANGE_SRC || "../../shared/email-change.js";
+        script.onload = start;
+        document.head.appendChild(script);
+    })();
+
     if (window.lucide) {
         window.lucide.createIcons();
     }

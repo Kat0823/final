@@ -826,25 +826,48 @@ Laravel reports API.
     }
 
 
+    /* Every program: the Module Library (default + added
+       programs) plus any program typed on a learner, class
+       or instructor record. */
     function programs(data) {
+
+        const libraryCodes =
+            window.SiknayanPrograms &&
+            typeof window.SiknayanPrograms.getCodes === "function"
+                ? window.SiknayanPrograms.getCodes()
+                : [];
+
+        const seen = new Set();
 
         return unique(
 
             [
 
-                ...data.learners.map(
+                ...libraryCodes,
+
+                ...(data.learners || []).map(
                     item =>
                         item?.program
                 ),
 
-                ...data.classes.map(
+                ...(data.classes || []).map(
+                    item =>
+                        item?.program
+                ),
+
+                ...(data.instructors || []).map(
                     item =>
                         item?.program
                 )
 
             ]
 
-        );
+        ).filter(code => {
+            const key = code.toLowerCase();
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
     }
 
 
@@ -1656,25 +1679,12 @@ Laravel reports API.
                 class="reports-filter-actions"
             >
 
-                <button
-                    type="button"
-                    class="reports-primary-button"
-                    id="applyReportFilters"
-                >
-
-                    <i
-                        data-lucide="filter"
-                    ></i>
-
-                    Apply Filters
-
-                </button>
-
-
+                <!-- Filters apply as soon as they change; Reset clears them. -->
                 <button
                     type="button"
                     class="reports-secondary-button"
                     id="resetReportFilters"
+                    title="Clear all filters"
                 >
 
                     <i
@@ -1693,17 +1703,25 @@ Laravel reports API.
         refreshIcons();
 
 
-        $("applyReportFilters")
-            ?.addEventListener(
-                "click",
-                () => {
+        /* Filters apply right away: dropdowns when changed, search
+           while typing (after a short pause). */
+        const applyFilters = () => {
+            currentPage = 1;
+            renderReport();
+        };
 
-                    currentPage =
-                        1;
+        let searchTimer = null;
 
-                    renderReport();
-                }
-            );
+        el.filters
+            .querySelectorAll("select[data-filter]")
+            .forEach(select => select.addEventListener("change", applyFilters));
+
+        el.filters
+            .querySelectorAll("input[data-filter='search']")
+            .forEach(input => input.addEventListener("input", () => {
+                clearTimeout(searchTimer);
+                searchTimer = setTimeout(applyFilters, 250);
+            }));
 
 
         $("resetReportFilters")
@@ -2011,47 +2029,6 @@ Laravel reports API.
                 );
 
 
-        const progressValues =
-            items
-
-                .map(
-                    row =>
-                        row.progress
-                )
-
-                .filter(
-                    value =>
-                        value !== null
-                );
-
-
-        const average =
-
-            progressValues.length
-
-                ? progressValues.reduce(
-                    (
-                        sum,
-                        value
-                    ) =>
-                        sum + value,
-                    0
-                  ) /
-                  progressValues.length
-
-                : null;
-
-
-        const completed =
-            items.filter(
-                row =>
-                    statusKey(
-                        row.status
-                    ) ===
-                    "completed"
-            ).length;
-
-
         return {
 
             title:
@@ -2079,40 +2056,8 @@ Laravel reports API.
             rows:
                 items,
 
-            summary: [
-
-                card(
-                    "users",
-                    "Learners",
-                    items.length,
-                    "Matching the current filters"
-                ),
-
-                card(
-                    "circle-check",
-                    "Completed",
-                    completed,
-                    items.length
-
-                        ? `${Math.round(
-                            completed /
-                            items.length *
-                            100
-                          )}% of filtered learners`
-
-                        : "No filtered learners"
-                ),
-
-                card(
-                    "chart-no-axes-combined",
-                    "Average Progress",
-                    percentText(
-                        average
-                    ),
-                    "Based on available progress values"
-                )
-
-            ],
+            // No summary cards: the table already shows these numbers.
+            summary: [],
 
             render:
 
@@ -2144,7 +2089,7 @@ Laravel reports API.
                                 href="
                                     learner-details.html?id=${encodeURIComponent(
                                         row.id
-                                    )}
+                                    )}&from=reports
                                 "
                             >
 
@@ -2205,7 +2150,7 @@ Laravel reports API.
                                 href="
                                     learner-details.html?id=${encodeURIComponent(
                                         row.id
-                                    )}
+                                    )}&from=reports
                                 "
                                 title="View learner"
                                 aria-label="View learner"
@@ -2402,38 +2347,6 @@ Laravel reports API.
                 );
 
 
-        const totalLearners =
-            items.reduce(
-                (
-                    total,
-                    row
-                ) =>
-                    total +
-                    row.learners,
-                0
-            );
-
-
-        const activeClasses =
-            items.filter(
-                row =>
-                    statusKey(
-                        row.status
-                    ) ===
-                    "active"
-            ).length;
-
-
-        const classesWithInstructor =
-            items.filter(
-                row =>
-                    norm(
-                        row.instructor
-                    ) !==
-                    "unassigned"
-            ).length;
-
-
         return {
 
             title:
@@ -2458,37 +2371,8 @@ Laravel reports API.
             rows:
                 items,
 
-            summary: [
-
-                card(
-                    "book-open",
-                    "Classes",
-                    items.length,
-                    "Matching the current filters"
-                ),
-
-                card(
-                    "users",
-                    "Enrolled Learners",
-                    totalLearners,
-                    "Across filtered classes"
-                ),
-
-                card(
-                    "circle-check",
-                    "Active Classes",
-                    activeClasses,
-                    "Currently marked active"
-                ),
-
-                card(
-                    "user-round-check",
-                    "With Instructor",
-                    classesWithInstructor,
-                    "Filtered classes with an assigned instructor"
-                )
-
-            ],
+            // No summary cards: the table already shows these numbers.
+            summary: [],
 
             render:
 
@@ -3331,40 +3215,8 @@ Laravel reports API.
                 items,
 
 
-            summary: [
-
-                card(
-                    "layers-3",
-                    "Modules",
-                    items.length,
-                    "Modules assigned or represented in the filtered set"
-                ),
-
-
-                card(
-                    "send",
-                    "Assignments",
-                    assigned,
-                    "Learner-module assignments"
-                ),
-
-
-                card(
-                    "clock-3",
-                    "Awaiting Grade",
-                    awaiting,
-                    "Submissions waiting for assessment"
-                ),
-
-
-                card(
-                    "circle-check",
-                    "Completed",
-                    completed,
-                    `${submitted} submitted records in the filtered set`
-                )
-
-            ],
+            // No summary cards: the table already shows these numbers.
+            summary: [],
 
 
             render:
@@ -3972,40 +3824,8 @@ Laravel reports API.
                 items,
 
 
-            summary: [
-
-                card(
-                    "users",
-                    "Instructors",
-                    items.length,
-                    "Instructors represented in the filtered set"
-                ),
-
-
-                card(
-                    "school",
-                    "Classes",
-                    classes,
-                    "Classes assigned to instructors"
-                ),
-
-
-                card(
-                    "book-open",
-                    "Modules",
-                    modules,
-                    "Modules assigned across instructor classes"
-                ),
-
-
-                card(
-                    "clock-3",
-                    "Awaiting Grade",
-                    awaiting,
-                    "Submissions waiting for assessment"
-                )
-
-            ],
+            // No summary cards: the table already shows these numbers.
+            summary: [],
 
 
             render:
@@ -4382,45 +4202,6 @@ Laravel reports API.
         SUMMARY TOTALS
         ================================================= */
 
-        const totalLearners =
-            items.reduce(
-                (
-                    total,
-                    row
-                ) =>
-                    total +
-                    row.learners,
-
-                0
-            );
-
-
-        const totalClasses =
-            items.reduce(
-                (
-                    total,
-                    row
-                ) =>
-                    total +
-                    row.classes,
-
-                0
-            );
-
-
-        const totalModules =
-            items.reduce(
-                (
-                    total,
-                    row
-                ) =>
-                    total +
-                    row.modules,
-
-                0
-            );
-
-
         const progressValues =
 
             items
@@ -4495,42 +4276,8 @@ Laravel reports API.
                 items,
 
 
-            summary: [
-
-                card(
-                    "school",
-                    "Programs",
-                    items.length,
-                    "Matching the current search"
-                ),
-
-
-                card(
-                    "users",
-                    "Learners",
-                    totalLearners,
-                    "Across filtered programs"
-                ),
-
-
-                card(
-                    "book-open",
-                    "Classes",
-                    totalClasses,
-                    "Across filtered programs"
-                ),
-
-
-                card(
-                    "chart-no-axes-combined",
-                    "Average Progress",
-                    percentText(
-                        average
-                    ),
-                    `Across ${totalModules} module${totalModules === 1 ? "" : "s"} in the filtered programs`
-                )
-
-            ],
+            // No summary cards: the table already shows these numbers.
+            summary: [],
 
 
             render:
@@ -4656,6 +4403,12 @@ Laravel reports API.
             summaryItems.join(
                 ""
             );
+
+        // Reports without summary cards leave no empty space.
+        el.summary.style.display =
+            summaryItems.length
+                ? ""
+                : "none";
 
 
         refreshIcons();
@@ -5166,8 +4919,11 @@ Laravel reports API.
                                 "student id"
                             ) {
 
+                                // The School ID (e.g. 23-00001), not the
+                                // internal record number.
                                 value =
-                                    row.id;
+                                    row.studentId ||
+                                    "";
                             }
 
 
@@ -5349,6 +5105,16 @@ Laravel reports API.
                                     row.modules;
                             }
 
+
+                            // IDs are written as ="23-00001" so Excel keeps
+                            // them as text (it would turn 23-00001 into a
+                            // date or a number).
+                            if (
+                                (key === "student id" || key === "instructor id") &&
+                                text(value) !== ""
+                            ) {
+                                return `"=""${text(value).replace(/"/g, '""""')}"""`;
+                            }
 
                             return escapeCsv(
                                 value

@@ -13,6 +13,16 @@
    Pages mark their sidebar link with <body data-page="...">.
 ========================================================= */
 
+/* Readable sidebar hover for every portal (shared/sidebar-hover.js). */
+(function () {
+    const current = document.currentScript;
+    if (!current || window.SiknayanSidebarHover) return;
+    const script = document.createElement("script");
+    script.src = new URL("../../shared/sidebar-hover.js", current.src).href;
+    document.head.appendChild(script);
+})();
+
+
 (function () {
     "use strict";
 
@@ -195,6 +205,70 @@
         item.textContent = message;
         toastArea.appendChild(item);
         window.setTimeout(() => item.remove(), 4000);
+    }
+
+    /* ---------------- CONFIRM DIALOG ----------------
+       In-page Yes/No box. Used instead of window.confirm(), which
+       shows the site address (e.g. "127.0.0.1:5501 says").
+       Returns a Promise: true for the confirm button, false otherwise. */
+
+    function confirmDialog(message, { title = "Please confirm", confirmText = "Confirm", danger = false } = {}) {
+        return new Promise(resolve => {
+            if (!document.getElementById("portalConfirmStyle")) {
+                const style = document.createElement("style");
+                style.id = "portalConfirmStyle";
+                style.textContent = `
+                    .portal-confirm-overlay { position: fixed; inset: 0; z-index: 5000; display: flex; align-items: center;
+                        justify-content: center; padding: 16px; background: rgba(15, 23, 42, .45);
+                        backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
+                    .portal-confirm { width: 100%; max-width: 420px; padding: 22px; border-top: 4px solid #e2ac2f;
+                        border-radius: 14px; background: #fff; box-shadow: 0 22px 60px rgba(0,0,0,.28); }
+                    .portal-confirm h3 { margin: 0 0 8px; color: #08683c; font-size: 18px; }
+                    .portal-confirm p { margin: 0; color: #333; font-size: 14px; line-height: 1.55; overflow-wrap: anywhere; }
+                    .portal-confirm-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+                    .portal-confirm-actions button { min-height: 38px; padding: 0 16px; border-radius: 8px; font: inherit;
+                        font-size: 14px; font-weight: 600; cursor: pointer; }
+                    .portal-confirm-cancel { border: 1px solid #d0d5dd; background: #fff; color: #333; }
+                    .portal-confirm-ok { border: 1px solid #08683c; background: #08683c; color: #fff; }
+                    .portal-confirm-ok.danger { border-color: #b42318; background: #b42318; }`;
+                document.head.appendChild(style);
+            }
+
+            const lastFocus = document.activeElement;
+            const overlay = document.createElement("div");
+            overlay.className = "portal-confirm-overlay";
+            overlay.innerHTML = `
+                <div class="portal-confirm" role="alertdialog" aria-modal="true" aria-labelledby="portalConfirmTitle" aria-describedby="portalConfirmText">
+                    <h3 id="portalConfirmTitle">${escape(title)}</h3>
+                    <p id="portalConfirmText">${escape(message)}</p>
+                    <div class="portal-confirm-actions">
+                        <button type="button" class="portal-confirm-cancel">Cancel</button>
+                        <button type="button" class="portal-confirm-ok${danger ? " danger" : ""}">${escape(confirmText)}</button>
+                    </div>
+                </div>`;
+
+            function finish(answer) {
+                document.removeEventListener("keydown", onKey, true);
+                overlay.remove();
+                if (lastFocus && typeof lastFocus.focus === "function") lastFocus.focus();
+                resolve(answer);
+            }
+
+            function onKey(event) {
+                if (event.key === "Escape") {
+                    event.preventDefault();
+                    finish(false);
+                }
+            }
+
+            overlay.querySelector(".portal-confirm-cancel").addEventListener("click", () => finish(false));
+            overlay.querySelector(".portal-confirm-ok").addEventListener("click", () => finish(true));
+            overlay.addEventListener("click", event => { if (event.target === overlay) finish(false); });
+            document.addEventListener("keydown", onKey, true);
+
+            document.body.appendChild(overlay);
+            overlay.querySelector(".portal-confirm-ok").focus();
+        });
     }
 
     /* ---------------- HEADER AND SIDEBAR ---------------- */
@@ -422,6 +496,7 @@
         api,
         openFile,
         toast,
+        confirmDialog,
         escape,
         formatDate,
         refreshBell,

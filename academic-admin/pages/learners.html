@@ -10,7 +10,7 @@
     <!-- MPSU look: header art, sidebar (load after style.css) -->
     <link rel="stylesheet" href="../css/theme.css">
 
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="../../shared/lucide-icons.js"></script>
 </head>
 
 <body>
@@ -174,57 +174,39 @@
         ====================== -->
         <main class="main-content learners-page">
 
-            <!-- Page heading -->
+            <!-- Page heading: title on the left; search in the center with
+                 the program and status dropdowns beside it -->
             <section class="learners-heading">
 
-                <div>
-                    <h2>Learners</h2>
+                <h2>Learners</h2>
 
-                    <p>
-                        Manage learners and monitor their academic progress.
-                    </p>
-                </div>
+                <div class="learner-controls">
 
-                <span
-                    class="learner-total"
-                    id="learnerTotal"
-                >
-                    0 Learners
-                </span>
+                    <div class="search-box">
 
-            </section>
+                        <i data-lucide="search"></i>
 
+                        <input
+                            type="text"
+                            id="learnerSearch"
+                            placeholder="Search by learner name..."
+                        >
 
-            <!-- =====================
-                 FILTERS
-            ====================== -->
-            <section class="learner-controls">
+                    </div>
 
-                <div class="search-box">
+                    <div class="filter-group">
 
-                    <i data-lucide="search"></i>
+                        <select id="programFilter">
+                        </select>
 
-                    <input
-                        type="text"
-                        id="learnerSearch"
-                        placeholder="Search by learner name or ID..."
-                    >
+                        <select id="statusFilter">
+                            <option value="all">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="completed">Completed</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
 
-                </div>
-
-
-                <div class="filter-group">
-
-                    <select id="programFilter">
-                    </select>
-
-
-                    <select id="statusFilter">
-                        <option value="all">All Status</option>
-                        <option value="active">Active</option>
-                        <option value="completed">Completed</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
+                    </div>
 
                 </div>
 

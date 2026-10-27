@@ -107,8 +107,28 @@
         }
     }
 
-    function allPrograms() {
-        const list = PROGRAMS.map(program => ({ ...program }));
+    /* Codes of programs the admin deleted in the Module Library. */
+    function deletedCodes() {
+        try {
+            const stored = JSON.parse(
+                localStorage.getItem(LIBRARY_STORAGE_KEY) || "null"
+            );
+
+            return Array.isArray(stored?.deletedPrograms)
+                ? stored.deletedPrograms.map(code => String(code).toLowerCase())
+                : [];
+        } catch (error) {
+            return [];
+        }
+    }
+
+    /* Deleted programs are left out of dropdowns, but lookups by code
+       (includeDeleted) still find them so existing records show fine. */
+    function allPrograms(includeDeleted = false) {
+        const deleted = includeDeleted ? [] : deletedCodes();
+        const list = PROGRAMS
+            .filter(program => !deleted.includes(program.code.toLowerCase()))
+            .map(program => ({ ...program }));
 
         libraryPrograms().forEach(program => {
             const code = String(program?.code || "").trim();
@@ -191,7 +211,7 @@
             );
 
 
-        return allPrograms().find(
+        return allPrograms(true).find(
             program =>
                 normalizeCode(
                     program.code
@@ -218,7 +238,7 @@
                 .toLowerCase();
 
 
-        return allPrograms().find(
+        return allPrograms(true).find(
             program =>
                 String(
                     program.id

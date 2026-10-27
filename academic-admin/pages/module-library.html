@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../css/style.css">
     <!-- MPSU look: header art, sidebar (load after style.css) -->
     <link rel="stylesheet" href="../css/theme.css">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="../../shared/lucide-icons.js"></script>
 
     <style>
         /* =========================================================
@@ -71,23 +71,39 @@
 
         .program-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        /* Cards follow the dashboard style: white card, soft shadow,
+           serif text, tinted icon tile and faint mountain art.
+           Each program's colors come from module-library.js
+           (--program-accent / --program-soft). */
+        .program-card-wrap {
+            --program-accent: #0b6b3e;
+            --program-soft: #e3f3ea;
+
+            position: relative;
+            display: flex;
         }
 
         .program-card {
-            display: block;
+            position: relative;
+            display: flex;
+            flex-direction: column;
             width: 100%;
-            min-height: 130px;
+            min-height: 150px;
             box-sizing: border-box;
-            padding: 24px;
-            background: #fff;
-            border: 1px solid #cfcfcf;
-            border-radius: 7px;
-            text-align: left;
-            cursor: pointer;
-            text-decoration: none;
+            overflow: hidden;
+            padding: 16px 16px 48px;
+            background: #ffffff;
+            border: 1px solid #ebeee9;
+            border-radius: 14px;
+            box-shadow: var(--theme-card-shadow, 0 6px 20px rgba(23, 40, 30, 0.07));
             color: inherit;
+            text-align: left;
+            text-decoration: none;
+            cursor: pointer;
             transition:
                 border-color 0.2s ease,
                 box-shadow 0.2s ease,
@@ -99,61 +115,248 @@
         }
 
         .program-card:hover {
-            border-color: #08733d;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
-            transform: translateY(-1px);
+            border-color: var(--program-accent);
+            box-shadow: 0 10px 26px rgba(23, 40, 30, 0.12);
+            transform: translateY(-2px);
         }
 
-        .program-card-content {
+        .program-card:focus-visible {
+            outline: 2px solid var(--program-accent);
+            outline-offset: 2px;
+        }
+
+        /* Faint mountains along the bottom, in the program's color */
+        .program-card-art {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            height: 40px;
+            opacity: 0.55;
+            background: linear-gradient(180deg, var(--program-accent), var(--program-soft) 70%);
+            pointer-events: none;
+            -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 46' preserveAspectRatio='none'%3E%3Cpath d='M0 46 L40 26 L70 36 L110 12 L140 28 L170 8 L200 20 L200 46 Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 46' preserveAspectRatio='none'%3E%3Cpath d='M0 46 L40 26 L70 36 L110 12 L140 28 L170 8 L200 20 L200 46 Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+        }
+
+        /* Field icons drawn faintly on the mountains, below the text */
+        .program-card-motif {
+            position: absolute;
+            left: 16px;
+            bottom: 9px;
             display: flex;
-            flex-direction: column;
-            height: 100%;
+            align-items: flex-end;
+            gap: 9px;
+            color: var(--program-accent);
+            pointer-events: none;
+        }
+
+        .program-card-motif svg {
+            width: 18px;
+            height: 18px;
+            stroke-width: 1.7;
+            opacity: 0.4;
+            transition: opacity 0.2s ease;
+        }
+
+        .program-card-motif svg:nth-child(odd) {
+            transform: translateY(-4px) rotate(-8deg);
+        }
+
+        .program-card-motif svg:nth-child(even) {
+            transform: rotate(8deg);
+        }
+
+        .program-card:hover .program-card-motif svg {
+            opacity: 0.6;
         }
 
         .program-card-top {
+            position: relative;
+            z-index: 1;
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 18px;
+            padding-right: 30px;
+        }
+
+        .program-icon-badge {
+            display: grid;
+            place-items: center;
+            width: 46px;
+            height: 46px;
+            flex-shrink: 0;
+            border-radius: 12px;
+            background: var(--program-soft);
+            color: var(--program-accent);
         }
 
         .program-icon {
-            width: 27px;
-            height: 27px;
-            flex-shrink: 0;
-            color: #222;
-            stroke-width: 1.8;
+            width: 22px;
+            height: 22px;
+            stroke-width: 2;
+        }
+
+        .program-card-title {
+            min-width: 0;
         }
 
         .program-card h3 {
             margin: 0;
+            color: var(--program-accent);
+            font-family: var(--theme-serif, Georgia, serif);
             font-size: 18px;
-            font-weight: 700;
-            color: #222;
+            font-weight: 900;
+            letter-spacing: 0.3px;
+            line-height: 1.2;
         }
 
         .program-card-name {
-            margin: -8px 0 10px;
-            color: #333;
-            font-size: 13px;
-            font-weight: 600;
-            line-height: 1.35;
+            margin: 3px 0 0;
+            color: #2d3a33;
+            font-family: var(--theme-serif, Georgia, serif);
+            font-size: 12.5px;
+            line-height: 1.4;
         }
 
         .program-card-majors {
-            margin: -4px 0 12px;
-            color: #08733d;
+            position: relative;
+            z-index: 1;
+            margin: 10px 0 0;
+            color: #5b6760;
             font-size: 12px;
             line-height: 1.4;
         }
 
         .program-card-stats {
+            position: relative;
+            z-index: 1;
             display: flex;
-            flex-direction: column;
-            gap: 4px;
-            color: #666;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px 14px;
+            margin-top: auto;
+            padding-top: 14px;
+            color: #5b6760;
+            font-family: var(--theme-serif, Georgia, serif);
+            font-size: 12.5px;
+        }
+
+        .program-stat {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .program-stat strong {
+            color: #1d2a23;
+            font-size: 15px;
+            font-weight: 900;
+        }
+
+        .program-stat svg {
+            width: 14px;
+            height: 14px;
+            color: var(--program-accent);
+        }
+
+        /* Delete button in the card's top-right corner */
+        .program-delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 2;
+            display: grid;
+            place-items: center;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            background: transparent;
+            color: #8a948e;
+            cursor: pointer;
+            transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+        }
+
+        .program-delete-btn svg {
+            width: 17px;
+            height: 17px;
+        }
+
+        .program-delete-btn:hover,
+        .program-delete-btn:focus-visible {
+            border-color: #f3c1c4;
+            background: #fbe4e4;
+            color: #9b1c22;
+            outline: none;
+        }
+
+        /* Delete confirmation */
+        .delete-program-modal {
+            width: min(430px, 100%);
+            text-align: center;
+        }
+
+        .delete-program-icon {
+            display: grid;
+            place-items: center;
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 14px;
+            border-radius: 50%;
+            background: #fbe4e4;
+            color: #9b1c22;
+        }
+
+        .delete-program-icon svg {
+            width: 26px;
+            height: 26px;
+        }
+
+        .delete-program-modal .modal-header {
+            margin-bottom: 18px;
+        }
+
+        .delete-program-modal .modal-header h3 {
+            font-family: var(--theme-serif, Georgia, serif);
+        }
+
+        .delete-program-modal .modal-header p {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .delete-program-error {
+            margin: 0 0 6px;
+            padding: 10px 12px;
+            border: 1px solid #f3c1c4;
+            border-radius: 8px;
+            background: #fff5f5;
+            color: #9b1c22;
             font-size: 13px;
-            line-height: 1.35;
+            line-height: 1.45;
+            text-align: left;
+        }
+
+        .delete-program-modal .modal-actions {
+            justify-content: center;
+        }
+
+        .modal-btn.danger {
+            border: 1px solid #a32929;
+            background: #a32929;
+            color: #fff;
+        }
+
+        .modal-btn.danger:hover {
+            background: #8c2020;
+        }
+
+        .modal-btn.danger:disabled {
+            border-color: #d9a3a3;
+            background: #d9a3a3;
+            cursor: not-allowed;
         }
 
         /* =========================================================
@@ -319,6 +522,12 @@
         /* =========================================================
            RESPONSIVE
            ========================================================= */
+
+        @media (max-width: 1100px) {
+            .program-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
 
         @media (max-width: 900px) {
             .module-library-page {
@@ -574,238 +783,7 @@
                     class="program-grid"
                     id="programGrid"
                 >
-
-                    <!-- BSIT -->
-
-                    <a
-                        href="module-library-program.html?program=BSIT"
-                        class="program-card"
-                        data-program="BSIT"
-                    >
-                        <div class="program-card-content">
-
-                            <div class="program-card-top">
-
-                                <i
-                                    data-lucide="monitor-up"
-                                    class="program-icon"
-                                ></i>
-
-                                <h3>BSIT</h3>
-
-                            </div>
-
-                            <div class="program-card-stats">
-                                <span>0 Subjects · 0</span>
-                                <span>Modules</span>
-                            </div>
-
-                        </div>
-                    </a>
-
-
-                    <!-- BSCRIM -->
-
-                    <a
-                        href="module-library-program.html?program=BSCRIM"
-                        class="program-card"
-                        data-program="BSCRIM"
-                    >
-                        <div class="program-card-content">
-
-                            <div class="program-card-top">
-
-                                <i
-                                    data-lucide="clock-3"
-                                    class="program-icon"
-                                ></i>
-
-                                <h3>BSCRIM</h3>
-
-                            </div>
-
-                            <div class="program-card-stats">
-                                <span>7 Subjects · 40</span>
-                                <span>Modules</span>
-                            </div>
-
-                        </div>
-                    </a>
-
-
-                    <!-- BSEEd -->
-
-                    <a
-                        href="module-library-program.html?program=BSEEd"
-                        class="program-card"
-                        data-program="BSEEd"
-                    >
-                        <div class="program-card-content">
-
-                            <div class="program-card-top">
-
-                                <i
-                                    data-lucide="feather"
-                                    class="program-icon"
-                                ></i>
-
-                                <h3>BSEEd</h3>
-
-                            </div>
-
-                            <div class="program-card-stats">
-                                <span>5 Subjects · 33</span>
-                                <span>Modules</span>
-                            </div>
-
-                        </div>
-                    </a>
-
-
-                    <!-- BSOA -->
-
-                    <a
-                        href="module-library-program.html?program=BSOA"
-                        class="program-card"
-                        data-program="BSOA"
-                    >
-                        <div class="program-card-content">
-
-                            <div class="program-card-top">
-
-                                <i
-                                    data-lucide="briefcase"
-                                    class="program-icon"
-                                ></i>
-
-                                <h3>BSOA</h3>
-
-                            </div>
-
-                            <div class="program-card-stats">
-                                <span>4 Subjects · 30</span>
-                                <span>Modules</span>
-                            </div>
-
-                        </div>
-                    </a>
-
-
-                    <!-- BSN -->
-
-                    <a
-                        href="module-library-program.html?program=BSN"
-                        class="program-card"
-                        data-program="BSN"
-                    >
-                        <div class="program-card-content">
-
-                            <div class="program-card-top">
-
-                                <i
-                                    data-lucide="heart"
-                                    class="program-icon"
-                                ></i>
-
-                                <h3>BSN</h3>
-
-                            </div>
-
-                            <div class="program-card-stats">
-                                <span>8 Subjects · 45</span>
-                                <span>Modules</span>
-                            </div>
-
-                        </div>
-                    </a>
-
-
-                    <!-- BSBA -->
-
-                    <a
-                        href="module-library-program.html?program=BSBA"
-                        class="program-card"
-                        data-program="BSBA"
-                    >
-                        <div class="program-card-content">
-
-                            <div class="program-card-top">
-
-                                <i
-                                    data-lucide="tag"
-                                    class="program-icon"
-                                ></i>
-
-                                <h3>BSBA</h3>
-
-                            </div>
-
-                            <div class="program-card-stats">
-                                <span>3 Subjects · 16</span>
-                                <span>Modules</span>
-                            </div>
-
-                        </div>
-                    </a>
-
-
-                    <!-- BSA -->
-
-                    <a
-                        href="module-library-program.html?program=BSA"
-                        class="program-card"
-                        data-program="BSA"
-                    >
-                        <div class="program-card-content">
-
-                            <div class="program-card-top">
-
-                                <i
-                                    data-lucide="dollar-sign"
-                                    class="program-icon"
-                                ></i>
-
-                                <h3>BSA</h3>
-
-                            </div>
-
-                            <div class="program-card-stats">
-                                <span>10 Subjects · 57</span>
-                                <span>Modules</span>
-                            </div>
-
-                        </div>
-                    </a>
-
-
-                    <!-- BAPS -->
-
-                    <a
-                        href="module-library-program.html?program=BAPS"
-                        class="program-card"
-                        data-program="BAPS"
-                    >
-                        <div class="program-card-content">
-
-                            <div class="program-card-top">
-
-                                <i
-                                    data-lucide="bar-chart-3"
-                                    class="program-icon"
-                                ></i>
-
-                                <h3>BAPS</h3>
-
-                            </div>
-
-                            <div class="program-card-stats">
-                                <span>13 Subjects · 38</span>
-                                <span>Modules</span>
-                            </div>
-
-                        </div>
-                    </a>
-
+                    <!-- Program cards are drawn by js/module-library.js -->
                 </div>
 
             </section>
@@ -975,6 +953,70 @@
                 </div>
 
             </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         DELETE PROGRAM MODAL
+         ========================================================= -->
+
+    <div
+        class="modal-overlay"
+        id="deleteProgramModal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="program-modal delete-program-modal"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="deleteProgramTitle"
+            aria-describedby="deleteProgramMessage"
+        >
+
+            <div class="delete-program-icon">
+                <i data-lucide="triangle-alert"></i>
+            </div>
+
+            <div class="modal-header">
+
+                <h3 id="deleteProgramTitle">
+                    Delete Program?
+                </h3>
+
+                <p id="deleteProgramMessage"></p>
+
+            </div>
+
+            <p
+                class="delete-program-error"
+                id="deleteProgramError"
+                role="alert"
+                hidden
+            ></p>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="modal-btn cancel"
+                    id="cancelDeleteProgramBtn"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="button"
+                    class="modal-btn danger"
+                    id="confirmDeleteProgramBtn"
+                >
+                    Delete Program
+                </button>
+
+            </div>
 
         </div>
 

@@ -2,15 +2,20 @@
    SIKNAYAN - INSTRUCTOR PORTAL
    MY PROFILE POP-UP (profile-modal.js)
 
-   Same layout as the learner's profile pop-up: green cover with photo,
-   Profile Picture upload, Personal Information, Account & Security, and
-   Edit Profile / Change Password. Opens when the instructor clicks their
+   Same structure as the Academic Admin profile: green cover with the
+   photo (pen on the photo to change it), Personal Information, Account &
+   Security (Password), and Edit Profile / Change Password. Opens when the instructor clicks their
    name or photo in the header (#userProfileBtn) on any instructor page.
    Styles: CSS/profile-modal.css.
 ========================================================= */
 
 (function () {
     "use strict";
+
+    // shared/email-change.js: the verified "Change Email" row.
+    const EMAIL_CHANGE_SRC = document.currentScript
+        ? new URL("../../shared/email-change.js", document.currentScript.src).href
+        : "../shared/email-change.js";
 
     const API_ROOT = window.SIKNAYAN_API_ROOT;
     const token = sessionStorage.getItem("authToken") || sessionStorage.getItem("token");
@@ -68,9 +73,17 @@
                 <i class="fa-solid fa-xmark" aria-hidden="true"></i>
             </button>
 
+            <!-- Same structure as the Academic Admin profile -->
             <header class="lp-profile-cover">
-                <div class="lp-profile-photo" id="lpProfilePhoto" aria-hidden="true">
-                    <i class="fa-regular fa-user"></i>
+                <div class="lp-photo-wrap">
+                    <div class="lp-profile-photo" id="lpProfilePhoto" aria-hidden="true">
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                    <!-- Pen on the photo: choose a new profile picture -->
+                    <label for="lpPhotoInput" class="lp-photo-edit" title="Change profile picture">
+                        <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                        <span class="visually-hidden">Change profile picture</span>
+                    </label>
                 </div>
                 <div>
                     <h2 id="lpProfileName">Loading...</h2>
@@ -82,16 +95,14 @@
                 </div>
             </header>
 
-            <div class="lp-profile-photo-upload">
+            <!-- Shown after a picture is chosen with the pen -->
+            <div class="lp-profile-photo-upload" id="lpPhotoUpload" hidden>
                 <div class="lp-profile-photo-actions">
-                    <span>Profile Picture</span>
-                    <label class="lp-change-photo">
-                        Change Profile Picture
-                        <input type="file" id="lpPhotoInput" class="visually-hidden"
-                            accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
-                    </label>
+                    <input type="file" id="lpPhotoInput" class="visually-hidden"
+                        accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
                     <span class="lp-photo-name" id="lpPhotoName"></span>
                     <button type="button" class="lp-upload-photo" id="lpUploadPhoto" hidden>Upload Photo</button>
+                    <button type="button" class="lp-btn plain" id="lpCancelPhoto">Cancel</button>
                 </div>
                 <p class="lp-message" id="lpPhotoMessage" role="status" aria-live="polite"></p>
             </div>
@@ -111,28 +122,12 @@
                             <p id="lpSchoolId">—</p>
                         </div>
                         <div class="lp-profile-field">
-                            <label for="lpEmailInput">Email Address</label>
+                            <span class="label">Email Address</span>
                             <p id="lpEmail">—</p>
-                            <input id="lpEmailInput" type="email" maxlength="255" autocomplete="email"
-                                placeholder="name@example.com (optional)" hidden>
-                        </div>
-                        <div class="lp-profile-field">
-                            <label for="lpContactInput">Contact Number</label>
-                            <p id="lpContact">—</p>
-                            <input id="lpContactInput" type="tel" maxlength="30" autocomplete="tel"
-                                placeholder="09XX XXX XXXX (optional)" hidden>
-                        </div>
-                        <div class="lp-profile-field">
-                            <span class="label">Program</span>
-                            <p id="lpProgram">—</p>
-                        </div>
-                        <div class="lp-profile-field">
-                            <span class="label">Account Role</span>
-                            <p>Instructor</p>
                         </div>
                     </div>
                     <p class="lp-profile-note" id="lpEditNote" hidden>
-                        You can change your email and contact number. Your name, instructor ID and program are managed by your administrator.
+                        To change your email, use “Change Email” under Account &amp; Security. Your name and instructor ID are managed by your administrator.
                     </p>
                 </form>
 
@@ -186,24 +181,6 @@
                             </div>
                         </div>
                     </form>
-
-                    <div class="lp-profile-security-row">
-                        <div class="lp-profile-security-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></div>
-                        <div class="lp-profile-security-info">
-                            <h4>Account Status</h4>
-                            <p>Instructor account access.</p>
-                        </div>
-                        <span class="lp-profile-status">Active</span>
-                    </div>
-
-                    <div class="lp-profile-security-row">
-                        <div class="lp-profile-security-icon"><i class="fa-solid fa-book" aria-hidden="true"></i></div>
-                        <div class="lp-profile-security-info">
-                            <h4>Assigned Classes</h4>
-                            <p>Classes you can open from My Classes.</p>
-                        </div>
-                        <span class="lp-profile-status" id="lpClassCount">—</span>
-                    </div>
                 </section>
 
                 <div class="lp-profile-actions" id="lpViewActions">
@@ -226,6 +203,32 @@
             </div>
         </section>`;
     document.body.appendChild(overlay);
+
+    // The email is changed in Account & Security (verified with a code),
+    // so "Edit Profile" has nothing left to edit here.
+    overlay.querySelectorAll('[data-lp-action="edit"]').forEach(button => { button.hidden = true; });
+
+    let emailChangeMounted = false;
+
+    function mountEmailChange() {
+        if (emailChangeMounted) return;
+        emailChangeMounted = true;
+
+        const start = () => window.SiknayanEmailChange.mount(overlay.querySelector(".lp-profile-security"), {
+            email: profile?.email,
+            onChanged: email => {
+                if (profile) profile.email = email;
+                $("lpEmail").textContent = email || "—";
+            }
+        });
+
+        if (window.SiknayanEmailChange) return start();
+
+        const script = document.createElement("script");
+        script.src = EMAIL_CHANGE_SRC;
+        script.onload = start;
+        document.head.appendChild(script);
+    }
 
     const $ = id => document.getElementById(id);
 
@@ -264,9 +267,6 @@
         $("lpFullName").textContent = shown(user.name);
         $("lpSchoolId").textContent = shown(user.school_id);
         $("lpEmail").textContent = shown(user.email);
-        $("lpContact").textContent = shown(user.contact);
-        $("lpProgram").textContent = shown(user.program);
-        $("lpClassCount").textContent = user.class_count ?? "—";
         showPhoto(user.profile_photo_url, user.name);
 
         const headerName = $("headerInstructorName");
@@ -291,6 +291,7 @@
         document.body.style.overflow = "hidden";
         $("lpProfileClose").focus();
         load();
+        mountEmailChange();
     }
 
     function close() {
@@ -323,23 +324,19 @@
     /* ---------- Edit Profile (email and contact in place) ---------- */
 
     function setEditing(editing) {
-        ["lpEmail", "lpContact"].forEach(id => { $(id).hidden = editing; });
-        ["lpEmailInput", "lpContactInput"].forEach(id => { $(id).hidden = !editing; });
         $("lpEditNote").hidden = !editing;
         $("lpViewActions").hidden = editing;
         $("lpEditActions").hidden = !editing;
-
-        if (editing) {
-            $("lpEmailInput").value = profile?.email || "";
-            $("lpContactInput").value = profile?.contact || "";
-            $("lpEmailInput").focus();
-        }
     }
 
     /* ---------- Change Password (inline under the Password row) ---------- */
 
     function setPasswordOpen(isOpen) {
         $("lpPasswordForm").hidden = !isOpen;
+        // Like the admin profile: compact card, big buttons hidden while open.
+        overlay.querySelector(".lp-profile-modal").classList.toggle("lp-compact", isOpen);
+        if (isOpen) $("lpViewActions").hidden = true;
+        else if ($("lpEditActions").hidden) $("lpViewActions").hidden = false;
         overlay.querySelectorAll('[aria-controls="lpPasswordForm"]').forEach(button =>
             button.setAttribute("aria-expanded", String(isOpen)));
         if (!isOpen) $("lpPasswordForm").reset();
@@ -363,19 +360,14 @@
 
     $("lpProfileForm").addEventListener("submit", async event => {
         event.preventDefault();
-        const email = $("lpEmailInput").value.trim();
-        const contact = $("lpContactInput").value.trim();
+        // Contact number is no longer shown; keep whatever is saved.
+        const contact = profile?.contact || "";
 
-        if (email && !$("lpEmailInput").checkValidity()) {
-            message("lpProfileMessage", "Please enter a valid email address.", "error");
-            $("lpEmailInput").focus();
-            return;
-        }
 
         $("lpSaveProfile").disabled = true;
         $("lpCancelEdit").disabled = true;
         try {
-            const data = await api("/instructor/profile", { method: "PUT", body: { email, contact } });
+            const data = await api("/instructor/profile", { method: "PUT", body: { contact } });
             fill(data.user);
             setEditing(false);
             message("lpProfileMessage", "Your profile was updated.", "success");
@@ -428,13 +420,18 @@
         $("lpPhotoInput").value = "";
         $("lpPhotoName").textContent = "";
         $("lpUploadPhoto").hidden = true;
+        $("lpPhotoUpload").hidden = true;
         message("lpPhotoMessage", "");
     }
+
+    $("lpCancelPhoto").addEventListener("click", resetPhoto);
 
     $("lpPhotoInput").addEventListener("change", event => {
         const file = event.target.files[0];
         resetPhoto();
         if (!file) return;
+
+        $("lpPhotoUpload").hidden = false;
 
         if (!PHOTO_TYPES.includes(file.type)) {
             message("lpPhotoMessage", "Please choose a JPG, PNG or WEBP image.", "error");
@@ -463,7 +460,7 @@
             const data = await api("/instructor/profile/photo", { method: "POST", body: form });
             fill(data.user);
             resetPhoto();
-            message("lpPhotoMessage", "Profile picture updated.", "success");
+            message("lpProfileMessage", "Profile picture updated.", "success");
         } catch (error) {
             message("lpPhotoMessage", error.message, "error");
         } finally {

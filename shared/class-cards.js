@@ -46,13 +46,21 @@
      */
     function create(options) {
         const design = designFor(options.id, options.code);
-        const card = element("a", `sk-class-card sk-tone-${design}`);
+        const card = element(
+            "a",
+            `sk-class-card sk-tone-${design}${options.compact ? " sk-compact" : ""}`
+        );
         card.href = options.href || "#";
 
-        // Banner: code on top, class name at the bottom, over the artwork.
+        // Banner: program and code on top, class name at the bottom.
         const banner = element("div", `sk-class-banner sk-art-${design}`);
         const top = element("div", "sk-class-banner-top");
-        top.appendChild(element("span", "sk-class-code", options.code || "CLASS"));
+        const tags = element("div", "sk-class-tags");
+        if (options.program) {
+            tags.appendChild(element("span", "sk-class-program", options.program));
+        }
+        tags.appendChild(element("span", "sk-class-code", options.code || "CLASS"));
+        top.appendChild(tags);
         const go = element("span", "sk-class-go");
         go.setAttribute("aria-hidden", "true");
         go.appendChild(icon("fa-solid fa-arrow-right"));

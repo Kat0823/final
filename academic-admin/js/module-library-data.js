@@ -195,105 +195,6 @@
 
                     version:
                         1
-                },
-
-
-                {
-                    id:
-                        "forensic-science-basics",
-
-                    courseId:
-                        "forensic-science",
-
-                    title:
-                        "Forensic Science Basics",
-
-                    uploaded:
-                        "June 15",
-
-                    assigned:
-                        0,
-
-                    status:
-                        "active",
-
-                    fileName:
-                        "",
-
-                    fileSize:
-                        0,
-
-                    fileType:
-                        "",
-
-                    version:
-                        1
-                },
-
-
-                {
-                    id:
-                        "crime-scene-analysis",
-
-                    courseId:
-                        "forensic-science",
-
-                    title:
-                        "Crime Scene Analysis",
-
-                    uploaded:
-                        "July 2",
-
-                    assigned:
-                        0,
-
-                    status:
-                        "active",
-
-                    fileName:
-                        "",
-
-                    fileSize:
-                        0,
-
-                    fileType:
-                        "",
-
-                    version:
-                        1
-                },
-
-
-                {
-                    id:
-                        "dna-analysis",
-
-                    courseId:
-                        "forensic-science",
-
-                    title:
-                        "DNA Analysis",
-
-                    uploaded:
-                        "July 4",
-
-                    assigned:
-                        0,
-
-                    status:
-                        "archived",
-
-                    fileName:
-                        "",
-
-                    fileSize:
-                        0,
-
-                    fileType:
-                        "",
-
-                    version:
-                        1
                 }
 
             ]
@@ -616,21 +517,6 @@
         },
 
 
-        BECED: {
-
-            code:
-                "BECED",
-
-            name:
-                "Bachelor of Early Childhood Education",
-
-            courses: [],
-
-            modules: []
-
-        },
-
-
         BSHM: {
 
             code:
@@ -638,21 +524,6 @@
 
             name:
                 "Bachelor of Science in Hospitality Management",
-
-            courses: [],
-
-            modules: []
-
-        },
-
-
-        AAHM: {
-
-            code:
-                "AAHM",
-
-            name:
-                "Associate of Arts in Hospitality Management",
 
             courses: [],
 
@@ -669,13 +540,34 @@
             name:
                 "Bachelor of Science in Tourism Management",
 
-            courses: [],
+            // Default first-year courses: [id, name, code]
+            courses: [
+                ["bstm-gec-11", "Understanding the Self", "GEC 11"],
+                ["bstm-cordi-101", "Cordillera: History and Socio-Cultural Heritage", "CORDI 101"],
+                ["bstm-thc-111", "Macro Perspective of Tourism and Hospitality", "THC 111"],
+                ["bstm-thc-112", "Risk Management as Applied to Safety, Security", "THC 112"],
+                ["bstm-tpc-113-a", "Global Culture and Tourism Geography", "TPC 113-A"],
+                ["bstm-tpc-113l", "Global Culture and Tourism Geography", "TPC 113L"],
+                ["bstm-tmpe-114", "Specialized Food and Beverage Service", "TMPE 114"],
+                ["bstm-tmpe-114l", "Specialized Food and Beverage Service", "TMPE 114L"],
+                ["bstm-soc-or-11", "Social Orientation", "SOC OR 11"],
+                ["bstm-pathfit-1", "Movement Competency Training", "PATHFIT 1"],
+                ["bstm-nstp-11", "National Service Training Program", "NSTP 11"]
+            ],
 
             modules: []
 
         }
 
     };
+
+
+    /* Programs whose default courses were added after admins had
+       already saved their Module Library. Their defaults are added
+       to saved data once (see normalizeProgram). */
+    const NEWLY_SEEDED_PROGRAMS = new Set([
+        "BSTM"
+    ]);
 
 
     const DEFAULT_ICONS = {
@@ -710,14 +602,8 @@
         BSED:
             "school",
 
-        BECED:
-            "baby",
-
         BSHM:
             "chef-hat",
-
-        AAHM:
-            "utensils",
 
         BSTM:
             "plane"
@@ -907,7 +793,71 @@
             );
 
 
+        /* Default courses are added to saved data only once, so a
+           default the admin later deletes does not come back.
+           defaultCourseIdsAdded remembers which defaults were added. */
+        const defaultIds =
+            fallback.courses.map(
+                course => course.id
+            );
+
+        let courses =
+            Array.isArray(
+                program?.courses
+            )
+                ? program.courses
+                : fallback.courses;
+
+        if (
+            Array.isArray(
+                program?.courses
+            )
+        ) {
+
+            const alreadySeeded =
+                Array.isArray(
+                    program?.defaultCourseIdsAdded
+                )
+                    ? program.defaultCourseIdsAdded
+                    : NEWLY_SEEDED_PROGRAMS.has(
+                        String(normalizedCode).toUpperCase()
+                    )
+                        ? []
+                        : defaultIds;
+
+            const missing =
+                fallback.courses.filter(
+                    course =>
+                        !alreadySeeded.includes(course.id) &&
+                        !courses.some(
+                            existing =>
+                                String(existing?.id) === course.id ||
+                                String(existing?.code || "").toLowerCase() ===
+                                    String(course.code).toLowerCase()
+                        )
+                );
+
+            if (missing.length) {
+                courses = [
+                    ...courses,
+                    ...missing
+                ];
+            }
+
+        }
+
+
         return {
+
+            defaultCourseIdsAdded:
+                Array.from(
+                    new Set([
+                        ...(Array.isArray(program?.defaultCourseIdsAdded)
+                            ? program.defaultCourseIdsAdded
+                            : []),
+                        ...defaultIds
+                    ])
+                ),
 
             code:
                 normalizedCode,
@@ -928,23 +878,34 @@
                     ? program.majors
                     : fallback.majors,
 
-            courses:
-                Array.isArray(
-                    program?.courses
-                )
-                    ? program.courses
-                    : fallback.courses,
+            courses,
 
             modules:
-                Array.isArray(
-                    program?.modules
+                (
+                    Array.isArray(
+                        program?.modules
+                    )
+                        ? program.modules
+                        : fallback.modules
+                ).filter(
+                    module =>
+                        !REMOVED_SAMPLE_MODULE_IDS.has(
+                            String(module?.id)
+                        )
                 )
-                    ? program.modules
-                    : fallback.modules
 
         };
 
     }
+
+
+    /* Sample BSCRIM modules that were removed from the defaults.
+       They are also taken out of Module Libraries already saved. */
+    const REMOVED_SAMPLE_MODULE_IDS = new Set([
+        "forensic-science-basics",
+        "crime-scene-analysis",
+        "dna-analysis"
+    ]);
 
 
     /* =====================================================
@@ -1005,6 +966,27 @@
     }
 
 
+    /* Programs that used to be defaults. They are taken out of saved
+       Module Libraries once, but only when still empty (no subjects
+       and no modules), so an admin's own work is never lost. */
+    const RETIRED_DEFAULT_PROGRAMS = new Set([
+        "BECED",
+        "AAHM"
+    ]);
+
+
+    function isEmptyProgram(
+        program
+    ) {
+
+        return (
+            !(Array.isArray(program?.courses) && program.courses.length) &&
+            !(Array.isArray(program?.modules) && program.modules.length)
+        );
+
+    }
+
+
     function load() {
 
         const raw =
@@ -1013,6 +995,16 @@
 
         const programs =
             {};
+
+
+        /* Programs the admin deleted. Default programs on this list
+           are not added back. */
+        const deletedPrograms =
+            Array.isArray(
+                raw?.deletedPrograms
+            )
+                ? raw.deletedPrograms.map(normalizeCode)
+                : [];
 
 
         Object.keys(
@@ -1024,6 +1016,17 @@
                     PROGRAM_SEEDS[
                         key
                     ];
+
+
+                if (
+                    deletedPrograms.includes(
+                        normalizeCode(seed.code)
+                    )
+                ) {
+
+                    return;
+
+                }
 
 
                 programs[
@@ -1055,7 +1058,19 @@
 
 
                     if (
-                        !code
+                        !code ||
+                        deletedPrograms.includes(code)
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    if (
+                        !raw.retiredDefaultsRemoved &&
+                        RETIRED_DEFAULT_PROGRAMS.has(code) &&
+                        isEmptyProgram(storedProgram)
                     ) {
 
                         return;
@@ -1081,6 +1096,11 @@
 
             version:
                 "v3",
+
+            retiredDefaultsRemoved:
+                true,
+
+            deletedPrograms,
 
             programs
 
@@ -1143,6 +1163,20 @@
                 normalized
             ]
         ) {
+
+            // A deleted program is not brought back just by being looked up.
+            if (
+                state.deletedPrograms.includes(
+                    normalized
+                )
+            ) {
+
+                return seedProgram(
+                    normalized
+                );
+
+            }
+
 
             state.programs[
                 normalized
@@ -1582,6 +1616,13 @@
         }
 
 
+        // Adding a program again undoes an earlier delete.
+        state.deletedPrograms =
+            state.deletedPrograms.filter(
+                deleted => deleted !== code
+            );
+
+
         state.programs[
             code
         ] = {
@@ -1621,6 +1662,92 @@
 
 
     /* =====================================================
+       DELETE PROGRAM
+       -----------------------------------------------------
+       Like the other safe deletes in the portal, a program
+       that still has modules cannot be deleted; its modules
+       must be removed first. Returns { ok, reason }.
+    ===================================================== */
+
+    function deleteProgram(
+        code
+    ) {
+
+        const state =
+            load();
+
+
+        const normalized =
+            normalizeCode(
+                code
+            );
+
+
+        const program =
+            state.programs[
+                normalized
+            ];
+
+
+        if (
+            !program
+        ) {
+
+            return {
+                ok: false,
+                reason: "This program no longer exists."
+            };
+
+        }
+
+
+        if (
+            Array.isArray(program.modules) &&
+            program.modules.length
+        ) {
+
+            return {
+                ok: false,
+                reason:
+                    `${normalized} still has ${program.modules.length} ` +
+                    `${program.modules.length === 1 ? "module" : "modules"}. ` +
+                    "Remove its modules first, then delete the program."
+            };
+
+        }
+
+
+        delete state.programs[
+            normalized
+        ];
+
+
+        if (
+            !state.deletedPrograms.includes(
+                normalized
+            )
+        ) {
+
+            state.deletedPrograms.push(
+                normalized
+            );
+
+        }
+
+
+        save(
+            state
+        );
+
+
+        return {
+            ok: true
+        };
+
+    }
+
+
+    /* =====================================================
        PUBLIC API
     ===================================================== */
 
@@ -1646,7 +1773,9 @@
 
         syncAssignedCounts,
 
-        addProgram
+        addProgram,
+
+        deleteProgram
 
     };
 

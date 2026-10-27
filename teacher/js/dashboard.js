@@ -427,7 +427,9 @@ function renderLearners(learnerList) {
 
         const statusCell = document.createElement("td");
 
-        const status = learner.status || "Pending Plan";
+        // Older servers sent "Pending Plan"; it is shown as "Pending".
+        const rawStatus = learner.status || "Pending";
+        const status = String(rawStatus).toLowerCase() === "pending plan" ? "Pending" : rawStatus;
         const normalizedStatus = String(status).toLowerCase();
 
         const statusBadge = document.createElement("span");

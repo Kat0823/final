@@ -1242,7 +1242,7 @@
                                 type="text"
                                 id="studentId"
                                 name="school_id"
-                                placeholder="Enter your School ID (e.g. ADMIN-001)"
+                                placeholder="Enter your School ID"
                                 required
                                 autocomplete="username">
 
@@ -1283,7 +1283,7 @@
                     <!-- FORGOT PASSWORD -->
                     <div class="forgot-password">
 
-                        <a href="forgot-password.html">
+                        <a href="forgot-password.html" id="forgotPasswordLink">
                             Forgot Password?
                         </a>
 
@@ -1393,6 +1393,23 @@
         }
 
         // Redirect according to account role
+        /* Forgot Password uses the School ID typed above, so the
+           person doesn't enter it again. */
+        document.getElementById("forgotPasswordLink").addEventListener("click", function (event) {
+            const schoolId = studentIdInput.value.trim();
+
+            if (!schoolId) {
+                event.preventDefault();
+                showMessage("Enter your School ID first, then click Forgot Password.", "error");
+                studentIdInput.focus();
+                return;
+            }
+
+            try {
+                sessionStorage.setItem("forgotPasswordSchoolId", schoolId);
+            } catch (error) { /* ignore */ }
+        });
+
         function redirectByRole(role) {
        const destinations = {
     learner: "student/classes.html",

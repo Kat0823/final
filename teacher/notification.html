@@ -18,7 +18,7 @@
     <!-- Font Awesome -->
     <link
         rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
     <!-- Existing Instructor CSS -->
     <link rel="stylesheet" href="../teacher/CSS/notification.css">
@@ -141,6 +141,51 @@
 
         .notification-item.has-link {
             cursor: pointer;
+        }
+
+        /* Learner photo (or initials) instead of the bell */
+        .learner-avatar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e6f4ec;
+            color: #0c4827;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .learner-avatar img[hidden],
+        .learner-avatar span[hidden] {
+            display: none;
+        }
+
+        /* Date on the same line as the title, at the right */
+        .notif-title-row {
+            align-items: center;
+        }
+
+        .notif-time-right {
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        .notif-time-right .unread-dot {
+            margin: 0 0 0 4px;
+        }
+
+        .notif-message {
+            margin-top: 4px;
+            color: #475569;
+        }
+
+        .unread-badge[hidden] {
+            display: none;
+        }
+
+        @media (max-width: 520px) {
+            .notif-title-row {
+                flex-wrap: wrap;
+            }
         }
 
         .notification-item.has-link:focus-visible {
@@ -493,13 +538,11 @@
 
                         Unread
 
+                        <!-- Shown only when there are unread notifications -->
                         <span
                             class="badge-count unread-badge"
-                            id="unreadCount">
-
-                            0
-
-                        </span>
+                            id="unreadCount"
+                            hidden></span>
 
                     </button>
 
@@ -519,11 +562,6 @@
                         class="tab-btn"
                         data-filter="reply">
                         Replies
-                    </button>
-                    <button
-                        class="tab-btn"
-                        data-filter="system">
-                        System
                     </button>
 
                 </div>
@@ -555,15 +593,7 @@
                     id="notificationList">
 
 
-                    <!-- Loading message -->
-
-                    <div class="notification-loading">
-
-                        <i class="fa-solid fa-spinner fa-spin"></i>
-
-                        Loading notifications...
-
-                    </div>
+                    <!-- Notifications appear when they arrive (no loading message). -->
 
 
                 </div>
@@ -970,18 +1000,6 @@
 
         try {
 
-            notificationList.innerHTML = `
-
-                <div class="notification-loading">
-
-                    <i class="fa-solid fa-spinner fa-spin"></i>
-
-                    Loading notifications...
-
-                </div>
-
-            `;
-
             const response = await fetch(
                 `${API_BASE_URL}/instructor/notifications`,
                 {
@@ -1070,8 +1088,10 @@
             allCount.textContent = total;
         }
 
+        // No "0" badge: the count only shows when something is unread.
         if (unreadCount) {
-            unreadCount.textContent = unread;
+            unreadCount.textContent = unread > 0 ? unread : "";
+            unreadCount.hidden = unread === 0;
         }
 
     }
@@ -1308,20 +1328,52 @@
         );
         const link = notificationLink(notification);
 
-        // Mark as read first (briefly wait so it is saved before leaving).
-        await Promise.race([
-            markNotificationAsRead(notificationId),
-            new Promise(resolve => setTimeout(resolve, 1500))
-        ]);
-
+        // Saving "read" uses a keepalive request, which finishes even after
+        // the page changes, so the instructor is taken there right away.
         if (link) {
+            markNotificationAsRead(notificationId);
             window.location.href = link;
+            return;
         }
+
+        await markNotificationAsRead(notificationId);
     }
 
     /* =====================================================
        CREATE NOTIFICATION HTML
        ===================================================== */
+
+    /* The learner's profile picture (or their initials) for
+       notifications about a learner; a bell for the others. */
+    function notificationAvatarHTML(notification) {
+        const learner = notification.learner;
+
+        if (!learner) {
+            return `<div class="notif-avatar system-avatar"><i class="fa-solid fa-bell"></i></div>`;
+        }
+
+        const initials = String(learner.name || "?")
+            .trim()
+            .split(/\s+/)
+            .slice(0, 2)
+            .map(part => part.charAt(0).toUpperCase())
+            .join("") || "?";
+
+        if (learner.profile_photo_url) {
+            return `
+                <div class="notif-avatar learner-avatar" title="${escapeHtml(learner.name)}">
+                    <img src="${escapeHtml(learner.profile_photo_url)}" alt="${escapeHtml(learner.name)}"
+                        onerror="this.hidden = true; this.nextElementSibling.hidden = false;">
+                    <span hidden>${escapeHtml(initials)}</span>
+                </div>`;
+        }
+
+        return `
+            <div class="notif-avatar learner-avatar" title="${escapeHtml(learner.name)}">
+                <span>${escapeHtml(initials)}</span>
+            </div>`;
+    }
+
 
     function createNotificationHTML(
         notification
@@ -1376,15 +1428,12 @@
                 </div>
 
 
-                <div class="notif-avatar system-avatar">
-
-                    <i class="fa-solid fa-bell"></i>
-
-                </div>
+                ${notificationAvatarHTML(notification)}
 
 
                 <div class="notif-content">
 
+                    <!-- Title on the left, date on the same line at the right -->
                     <div class="notif-title-row">
 
                         <p class="notif-text">
@@ -1393,41 +1442,29 @@
                                 ${escapeHtml(title)}
                             </strong>
 
-                            ${escapeHtml(message)}
-
                         </p>
 
 
-                        ${
-                            isUnread
-                                ? `
-
-                                    <span
-                                        class="unread-dot"
-                                        title="Unread">
-                                    </span>
-
-                                `
-                                : ""
-                        }
-
-                    </div>
-
-
-                    <div class="notif-footer">
-
-                        <span class="notif-time">
+                        <span class="notif-time notif-time-right">
 
                             <i class="fa-regular fa-clock"></i>
 
                             ${createdAt}
 
+                            ${
+                                isUnread
+                                    ? `<span class="unread-dot" title="Unread"></span>`
+                                    : ""
+                            }
+
                         </span>
 
-
-
-
                     </div>
+
+
+                    <p class="notif-text notif-message">
+                        ${escapeHtml(message)}
+                    </p>
 
                 </div>
 
@@ -1581,6 +1618,9 @@
 
                     {
                         method: "POST",
+
+                        // Keeps going if the page changes (see openNotification).
+                        keepalive: true,
 
                         headers: {
 

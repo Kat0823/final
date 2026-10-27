@@ -1743,16 +1743,6 @@ if (account) {
             }
         }
 
-        const linkedAccount =
-            accounts.find(
-                account =>
-                    String(
-                        account.learnerId
-                    ) ===
-                    String(
-                        learnerId
-                    )
-            ) || null;
 
         /* Remove learner from every assigned class. */
         const assignedClasses =
@@ -1807,17 +1797,10 @@ if (account) {
             )
         );
 
-        const learnerName =
-            learner.name;
-
         closeDeleteAccountModal();
         renderTable();
 
-        alert(
-            linkedAccount
-                ? `The learner account and learner record for ${learnerName} have been deleted.`
-                : `The learner record for ${learnerName} has been deleted.`
-        );
+        window.showAdminToast("Deleted successfully.");
     }
 
     /* ---------------- MODAL OUTSIDE CLICK ---------------- */

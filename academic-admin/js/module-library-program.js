@@ -877,26 +877,6 @@
                     )}
                 </h4>
 
-                <div
-                    class="module-card-meta"
-                >
-                    <span>
-                        Uploaded
-                        ${escapeHtml(
-                            module.uploaded ||
-                            "—"
-                        )}
-                    </span>
-
-                    <span>
-                        Assigned to
-                        ${Number(
-                            module.assigned ||
-                            0
-                        )}
-                    </span>
-                </div>
-
                     <button
                         type="button"
                         class="module-view-button"

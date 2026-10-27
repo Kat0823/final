@@ -227,7 +227,6 @@
 
     const SERVER_TYPES = {
         grade: { category: "grading", icon: "clipboard-check" },
-        account_setup: { category: "status", icon: "user-check" },
         account_locked: { category: "security", icon: "lock" }
     };
 
@@ -3433,7 +3432,10 @@
                 ? data.notifications
                 : [];
 
-            serverEvents = records.map(toEvent);
+            // Account set-up (status) notices are not shown here.
+            serverEvents = records
+                .filter(record => record.type !== "account_setup")
+                .map(toEvent);
             notificationState = { read: {}, deleted: {} };
 
             records.forEach(record => {

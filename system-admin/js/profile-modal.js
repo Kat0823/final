@@ -7,12 +7,18 @@
    Account & Security, and Edit Profile / Change Password. Opens from
    the name or photo in the header (or the sidebar profile).
 
-   Saves with POST /api/system-admin/profile (name, email, photo) and
-   PUT /api/account/password. Uses the profile helpers in shared.js.
+   Saves with POST /api/system-admin/profile (name, photo) and
+   PUT /api/account/password. The email changes only through the
+   verified "Change Email" row (shared/email-change.js).
+   Uses the profile helpers in shared.js.
 ========================================================= */
 
 (function () {
     "use strict";
+
+    const EMAIL_CHANGE_SRC = document.currentScript
+        ? new URL("../../shared/email-change.js", document.currentScript.src).href
+        : "../shared/email-change.js";
 
     const MIN_PASSWORD = 15;
     const MAX_PHOTO = 2 * 1024 * 1024;
@@ -91,10 +97,8 @@
                             <p id="saUsername">—</p>
                         </div>
                         <div class="sa-profile-field">
-                            <label for="saEmailInput">Email Address</label>
+                            <span class="sa-label">Email Address</span>
                             <p id="saEmail">—</p>
-                            <input id="saEmailInput" type="email" maxlength="254" autocomplete="email"
-                                placeholder="Enter a contact email (optional)" hidden>
                         </div>
                         <div class="sa-profile-field">
                             <span class="sa-label">Account Role</span>
@@ -102,7 +106,7 @@
                         </div>
                     </div>
                     <p class="sa-profile-note" id="saEditNote" hidden>
-                        Username and role are managed by the system. An email address is optional.
+                        Username and role are managed by the system. To change your email, use “Change Email” under Account &amp; Security.
                     </p>
                 </form>
 
@@ -163,6 +167,30 @@
         </section>`;
     document.body.appendChild(overlay);
 
+    let emailChangeMounted = false;
+
+    // The verified "Change Email" row in Account & Security.
+    function mountEmailChange() {
+        if (emailChangeMounted) return;
+        emailChangeMounted = true;
+
+        const start = () => window.SiknayanEmailChange.mount(overlay.querySelector(".sa-profile-security"), {
+            email: profile && profile.email,
+            onChanged: email => {
+                if (profile) profile.email = email;
+                $("saEmail").textContent = email || "Not provided";
+                if (window.setSiknayanSystemAdminProfile && profile) window.setSiknayanSystemAdminProfile(profile);
+            }
+        });
+
+        if (window.SiknayanEmailChange) return start();
+
+        const script = document.createElement("script");
+        script.src = EMAIL_CHANGE_SRC;
+        script.onload = start;
+        document.head.appendChild(script);
+    }
+
     const $ = id => document.getElementById(id);
 
     function message(id, text, type) {
@@ -221,11 +249,10 @@
         }
     }
 
-    // Saves name and email (and a photo, if given) and updates the header.
-    async function saveProfile({ name, email, photo }) {
+    // Saves the name (and a photo, if given) and updates the header.
+    async function saveProfile({ name, photo }) {
         const body = new FormData();
         body.append("name", name);
-        body.append("email", email || "");
         if (photo) body.append("photo", photo);
 
         const data = await request("/system-admin/profile", { method: "POST", body });
@@ -245,6 +272,7 @@
         overlay.classList.add("open");
         document.body.style.overflow = "hidden";
         $("saProfileClose").focus();
+        mountEmailChange();
     }
 
     function close() {
@@ -279,19 +307,18 @@
         else profile = event.detail;
     });
 
-    /* ---------- Edit Profile (name and email in place) ---------- */
+    /* ---------- Edit Profile (name in place) ---------- */
 
     function setEditing(on) {
         editing = on;
-        ["saFullName", "saEmail"].forEach(id => { $(id).hidden = on; });
-        ["saNameInput", "saEmailInput"].forEach(id => { $(id).hidden = !on; });
+        $("saFullName").hidden = on;
+        $("saNameInput").hidden = !on;
         $("saEditNote").hidden = !on;
         $("saViewActions").hidden = on;
         $("saEditActions").hidden = !on;
 
         if (on) {
             $("saNameInput").value = profile.fullName || "";
-            $("saEmailInput").value = profile.email || "";
             $("saNameInput").focus();
         }
     }
@@ -322,23 +349,17 @@
     $("saProfileForm").addEventListener("submit", async event => {
         event.preventDefault();
         const name = $("saNameInput").value.trim();
-        const email = $("saEmailInput").value.trim();
 
         if (!name) {
             message("saProfileMessage", "Please enter your full name.", "error");
             $("saNameInput").focus();
             return;
         }
-        if (email && !$("saEmailInput").checkValidity()) {
-            message("saProfileMessage", "Please enter a valid email address.", "error");
-            $("saEmailInput").focus();
-            return;
-        }
 
         $("saSaveProfile").disabled = true;
         $("saCancelEdit").disabled = true;
         try {
-            await saveProfile({ name, email });
+            await saveProfile({ name });
             setEditing(false);
             message("saProfileMessage", "Your profile was updated.", "success");
         } catch (error) {
@@ -412,7 +433,7 @@
         button.disabled = true;
         button.textContent = "Uploading...";
         try {
-            await saveProfile({ name: profile.fullName || "System Administrator", email: profile.email, photo: chosenPhoto });
+            await saveProfile({ name: profile.fullName || "System Administrator", photo: chosenPhoto });
             resetPhoto();
             message("saPhotoMessage", "Profile picture updated.", "success");
         } catch (error) {

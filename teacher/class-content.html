@@ -956,6 +956,194 @@
             gap: 12px;
         }
 
+        /* ===== Learning Resources ===== */
+        .announcement-form select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: #fff;
+            font: inherit;
+            font-size: 13px;
+            color: var(--text);
+        }
+
+        .resource-type-label {
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .resource-type-choice {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .resource-type-choice label {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .resource-type-choice input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .resource-type-choice span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--text);
+        }
+
+        .resource-type-choice input:checked + span {
+            border-color: var(--green);
+            background: rgba(8, 107, 60, 0.07);
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        .resource-type-choice input:focus-visible + span {
+            outline: 2px solid rgba(8, 107, 60, 0.35);
+        }
+
+        .resource-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .resource-field[hidden] {
+            display: none;
+        }
+
+        .resource-hint {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .resource-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .resource-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: #fff;
+        }
+
+        .resource-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            font-size: 19px;
+        }
+
+        .resource-link  { background: #e8efff; color: #1d4ed8; }
+        .resource-video { background: #fde8e8; color: #c81e1e; }
+        .resource-ppt   { background: #fff0e6; color: #c2410c; }
+        .resource-pdf   { background: #fde8ee; color: #b42318; }
+        .resource-excel { background: #e6f4ec; color: #08733d; }
+
+        .resource-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .resource-info h3 {
+            margin: 0 0 3px;
+            font-size: 15px;
+            color: var(--text);
+            overflow-wrap: anywhere;
+        }
+
+        .resource-meta,
+        .resource-file {
+            color: var(--muted);
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .resource-description {
+            margin-top: 6px;
+            font-size: 13px;
+            color: var(--text);
+            white-space: pre-line;
+        }
+
+        .resource-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 6px;
+        }
+
+        .resource-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            height: 32px;
+            padding: 0 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: #fff;
+            color: var(--green);
+            font: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .resource-btn:hover {
+            border-color: var(--green);
+        }
+
+        .resource-btn:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .resource-remove {
+            color: #b42318;
+        }
+
+        .resource-remove:hover {
+            border-color: #b42318;
+        }
+
+        @media (max-width: 640px) {
+            .resource-item {
+                flex-wrap: wrap;
+            }
+
+            .resource-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .resource-type-choice {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .announcement-item {
             padding: 16px 18px;
             border: 1px solid var(--border);
@@ -2322,6 +2510,12 @@
                     Announcements
                     <span class="tab-badge" id="announcementsBadge">0</span>
                 </button>
+
+                <button class="tab-btn" data-tab="resourcesPanel" type="button">
+                    <i class="fa-solid fa-photo-film"></i>
+                    Learning Resources
+                    <span class="tab-badge" id="resourcesBadge">0</span>
+                </button>
             </div>
 
             <!-- MODULES -->
@@ -2421,6 +2615,81 @@
                             <button type="submit" class="btn-save" id="announcementSubmit">
                                 <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
                                 <span>Post Announcement</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- LEARNING RESOURCES: links, PPT, videos to support the lessons -->
+            <section class="tab-panel" id="resourcesPanel">
+                <div class="content-panel">
+                    <div class="section-header announcement-header">
+                        <div>
+                            <h2>Learning Resources</h2>
+                            <p id="resourceSummary">Loading resources...</p>
+                        </div>
+
+                        <button type="button" class="btn-save create-announcement-btn" id="addResourceButton">
+                            <i class="fa-solid fa-paperclip" aria-hidden="true"></i>
+                            <span>Add Resource</span>
+                        </button>
+                    </div>
+
+                    <div id="resourceList" class="resource-list"></div>
+                </div>
+
+                <div class="announcement-modal-overlay" id="resourceModal" hidden>
+                    <form id="resourceForm" class="announcement-form announcement-modal" novalidate
+                        role="dialog" aria-modal="true" aria-labelledby="resourceFormTitle">
+                        <div class="announcement-modal-head">
+                            <h2 id="resourceFormTitle">Add Learning Resource</h2>
+                            <p>Learners in this class can open it from their class page.</p>
+                        </div>
+
+                        <span class="resource-type-label">Type:</span>
+                        <div class="resource-type-choice" role="radiogroup" aria-label="Resource type">
+                            <label>
+                                <input type="radio" name="resourceType" value="link" checked>
+                                <span><i class="fa-solid fa-link" aria-hidden="true"></i> Link / Video link</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="resourceType" value="file">
+                                <span><i class="fa-solid fa-upload" aria-hidden="true"></i> Upload file (PPT, video...)</span>
+                            </label>
+                        </div>
+
+                        <label for="resourceTitle">Title:</label>
+                        <input type="text" id="resourceTitle" maxlength="150"
+                            placeholder="e.g. Lesson 1 slides" required>
+
+                        <div id="resourceLinkField" class="resource-field">
+                            <label for="resourceUrl">Link:</label>
+                            <input type="url" id="resourceUrl" maxlength="2048"
+                                placeholder="https://www.youtube.com/watch?v=...">
+                        </div>
+
+                        <div id="resourceFileField" class="resource-field" hidden>
+                            <label for="resourceFile">File:</label>
+                            <input type="file" id="resourceFile"
+                                accept=".ppt,.pptx,.pdf,.doc,.docx,.xls,.xlsx,.mp4,.webm,.mov,.m4v,.mp3,.wav,.png,.jpg,.jpeg,.gif">
+                            <small class="resource-hint">PowerPoint, PDF, Word, Excel, video, audio or image. Up to 100 MB.</small>
+                        </div>
+
+                        <label for="resourceModule">For module (optional):</label>
+                        <select id="resourceModule"></select>
+
+                        <label for="resourceDescription">Description (optional):</label>
+                        <textarea id="resourceDescription" rows="3" maxlength="2000"
+                            placeholder="What should learners do with this?"></textarea>
+
+                        <p class="announcement-error" id="resourceError" hidden></p>
+
+                        <div class="announcement-form-actions">
+                            <button type="button" class="btn-cancel" id="resourceCancel">Cancel</button>
+                            <button type="submit" class="btn-save" id="resourceSubmit">
+                                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                                <span>Add Resource</span>
                             </button>
                         </div>
                     </form>
@@ -3406,7 +3675,7 @@
                             <i class="fa-solid fa-download" aria-hidden="true"></i> Download
                         </button>
                         <a class="lp-btn primary" href="${scoreLink(submission, learnerId)}">
-                            <i class="fa-solid fa-star" aria-hidden="true"></i> ${grade ? "Edit score" : "Score"}
+                            <i class="fa-solid ${grade ? "fa-pen" : "fa-star"}" aria-hidden="true"></i> ${grade ? "Edit score" : "Score"}
                         </a>
                     </div>`;
             }
@@ -3831,6 +4100,8 @@
     <script src="js/logout.js"></script>
     <!-- View opens files in the browser (PDF, images, Word .docx) -->
     <script src="js/file-viewer.js"></script>
+    <!-- Learning Resources tab: links, PPT, videos -->
+    <script src="js/class-resources.js"></script>
     <script src="js/profile-modal.js"></script>
 </body>
 </html>

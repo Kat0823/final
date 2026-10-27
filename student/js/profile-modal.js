@@ -11,6 +11,11 @@
 (function () {
     "use strict";
 
+    // shared/email-change.js: the verified "Change Email" row.
+    const EMAIL_CHANGE_SRC = document.currentScript
+        ? new URL("../../shared/email-change.js", document.currentScript.src).href
+        : "../shared/email-change.js";
+
     const Portal = window.Portal;
     if (!Portal) return;
 
@@ -85,14 +90,12 @@
                             <p id="lpSchoolId">—</p>
                         </div>
                         <div class="lp-profile-field">
-                            <label for="lpEmailInput">Email Address</label>
+                            <span class="label">Email Address</span>
                             <p id="lpEmail">—</p>
-                            <input id="lpEmailInput" type="email" maxlength="255" autocomplete="email"
-                                placeholder="name@example.com (optional)" hidden>
                         </div>
                     </div>
                     <p class="lp-profile-note" id="lpEditNote" hidden>
-                        You can change your email address. Your name, school ID and program are managed by your administrator.
+                        To change your email, use “Change Email” under Account &amp; Security. Your name, school ID and program are managed by your administrator.
                     </p>
                 </form>
 
@@ -169,6 +172,32 @@
         </section>`;
     document.body.appendChild(overlay);
 
+    // The email is changed in Account & Security (verified with a code),
+    // so "Edit Profile" has nothing left to edit here.
+    overlay.querySelectorAll('[data-lp-action="edit"]').forEach(button => { button.hidden = true; });
+
+    let emailChangeMounted = false;
+
+    function mountEmailChange() {
+        if (emailChangeMounted) return;
+        emailChangeMounted = true;
+
+        const start = () => window.SiknayanEmailChange.mount(overlay.querySelector(".lp-profile-security"), {
+            email: profile?.email,
+            onChanged: email => {
+                if (profile) profile.email = email;
+                $("lpEmail").textContent = email || "—";
+            }
+        });
+
+        if (window.SiknayanEmailChange) return start();
+
+        const script = document.createElement("script");
+        script.src = EMAIL_CHANGE_SRC;
+        script.onload = start;
+        document.head.appendChild(script);
+    }
+
     const $ = id => document.getElementById(id);
 
     function message(id, text, type) {
@@ -229,6 +258,7 @@
         document.body.style.overflow = "hidden";
         $("lpProfileClose").focus();
         load();
+        mountEmailChange();
     }
 
     function close() {
@@ -267,17 +297,10 @@
     }
 
     function setEditing(editing) {
-        $("lpEmail").hidden = editing;
-        $("lpEmailInput").hidden = !editing;
         $("lpEditNote").hidden = !editing;
         $("lpViewActions").hidden = editing;
         $("lpEditActions").hidden = !editing;
         compact();
-
-        if (editing) {
-            $("lpEmailInput").value = profile?.email || "";
-            $("lpEmailInput").focus();
-        }
     }
 
     /* ---------- Change Password (inline under the Password row) ---------- */
@@ -310,20 +333,14 @@
 
     $("lpProfileForm").addEventListener("submit", async event => {
         event.preventDefault();
-        const email = $("lpEmailInput").value.trim();
         // The contact number is no longer shown; keep the saved one.
         const contact = profile?.contact || "";
 
-        if (email && !$("lpEmailInput").checkValidity()) {
-            message("lpProfileMessage", "Please enter a valid email address.", "error");
-            $("lpEmailInput").focus();
-            return;
-        }
 
         $("lpSaveProfile").disabled = true;
         $("lpCancelEdit").disabled = true;
         try {
-            const data = await api("/student/profile", { method: "PUT", body: { email, contact } });
+            const data = await api("/student/profile", { method: "PUT", body: { contact } });
             fill(data.user);
             setEditing(false);
             message("lpProfileMessage", "Your profile was updated.", "success");
