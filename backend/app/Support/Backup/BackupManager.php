@@ -3,6 +3,8 @@
 namespace App\Support\Backup;
 
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use RecursiveDirectoryIterator;
@@ -26,8 +28,10 @@ class BackupManager
     /** File names the server creates; anything else is refused. */
     public const NAME_PATTERN = '/^siknayan-backup-\d{8}-\d{6}\.zip$/';
 
-    public function __construct(private DatabaseDumper $dumper)
-    {
+    public function __construct(
+        private DatabaseDumper $dumper,
+        private DatabaseImporter $importer
+    ) {
     }
 
     public function directory(): string
@@ -76,6 +80,7 @@ class BackupManager
                 'encrypted' => (bool) ($meta['encrypted'] ?? false),
                 'counts' => $meta['counts'] ?? null,
                 'files' => $meta['files'] ?? null,
+                'uploaded' => (bool) ($meta['uploaded'] ?? false),
             ];
         }
 
@@ -89,12 +94,33 @@ class BackupManager
      */
     public function create(User $actor, ?string $password = null): array
     {
-        $directory = $this->directory();
-        $lock = fopen($directory . DIRECTORY_SEPARATOR . '.lock', 'c');
+        return $this->withLock(fn () => $this->createUnlocked($actor, $password));
+    }
+
+    /** Runs $work while no other backup or restore can start. */
+    private function withLock(callable $work)
+    {
+        $lock = fopen($this->directory() . DIRECTORY_SEPARATOR . '.lock', 'c');
 
         if (!$lock || !flock($lock, LOCK_EX | LOCK_NB)) {
-            throw new RuntimeException('Another backup is being made. Please wait a moment and try again.');
+            if ($lock) {
+                fclose($lock);
+            }
+
+            throw new RuntimeException('Another backup or restore is running. Please wait a moment and try again.');
         }
+
+        try {
+            return $work();
+        } finally {
+            flock($lock, LOCK_UN);
+            fclose($lock);
+        }
+    }
+
+    private function createUnlocked(User $actor, ?string $password = null): array
+    {
+        $directory = $this->directory();
 
         $name = 'siknayan-backup-' . now()->format('Ymd-His') . '.zip';
         $zipPath = $directory . DIRECTORY_SEPARATOR . $name;
@@ -186,8 +212,6 @@ class BackupManager
             throw $error;
         } finally {
             @unlink($sqlPath);
-            flock($lock, LOCK_UN);
-            fclose($lock);
         }
     }
 
@@ -202,6 +226,251 @@ class BackupManager
         @unlink($path . '.json');
 
         return @unlink($path);
+    }
+
+    /**
+     * Put a saved backup back: database and uploaded files.
+     *
+     * 1. The zip is checked (a Siknayan backup, the right zip password)
+     *    and unpacked to a temporary folder (only expected paths).
+     * 2. A safety backup of the CURRENT system is made first.
+     * 3. The database is replaced, then migrations bring it up to date.
+     *    If that fails, the safety backup's database is put back.
+     * 4. The uploaded-file folders are replaced with the backup's files.
+     *
+     * Returns ['restored' => name, 'safety_backup' => name, 'manifest' => [...]].
+     */
+    public function restore(User $actor, string $name, ?string $zipPassword = null): array
+    {
+        return $this->withLock(function () use ($actor, $name, $zipPassword) {
+            $path = $this->path($name);
+
+            if (!$path) {
+                throw new RuntimeException('Backup not found.');
+            }
+
+            $work = $this->directory() . DIRECTORY_SEPARATOR . '.restore-' . bin2hex(random_bytes(6));
+            File::ensureDirectoryExists($work, 0700);
+
+            try {
+                $manifest = $this->unpack($path, $work, $zipPassword);
+
+                // Safety copy of what is there now (no password, kept in the list).
+                $safety = $this->createUnlocked($actor, null);
+
+                try {
+                    $this->importer->replaceDatabase($work . DIRECTORY_SEPARATOR . 'database.sql');
+                    Artisan::call('migrate', ['--force' => true]);
+                } catch (\Throwable $error) {
+                    $this->putBackSafetyDatabase($safety['name']);
+
+                    throw new RuntimeException(
+                        'The backup could not be restored, so the system was put back as it was '
+                        . "(safety backup {$safety['name']}). Details: " . $error->getMessage()
+                    );
+                }
+
+                $files = $this->replaceFolders($work);
+
+                return [
+                    'restored' => $name,
+                    'safety_backup' => $safety['name'],
+                    'manifest' => $manifest,
+                    'files' => $files,
+                ];
+            } finally {
+                File::deleteDirectory($work);
+            }
+        });
+    }
+
+    /**
+     * Add a backup zip uploaded from another computer to the list, after
+     * checking it is a Siknayan backup. Returns the list entry.
+     */
+    public function storeUpload(UploadedFile $file): array
+    {
+        return $this->withLock(function () use ($file) {
+            $zip = new ZipArchive();
+
+            if ($zip->open($file->getRealPath()) !== true) {
+                throw new RuntimeException('That file is not a valid zip file.');
+            }
+
+            try {
+                if ($zip->locateName('database.sql') === false || $zip->locateName('manifest.json') === false) {
+                    throw new RuntimeException('That zip is not a Siknayan backup (database.sql or manifest.json is missing).');
+                }
+
+                $encrypted = (int) ($zip->statName('manifest.json')['encryption_method'] ?? 0) !== 0;
+                $manifest = $encrypted ? null : json_decode((string) $zip->getFromName('manifest.json'), true);
+
+                if (!$encrypted && !$this->isSiknayanManifest($manifest)) {
+                    throw new RuntimeException('That zip is not a Siknayan backup.');
+                }
+            } finally {
+                $zip->close();
+            }
+
+            // A new, unused name in the usual pattern.
+            $moment = now();
+            do {
+                $name = 'siknayan-backup-' . $moment->format('Ymd-His') . '.zip';
+                $moment = $moment->addSecond();
+            } while (is_file($this->directory() . DIRECTORY_SEPARATOR . $name));
+
+            $target = $this->directory() . DIRECTORY_SEPARATOR . $name;
+
+            if (!copy($file->getRealPath(), $target)) {
+                throw new RuntimeException('The uploaded backup could not be saved.');
+            }
+
+            $meta = $manifest ? $manifest : ['encrypted' => true];
+            unset($meta['not_included']);
+            $meta['created_at'] = $meta['created_at'] ?? now()->toIso8601String();
+            $meta['uploaded'] = true;
+            $meta['uploaded_at'] = now()->toIso8601String();
+            $meta['original_file_name'] = mb_substr($file->getClientOriginalName(), 0, 120);
+            file_put_contents($target . '.json', json_encode($meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+
+            return collect($this->list())->firstWhere('name', $name);
+        });
+    }
+
+    private function isSiknayanManifest($manifest): bool
+    {
+        return is_array($manifest) && str_starts_with((string) ($manifest['system'] ?? ''), 'Siknayan LMS');
+    }
+
+    /**
+     * Checks the zip and unpacks database.sql and the uploaded files into
+     * $work. Only "database.sql" and paths under the known file folders are
+     * taken; anything else (or a path trying to leave the folder) is skipped.
+     */
+    private function unpack(string $path, string $work, ?string $zipPassword): array
+    {
+        $zip = new ZipArchive();
+
+        if ($zip->open($path) !== true) {
+            throw new RuntimeException('The backup file could not be opened.');
+        }
+
+        try {
+            if ($zip->locateName('database.sql') === false || $zip->locateName('manifest.json') === false) {
+                throw new RuntimeException('This is not a complete Siknayan backup (database.sql or manifest.json is missing).');
+            }
+
+            $encrypted = (int) ($zip->statName('database.sql')['encryption_method'] ?? 0) !== 0;
+
+            if ($encrypted) {
+                if ($zipPassword === null || $zipPassword === '') {
+                    throw new RuntimeException('This backup is password-protected. Enter the backup password that was used when it was made.');
+                }
+
+                $zip->setPassword($zipPassword);
+            }
+
+            $manifest = json_decode((string) $zip->getFromName('manifest.json'), true);
+
+            if (!$this->isSiknayanManifest($manifest)) {
+                throw new RuntimeException($encrypted
+                    ? 'The backup password is incorrect.'
+                    : 'This is not a Siknayan backup.');
+            }
+
+            $prefixes = array_map(fn ($prefix) => rtrim($prefix, '/') . '/', array_values(config('backup.folders', [])));
+
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $entry = (string) $zip->getNameIndex($i);
+
+                if ($entry === '' || str_ends_with($entry, '/')) {
+                    continue;
+                }
+
+                $allowed = $entry === 'database.sql'
+                    || collect($prefixes)->contains(fn ($prefix) => str_starts_with($entry, $prefix));
+
+                $unsafe = str_contains($entry, '\\')
+                    || str_contains($entry, ':')
+                    || str_starts_with($entry, '/')
+                    || in_array('..', explode('/', $entry), true);
+
+                if (!$allowed || $unsafe) {
+                    continue;
+                }
+
+                $contents = $zip->getFromIndex($i);
+
+                if ($contents === false) {
+                    throw new RuntimeException($encrypted
+                        ? 'The backup password is incorrect.'
+                        : "Could not read {$entry} from the backup.");
+                }
+
+                $target = $work . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $entry);
+                File::ensureDirectoryExists(dirname($target), 0700);
+                file_put_contents($target, $contents);
+            }
+
+            if (!is_file($work . DIRECTORY_SEPARATOR . 'database.sql')) {
+                throw new RuntimeException('The backup database could not be read.');
+            }
+
+            unset($manifest['not_included']);
+
+            return $manifest;
+        } finally {
+            $zip->close();
+        }
+    }
+
+    /** After a failed restore: the safety backup's database goes back in. */
+    private function putBackSafetyDatabase(string $safetyName): void
+    {
+        $work = $this->directory() . DIRECTORY_SEPARATOR . '.rollback-' . bin2hex(random_bytes(6));
+        File::ensureDirectoryExists($work, 0700);
+
+        try {
+            $this->unpack($this->path($safetyName), $work, null);
+            $this->importer->replaceDatabase($work . DIRECTORY_SEPARATOR . 'database.sql');
+            Artisan::call('migrate', ['--force' => true]);
+        } catch (\Throwable $error) {
+            report($error);
+        } finally {
+            File::deleteDirectory($work);
+        }
+    }
+
+    /**
+     * Each uploaded-file folder is replaced with the backup's copy (files
+     * added after the backup was made are in the safety backup).
+     */
+    private function replaceFolders(string $work): int
+    {
+        $count = 0;
+
+        foreach (config('backup.folders', []) as $folder => $prefix) {
+            $source = $work . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, trim($prefix, '/'));
+
+            File::ensureDirectoryExists($folder);
+
+            // Empty the folder, keeping its .gitignore.
+            foreach (File::directories($folder) as $directory) {
+                File::deleteDirectory($directory);
+            }
+            foreach (File::files($folder, true) as $existing) {
+                if ($existing->getFilename() !== '.gitignore') {
+                    @unlink($existing->getPathname());
+                }
+            }
+
+            if (is_dir($source)) {
+                File::copyDirectory($source, $folder);
+                $count += count(File::allFiles($source));
+            }
+        }
+
+        return $count;
     }
 
     /** How many records the backup holds (shown in the list). */

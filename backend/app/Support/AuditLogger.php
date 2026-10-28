@@ -107,6 +107,10 @@ class AuditLogger
         'backup_failed' => 'Backup Failed',
         'backup_downloaded' => 'Backup Downloaded',
         'backup_deleted' => 'Backup Deleted',
+        'backup_restored' => 'Backup Restored',
+        'backup_restore_failed' => 'Restore Failed',
+        'backup_restore_refused' => 'Restore Refused',
+        'backup_uploaded' => 'Backup Uploaded',
         'audit_log_exported' => 'Audit Log Exported',
     ];
 

@@ -128,6 +128,11 @@ Route::middleware([
                 ->where('name', 'siknayan-backup-[0-9]{8}-[0-9]{6}\.zip');
             Route::delete('/backups/{name}', [SystemAdminBackupController::class, 'destroy'])
                 ->where('name', 'siknayan-backup-[0-9]{8}-[0-9]{6}\.zip');
+            // Restore (replaces all data; password + typing RESTORE) and upload a backup zip
+            Route::post('/backups/upload', [SystemAdminBackupController::class, 'upload'])->middleware('throttle:5,10');
+            Route::post('/backups/{name}/restore', [SystemAdminBackupController::class, 'restore'])
+                ->where('name', 'siknayan-backup-[0-9]{8}-[0-9]{6}\.zip')
+                ->middleware('throttle:5,10');
         });
 
 

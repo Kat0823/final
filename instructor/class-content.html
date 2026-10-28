@@ -1,0 +1,4137 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Content - MPSU ETEEAP LMS</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --green: #086b3c;
+            --green-light: #f3f8f4;
+            --maroon: #650d20;
+            --gold: #ffd34e;
+            --text: #26332b;
+            --white: #ffffff;
+            --border: #dce5de;
+            --muted: #718078;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--green-light);
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        button, input, select, textarea {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* HEADER */
+        .header {
+            height: 85px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 0 28px;
+            color: var(--white);
+            background: var(--green);
+            box-shadow: 0 2px 6px #0002;
+        }
+
+        .header-left,
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-box {
+            width: 55px;
+            height: 55px;
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 2px solid var(--white);
+            border-radius: 50%;
+            background: var(--white);
+        }
+
+        .logo-box img,
+        .avatar-ring img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        .main-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .sub-title {
+            margin-top: 3px;
+            color: #ffffffd9;
+            font-size: 12px;
+        }
+
+        .header-right {
+            gap: 18px;
+        }
+
+        .icon-btn,
+        .menu-btn {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border: none;
+            border-radius: 50%;
+            color: var(--white);
+            background: transparent;
+            font-size: 18px;
+        }
+
+        .icon-btn:hover,
+        .menu-btn:hover {
+            background: #ffffff26;
+        }
+
+        .menu-btn {
+            display: none;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+            color: var(--white);
+            background: transparent;
+            text-align: left;
+        }
+
+        .avatar-ring {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 2px solid var(--white);
+            border-radius: 50%;
+            background: var(--white);
+        }
+
+        .user-name,
+        .user-role {
+            display: block;
+            white-space: nowrap;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .user-role {
+            margin-top: 2px;
+            color: #ffffffcc;
+            font-size: 11px;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 85px;
+            left: 0;
+            z-index: 900;
+            width: 250px;
+            height: calc(100vh - 85px);
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            overflow-y: auto;
+            color: var(--white);
+            background: var(--maroon);
+            transition: width 0.25s ease, transform 0.25s ease;
+        }
+
+        .view-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 0 8px;
+        }
+
+        .view-label {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .view-toggle-btn {
+            width: 34px;
+            height: 34px;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 6px;
+            color: var(--white);
+            background: transparent;
+            font-size: 17px;
+        }
+
+        .view-toggle-btn:hover {
+            background: #ffffff20;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-item {
+            width: 100%;
+            min-height: 46px;
+            padding: 11px 14px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid transparent;
+            border-radius: 7px;
+            color: var(--white);
+            background: transparent;
+            font-size: 13px;
+            line-height: 1.4;
+            text-align: left;
+            white-space: nowrap;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .nav-item > i {
+            width: 22px;
+            min-width: 22px;
+            height: 22px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            font-size: 17px;
+            line-height: 1;
+            text-align: center;
+        }
+
+        .nav-item > span {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .nav-item:hover {
+            background: #ffffff20;
+        }
+
+        .nav-item.active {
+            color: #1a0306;
+            background: var(--gold);
+            border-color: #eab308;
+            font-weight: 600;
+        }
+
+        .nav-item.active:hover {
+            color: #1a0306;
+            background: #ffdc68;
+        }
+
+        .logout-bottom {
+            margin-top: auto;
+        }
+
+        /* COLLAPSED SIDEBAR */
+        .sidebar.collapsed {
+            width: 80px;
+        }
+
+        .sidebar.collapsed .view-label,
+        .sidebar.collapsed .nav-item > span {
+            display: none;
+        }
+
+        .sidebar.collapsed .view-header {
+            justify-content: center;
+        }
+
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+            gap: 0;
+            padding: 11px 10px;
+        }
+
+        .sidebar.collapsed .nav-item > i {
+            width: 24px;
+            min-width: 24px;
+        }
+        /* MAIN CONTENT */
+        .main-content {
+            width: calc(100% - 250px);
+            min-height: calc(100vh - 85px);
+            margin-left: 250px;
+            padding: 30px 40px;
+            transition: margin-left .25s, width .25s;
+        }
+
+        .main-content.expanded {
+            width: calc(100% - 80px);
+            margin-left: 80px;
+        }
+
+        .page-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* BREADCRUMB */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .breadcrumb a {
+            color: var(--green);
+        }
+
+        .breadcrumb i {
+            font-size: 10px;
+        }
+
+        /* COURSE HEADER */
+        /* Compact: labels on one line, the class name once, short description */
+        .course-header {
+            margin-bottom: 18px;
+            padding: 14px 20px;
+            color: white;
+            background: var(--green);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .course-tags {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .course-code,
+        .course-program {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .course-code {
+            color: #1a0306;
+            background: var(--gold);
+        }
+
+        .course-program {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.16);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+        }
+
+        .course-code:empty,
+        .course-program:empty {
+            display: none;
+        }
+
+        .course-header h1 {
+            min-height: 1.3em;
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .course-description {
+            margin-top: 4px;
+            color: #ffffffdf;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* STATISTICS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            color: var(--green);
+            background: #e7f4eb;
+            border-radius: 10px;
+            font-size: 20px;
+        }
+
+        .stat-info span {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .stat-info strong {
+            color: var(--green);
+            font-size: 24px;
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 13px 16px;
+            border: 0;
+            border-bottom: 3px solid transparent;
+            color: var(--muted);
+            background: transparent;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .tab-btn:hover {
+            color: var(--green);
+        }
+
+        .tab-btn.active {
+            color: var(--green);
+            border-bottom-color: var(--green);
+            font-weight: 600;
+        }
+
+        .tab-badge {
+            min-width: 22px;
+            padding: 2px 6px;
+            color: var(--green);
+            background: #e7f4eb;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* PANELS */
+        .content-panel {
+            margin-bottom: 24px;
+            padding: 24px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            margin-bottom: 5px;
+            color: var(--green);
+            font-size: 19px;
+            font-weight: 600;
+        }
+
+        .section-header p {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* MODULES */
+        .module-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .module-card {
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .module-card[open] {
+            border-color: #8dbba0;
+        }
+
+        .module-card summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 18px;
+            cursor: pointer;
+            list-style: none;
+        }
+
+        .module-card summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .module-card summary > i {
+            color: var(--muted);
+            transition: transform .2s;
+        }
+
+        .module-card[open] summary > i {
+            transform: rotate(180deg);
+        }
+
+        .module-title-group {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+        }
+
+        .unit-badge {
+            padding: 7px 9px;
+            flex-shrink: 0;
+            color: var(--green);
+            background: #e7f4eb;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .module-title-group h3 {
+            margin-bottom: 5px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .module-title-group p {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .module-body {
+            padding: 18px;
+            border-top: 1px solid var(--border);
+            background: #fbfdfb;
+        }
+
+        .module-description {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        .module-material {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--green);
+            font-size: 12px;
+        }
+
+        .not-available {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .material-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .material-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .material-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 14px;
+            border: 1px solid var(--green);
+            border-radius: 6px;
+            background: #fff;
+            color: var(--green);
+            font: inherit;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        /* Module rows: title on the left, eye and download on the right */
+        .module-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 16px 18px;
+            background: #fff;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .module-row:hover {
+            border-color: #8dbba0;
+            box-shadow: 0 4px 14px rgba(23, 40, 30, 0.06);
+        }
+
+        .module-text {
+            min-width: 0;
+        }
+
+        .module-text h3 {
+            overflow-wrap: anywhere;
+        }
+
+        .module-desc {
+            margin-bottom: 4px;
+            overflow-wrap: anywhere;
+        }
+
+        .module-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px 12px;
+        }
+
+        .module-status {
+            padding: 2px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .module-status.published {
+            background: #e7f4eb;
+            color: var(--green);
+        }
+
+        .module-status.draft {
+            background: #f1f2f4;
+            color: #6b7280;
+        }
+
+        .module-material {
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .module-material.pdf i {
+            color: #c0392b;
+        }
+
+        .icon-action {
+            width: 38px;
+            height: 38px;
+            display: inline-grid;
+            place-items: center;
+            flex-shrink: 0;
+            border: 1px solid var(--green);
+            border-radius: 50%;
+            background: #fff;
+            color: var(--green);
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        .icon-action.view {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .icon-action:hover {
+            background: #065330;
+            border-color: #065330;
+            color: #fff;
+        }
+
+        .icon-action:focus-visible {
+            outline: 3px solid rgba(8, 107, 60, 0.3);
+            outline-offset: 2px;
+        }
+
+        .icon-action:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        @media (max-width: 600px) {
+            .module-row {
+                align-items: flex-start;
+            }
+        }
+
+        .material-btn.primary {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .material-btn:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        /* LEARNER TABLE */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .learners-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .learners-table thead {
+            color: white;
+            background: var(--green);
+        }
+
+        .learners-table th,
+        .learners-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 12px;
+        }
+
+        .learners-table th {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .learners-table tbody tr:hover {
+            background: #f5faf6;
+        }
+
+        .learners-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .learner-profile-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 180px;
+        }
+
+        .learner-avatar {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            color: var(--green);
+            background: #e7f4eb;
+            border-radius: 50%;
+            font-weight: 600;
+        }
+
+        .learner-name,
+        .learner-id {
+            display: block;
+        }
+
+        .learner-name {
+            font-weight: 600;
+        }
+
+        .learner-id {
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        /* ANNOUNCEMENTS */
+        .announcement-box {
+            padding: 40px 20px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .announcement-box > i {
+            margin-bottom: 14px;
+            color: #aab8af;
+            font-size: 38px;
+        }
+
+        .announcement-box h3 {
+            margin-bottom: 8px;
+            color: var(--text);
+            font-size: 17px;
+        }
+
+        .announcement-box p {
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .announcement-form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* Announcements header: title left, Create button right */
+        .announcement-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .create-announcement-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        /* Pop-up with the page blurred behind it */
+        .announcement-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        .announcement-modal-overlay[hidden] {
+            display: none;
+        }
+
+        body.announcement-modal-open {
+            overflow: hidden;
+        }
+
+        .announcement-modal {
+            width: 100%;
+            max-width: 560px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+            padding: 24px;
+            border-top: 4px solid #e2ac2f;
+            border-radius: 14px;
+            background: #ffffff;
+            box-shadow: 0 22px 60px rgba(0, 0, 0, 0.28);
+        }
+
+        .announcement-modal-head {
+            margin-bottom: 8px;
+        }
+
+        .announcement-modal-head h2 {
+            color: var(--green);
+            font-size: 19px;
+        }
+
+        .announcement-modal-head p {
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .announcement-form label {
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .announcement-form input,
+        .announcement-form textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font: inherit;
+            font-size: 13px;
+            color: var(--text);
+            resize: vertical;
+        }
+
+        .announcement-form input:focus,
+        .announcement-form textarea:focus {
+            outline: 2px solid rgba(8, 107, 60, 0.25);
+            border-color: var(--green);
+        }
+
+        .announcement-error {
+            color: #b42318;
+            font-size: 12px;
+        }
+
+        .announcement-form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .announcement-form-actions button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .announcement-form-actions button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .announcement-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* ===== Learning Resources ===== */
+        .announcement-form select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: #fff;
+            font: inherit;
+            font-size: 13px;
+            color: var(--text);
+        }
+
+        .resource-type-label {
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .resource-type-choice {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .resource-type-choice label {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .resource-type-choice input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .resource-type-choice span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--text);
+        }
+
+        .resource-type-choice input:checked + span {
+            border-color: var(--green);
+            background: rgba(8, 107, 60, 0.07);
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        .resource-type-choice input:focus-visible + span {
+            outline: 2px solid rgba(8, 107, 60, 0.35);
+        }
+
+        .resource-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .resource-field[hidden] {
+            display: none;
+        }
+
+        .resource-hint {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .resource-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .resource-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: #fff;
+        }
+
+        .resource-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            font-size: 19px;
+        }
+
+        .resource-link  { background: #e8efff; color: #1d4ed8; }
+        .resource-video { background: #fde8e8; color: #c81e1e; }
+        .resource-ppt   { background: #fff0e6; color: #c2410c; }
+        .resource-pdf   { background: #fde8ee; color: #b42318; }
+        .resource-excel { background: #e6f4ec; color: #08733d; }
+
+        .resource-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .resource-info h3 {
+            margin: 0 0 3px;
+            font-size: 15px;
+            color: var(--text);
+            overflow-wrap: anywhere;
+        }
+
+        .resource-meta,
+        .resource-file {
+            color: var(--muted);
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .resource-description {
+            margin-top: 6px;
+            font-size: 13px;
+            color: var(--text);
+            white-space: pre-line;
+        }
+
+        .resource-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 6px;
+        }
+
+        .resource-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            height: 32px;
+            padding: 0 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: #fff;
+            color: var(--green);
+            font: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .resource-btn:hover {
+            border-color: var(--green);
+        }
+
+        .resource-btn:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .resource-remove {
+            color: #b42318;
+        }
+
+        .resource-remove:hover {
+            border-color: #b42318;
+        }
+
+        @media (max-width: 640px) {
+            .resource-item {
+                flex-wrap: wrap;
+            }
+
+            .resource-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .resource-type-choice {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .announcement-item {
+            padding: 16px 18px;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--green);
+            border-radius: 8px;
+            background: #fbfdfb;
+        }
+
+        .announcement-item-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .announcement-item h3 {
+            color: var(--text);
+            font-size: 15px;
+        }
+
+        .announcement-meta {
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .announcement-text {
+            margin-top: 10px;
+            color: var(--text);
+            font-size: 13px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .announcement-actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .announcement-actions button {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: #fff;
+            color: var(--muted);
+            cursor: pointer;
+        }
+
+        .announcement-actions button:hover {
+            color: var(--green);
+            border-color: var(--green);
+        }
+
+        .announcement-actions button.delete:hover {
+            color: #b42318;
+            border-color: #b42318;
+        }
+
+        /* Label read by screen readers only */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            white-space: nowrap;
+        }
+
+        /* Replies under an announcement */
+        .ann-replies {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .ann-replies-title {
+            margin-bottom: 8px;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .ann-reply {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 10px;
+            padding: 9px 0;
+        }
+
+        .ann-reply + .ann-reply {
+            border-top: 1px dashed var(--border);
+        }
+
+        .ann-reply-avatar {
+            width: 30px;
+            height: 30px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: #e3f3ea;
+            color: var(--green);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .ann-reply.instructor .ann-reply-avatar {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .ann-reply-head {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px 8px;
+            color: var(--text);
+            font-size: 12px;
+        }
+
+        .ann-reply-head time {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .ann-reply-tag {
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: #e3f3ea;
+            color: var(--green);
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .ann-reply-text {
+            margin-top: 3px;
+            color: var(--text);
+            font-size: 13px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .ann-reply-remove {
+            align-self: start;
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: 6px;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+        }
+
+        .ann-reply-remove:hover {
+            background: #fdecea;
+            color: #b42318;
+        }
+
+        .ann-reply-form {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .ann-reply-form textarea {
+            flex: 1;
+            min-height: 38px;
+            max-height: 140px;
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font: inherit;
+            font-size: 13px;
+            resize: vertical;
+        }
+
+        .ann-reply-form textarea:focus {
+            outline: 2px solid rgba(8, 107, 60, 0.25);
+            border-color: var(--green);
+        }
+
+        .ann-reply-form button {
+            align-self: flex-end;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 14px;
+            border: 0;
+            border-radius: 6px;
+            background: var(--green);
+            color: #fff;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .ann-reply-form button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .ann-reply-error {
+            margin-top: 6px;
+            color: #b42318;
+            font-size: 12px;
+        }
+
+        /* EMPTY STATES */
+        .empty-state {
+            padding: 35px 20px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .empty-state > i {
+            margin-bottom: 12px;
+            color: #aab8af;
+            font-size: 32px;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 8px;
+            color: var(--text);
+            font-size: 15px;
+        }
+
+        .empty-state p {
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        /* TOASTS */
+        .toast-container {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            max-width: 360px;
+            padding: 14px 18px;
+            color: white;
+            background: var(--green);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            animation: toastIn .2s ease-out;
+        }
+
+        .toast-error {
+            background: #b42332;
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* PROFILE MODAL */
+        .profile-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, .5);
+        }
+
+        .profile-modal-overlay.active {
+            display: flex;
+        }
+
+        .profile-modal-card {
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 35px #0003;
+        }
+
+        .profile-modal-header,
+        .profile-modal-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .profile-modal-title {
+            color: var(--green);
+            font-size: 18px;
+        }
+
+        .profile-modal-close {
+            width: 36px;
+            height: 36px;
+            border: 0;
+            border-radius: 50%;
+            background: #f1f5f2;
+            font-size: 24px;
+        }
+
+        .profile-modal-body {
+            padding: 24px;
+        }
+
+        .profile-modal-footer {
+            justify-content: flex-end;
+            border-top: 1px solid var(--border);
+            border-bottom: 0;
+        }
+
+        .profile-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            margin-bottom: 16px;
+        }
+
+        .profile-form-group label {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .profile-form-group input {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .profile-form-group input:focus {
+            border-color: var(--green);
+        }
+
+        .input-disabled {
+            background: #f1f5f2;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .avatar-upload-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .avatar-upload-preview {
+            position: relative;
+            width: 76px;
+            height: 76px;
+            flex-shrink: 0;
+        }
+
+        .avatar-upload-preview img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .avatar-edit-badge {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            display: grid;
+            width: 27px;
+            height: 27px;
+            place-items: center;
+            color: white;
+            background: var(--green);
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .avatar-file-input {
+            display: none;
+        }
+
+        .avatar-upload-text h4 {
+            margin-bottom: 5px;
+        }
+
+        .avatar-upload-text p {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .password-section {
+            margin-top: 20px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .password-toggle-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 15px;
+            cursor: pointer;
+        }
+
+        .password-toggle-header h4 {
+            font-size: 13px;
+        }
+
+        .password-fields {
+            display: none;
+            padding: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .password-section.open .password-fields {
+            display: block;
+        }
+
+        .password-section.open .chevron-icon {
+            transform: rotate(180deg);
+        }
+
+        .chevron-icon {
+            transition: transform .2s;
+        }
+
+        .btn-cancel,
+        .btn-save {
+            padding: 10px 18px;
+            border: 0;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .btn-cancel {
+            color: var(--text);
+            background: #e8eee9;
+        }
+
+        .btn-save {
+            color: white;
+            background: var(--green);
+        }
+
+        .btn-save:hover {
+            background: #075630;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .main-content {
+                padding: 28px 24px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 900px) {
+            .header {
+                height: 75px;
+                padding: 0 14px;
+                gap: 10px;
+            }
+
+            .logo-box {
+                width: 46px;
+                height: 46px;
+            }
+
+            .main-title {
+                font-size: 13px;
+            }
+
+            .sub-title {
+                font-size: 10px;
+            }
+
+            .header-right {
+                gap: 8px;
+            }
+
+            .sidebar {
+                top: 75px;
+                width: 250px;
+                height: calc(100vh - 75px);
+                transform: translateX(-100%);
+                border-radius: 0;
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .sidebar.collapsed {
+                width: 250px;
+                padding: 24px 16px;
+            }
+
+            .sidebar.collapsed .view-label,
+            .sidebar.collapsed .nav-item span {
+                display: initial;
+            }
+
+            .sidebar.collapsed .view-header {
+                justify-content: space-between;
+                padding: 0 8px;
+            }
+
+            .sidebar.collapsed .nav-item {
+                justify-content: flex-start;
+                gap: 14px;
+                padding: 10px 12px;
+            }
+
+            .main-content,
+            .main-content.expanded {
+                width: 100%;
+                margin-left: 0;
+                padding: 24px 16px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                padding: 0 10px;
+            }
+
+            .header-left {
+                gap: 8px;
+            }
+
+            .main-title {
+                font-size: 11px;
+            }
+
+            .sub-title {
+                font-size: 9px;
+            }
+
+            .header-right {
+                gap: 2px;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .icon-btn {
+                width: 34px;
+                height: 34px;
+                font-size: 16px;
+            }
+
+            .stats-grid,
+            .form-grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .course-header {
+                padding: 12px 16px;
+            }
+
+            .course-header h1 {
+                font-size: 18px;
+            }
+
+            .content-panel {
+                padding: 16px;
+            }
+
+            .tab-btn {
+                padding: 11px 8px;
+                font-size: 12px;
+            }
+
+            .profile-modal-body {
+                padding: 18px;
+            }
+
+            .profile-modal-header,
+            .profile-modal-footer {
+                padding: 16px 18px;
+            }
+        }
+
+        .learner-avatar {
+            overflow: hidden;
+        }
+
+        .learner-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ---------- Simple card design ---------- */
+
+        /* Modules: coloured stripe on the left (green, gold, maroon in turn)
+           and a matching unit badge. */
+        .module-row {
+            position: relative;
+            overflow: hidden;
+            padding-left: 24px;
+            border-radius: 10px;
+            --stripe: #08683c;
+            --stripe-soft: #e7f4eb;
+        }
+
+        .module-row:nth-child(3n + 2) {
+            --stripe: #c99223;
+            --stripe-soft: #fbf1dc;
+        }
+
+        .module-row:nth-child(3n + 3) {
+            --stripe: #7a1418;
+            --stripe-soft: #f8e7e8;
+        }
+
+        .module-row::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 5px;
+            background: var(--stripe);
+        }
+
+        .module-row .unit-badge {
+            background: var(--stripe-soft);
+            color: var(--stripe);
+            border-radius: 8px;
+        }
+
+        .module-row:hover {
+            border-color: var(--stripe);
+            transform: translateY(-1px);
+        }
+
+        /* Announcements: white card, gold stripe, megaphone icon */
+        .announcement-item {
+            border: 1px solid var(--border);
+            border-left: 5px solid #e2ac2f;
+            border-radius: 10px;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(23, 40, 30, 0.04);
+        }
+
+        .announcement-title-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .announcement-title-group h3 {
+            overflow-wrap: anywhere;
+        }
+
+        .announcement-icon {
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: #fbf1dc;
+            color: #a87412;
+            font-size: 14px;
+        }
+
+        .announcement-meta i {
+            margin-right: 3px;
+        }
+
+        .announcement-text {
+            margin-left: 48px;
+        }
+
+        @media (max-width: 600px) {
+            .announcement-text {
+                margin-left: 0;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .module-row:hover {
+                transform: none;
+            }
+        }
+
+        /* Opened from a reply notification */
+        .announcement-item.highlight {
+            border-color: #e2ac2f;
+            box-shadow: 0 0 0 3px rgba(226, 172, 47, 0.3);
+        }
+
+        /* Summary lines under the tab titles show only error messages. */
+        #learnerSummary:empty,
+        #announcementSummary:empty,
+        #resourceSummary:empty {
+            display: none;
+        }
+
+        .course-description[hidden] {
+            display: none;
+        }
+
+        /* ---------- Learners table: clickable rows ---------- */
+        .learner-row {
+            cursor: pointer;
+        }
+
+        .learner-row:focus-visible {
+            outline: 2px solid var(--green);
+            outline-offset: -2px;
+        }
+
+        .learner-activity {
+            white-space: nowrap;
+        }
+
+        .activity-count {
+            margin-right: 8px;
+            color: #374151;
+            font-weight: 600;
+        }
+
+        .activity-loading,
+        .activity-muted {
+            color: #9ca3af;
+        }
+
+        .activity-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .activity-badge.to-score {
+            background: #fbefd2;
+            color: #8a5a00;
+        }
+
+        .activity-badge.scored {
+            background: #e3f3ea;
+            color: #08683c;
+        }
+
+        .activity-badge.not-submitted {
+            background: #f1f2f4;
+            color: #6b7280;
+        }
+
+        .learner-open,
+        .learner-open-head {
+            width: 40px;
+            color: #9ca3af;
+            text-align: right;
+        }
+
+        .learner-row:hover .learner-open {
+            color: var(--green);
+        }
+
+        /* ---------- Learner pop-up ---------- */
+        .learner-panel-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2500;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(6px);
+        }
+
+        .learner-panel-overlay.active {
+            display: flex;
+        }
+
+        .learner-panel {
+            width: 100%;
+            max-width: 680px;
+            max-height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-top: 4px solid #e2ac2f;
+            border-radius: 16px;
+            background: #ffffff;
+            box-shadow: 0 22px 60px rgba(0, 0, 0, 0.28);
+        }
+
+        .learner-panel-head {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 20px 22px;
+            background: linear-gradient(120deg, #075c35, #0a7549);
+            color: #ffffff;
+        }
+
+        .learner-panel-head .learner-avatar {
+            border: 2px solid #f3cd6b;
+        }
+
+        .learner-panel-head h2 {
+            font-size: 19px;
+        }
+
+        .learner-panel-head p {
+            margin-top: 3px;
+            color: #e0f2e9;
+            font-size: 13px;
+        }
+
+        .learner-panel-close {
+            width: 36px;
+            height: 36px;
+            margin-left: auto;
+            border: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.92);
+            color: #075c35;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        .learner-panel-body {
+            padding: 18px 22px 22px;
+            overflow-y: auto;
+        }
+
+        .learner-panel-body h3 {
+            margin-bottom: 12px;
+            color: #111827;
+            font-size: 15px;
+        }
+
+        .lp-modules {
+            display: grid;
+            gap: 12px;
+            list-style: none;
+        }
+
+        .lp-module {
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .lp-module-top {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .lp-module-top strong {
+            color: #111827;
+            font-size: 14px;
+        }
+
+        .lp-comment {
+            margin-top: 8px;
+            color: #4b5563;
+            font-size: 13px;
+        }
+
+        .lp-file {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px 8px;
+            margin-top: 10px;
+            color: #374151;
+            font-size: 13px;
+        }
+
+        .lp-file i {
+            color: var(--green);
+        }
+
+        .lp-file small {
+            color: #9ca3af;
+        }
+
+        .lp-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .lp-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #ffffff;
+            color: #374151;
+            font: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .lp-btn:hover {
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .lp-btn.primary {
+            border-color: var(--green);
+            background: var(--green);
+            color: #ffffff;
+        }
+
+        .lp-btn.primary:hover {
+            background: #065330;
+            color: #ffffff;
+        }
+
+        /* Beat the page's general button colours: View / Download white,
+           Score green. */
+        .learner-panel .lp-btn {
+            border: 1px solid var(--border);
+            background: #ffffff;
+            color: #374151;
+        }
+
+        .learner-panel .lp-btn:hover {
+            border-color: var(--green);
+            background: #f3faf6;
+            color: var(--green);
+        }
+
+        .learner-panel .lp-btn.primary {
+            border-color: var(--green);
+            background: var(--green);
+            color: #ffffff;
+        }
+
+        .learner-panel .lp-btn.primary:hover {
+            background: #065330;
+            color: #ffffff;
+        }
+
+        .lp-btn:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .lp-empty {
+            padding: 18px;
+            color: #6b7280;
+            text-align: center;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+        }
+
+        /* ===== Module cards (same style as the learner's Module material card) ===== */
+        #moduleSummary:empty {
+            display: none;
+        }
+
+        #modulesContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .tm-module {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px 14px 22px;
+            border: 1px solid #e3ebe6;
+            border-radius: 14px;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(16, 24, 40, 0.05);
+        }
+
+        .tm-module::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 4px;
+            background: #8b1d24;
+        }
+
+        .tm-module:hover {
+            border-color: #d9e6de;
+            box-shadow: 0 4px 12px rgba(16, 24, 40, 0.08);
+        }
+
+        .tm-module-file {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 4px 0 0;
+            color: #667085;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .tm-module-file i {
+            color: #c62828;
+            font-size: 15px;
+        }
+
+        .tm-module .tm-no-material {
+            margin-top: 4px;
+        }
+
+        .tm-module-head {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding-bottom: 14px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid #eef2ef;
+        }
+
+        .tm-module-unit {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            border-radius: 12px;
+            background: #fbecec;
+            color: #8b1d24;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .tm-module-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .tm-module-text h3 {
+            margin: 0;
+            font-size: 16px;
+            overflow-wrap: anywhere;
+        }
+
+        .tm-module-text p {
+            margin: 4px 0 0;
+            color: #667085;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .tm-module .module-status {
+            flex-shrink: 0;
+        }
+
+        .tm-file-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 16px;
+            border: 1px solid #e8eeea;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+        }
+
+        .tm-file-name {
+            display: flex;
+            flex: 1;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .tm-file-name strong {
+            display: block;
+            overflow-wrap: anywhere;
+        }
+
+        .tm-file-name span {
+            color: #667085;
+            font-size: 12px;
+        }
+
+        .tm-file-icon {
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            border-radius: 10px;
+            background: #fdecec;
+            color: #c62828;
+            font-size: 22px;
+        }
+
+        .tm-file-actions {
+            display: flex;
+            flex-shrink: 0;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        .tm-file-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            height: 34px;
+            padding: 0 14px;
+            border: 1px solid #087443;
+            border-radius: 999px;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+        }
+
+        .tm-file-btn.view {
+            background: #e8f5ee;
+            color: #087443;
+        }
+
+        .tm-file-btn.view:hover {
+            background: #087443;
+            color: #fff;
+        }
+
+        .tm-file-btn.download {
+            background: #087443;
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(8, 116, 67, 0.25);
+        }
+
+        .tm-file-btn.download:hover {
+            background: #065c36;
+            border-color: #065c36;
+        }
+
+        .tm-file-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .tm-file-btn:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .tm-file-btn:focus-visible {
+            outline: 2px solid #e2ac2f;
+            outline-offset: 2px;
+        }
+
+        .tm-no-material {
+            margin: 0;
+            color: #667085;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            .tm-module {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+    <!-- Header and sidebar shared by all Instructor pages (load last) -->
+    <link rel="stylesheet" href="CSS/shell.css">
+    <!-- Profile pop-up (same as the learner portal) -->
+    <link rel="stylesheet" href="CSS/profile-modal.css">
+</head>
+
+<body>
+
+     <!-- HEADER -->
+    <header class="header">
+        <div class="header-left">
+
+            <button
+                class="menu-btn"
+                id="menuToggle"
+                type="button"
+                title="Open menu"
+                aria-label="Open menu"
+                aria-expanded="false">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+            </button>
+
+            <div class="logo-box">
+                <img src="../images/logo.png" alt="MPSU Logo">
+            </div>
+
+            <div>
+                <div class="main-title">MPSU ETEEAP LMS</div>
+                <div class="sub-title">Mountain Province State University</div>
+            </div>
+
+        </div>
+
+        <div class="header-right">
+
+            <button
+                class="icon-btn"
+                type="button"
+                title="Notifications"
+                aria-label="Notifications"
+                id="notificationsBtn">
+                <i class="fa-solid fa-bell" aria-hidden="true"></i>
+            </button>
+
+            <button
+                class="user-profile"
+                id="userProfileBtn"
+                type="button"
+                aria-label="Open instructor profile">
+
+                <div class="avatar-ring">
+                    <img
+                        id="headerAvatar"
+                        src="../images/logo.png"
+                        alt="Instructor profile">
+                </div>
+
+                <div class="user-info">
+                    <span class="user-name" id="headerInstructorName">Instructor</span>
+                    <span class="user-role">Instructor</span>
+                </div>
+
+            </button>
+        </div>
+    </header>
+
+    <!-- SIDEBAR -->
+     <aside class="sidebar" id="sidebar">
+        <div class="view-header">
+            <span class="view-label">Instructor Menu</span>
+
+            <button
+                class="view-toggle-btn"
+                id="sidebarToggle"
+                type="button"
+                title="Collapse sidebar"
+                aria-label="Collapse sidebar"
+                aria-expanded="true">
+                <i class="fa-solid fa-angles-left" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="./" class="nav-item">
+                <i class="fa-solid fa-house" aria-hidden="true"></i>
+                <span>Learner Progress</span>
+            </a>
+
+            <a href="class.html" class="nav-item active" aria-current="page">
+                <i class="fa-solid fa-book" aria-hidden="true"></i>
+                <span>Classes</span>
+            </a>
+
+            <a href="submissions.html" class="nav-item">
+                <i class="fa-regular fa-folder" aria-hidden="true"></i>
+                <span>Submissions</span>
+            </a>
+
+            <a href="notification.html" class="nav-item">
+                <i class="fa-solid fa-bell" aria-hidden="true"></i>
+                <span>Notifications</span>
+            </a>
+
+            <a href="../index.html" class="nav-item logout-bottom" id="logoutNav">
+                <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+                <span>Logout</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content" id="mainContent">
+        <div class="page-container">
+
+            <div class="breadcrumb">
+                <a href="class.html">
+                    <i class="fa-solid fa-book"></i> Classes
+                </a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <span id="breadcrumbCourse">Loading class...</span>
+            </div>
+
+            <!-- COURSE INFORMATION -->
+            <!-- Compact class header: code and program labels, then the class name -->
+            <section class="course-header">
+                <div class="course-tags">
+                    <span class="course-code" id="courseCode"></span>
+                    <span class="course-program" id="courseProgram"></span>
+                </div>
+                <h1 id="courseTitle"></h1>
+                <p class="course-description" id="courseDescription" hidden></p>
+            </section>
+
+
+            <!-- TABS -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="modulesPanel" type="button">
+                    <i class="fa-solid fa-book-open"></i>
+                    Modules
+                    <span class="tab-badge" id="modulesBadge">0</span>
+                </button>
+
+                <button class="tab-btn" data-tab="learnersPanel" type="button">
+                    <i class="fa-solid fa-users"></i>
+                    Learners
+                    <span class="tab-badge" id="learnersBadge">0</span>
+                </button>
+
+                <button class="tab-btn" data-tab="announcementsPanel" type="button">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    Announcements
+                    <span class="tab-badge" id="announcementsBadge">0</span>
+                </button>
+
+                <button class="tab-btn" data-tab="resourcesPanel" type="button">
+                    <i class="fa-solid fa-photo-film"></i>
+                    Learning Resources
+                    <span class="tab-badge" id="resourcesBadge">0</span>
+                </button>
+            </div>
+
+            <!-- MODULES -->
+            <section class="tab-panel active" id="modulesPanel">
+                <div class="content-panel">
+                    <div class="section-header">
+                        <div>
+                            <h2>Modules</h2>
+                            <p id="moduleSummary"></p>
+                        </div>
+                    </div>
+
+                    <div id="modulesContainer" class="module-list">
+                        <div class="empty-state">
+                            <i class="fa-solid fa-spinner fa-spin"></i>
+                            <h3>Loading modules</h3>
+                            <p>Please wait while the class information is loaded.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- LEARNERS -->
+            <section class="tab-panel" id="learnersPanel">
+                <div class="content-panel">
+                    <div class="section-header">
+                        <div>
+                            <h2>Enrolled Learners</h2>
+                            <p id="learnerSummary"></p>
+                        </div>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="learners-table">
+                            <thead>
+                                <tr>
+                                    <th>Learner</th>
+                                    <th>Activities</th>
+                                    <th class="learner-open-head"><span class="visually-hidden">Open</span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="learnersTableBody">
+                                <tr>
+                                    <td colspan="3">
+                                        <div class="empty-state">
+                                            <i class="fa-solid fa-spinner fa-spin"></i>
+                                            <h3>Loading learners</h3>
+                                            <p>Please wait.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ANNOUNCEMENTS -->
+            <section class="tab-panel" id="announcementsPanel">
+                <div class="content-panel">
+                    <div class="section-header announcement-header">
+                        <div>
+                            <h2>Announcements</h2>
+                            <p id="announcementSummary"></p>
+                        </div>
+
+                        <button type="button" class="btn-save create-announcement-btn" id="createAnnouncementButton">
+                            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                            <span>Create Announcement</span>
+                        </button>
+                    </div>
+
+                    <div id="announcementList" class="announcement-list"></div>
+                </div>
+
+                <!-- Create / edit pop-up (the page behind is blurred) -->
+                <div class="announcement-modal-overlay" id="announcementModal" hidden>
+                    <form id="announcementForm" class="announcement-form announcement-modal" novalidate
+                        role="dialog" aria-modal="true" aria-labelledby="announcementFormTitle">
+                        <div class="announcement-modal-head">
+                            <h2 id="announcementFormTitle">Create Announcement</h2>
+                            <p>Every learner in this class is notified.</p>
+                        </div>
+
+                        <label for="announcementTitle">Title:</label>
+                        <input type="text" id="announcementTitle" maxlength="150"
+                            placeholder="e.g. Quiz on Friday" required>
+
+                        <label for="announcementMessage">Message:</label>
+                        <textarea id="announcementMessage" rows="6" maxlength="5000"
+                            placeholder="Write the details for your learners..." required></textarea>
+
+                        <p class="announcement-error" id="announcementError" hidden></p>
+
+                        <div class="announcement-form-actions">
+                            <button type="button" class="btn-cancel" id="announcementCancel">Cancel</button>
+                            <button type="submit" class="btn-save" id="announcementSubmit">
+                                <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                                <span>Post Announcement</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- LEARNING RESOURCES: links, PPT, videos to support the lessons -->
+            <section class="tab-panel" id="resourcesPanel">
+                <div class="content-panel">
+                    <div class="section-header announcement-header">
+                        <div>
+                            <h2>Learning Resources</h2>
+                            <p id="resourceSummary"></p>
+                        </div>
+
+                        <button type="button" class="btn-save create-announcement-btn" id="addResourceButton">
+                            <i class="fa-solid fa-paperclip" aria-hidden="true"></i>
+                            <span>Add Resource</span>
+                        </button>
+                    </div>
+
+                    <div id="resourceList" class="resource-list"></div>
+                </div>
+
+                <div class="announcement-modal-overlay" id="resourceModal" hidden>
+                    <form id="resourceForm" class="announcement-form announcement-modal" novalidate
+                        role="dialog" aria-modal="true" aria-labelledby="resourceFormTitle">
+                        <div class="announcement-modal-head">
+                            <h2 id="resourceFormTitle">Add Learning Resource</h2>
+                            <p>Learners in this class can open it from their class page.</p>
+                        </div>
+
+                        <span class="resource-type-label">Type:</span>
+                        <div class="resource-type-choice" role="radiogroup" aria-label="Resource type">
+                            <label>
+                                <input type="radio" name="resourceType" value="link" checked>
+                                <span><i class="fa-solid fa-link" aria-hidden="true"></i> Link / Video link</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="resourceType" value="file">
+                                <span><i class="fa-solid fa-upload" aria-hidden="true"></i> Upload file (PPT, video...)</span>
+                            </label>
+                        </div>
+
+                        <label for="resourceTitle">Title:</label>
+                        <input type="text" id="resourceTitle" maxlength="150"
+                            placeholder="e.g. Lesson 1 slides" required>
+
+                        <div id="resourceLinkField" class="resource-field">
+                            <label for="resourceUrl">Link:</label>
+                            <input type="url" id="resourceUrl" maxlength="2048"
+                                placeholder="https://www.youtube.com/watch?v=...">
+                        </div>
+
+                        <div id="resourceFileField" class="resource-field" hidden>
+                            <label for="resourceFile">File:</label>
+                            <input type="file" id="resourceFile"
+                                accept=".ppt,.pptx,.pdf,.doc,.docx,.xls,.xlsx,.mp4,.webm,.mov,.m4v,.mp3,.wav,.png,.jpg,.jpeg,.gif">
+                            <small class="resource-hint">PowerPoint, PDF, Word, Excel, video, audio or image. Up to 100 MB.</small>
+                        </div>
+
+                        <label for="resourceModule">For module (optional):</label>
+                        <select id="resourceModule"></select>
+
+                        <label for="resourceDescription">Description (optional):</label>
+                        <textarea id="resourceDescription" rows="3" maxlength="2000"
+                            placeholder="What should learners do with this?"></textarea>
+
+                        <p class="announcement-error" id="resourceError" hidden></p>
+
+                        <div class="announcement-form-actions">
+                            <button type="button" class="btn-cancel" id="resourceCancel">Cancel</button>
+                            <button type="submit" class="btn-save" id="resourceSubmit">
+                                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                                <span>Add Resource</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- TOAST MESSAGES -->
+    <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+    <!-- PROFILE MODAL -->
+    <div class="profile-modal-overlay" id="profileModalOverlay">
+        <div class="profile-modal-card">
+            <div class="profile-modal-header">
+                <h3 class="profile-modal-title">Instructor Profile Settings</h3>
+                <button class="profile-modal-close" id="closeProfileModal"
+                        type="button" aria-label="Close profile">&times;</button>
+            </div>
+
+            <form id="profileSettingsForm">
+                <div class="profile-modal-body">
+                    <div class="avatar-upload-section">
+                        <div class="avatar-upload-preview">
+                            <img id="avatarPreview" src="../images/mpsu-logo.png"
+                                 alt="Instructor profile picture">
+
+                            <label for="avatarInput" class="avatar-edit-badge"
+                                   title="Change profile photo">
+                                <i class="fa-solid fa-camera"></i>
+                            </label>
+
+                            <input type="file" id="avatarInput"
+                                   accept="image/*" class="avatar-file-input">
+                        </div>
+
+                        <div class="avatar-upload-text">
+                            <h4>Profile Photo</h4>
+                            <p>This photo is displayed in the current browser session.</p>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="profile-form-group">
+                            <label for="instructorId">Instructor ID</label>
+                            <input type="text" id="instructorId" disabled
+                                   class="input-disabled">
+                        </div>
+
+                        <div class="profile-form-group">
+                            <label for="instructorName">Full Name</label>
+                            <input type="text" id="instructorName" required>
+                        </div>
+                    </div>
+
+                    <div class="profile-form-group">
+                        <label for="instructorEmail">Email Address</label>
+                        <input type="email" id="instructorEmail" required>
+                    </div>
+
+                    <div class="profile-form-group">
+                        <label for="instructorPhone">Mobile Number</label>
+                        <input type="tel" id="instructorPhone"
+                               placeholder="+63 9XX XXX XXXX">
+                    </div>
+
+                    <div class="password-section" id="passwordSection">
+                        <div class="password-toggle-header" id="passwordToggleBtn">
+                            <h4>
+                                <i class="fa-solid fa-lock"></i>
+                                Change Password (Optional)
+                            </h4>
+                            <i class="fa-solid fa-chevron-down chevron-icon"></i>
+                        </div>
+
+                        <div class="password-fields">
+                            <div class="profile-form-group">
+                                <label for="currentPassword">Current Password</label>
+                                <input type="password" id="currentPassword"
+                                       autocomplete="current-password">
+                            </div>
+
+                            <div class="profile-form-group">
+                                <label for="newPassword">New Password</label>
+                                <input type="password" id="newPassword"
+                                       placeholder="Minimum 8 characters"
+                                       autocomplete="new-password">
+                            </div>
+
+                            <div class="profile-form-group">
+                                <label for="confirmPassword">Confirm New Password</label>
+                                <input type="password" id="confirmPassword"
+                                       autocomplete="new-password">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-modal-footer">
+                    <button type="button" class="btn-cancel"
+                            id="cancelProfileModal">Cancel</button>
+                    <button type="submit" class="btn-save">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../api-config.js"></script>
+<script>
+        /* API CONFIGURATION */
+        const API_BASE_URL = window.SIKNAYAN_API_ROOT;
+        const $ = id => document.getElementById(id);
+        const params = new URLSearchParams(window.location.search);
+        const courseId = params.get("course_id");
+
+        let courseData = null;
+        let selectedAvatar = null;
+
+        function getAuthToken() {
+            return sessionStorage.getItem("token") ||
+                   sessionStorage.getItem("authToken");
+        }
+
+        function getAuthHeaders(json = false) {
+            const headers = { "Accept": "application/json" };
+            const token = getAuthToken();
+
+            if (token) headers["Authorization"] = `Bearer ${token}`;
+            if (json) headers["Content-Type"] = "application/json";
+
+            return headers;
+        }
+
+        /* TOAST */
+        function showToast(message, type = "success") {
+            const container = $("toastContainer");
+            if (!container) return;
+
+            const toast = document.createElement("div");
+            toast.className = `toast ${type === "error" ? "toast-error" : ""}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            setTimeout(() => toast.remove(), 3500);
+        }
+
+        /* AUTHENTICATION */
+        function handleUnauthorized() {
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("authToken");
+
+            showToast("Your session has expired. Please log in again.", "error");
+
+            setTimeout(() => {
+                window.location.href = "../index.html";
+            }, 1200);
+        }
+
+        async function apiRequest(url, options = {}) {
+            let response;
+
+            try {
+                response = await fetch(url, options);
+            } catch (error) {
+                throw new Error(
+                    "Cannot connect to the server. Check that your API is running."
+                );
+            }
+
+            let data = {};
+
+            try {
+                data = await response.json();
+            } catch (error) {
+                data = {};
+            }
+
+            if (response.status === 401) {
+                handleUnauthorized();
+                throw new Error("Unauthorized");
+            }
+
+            if (!response.ok) {
+                throw new Error(data.message || data.error || "Request failed.");
+            }
+
+            return data;
+        }
+
+        /* SAFE HTML HELPERS */
+        function escapeHtml(value) {
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function getInitials(name) {
+            return String(name || "?")
+                .trim()
+                .split(/\s+/)
+                .slice(0, 2)
+                .map(part => part.charAt(0).toUpperCase())
+                .join("") || "?";
+        }
+
+        /* COURSE LOADING */
+        async function loadCourse() {
+            if (!getAuthToken()) {
+                showToast("Please log in first.", "error");
+                setTimeout(() => {
+                    window.location.href = "../index.html";
+                }, 1000);
+                return;
+            }
+
+            if (!courseId) {
+                renderCourseError();
+                showToast(
+                    "No course was selected. Open this page from class.html.",
+                    "error"
+                );
+                return;
+            }
+
+            try {
+                const data = await apiRequest(
+                    `${API_BASE_URL}/instructor/classes/${encodeURIComponent(courseId)}`,
+                    {
+                        method: "GET",
+                        headers: getAuthHeaders()
+                    }
+                );
+
+                courseData = data.class || data.course || data;
+
+                if (!courseData || !courseData.id) {
+                    throw new Error("The class data returned by the server is invalid.");
+                }
+
+                renderCourse(courseData);
+                renderModules(courseData.modules || []);
+                renderLearners(courseData.learners || []);
+                loadAnnouncements();
+
+                // Activity counts for the learners table and Pending Reviews.
+                loadClassSubmissions().catch(error => console.error("Submissions:", error));
+
+                // Back from scoring: show the Learners tab and that learner again.
+                const returnLearner = params.get("learner");
+                const learner = returnLearner &&
+                    (courseData.learners || []).find(item => String(item.id) === String(returnLearner));
+
+                if (learner) {
+                    document.querySelector('.tab-btn[data-tab="learnersPanel"]')?.click();
+                    openLearnerPanel(learner);
+                }
+
+            } catch (error) {
+                console.error("Error loading class:", error);
+                renderCourseError();
+
+                if (error.message !== "Unauthorized") {
+                    showToast(error.message || "Unable to load class.", "error");
+                }
+            }
+        }
+
+        function renderCourseError() {
+            $("courseCode").textContent = "Class unavailable";
+            $("courseTitle").textContent = "Unable to load class";
+            $("breadcrumbCourse").textContent = "Class unavailable";
+            $("courseDescription").textContent =
+                "The class information could not be loaded. Return to Classes and try again.";
+            $("courseProgram").textContent = "Program not available";
+            $("modulesBadge").textContent = "0";
+            $("learnersBadge").textContent = "0";
+            $("moduleSummary").textContent = "Modules could not be loaded.";
+            $("learnerSummary").textContent = "Learners could not be loaded.";
+
+            $("modulesContainer").innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <h3>Unable to load modules</h3>
+                    <p>Please check your connection and try again.</p>
+                </div>`;
+
+            $("learnersTableBody").innerHTML = `
+                <tr><td colspan="3">
+                    <div class="empty-state">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <h3>Unable to load learners</h3>
+                        <p>Please check your connection and try again.</p>
+                    </div>
+                </td></tr>`;
+        }
+
+        function renderCourse(course) {
+            const name = course.name || course.title || "Untitled Course";
+            const code = course.code || "No Course Code";
+            const description = String(course.description || "").trim();
+            const program = course.program || "Program not specified.";
+
+            const modules = Array.isArray(course.modules) ? course.modules : [];
+            const learners = Array.isArray(course.learners) ? course.learners : [];
+
+            const learnerCount = Number(
+                course.learner_count ?? course.learners_count ?? learners.length
+            );
+
+            const moduleCount = Number(
+                course.module_count ?? modules.length
+            );
+
+            $("courseCode").textContent = code;
+            // The code is already in the gold label, so the title is just the name.
+            $("courseTitle").textContent = name;
+            $("breadcrumbCourse").textContent = `${code} | ${name}`;
+            // Hidden when the class has no description.
+            $("courseDescription").textContent = description;
+            $("courseDescription").hidden = !description;
+
+            $("courseProgram").innerHTML =
+                `<i class="fa-solid fa-graduation-cap"></i> ${escapeHtml(program)}`;
+
+            $("modulesBadge").textContent = moduleCount;
+            $("learnersBadge").textContent = learnerCount;
+
+            // The count is on the Learners tab; this line is only for errors.
+            $("learnerSummary").textContent = "";
+
+
+            // The current class endpoint does not provide pending-review data.
+        }
+
+        /* MODULES */
+        function renderModules(modules) {
+            const container = $("modulesContainer");
+            container.innerHTML = "";
+
+            if (!Array.isArray(modules) || modules.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-book-open"></i>
+                        <h3>No modules available</h3>
+                        <p>No modules have been added to this class yet.</p>
+                    </div>`;
+
+                $("modulesBadge").textContent = "0";
+                $("moduleSummary").textContent = "";
+                return;
+            }
+
+            $("modulesBadge").textContent = modules.length;
+            $("moduleSummary").textContent = "";
+
+            modules.forEach((module, index) => {
+                // A flat row (no expanding): everything is visible at once.
+                const card = document.createElement("article");
+                card.className = "tm-module";
+
+                const title = module.name || module.title || "Untitled Module";
+                // Shown only when the module really has a description.
+                const description = String(module.description || "").trim();
+                const order = module.module_order ?? module.order ?? index + 1;
+
+                const isPublished =
+                    module.is_published === true ||
+                    module.is_published === 1 ||
+                    module.status === "published";
+
+                const status = isPublished ? "Published" : "Draft";
+
+                // has_material comes from the server and is true only for a
+                // real stored file (a saved display name alone doesn't count).
+                const hasMaterial = typeof module.has_material === "boolean"
+                    ? module.has_material
+                    : Boolean(module.material_path || module.material_url || module.file_path);
+
+                const fileName = module.material_name || title;
+                const isPdf = /\.pdf$/i.test(String(module.material_name || ""));
+                const fileIcon = isPdf
+                    ? "fa-solid fa-file-pdf"
+                    : /\.docx?$/i.test(String(module.material_name || ""))
+                        ? "fa-solid fa-file-word"
+                        : /\.(png|jpe?g|gif|webp)$/i.test(String(module.material_name || ""))
+                            ? "fa-solid fa-file-image"
+                            : "fa-solid fa-file-lines";
+
+                // One line: unit number, title and file, then View / Download.
+                card.innerHTML = `
+                    <span class="tm-module-unit" aria-hidden="true">${escapeHtml(order)}</span>
+                    <div class="tm-module-text">
+                        <h3>${escapeHtml(title)}</h3>
+                        ${hasMaterial
+                            ? `<p class="tm-module-file"><i class="${fileIcon}" aria-hidden="true"></i> ${escapeHtml(module.material_name || "Module material")}</p>`
+                            : `<p class="tm-no-material">No material attached</p>`}
+                    </div>
+                    ${hasMaterial
+                        ? `<div class="tm-file-actions">
+                               <button type="button" class="tm-file-btn view"
+                                   data-material-action="view" data-module-id="${escapeHtml(module.id)}"
+                                   data-file-name="${escapeHtml(fileName)}"
+                                   title="View" aria-label="View ${escapeHtml(fileName)}">
+                                   <i class="fa-solid fa-eye" aria-hidden="true"></i> View
+                               </button>
+                               <button type="button" class="tm-file-btn download"
+                                   data-material-action="download" data-module-id="${escapeHtml(module.id)}"
+                                   data-file-name="${escapeHtml(fileName)}"
+                                   title="Download" aria-label="Download ${escapeHtml(fileName)}">
+                                   <i class="fa-solid fa-download" aria-hidden="true"></i> Download
+                               </button>
+                           </div>`
+                        : ""}`;
+
+                container.appendChild(card);
+            });
+        }
+
+        /* MODULE MATERIAL: VIEW / DOWNLOAD
+           The file is private, so it is fetched with the login token and
+           then opened (View) or saved (Download) from the browser. */
+        async function fetchMaterial(moduleId, inline) {
+            let response;
+            try {
+                response = await fetch(
+                    `${API_BASE_URL}/instructor/modules/${encodeURIComponent(moduleId)}/material` +
+                        (inline ? "?disposition=inline" : ""),
+                    { headers: { ...getAuthHeaders(), "Accept": "*/*" } }
+                );
+            } catch (error) {
+                throw new Error("Cannot connect to the server. Check that your API is running.");
+            }
+
+            if (response.status === 401) {
+                handleUnauthorized();
+                throw new Error("Unauthorized");
+            }
+
+            if (!response.ok) {
+                const data = await response.json().catch(() => null);
+                throw new Error(data?.message || "The material could not be opened.");
+            }
+
+            return response.blob();
+        }
+
+        $("modulesContainer").addEventListener("click", async event => {
+            const button = event.target.closest("[data-material-action]");
+            if (!button) return;
+
+            const moduleId = button.dataset.moduleId;
+            const isView = button.dataset.materialAction === "view";
+
+            // Open the tab right away so the browser doesn't block it.
+            const tab = isView ? window.open("about:blank", "_blank") : null;
+            button.disabled = true;
+
+            try {
+                const blob = await fetchMaterial(moduleId, isView);
+
+                if (isView) {
+                    // Shown in the tab, not downloaded.
+                    await window.SiknayanFileViewer.show(blob, button.dataset.fileName || "module-material", tab);
+                } else {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.download = button.dataset.fileName || "module-material";
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                    setTimeout(() => URL.revokeObjectURL(url), 300000);
+                }
+            } catch (error) {
+                tab?.close();
+                if (error.message !== "Unauthorized") showToast(error.message, "error");
+            } finally {
+                button.disabled = false;
+            }
+        });
+
+        /* ANNOUNCEMENTS */
+        let announcements = [];
+        let editingAnnouncementId = null;
+
+        function formatAnnouncementDate(value) {
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return "";
+            return date.toLocaleString("en-PH", {
+                month: "short", day: "numeric", year: "numeric",
+                hour: "numeric", minute: "2-digit"
+            });
+        }
+
+        async function loadAnnouncements() {
+            try {
+                const data = await apiRequest(
+                    `${API_BASE_URL}/instructor/classes/${encodeURIComponent(courseId)}/announcements`,
+                    { headers: getAuthHeaders() }
+                );
+                announcements = Array.isArray(data.announcements) ? data.announcements : [];
+                renderAnnouncements();
+                showAnnouncementFromLink();
+            } catch (error) {
+                if (error.message === "Unauthorized") return;
+                $("announcementSummary").textContent = "Unable to load announcements.";
+                $("announcementList").innerHTML = `
+                    <div class="announcement-box">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <h3>Unable to load announcements</h3>
+                        <p>${escapeHtml(error.message)}</p>
+                    </div>`;
+            }
+        }
+
+        /* Opened from a notification (for example a learner's reply):
+           ?tab=announcements&announcement=ID shows that announcement. */
+        let announcementLinkHandled = false;
+
+        function showAnnouncementFromLink() {
+            if (announcementLinkHandled) return;
+            announcementLinkHandled = true;
+
+            if (params.get("tab") !== "announcements") return;
+
+            document.querySelector('.tab-btn[data-tab="announcementsPanel"]')?.click();
+
+            const id = params.get("announcement");
+            const item = id && /^\d+$/.test(id) ? document.getElementById(`announcement-${id}`) : null;
+
+            if (item) {
+                item.classList.add("highlight");
+                item.scrollIntoView?.({ behavior: "smooth", block: "center" });
+            }
+        }
+
+        function renderAnnouncements() {
+            const list = $("announcementList");
+            const count = announcements.length;
+
+            $("announcementsBadge").textContent = count;
+            // The count is on the Announcements tab; this line is only for errors.
+            $("announcementSummary").textContent = "";
+
+            if (count === 0) {
+                list.innerHTML = `
+                    <div class="announcement-box">
+                        <i class="fa-solid fa-bullhorn"></i>
+                        <h3>No announcements yet</h3>
+                        <p>Post one above and your learners will be notified.</p>
+                    </div>`;
+                return;
+            }
+
+            list.innerHTML = announcements.map(item => {
+                const edited = item.updated_at && item.updated_at !== item.created_at;
+                return `
+                    <article class="announcement-item" id="announcement-${escapeHtml(item.id)}">
+                        <div class="announcement-item-head">
+                            <div class="announcement-title-group">
+                                <span class="announcement-icon" aria-hidden="true">
+                                    <i class="fa-solid fa-bullhorn"></i>
+                                </span>
+                                <div>
+                                    <h3>${escapeHtml(item.title)}</h3>
+                                    <p class="announcement-meta">
+                                        <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                                        ${escapeHtml(formatAnnouncementDate(item.created_at))}${edited ? " · edited" : ""}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="announcement-actions">
+                                <button type="button" data-announcement-edit="${escapeHtml(item.id)}"
+                                    title="Edit" aria-label="Edit announcement">
+                                    <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="delete" data-announcement-delete="${escapeHtml(item.id)}"
+                                    title="Delete" aria-label="Delete announcement">
+                                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="announcement-text">${escapeHtml(item.message)}</p>
+                        ${renderReplies(item)}
+                    </article>`;
+            }).join("");
+        }
+
+        /* Replies from learners (and the instructor) under each announcement */
+        function renderReplies(item) {
+            const replies = Array.isArray(item.replies) ? item.replies : [];
+            const initials = name => String(name || "?").trim().split(/\s+/).slice(0, 2)
+                .map(part => part.charAt(0).toUpperCase()).join("") || "?";
+
+            return `
+                <div class="ann-replies">
+                    <p class="ann-replies-title">${replies.length ? `${replies.length} repl${replies.length === 1 ? "y" : "ies"}` : "No replies yet"}</p>
+                    ${replies.map(reply => {
+                        const isInstructor = reply.author?.role === "instructor";
+                        return `
+                            <div class="ann-reply${isInstructor ? " instructor" : ""}">
+                                <span class="ann-reply-avatar" aria-hidden="true">${escapeHtml(initials(reply.author?.name))}</span>
+                                <div>
+                                    <div class="ann-reply-head">
+                                        <strong>${escapeHtml(reply.is_mine ? "You" : reply.author?.name || "Former member")}</strong>
+                                        ${isInstructor ? '<span class="ann-reply-tag">Instructor</span>' : ""}
+                                        <time datetime="${escapeHtml(reply.created_at)}">${escapeHtml(formatAnnouncementDate(reply.created_at))}</time>
+                                    </div>
+                                    <p class="ann-reply-text">${escapeHtml(reply.message)}</p>
+                                </div>
+                                <button type="button" class="ann-reply-remove" data-reply-remove="${escapeHtml(reply.id)}"
+                                    title="Remove reply" aria-label="Remove reply by ${escapeHtml(reply.author?.name || "member")}">
+                                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                </button>
+                            </div>`;
+                    }).join("")}
+                    <form class="ann-reply-form" data-reply-form="${escapeHtml(item.id)}" novalidate>
+                        <label class="visually-hidden" for="annReply-${escapeHtml(item.id)}">Reply to ${escapeHtml(item.title)}</label>
+                        <textarea id="annReply-${escapeHtml(item.id)}" rows="1" maxlength="2000" placeholder="Reply to your learners..."></textarea>
+                        <button type="submit"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> Reply</button>
+                    </form>
+                    <p class="ann-reply-error" hidden></p>
+                </div>`;
+        }
+
+        $("announcementList").addEventListener("submit", async event => {
+            const form = event.target.closest("[data-reply-form]");
+            if (!form) return;
+            event.preventDefault();
+
+            const box = form.querySelector("textarea");
+            const button = form.querySelector("button");
+            const error = form.parentElement.querySelector(".ann-reply-error");
+            const message = box.value.trim();
+            error.hidden = true;
+
+            if (!message) {
+                error.textContent = "Please write your reply.";
+                error.hidden = false;
+                box.focus();
+                return;
+            }
+
+            button.disabled = true;
+            try {
+                await apiRequest(
+                    `${API_BASE_URL}/instructor/announcements/${encodeURIComponent(form.dataset.replyForm)}/replies`,
+                    { method: "POST", headers: getAuthHeaders(true), body: JSON.stringify({ message }) }
+                );
+                showToast("Reply posted.");
+                await loadAnnouncements();
+            } catch (replyError) {
+                button.disabled = false;
+                if (replyError.message !== "Unauthorized") {
+                    error.textContent = replyError.message;
+                    error.hidden = false;
+                }
+            }
+        });
+
+        // Enter sends, Shift+Enter makes a new line.
+        $("announcementList").addEventListener("keydown", event => {
+            if (event.key === "Enter" && !event.shiftKey && event.target.matches(".ann-reply-form textarea")) {
+                event.preventDefault();
+                event.target.form.requestSubmit();
+            }
+        });
+
+        $("announcementList").addEventListener("click", async event => {
+            const button = event.target.closest("[data-reply-remove]");
+            if (!button) return;
+            if (!window.confirm("Remove this reply? Learners will no longer see it.")) return;
+
+            button.disabled = true;
+            try {
+                await apiRequest(
+                    `${API_BASE_URL}/instructor/announcement-replies/${encodeURIComponent(button.dataset.replyRemove)}`,
+                    { method: "DELETE", headers: getAuthHeaders() }
+                );
+                showToast("Reply removed.");
+                await loadAnnouncements();
+            } catch (removeError) {
+                button.disabled = false;
+                if (removeError.message !== "Unauthorized") showToast(removeError.message, "error");
+            }
+        });
+
+        let announcementReturnFocus = null;
+
+        /* Opens the pop-up empty (create) or filled in (edit). */
+        function openAnnouncementModal(item = null) {
+            editingAnnouncementId = item ? item.id : null;
+            $("announcementForm").reset();
+            $("announcementError").hidden = true;
+            $("announcementTitle").value = item ? item.title : "";
+            $("announcementMessage").value = item ? item.message : "";
+            $("announcementFormTitle").textContent = item ? "Edit Announcement" : "Create Announcement";
+            $("announcementSubmit").querySelector("span").textContent = item ? "Save Changes" : "Post Announcement";
+
+            announcementReturnFocus = document.activeElement;
+            $("announcementModal").hidden = false;
+            document.body.classList.add("announcement-modal-open");
+            $("announcementTitle").focus();
+        }
+
+        /* Closes the pop-up and clears it. */
+        function resetAnnouncementForm() {
+            editingAnnouncementId = null;
+            $("announcementForm").reset();
+            $("announcementError").hidden = true;
+            $("announcementModal").hidden = true;
+            document.body.classList.remove("announcement-modal-open");
+            announcementReturnFocus?.focus?.();
+            announcementReturnFocus = null;
+        }
+
+        $("createAnnouncementButton").addEventListener("click", () => openAnnouncementModal());
+
+        $("announcementModal").addEventListener("click", event => {
+            if (event.target === $("announcementModal")) resetAnnouncementForm();
+        });
+
+        document.addEventListener("keydown", event => {
+            if (event.key === "Escape" && !$("announcementModal").hidden) resetAnnouncementForm();
+        });
+
+        $("announcementForm").addEventListener("submit", async event => {
+            event.preventDefault();
+
+            const title = $("announcementTitle").value.trim();
+            const message = $("announcementMessage").value.trim();
+            const errorBox = $("announcementError");
+
+            if (!title || !message) {
+                errorBox.textContent = "Please enter both a title and a message.";
+                errorBox.hidden = false;
+                return;
+            }
+
+            errorBox.hidden = true;
+            const submit = $("announcementSubmit");
+            submit.disabled = true;
+
+            const isEdit = editingAnnouncementId !== null;
+            const url = isEdit
+                ? `${API_BASE_URL}/instructor/announcements/${encodeURIComponent(editingAnnouncementId)}`
+                : `${API_BASE_URL}/instructor/classes/${encodeURIComponent(courseId)}/announcements`;
+
+            try {
+                await apiRequest(url, {
+                    method: isEdit ? "PUT" : "POST",
+                    headers: getAuthHeaders(true),
+                    body: JSON.stringify({ title, message })
+                });
+
+                showToast(isEdit ? "Announcement updated." : "Announcement posted. Your learners were notified.");
+                resetAnnouncementForm();
+                await loadAnnouncements();
+            } catch (error) {
+                if (error.message !== "Unauthorized") {
+                    errorBox.textContent = error.message;
+                    errorBox.hidden = false;
+                }
+            } finally {
+                submit.disabled = false;
+            }
+        });
+
+        $("announcementCancel").addEventListener("click", resetAnnouncementForm);
+
+        $("announcementList").addEventListener("click", async event => {
+            const editButton = event.target.closest("[data-announcement-edit]");
+            const deleteButton = event.target.closest("[data-announcement-delete]");
+
+            if (editButton) {
+                const item = announcements.find(a => String(a.id) === editButton.dataset.announcementEdit);
+                if (!item) return;
+
+                openAnnouncementModal(item);
+                return;
+            }
+
+            if (deleteButton) {
+                const id = deleteButton.dataset.announcementDelete;
+                if (!window.confirm("Delete this announcement? Learners will no longer see it.")) return;
+
+                deleteButton.disabled = true;
+                try {
+                    await apiRequest(
+                        `${API_BASE_URL}/instructor/announcements/${encodeURIComponent(id)}`,
+                        { method: "DELETE", headers: getAuthHeaders() }
+                    );
+                    if (String(editingAnnouncementId) === id) resetAnnouncementForm();
+                    showToast("Announcement deleted.");
+                    await loadAnnouncements();
+                } catch (error) {
+                    deleteButton.disabled = false;
+                    if (error.message !== "Unauthorized") showToast(error.message, "error");
+                }
+            }
+        });
+
+        /* LEARNERS */
+        function renderLearners(learners) {
+            const tbody = $("learnersTableBody");
+            tbody.innerHTML = "";
+
+            if (!Array.isArray(learners) || learners.length === 0) {
+                tbody.innerHTML = `
+                    <tr><td colspan="3">
+                        <div class="empty-state">
+                            <i class="fa-solid fa-users"></i>
+                            <h3>No learners enrolled</h3>
+                            <p>There are currently no learners enrolled in this class.</p>
+                        </div>
+                    </td></tr>`;
+
+                $("learnersBadge").textContent = "0";
+                $("learnerSummary").textContent = "";
+                return;
+            }
+
+            $("learnersBadge").textContent = learners.length;
+            $("learnerSummary").textContent = "";
+
+            learners.forEach(learner => {
+                const row = document.createElement("tr");
+                const name = learner.name || "Unknown Learner";
+
+                // Click (or Enter) opens the learner's modules and activities.
+                row.className = "learner-row";
+                row.tabIndex = 0;
+                row.dataset.learnerId = learner.id;
+                row.setAttribute("role", "button");
+                row.setAttribute("aria-label", `Open ${name}'s modules and activities`);
+
+                row.innerHTML = `
+                    <td>
+                        <div class="learner-profile-cell">
+                            <div class="learner-avatar">${learner.profile_photo_url
+                                ? `<img src="${escapeHtml(learner.profile_photo_url)}" alt="" onerror="this.replaceWith(document.createTextNode('${escapeHtml(getInitials(name))}'))">`
+                                : escapeHtml(getInitials(name))}</div>
+                            <div>
+                                <span class="learner-name">${escapeHtml(name)}</span>
+                                <span class="learner-id">
+                                    ${escapeHtml(learner.school_id || learner.student_id || "No School ID")}
+                                </span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="learner-activity" data-learner-activity="${escapeHtml(learner.id)}">
+                        <span class="activity-loading">Loading...</span>
+                    </td>
+                    <td class="learner-open"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></td>`;
+
+                row.addEventListener("click", () => openLearnerPanel(learner));
+                row.addEventListener("keydown", event => {
+                    if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        openLearnerPanel(learner);
+                    }
+                });
+
+                tbody.appendChild(row);
+            });
+
+            updateLearnerActivity();
+        }
+
+        /* =========================================================
+           LEARNER ACTIVITIES
+           Clicking a learner shows this class's modules with their
+           submitted activity: view or download it, and score it (the
+           scoring card on the Submissions page, which returns here).
+        ========================================================= */
+
+        let classSubmissions = null;
+        let classSubmissionsRequest = null;
+
+        function publishedModules() {
+            const modules = Array.isArray(courseData?.modules) ? courseData.modules : [];
+            return modules.filter(module =>
+                module.is_published === true ||
+                module.is_published === 1 ||
+                module.status === "published"
+            );
+        }
+
+        function loadClassSubmissions() {
+            if (!classSubmissionsRequest) {
+                classSubmissionsRequest = apiRequest(`${API_BASE_URL}/instructor/submissions`, {
+                    method: "GET",
+                    headers: getAuthHeaders()
+                })
+                    .then(data => {
+                        const list = Array.isArray(data.submissions) ? data.submissions : [];
+                        classSubmissions = list.filter(item =>
+                            String(item.course?.id ?? "") === String(courseId)
+                        );
+                        updateLearnerActivity();
+                        return classSubmissions;
+                    })
+                    .catch(error => {
+                        classSubmissionsRequest = null;
+                        document.querySelectorAll("[data-learner-activity]").forEach(cell => {
+                            cell.innerHTML = '<span class="activity-muted">Not available</span>';
+                        });
+                        throw error;
+                    });
+            }
+
+            return classSubmissionsRequest;
+        }
+
+        function submissionsFor(learnerId) {
+            return (classSubmissions || []).filter(item =>
+                String(item.learner?.id ?? "") === String(learnerId)
+            );
+        }
+
+        function isScored(submission) {
+            return Boolean(submission.grade) || submission.status === "graded";
+        }
+
+        /* "2 of 3 submitted · 1 to score" in each learner row, and the
+           Pending Reviews count at the top. */
+        function updateLearnerActivity() {
+            if (!classSubmissions) return;
+
+            const total = publishedModules().length;
+
+            document.querySelectorAll("[data-learner-activity]").forEach(cell => {
+                const mine = submissionsFor(cell.dataset.learnerActivity);
+                const toScore = mine.filter(item => !isScored(item)).length;
+
+                cell.innerHTML = `
+                    <span class="activity-count">${mine.length} of ${total} submitted</span>
+                    ${toScore
+                        ? `<span class="activity-badge to-score">${toScore} to score</span>`
+                        : mine.length
+                            ? '<span class="activity-badge scored">All scored</span>'
+                            : ""}`;
+            });
+
+        }
+
+        function scoreLink(submission, learnerId) {
+            const back = `class-content.html?course_id=${encodeURIComponent(courseId)}&learner=${encodeURIComponent(learnerId)}`;
+            return `submissions.html?submission=${encodeURIComponent(submission.id)}&return=${encodeURIComponent(back)}`;
+        }
+
+        function learnerModuleRow(module, submission, learnerId) {
+            const title = module.name || module.title || "Untitled Module";
+            const grade = submission?.grade;
+            let status;
+            let actions = "";
+
+            if (!submission) {
+                status = '<span class="activity-badge not-submitted">Not submitted</span>';
+            } else {
+                const when = submission.submitted_at
+                    ? new Date(submission.submitted_at).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })
+                    : "";
+
+                status = grade
+                    ? `<span class="activity-badge scored">Score ${escapeHtml(Number(grade.score))} / ${escapeHtml(Number(grade.max_score))}</span>`
+                    : '<span class="activity-badge to-score">Submitted · to score</span>';
+
+                actions = `
+                    <div class="lp-file">
+                        <i class="fa-solid fa-file-lines" aria-hidden="true"></i>
+                        <span>${escapeHtml(submission.file_name || "Submitted file")}</span>
+                        ${when ? `<small>${escapeHtml(when)}</small>` : ""}
+                    </div>
+                    <div class="lp-actions">
+                        <button type="button" class="lp-btn" data-submission-file="view" data-submission-id="${escapeHtml(submission.id)}" data-file-name="${escapeHtml(submission.file_name || "submission")}">
+                            <i class="fa-solid fa-eye" aria-hidden="true"></i> View
+                        </button>
+                        <button type="button" class="lp-btn" data-submission-file="download" data-submission-id="${escapeHtml(submission.id)}" data-file-name="${escapeHtml(submission.file_name || "submission")}">
+                            <i class="fa-solid fa-download" aria-hidden="true"></i> Download
+                        </button>
+                        <a class="lp-btn primary" href="${scoreLink(submission, learnerId)}">
+                            <i class="fa-solid ${grade ? "fa-pen" : "fa-star"}" aria-hidden="true"></i> ${grade ? "Edit score" : "Score"}
+                        </a>
+                    </div>`;
+            }
+
+            return `
+                <li class="lp-module">
+                    <div class="lp-module-top">
+                        <strong>${escapeHtml(title)}</strong>
+                        ${status}
+                    </div>
+                    ${submission?.comment ? `<p class="lp-comment"><b>Learner's note:</b> ${escapeHtml(submission.comment)}</p>` : ""}
+                    ${actions}
+                </li>`;
+        }
+
+        function learnerPanel() {
+            let overlay = $("learnerPanelOverlay");
+            if (overlay) return overlay;
+
+            overlay = document.createElement("div");
+            overlay.className = "learner-panel-overlay";
+            overlay.id = "learnerPanelOverlay";
+            overlay.innerHTML = `
+                <section class="learner-panel" role="dialog" aria-modal="true" aria-labelledby="learnerPanelName">
+                    <header class="learner-panel-head">
+                        <div class="learner-avatar" id="learnerPanelAvatar"></div>
+                        <div>
+                            <h2 id="learnerPanelName">Learner</h2>
+                            <p id="learnerPanelId"></p>
+                        </div>
+                        <button type="button" class="learner-panel-close" id="learnerPanelClose" aria-label="Close">
+                            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                        </button>
+                    </header>
+                    <div class="learner-panel-body">
+                        <h3>Assigned modules</h3>
+                        <ul class="lp-modules" id="learnerPanelModules"></ul>
+                    </div>
+                </section>`;
+            document.body.appendChild(overlay);
+
+            const close = () => {
+                overlay.classList.remove("active");
+                document.body.style.overflow = "";
+                overlay._returnFocus?.focus?.();
+            };
+
+            $("learnerPanelClose").addEventListener("click", close);
+            overlay.addEventListener("click", event => {
+                if (event.target === overlay) close();
+            });
+            document.addEventListener("keydown", event => {
+                if (event.key === "Escape" && overlay.classList.contains("active")) close();
+            });
+
+            // View / Download a submitted file.
+            overlay.addEventListener("click", async event => {
+                const button = event.target.closest("[data-submission-file]");
+                if (!button) return;
+
+                const isView = button.dataset.submissionFile === "view";
+                const tab = isView ? window.open("about:blank", "_blank") : null;
+                button.disabled = true;
+
+                try {
+                    const response = await fetch(
+                        `${API_BASE_URL}/instructor/submissions/${encodeURIComponent(button.dataset.submissionId)}/file`,
+                        { headers: { ...getAuthHeaders(), "Accept": "*/*" } }
+                    );
+
+                    if (response.status === 401) {
+                        handleUnauthorized();
+                        throw new Error("Unauthorized");
+                    }
+                    if (!response.ok) {
+                        const data = await response.json().catch(() => null);
+                        throw new Error(data?.message || "The submitted file could not be opened.");
+                    }
+
+                    const blob = await response.blob();
+
+                    if (isView) {
+                        // Shown in the tab (PDF, image or Word .docx), not downloaded.
+                        await window.SiknayanFileViewer.show(blob, button.dataset.fileName || "submission", tab);
+                    } else {
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement("a");
+                        link.href = url;
+                        link.download = button.dataset.fileName || "submission";
+                        document.body.appendChild(link);
+                        link.click();
+                        link.remove();
+                        setTimeout(() => URL.revokeObjectURL(url), 300000);
+                    }
+                } catch (error) {
+                    tab?.close();
+                    if (error.message !== "Unauthorized") showToast(error.message, "error");
+                } finally {
+                    button.disabled = false;
+                }
+            });
+
+            return overlay;
+        }
+
+        async function openLearnerPanel(learner) {
+            const overlay = learnerPanel();
+            const name = learner.name || "Unknown Learner";
+
+            overlay._returnFocus = document.activeElement;
+            $("learnerPanelAvatar").innerHTML = learner.profile_photo_url
+                ? `<img src="${escapeHtml(learner.profile_photo_url)}" alt="">`
+                : escapeHtml(getInitials(name));
+            $("learnerPanelName").textContent = name;
+            $("learnerPanelId").textContent = learner.school_id || learner.student_id || "No School ID";
+            $("learnerPanelModules").innerHTML = `
+                <li class="lp-empty"><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Loading activities...</li>`;
+
+            overlay.classList.add("active");
+            document.body.style.overflow = "hidden";
+            $("learnerPanelClose").focus();
+
+            try {
+                await loadClassSubmissions();
+            } catch (error) {
+                $("learnerPanelModules").innerHTML = `
+                    <li class="lp-empty">${escapeHtml(error.message || "Activities could not be loaded.")}</li>`;
+                return;
+            }
+
+            const modules = publishedModules();
+            const mine = submissionsFor(learner.id);
+
+            if (!modules.length) {
+                $("learnerPanelModules").innerHTML =
+                    '<li class="lp-empty">No published modules in this class yet.</li>';
+                return;
+            }
+
+            $("learnerPanelModules").innerHTML = modules
+                .map(module => learnerModuleRow(
+                    module,
+                    mine.find(item => String(item.module?.id ?? "") === String(module.id)),
+                    learner.id
+                ))
+                .join("");
+        }
+
+        /* SIDEBAR */
+        function setupSidebar() {
+            const sidebar = $("sidebar");
+            const main = $("mainContent");
+            const menuBtn = $("menuBtn");
+            const sidebarToggle = $("sidebarToggle");
+
+            function toggleSidebar() {
+                if (window.innerWidth <= 900) {
+                    sidebar.classList.toggle("mobile-open");
+                } else {
+                    sidebar.classList.toggle("collapsed");
+                    main.classList.toggle("expanded");
+                }
+            }
+
+            menuBtn?.addEventListener("click", toggleSidebar);
+            sidebarToggle?.addEventListener("click", toggleSidebar);
+
+            document.addEventListener("click", event => {
+                if (
+                    window.innerWidth <= 900 &&
+                    sidebar.classList.contains("mobile-open") &&
+                    !sidebar.contains(event.target) &&
+                    !menuBtn?.contains(event.target)
+                ) {
+                    sidebar.classList.remove("mobile-open");
+                }
+            });
+
+            window.addEventListener("resize", () => {
+                if (window.innerWidth > 900) {
+                    sidebar.classList.remove("mobile-open");
+                } else {
+                    sidebar.classList.remove("collapsed");
+                    main.classList.remove("expanded");
+                }
+            });
+        }
+
+        /* TABS */
+        function setupTabs() {
+            const buttons = document.querySelectorAll(".tab-btn");
+            const panels = document.querySelectorAll(".tab-panel");
+
+            buttons.forEach(button => {
+                button.addEventListener("click", () => {
+                    const target = button.dataset.tab;
+
+                    buttons.forEach(item => item.classList.remove("active"));
+                    panels.forEach(panel => panel.classList.remove("active"));
+
+                    button.classList.add("active");
+                    $(target)?.classList.add("active");
+                });
+            });
+        }
+
+        /* NOTIFICATIONS */
+        function goToNotifications() {
+            window.location.href = "notification.html";
+        }
+
+        /* PROFILE */
+        async function loadProfile() {
+            if (!getAuthToken()) return;
+
+            try {
+                const data = await apiRequest(
+                    `${API_BASE_URL}/instructor/profile`,
+                    {
+                        method: "GET",
+                        headers: getAuthHeaders()
+                    }
+                );
+
+                const user = data.user || data.instructor || data;
+
+                $("instructorId").value =
+                    user.school_id || user.instructor_id || user.id || "";
+
+                $("instructorName").value = user.name || "";
+                $("instructorEmail").value = user.email || "";
+                $("instructorPhone").value = user.contact || user.phone || "";
+
+                $("headerInstructorName").textContent = user.name || "Instructor";
+
+            } catch (error) {
+                console.error("Profile loading error:", error);
+
+                if (error.message !== "Unauthorized") {
+                    showToast(error.message || "Unable to load profile.", "error");
+                }
+            }
+        }
+
+        async function openProfileModal() {
+            $("profileModalOverlay").classList.add("active");
+            await loadProfile();
+        }
+
+        function closeProfileModal() {
+            $("profileModalOverlay").classList.remove("active");
+            $("currentPassword").value = "";
+            $("newPassword").value = "";
+            $("confirmPassword").value = "";
+            $("passwordSection").classList.remove("open");
+            $("avatarInput").value = "";
+            selectedAvatar = null;
+        }
+
+        function setupProfile() {
+            $("userProfileBtn").addEventListener("click", openProfileModal);
+
+            // The sidebar Profile link navigates to profile.html.
+            $("closeProfileModal").addEventListener("click", closeProfileModal);
+            $("cancelProfileModal").addEventListener("click", closeProfileModal);
+
+            $("profileModalOverlay").addEventListener("click", event => {
+                if (event.target === $("profileModalOverlay")) {
+                    closeProfileModal();
+                }
+            });
+
+            $("passwordToggleBtn").addEventListener("click", () => {
+                $("passwordSection").classList.toggle("open");
+            });
+
+            $("avatarInput").addEventListener("change", event => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                if (!file.type.startsWith("image/")) {
+                    showToast("Please select an image file.", "error");
+                    event.target.value = "";
+                    return;
+                }
+
+                if (file.size > 2 * 1024 * 1024) {
+                    showToast("Image size must not exceed 2MB.", "error");
+                    event.target.value = "";
+                    return;
+                }
+
+                const reader = new FileReader();
+
+                reader.onload = e => {
+                    selectedAvatar = e.target.result;
+                    $("avatarPreview").src = selectedAvatar;
+                    $("headerAvatar").src = selectedAvatar;
+                };
+
+                reader.readAsDataURL(file);
+            });
+
+            $("profileSettingsForm").addEventListener("submit", saveProfile);
+        }
+
+        async function saveProfile(event) {
+            event.preventDefault();
+
+            const name = $("instructorName").value.trim();
+            const email = $("instructorEmail").value.trim();
+            const contact = $("instructorPhone").value.trim();
+
+            if (!name || !email) {
+                showToast("Name and email are required.", "error");
+                return;
+            }
+
+            const currentPassword = $("currentPassword").value;
+            const newPassword = $("newPassword").value;
+            const confirmPassword = $("confirmPassword").value;
+
+            const passwordTouched =
+                currentPassword || newPassword || confirmPassword;
+
+            if (passwordTouched) {
+                if (!currentPassword || !newPassword || !confirmPassword) {
+                    showToast("Please complete all password fields.", "error");
+                    return;
+                }
+
+                if (newPassword.length < 8) {
+                    showToast("New password must be at least 8 characters.", "error");
+                    return;
+                }
+
+                if (newPassword !== confirmPassword) {
+                    showToast("New passwords do not match.", "error");
+                    return;
+                }
+            }
+
+            try {
+                await apiRequest(`${API_BASE_URL}/instructor/profile`, {
+                    method: "PUT",
+                    headers: getAuthHeaders(true),
+                    body: JSON.stringify({ name, email, contact })
+                });
+
+                if (passwordTouched) {
+                    await apiRequest(
+                        `${API_BASE_URL}/instructor/profile/password`,
+                        {
+                            method: "POST",
+                            headers: getAuthHeaders(true),
+                            body: JSON.stringify({
+                                current_password: currentPassword,
+                                new_password: newPassword,
+                                new_password_confirmation: confirmPassword
+                            })
+                        }
+                    );
+                }
+
+                $("headerInstructorName").textContent = name;
+                showToast("Profile updated successfully.", "success");
+
+                closeProfileModal();
+                await loadProfile();
+
+            } catch (error) {
+                console.error("Profile save error:", error);
+
+                if (error.message !== "Unauthorized") {
+                    showToast(error.message || "Unable to update profile.", "error");
+                }
+            }
+        }
+
+        /* LOGOUT */
+        function setupLogout() {
+            $("logoutNav").addEventListener("click", event => {
+                event.preventDefault();
+
+                if (!confirm("Are you sure you want to log out?")) return;
+
+                sessionStorage.removeItem("token");
+                sessionStorage.removeItem("authToken");
+
+                window.location.href = "../index.html";
+            });
+        }
+
+        /* INITIALIZE */
+        document.addEventListener("DOMContentLoaded", async () => {
+            setupSidebar();
+            setupTabs();
+            setupProfile();
+            setupLogout();
+
+            if (!getAuthToken()) {
+                showToast("Please log in first.", "error");
+
+                setTimeout(() => {
+                    window.location.href = "../index.html";
+                }, 1200);
+
+                return;
+            }
+
+            await Promise.all([
+                loadCourse(),
+                loadProfile()
+            ]);
+        });
+    </script>
+    <!-- Header like the Academic Admin portal; bell opens Notifications, red dot for unread -->
+    <script src="js/header.js"></script>
+    <!-- Sidebar toggle like the Academic Admin portal (remembers the choice) -->
+    <script src="js/sidebar.js"></script>
+    <!-- Logout confirmation, same as the other portals -->
+    <script src="js/logout.js"></script>
+    <!-- View opens files in the browser (PDF, images, Word .docx) -->
+    <script src="js/file-viewer.js"></script>
+    <!-- Learning Resources tab: links, PPT, videos -->
+    <script src="js/class-resources.js"></script>
+    <script src="js/profile-modal.js"></script>
+</body>
+</html>

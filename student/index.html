@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Classes | MPSU ETEEAP LMS</title>
+    <link rel="icon" href="../images/logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="css/portal.css">
+    <!-- Class cards shared with the Instructor portal -->
+    <link rel="stylesheet" href="../shared/class-cards.css">
+    <style>
+        .classes-header {
+            align-items: flex-start;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            width: 360px;
+            max-width: 100%;
+            margin-left: auto;
+        }
+
+        .toolbar[hidden] {
+            display: none;
+        }
+
+        .search {
+            position: relative;
+            flex: 1 1 260px;
+        }
+
+        @media (max-width: 700px) {
+            .toolbar {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+
+        .search i {
+            position: absolute;
+            top: 50%;
+            left: 14px;
+            color: var(--muted);
+            transform: translateY(-50%);
+        }
+
+        .search input {
+            width: 100%;
+            min-height: 42px;
+            padding: 10px 12px 10px 40px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            background: var(--white);
+        }
+
+        /* Smaller class cards: 3 per row, 6 fit on a laptop screen. */
+        .sk-class-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .sk-class-banner {
+            min-height: 100px;
+            gap: 8px;
+            padding: 12px 14px 16px;
+        }
+
+        .sk-class-code {
+            padding: 3px 10px;
+            font-size: 11px;
+        }
+
+        .sk-class-go {
+            width: 26px;
+            height: 26px;
+            font-size: 11px;
+        }
+
+        .sk-class-title {
+            padding-right: 44px;
+            font-size: 15px;
+        }
+
+        .sk-class-badge {
+            top: 80px;
+            right: 14px;
+            width: 40px;
+            height: 40px;
+            border-width: 2px;
+            font-size: 15px;
+        }
+
+        .sk-class-body {
+            gap: 6px;
+            padding: 14px 14px 12px;
+        }
+
+        .sk-class-meta {
+            font-size: 12.5px;
+        }
+
+        .sk-class-meta-icon {
+            width: 24px;
+            height: 24px;
+            font-size: 11px;
+        }
+
+        .sk-class-footer {
+            padding-top: 8px;
+        }
+
+        @media (max-width: 1000px) {
+            .sk-class-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 620px) {
+            .sk-class-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .search input:focus {
+            outline: 2px solid rgba(8, 104, 60, 0.22);
+            border-color: var(--green);
+        }
+    </style>
+</head>
+<body data-page="classes">
+    <main class="main-content" id="main">
+        <!-- Title on the left; search on the right, just under the
+             name and photo in the header. -->
+        <div class="page-header classes-header">
+            <div>
+                <h2>My Classes</h2>
+                <p id="classSummary">Loading your classes...</p>
+            </div>
+
+            <div class="toolbar" id="toolbar" hidden>
+                <label class="search">
+                    <span class="visually-hidden">Search classes</span>
+                    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                    <input type="search" id="searchInput" placeholder="Search by class, code or instructor">
+                </label>
+            </div>
+        </div>
+
+        <div id="classList" class="sk-class-grid" aria-live="polite">
+            <div class="card state" style="grid-column: 1 / -1">
+                <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+                <h3>Loading classes</h3>
+            </div>
+        </div>
+    </main>
+
+    <script src="../api-config.js"></script>
+    <script src="../shared/class-cards.js"></script>
+    <script src="js/portal.js"></script>
+    <script src="js/profile-modal.js"></script>
+    <script>
+        (function () {
+            if (!window.Portal) return;
+            const { api, escape } = window.Portal;
+            const $ = id => document.getElementById(id);
+            let classes = [];
+
+            function render() {
+                const list = $("classList");
+                const query = $("searchInput").value.trim().toLowerCase();
+
+                const shown = classes.filter(item => !query || [
+                    item.name, item.code, item.subject_code, item.program, item.instructor?.name
+                ].some(value => String(value || "").toLowerCase().includes(query)));
+
+                if (classes.length === 0) {
+                    list.innerHTML = `
+                        <div class="card state" style="grid-column: 1 / -1">
+                            <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+                            <h3>You are not enrolled in any class yet</h3>
+                            <p>Your classes will appear here once your administrator enrolls you.</p>
+                        </div>`;
+                    return;
+                }
+
+                if (shown.length === 0) {
+                    list.innerHTML = `
+                        <div class="card state" style="grid-column: 1 / -1">
+                            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                            <h3>No classes match "${escape(query)}"</h3>
+                        </div>`;
+                    return;
+                }
+
+                // Same card design as the Instructor portal
+                // (shared/class-cards.js); a class always gets the same banner.
+                list.innerHTML = "";
+                shown.forEach(item => {
+                    const total = item.module_count || 0;
+                    const done = Math.min(item.submitted_count || 0, total);
+
+                    list.appendChild(window.SiknayanClassCards.create({
+                        id: item.id,
+                        href: `modules.html?course=${encodeURIComponent(item.id)}`,
+                        code: item.code || item.subject_code || "CLASS",
+                        name: item.name,
+                        meta: [
+                            { icon: "fa-solid fa-chalkboard-user", text: item.instructor?.name || "No instructor assigned" },
+                            { icon: "fa-solid fa-layer-group", text: `${total} module${total === 1 ? "" : "s"}${item.graded_count ? ` · ${item.graded_count} graded` : ""}` }
+                        ],
+                        footer: { progress: { label: "Activities submitted", done, total } }
+                    }));
+                });
+            }
+
+            async function load() {
+                try {
+                    const data = await api("/student/courses");
+                    classes = Array.isArray(data.courses) ? data.courses : [];
+
+                    $("toolbar").hidden = classes.length === 0;
+                    $("classSummary").textContent = classes.length
+                        ? `You are enrolled in ${classes.length} class${classes.length === 1 ? "" : "es"}.`
+                        : "No classes yet.";
+
+                    render();
+                } catch (error) {
+                    $("classSummary").textContent = "Unable to load your classes.";
+                    $("classList").innerHTML = `
+                        <div class="card state" style="grid-column: 1 / -1">
+                            <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                            <h3>Unable to load your classes</h3>
+                            <p>${escape(error.message)}</p>
+                            <button class="btn" type="button" id="retryButton">Try again</button>
+                        </div>`;
+                    $("retryButton").addEventListener("click", load);
+                }
+            }
+
+            $("searchInput").addEventListener("input", render);
+            load();
+        })();
+    </script>
+</body>
+</html>

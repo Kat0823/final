@@ -10,6 +10,8 @@
    - When the sidebar is collapsed (icons only), hovering or
      tabbing to an icon shows its name in a large, high-contrast
      label beside it.
+   - Pages open faster: pointing at a link starts downloading
+     that page before the click (see FASTER PAGE CHANGES).
 
    Loaded by each portal's common script; it adds its own styles.
 ========================================================= */
@@ -168,4 +170,118 @@
     document.addEventListener("click", hide, true);
     window.addEventListener("scroll", hide, true);
     window.addEventListener("resize", hide);
+
+    /* -----------------------------------------------------
+       CLEAN ADDRESSES (hosted site only)
+       The hosted web server (docker/nginx.conf) opens pages
+       without ".html" and marks this with the sk_clean cookie.
+       There, links are opened at their clean address directly
+       (/instructor/class instead of /instructor/class.html), so there
+       is no extra redirect. On this computer (Live Server) the
+       cookie is never set and links stay as they are.
+    ----------------------------------------------------- */
+
+    const cleanAddresses = /(?:^|;\s*)sk_clean=1(?:;|$)/.test(document.cookie || "");
+
+    function cleanLink(link) {
+        if (!cleanAddresses || !link || !link.href || link.hasAttribute("download")) return;
+
+        let url;
+        try {
+            url = new URL(link.href, location.href);
+        } catch (error) {
+            return;
+        }
+
+        if (url.origin !== location.origin || !/\.html$/i.test(url.pathname)) return;
+
+        url.pathname = url.pathname.replace(/(^|\/)index\.html$/i, "$1").replace(/\.html$/i, "");
+        link.href = url.pathname + url.search + url.hash;
+    }
+
+    if (cleanAddresses) {
+        const onLink = event => cleanLink(event.target.closest && event.target.closest("a[href]"));
+
+        ["pointerover", "focusin", "mousedown", "touchstart"].forEach(type =>
+            document.addEventListener(type, onLink, { capture: true, passive: true })
+        );
+        document.addEventListener("click", onLink, true);
+
+        const cleanAll = () => document.querySelectorAll("a[href]").forEach(cleanLink);
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", cleanAll);
+        } else {
+            cleanAll();
+        }
+    }
+
+    /* -----------------------------------------------------
+       FASTER PAGE CHANGES
+       When the pointer rests on (or a finger touches) a link to
+       another page of the site, the browser starts downloading
+       that page, so it opens sooner after the click. It is only
+       downloaded, never run: nothing is opened, saved or marked
+       as read. Logout links are skipped.
+    ----------------------------------------------------- */
+
+    const SKIP_PREFETCH =
+        '[href*="logout"], [data-learner-logout], .logout, #logoutNav, [data-no-prefetch], [download]';
+
+    const supportsSpeculation =
+        typeof HTMLScriptElement !== "undefined" &&
+        typeof HTMLScriptElement.supports === "function" &&
+        HTMLScriptElement.supports("speculationrules");
+
+    if (supportsSpeculation) {
+        // Chrome / Edge: the browser does it on hover (about 0.2 s).
+        const rules = document.createElement("script");
+        rules.type = "speculationrules";
+        rules.textContent = JSON.stringify({
+            prefetch: [{
+                where: {
+                    and: [
+                        { href_matches: "/*" },
+                        { not: { href_matches: "*logout*" } },
+                        { not: { selector_matches: SKIP_PREFETCH } }
+                    ]
+                },
+                eagerness: "moderate"
+            }]
+        });
+        document.head.appendChild(rules);
+    } else {
+        // Other browsers: add a prefetch hint on hover or touch.
+        const fetched = new Set();
+
+        const prefetch = event => {
+            const link = event.target.closest && event.target.closest("a[href]");
+            if (!link || link.matches(SKIP_PREFETCH)) return;
+
+            let url;
+            try {
+                url = new URL(link.href, location.href);
+            } catch (error) {
+                return;
+            }
+
+            if (
+                url.origin !== location.origin ||
+                !/\.html?$/i.test(url.pathname) ||
+                url.pathname === location.pathname ||
+                fetched.has(url.pathname)
+            ) {
+                return;
+            }
+
+            fetched.add(url.pathname);
+            const hint = document.createElement("link");
+            hint.rel = "prefetch";
+            hint.href = url.pathname;
+            document.head.appendChild(hint);
+        };
+
+        document.addEventListener("pointerover", prefetch, { passive: true });
+        document.addEventListener("touchstart", prefetch, { passive: true });
+        document.addEventListener("focusin", prefetch);
+    }
 })();

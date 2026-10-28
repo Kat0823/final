@@ -286,7 +286,7 @@
     };
 
     const NAV = [
-        { page: "classes", href: "classes.html", icon: "fa-solid fa-book", label: "Classes" },
+        { page: "classes", href: "./", icon: "fa-solid fa-book", label: "Classes" },
         { page: "grades", href: "grades.html", icon: "fa-solid fa-chart-column", label: "Grades" },
         { page: "notifications", href: "notification.html", icon: "fa-solid fa-bell", label: "Notifications" }
     ];

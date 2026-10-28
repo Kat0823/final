@@ -30,6 +30,8 @@ RUN { \
         echo 'opcache.revalidate_freq=2'; \
         echo 'realpath_cache_size=4096K'; \
         echo 'realpath_cache_ttl=600'; \
+        echo 'upload_max_filesize=512M'; \
+        echo 'post_max_size=520M'; \
     } > /usr/local/etc/php/conf.d/siknayan-performance.ini
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer

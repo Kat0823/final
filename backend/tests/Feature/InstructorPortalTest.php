@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 /**
- * Every endpoint the Instructor portal (teacher/*.html) calls.
+ * Every endpoint the Instructor portal (instructor/*.html) calls.
  */
 class InstructorPortalTest extends TestCase
 {

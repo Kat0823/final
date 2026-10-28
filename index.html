@@ -1412,13 +1412,10 @@
 
         function redirectByRole(role) {
        const destinations = {
-    learner: "student/classes.html",
-    instructor: "teacher/dashboard.html",
-    admin: "Admin/dashboard.html",
-    administrator: "Admin/dashboard.html",
-    director: "director/dashboard.html",
-    academic_admin: "academic-admin/index.html",
-    system_admin: "system-admin/dashboard.html"
+    learner: "student/",
+    instructor: "instructor/",
+    academic_admin: "academic-admin/",
+    system_admin: "system-admin/"
 };
          return destinations[role] || null;
         }
@@ -1521,10 +1518,7 @@ sessionStorage.setItem(
 
   const setupPages = {
     learner: "student/setup.html",
-    instructor: "teacher/setup.html",
-    admin: "Admin/setup.html",
-    administrator: "Admin/setup.html",
-    director: "director/setup.html",
+    instructor: "instructor/setup.html",
     academic_admin: "academic-admin/setup.html"
 };
 
@@ -1550,7 +1544,7 @@ sessionStorage.setItem(
                 if (data.email_required === true) {
                     const emailPages = {
                         learner: "student/setup.html",
-                        instructor: "teacher/setup.html",
+                        instructor: "instructor/setup.html",
                         academic_admin: "academic-admin/setup.html"
                     };
 

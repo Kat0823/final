@@ -5,7 +5,7 @@ This folder combines two lines of work:
 | Part | Taken from |
 | --- | --- |
 | Academic Admin portal (`academic-admin/`), System Admin portal (`system-admin/`), unified login (`index.html`), admin API, audit-log table, tests | `final.zip` (the newer upload) |
-| Student portal (`student/`), Instructor portal (`teacher/`), instructor API controllers, learner submission/grade/notification behaviour | `final-main 4.zip` (the earlier upload) |
+| Student portal (`student/`), Instructor portal (`instructor/`, formerly `teacher/`), instructor API controllers, learner submission/grade/notification behaviour | `final-main 4.zip` (the earlier upload) |
 
 Nothing in this package has been run. The sandbox that built it has PHP 8.3 and could not reach Packagist, and your `composer.lock` needs PHP 8.4.1 or newer. What was checked is listed under "Checked" below.
 
@@ -17,7 +17,7 @@ api-config.js         the one place that sets the backend address; also defines 
 academic-admin/       Academic Administrator portal (the proposal's "Administrator")
 system-admin/         System Administrator portal
 student/              Learner portal
-teacher/              Instructor portal
+instructor/           Instructor portal (formerly teacher/)
 Admin/, director/     early prototypes, kept only so nothing was lost; see "Still to do"
 backend/              Laravel 13 API (Sanctum bearer tokens)
 ```

@@ -398,6 +398,8 @@ function renderNotificationDetails() {
             "audit-logs.html",
             "backup.html",
             "administrators.html",
+            "./",
+            // Older notifications may still name the dashboard's old file.
             "dashboard.html"
         ];
 

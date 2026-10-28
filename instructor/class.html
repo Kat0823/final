@@ -1,0 +1,1837 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Classes - MPSU ETEEAP LMS</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <style>
+        :root {
+            --green: #0a522d;
+            --green-light: #f0fdf4;
+            --maroon: #500b13;
+            --gold: #ca8a04;
+            --text: #333333;
+            --muted: #718078;
+            --border: #dce5de;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--green-light);
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        button, input {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* HEADER */
+        .header {
+            height: 85px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 0 28px;
+            color: var(--white);
+            background: var(--green);
+            box-shadow: 0 2px 6px #0002;
+        }
+
+        .header-left,
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-box {
+            width: 55px;
+            height: 55px;
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 2px solid var(--white);
+            border-radius: 50%;
+            background: var(--white);
+        }
+
+        .logo-box img,
+        .avatar-ring img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        .main-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .sub-title {
+            margin-top: 3px;
+            color: #ffffffd9;
+            font-size: 12px;
+        }
+
+        .header-right {
+            gap: 18px;
+        }
+
+        .icon-btn,
+        .menu-btn {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border: none;
+            border-radius: 50%;
+            color: var(--white);
+            background: transparent;
+            font-size: 18px;
+        }
+
+        .icon-btn:hover,
+        .menu-btn:hover {
+            background: #ffffff26;
+        }
+
+        .menu-btn {
+            display: none;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+            color: var(--white);
+            background: transparent;
+            text-align: left;
+        }
+
+        .avatar-ring {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 2px solid var(--white);
+            border-radius: 50%;
+            background: var(--white);
+        }
+
+        .user-name,
+        .user-role {
+            display: block;
+            white-space: nowrap;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .user-role {
+            margin-top: 2px;
+            color: #ffffffcc;
+            font-size: 11px;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 85px;
+            left: 0;
+            z-index: 900;
+            width: 250px;
+            height: calc(100vh - 85px);
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            overflow-y: auto;
+            color: var(--white);
+            background: var(--maroon);
+            transition: width 0.25s ease, transform 0.25s ease;
+        }
+
+        .view-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 0 8px;
+        }
+
+        .view-label {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .view-toggle-btn {
+            width: 34px;
+            height: 34px;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 6px;
+            color: var(--white);
+            background: transparent;
+            font-size: 17px;
+        }
+
+        .view-toggle-btn:hover {
+            background: #ffffff20;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-item {
+            width: 100%;
+            min-height: 46px;
+            padding: 11px 14px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid transparent;
+            border-radius: 7px;
+            color: var(--white);
+            background: transparent;
+            font-size: 13px;
+            line-height: 1.4;
+            text-align: left;
+            white-space: nowrap;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .nav-item > i {
+            width: 22px;
+            min-width: 22px;
+            height: 22px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            font-size: 17px;
+            line-height: 1;
+            text-align: center;
+        }
+
+        .nav-item > span {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .nav-item:hover {
+            background: #ffffff20;
+        }
+
+        .nav-item.active {
+            color: #1a0306;
+            background: var(--gold);
+            border-color: #eab308;
+            font-weight: 600;
+        }
+
+        .nav-item.active:hover {
+            color: #1a0306;
+            background: #ffdc68;
+        }
+
+        .logout-bottom {
+            margin-top: auto;
+        }
+
+        /* COLLAPSED SIDEBAR */
+        .sidebar.collapsed {
+            width: 80px;
+        }
+
+        .sidebar.collapsed .view-label,
+        .sidebar.collapsed .nav-item > span {
+            display: none;
+        }
+
+        .sidebar.collapsed .view-header {
+            justify-content: center;
+        }
+
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+            gap: 0;
+            padding: 11px 10px;
+        }
+
+        .sidebar.collapsed .nav-item > i {
+            width: 24px;
+            min-width: 24px;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            width: calc(100% - 250px);
+            min-height: calc(100vh - 64px);
+            margin-left: 250px;
+            padding: 30px 40px;
+            transition: margin-left 0.25s, width 0.25s;
+        }
+
+        .main-content.expanded {
+            width: calc(100% - 80px);
+            margin-left: 80px;
+        }
+
+        .page-container {
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .page-title {
+            margin-bottom: 5px;
+            color: #111827;
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        .page-description {
+            margin-bottom: 20px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* TITLE ROW: heading on the left, search on the right */
+        .page-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px 24px;
+            margin-bottom: 20px;
+        }
+
+        .page-top .page-description {
+            margin-bottom: 0;
+        }
+
+        /* SEARCH */
+        .controls-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-left: auto;
+        }
+
+        @media (max-width: 700px) {
+            .page-top .controls-row {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .page-top .search-wrapper {
+                width: 100%;
+            }
+        }
+
+        .search-wrapper {
+            width: 320px;
+            max-width: 100%;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            background: white;
+        }
+
+        .search-icon-box {
+            padding: 12px 14px;
+            color: #6b7280;
+            border-right: 1px solid #e5e7eb;
+        }
+
+        .dropdown-input-wrapper {
+            width: 100%;
+            padding: 5px 12px;
+        }
+
+        .dropdown-label {
+            display: block;
+            color: #9ca3af;
+            font-size: 9px;
+        }
+
+        .input-with-arrow input {
+            width: 100%;
+            padding: 4px 0;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            color: var(--text);
+            font-size: 13px;
+        }
+
+        .input-with-arrow input:focus {
+            outline: none;
+        }
+
+        /* CLASSES */
+        .classes-card-container {
+            min-height: 450px;
+            padding: 24px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: white;
+        }
+
+        .classes-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 24px;
+        }
+
+        /* Compact class cards: 3 per row, so 6 (two rows) fit on a
+           normal screen. The id beats shared/class-cards.css. */
+        #classesGrid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        @media (max-width: 1100px) {
+            #classesGrid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            #classesGrid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .class-card {
+            min-height: 145px;
+            padding: 20px 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 14px;
+            border: 1.5px solid var(--green);
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 3px 7px #0000000d;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .class-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px #0000001a;
+        }
+
+        .class-title {
+            color: #1f2937;
+            font-size: 15px;
+            font-weight: 600;
+            overflow-wrap: anywhere;
+        }
+
+        .class-code {
+            margin-top: 5px;
+            color: var(--green);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .class-program {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .class-students {
+            margin-top: auto;
+            color: #6b7280;
+            font-size: 12px;
+            text-align: right;
+        }
+
+        .class-students i {
+            margin-right: 4px;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .empty-state > i {
+            margin-bottom: 15px;
+            font-size: 38px;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 5px;
+            color: #334155;
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            max-width: 500px;
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+        }
+
+        .retry-btn {
+            margin-top: 15px;
+            padding: 10px 18px;
+            border: 0;
+            border-radius: 6px;
+            color: white;
+            background: var(--green);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .retry-btn:hover {
+            background: #064323;
+        }
+
+        /* TOAST */
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 5000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 360px;
+            padding: 12px 18px;
+            border-radius: 8px;
+            color: white;
+            background: #333;
+            box-shadow: 0 4px 12px #0002;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast-success {
+            background: var(--green);
+        }
+
+        .toast-error {
+            background: #991b1b;
+        }
+
+        /* PROFILE MODAL */
+        .profile-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: #0000008c;
+        }
+
+        .profile-modal-overlay.show {
+            display: flex;
+        }
+
+        .profile-modal-card {
+            width: 100%;
+            max-width: 650px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 15px 40px #0004;
+        }
+
+        .profile-modal-header,
+        .profile-modal-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .profile-modal-title {
+            color: var(--green);
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .profile-modal-close {
+            border: 0;
+            color: #64748b;
+            background: transparent;
+            font-size: 28px;
+            line-height: 1;
+        }
+
+        .profile-modal-body {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            padding: 24px;
+        }
+
+        .avatar-upload-section {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .avatar-upload-preview {
+            position: relative;
+            width: 85px;
+            height: 85px;
+            flex-shrink: 0;
+        }
+
+        .avatar-upload-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: 2px solid var(--green);
+            border-radius: 50%;
+        }
+
+        .avatar-edit-badge {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 30px;
+            height: 30px;
+            display: grid;
+            place-items: center;
+            border: 2px solid white;
+            border-radius: 50%;
+            color: white;
+            background: var(--green);
+            cursor: pointer;
+        }
+
+        .avatar-file-input {
+            display: none;
+        }
+
+        .avatar-upload-text h4 {
+            margin-bottom: 4px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .avatar-upload-text p {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .profile-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .profile-form-group label {
+            color: #374151;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .profile-form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            outline: none;
+            background: white;
+            font-size: 13px;
+        }
+
+        .profile-form-group input:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 0 2px #086b3c1a;
+        }
+
+        .profile-form-group .input-disabled {
+            color: #64748b;
+            background: #f1f5f9;
+        }
+
+        .password-section {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .password-toggle-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 14px;
+            border: 0;
+            border-radius: 8px;
+            color: var(--text);
+            background: white;
+            text-align: left;
+        }
+
+        .password-toggle-header h4 {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .chevron-icon {
+            transition: transform 0.2s;
+        }
+
+        .password-section.open .chevron-icon {
+            transform: rotate(180deg);
+        }
+
+        .password-fields {
+            display: none;
+            flex-direction: column;
+            gap: 14px;
+            padding: 0 14px 16px;
+        }
+
+        .password-section.open .password-fields {
+            display: flex;
+        }
+
+        .profile-modal-footer {
+            justify-content: flex-end;
+            border-top: 1px solid var(--border);
+            border-bottom: 0;
+        }
+
+        .btn-cancel,
+        .btn-save {
+            padding: 10px 18px;
+            border: 0;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .btn-cancel {
+            color: #374151;
+            background: #e5e7eb;
+        }
+
+        .btn-save {
+            color: white;
+            background: var(--green);
+        }
+
+        .btn-save:hover {
+            background: #064323;
+        }
+
+        .btn-save:disabled {
+            cursor: wait;
+            opacity: 0.65;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1100px) {
+            .classes-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .main-content {
+                padding: 28px 24px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 250px;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .sidebar.collapsed {
+                width: 250px;
+            }
+
+            .sidebar.collapsed .view-label,
+            .sidebar.collapsed .nav-item > span {
+                display: initial;
+            }
+
+            .sidebar.collapsed .nav-item {
+                justify-content: flex-start;
+                gap: 14px;
+            }
+
+            .main-content,
+            .main-content.expanded {
+                width: 100%;
+                margin-left: 0;
+                padding: 24px 16px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                height: 64px;
+                padding: 0 10px;
+                gap: 8px;
+            }
+
+            .header-left,
+            .header-right {
+                gap: 7px;
+            }
+
+            .logo-box {
+                width: 38px;
+                height: 38px;
+            }
+
+            .main-title {
+                font-size: 12px;
+            }
+
+            .sub-title {
+                max-width: 155px;
+                font-size: 9px;
+            }
+
+            .header-right {
+                gap: 3px;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .avatar-ring {
+                width: 33px;
+                height: 33px;
+            }
+
+            .sidebar {
+                top: 64px;
+                height: calc(100vh - 64px);
+            }
+
+            .main-content {
+                padding: 20px 12px;
+            }
+
+            .page-title {
+                font-size: 25px;
+            }
+
+            .page-description {
+                font-size: 12px;
+            }
+
+            .classes-card-container {
+                min-height: 350px;
+                padding: 14px;
+            }
+
+            .classes-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .class-card {
+                padding: 18px;
+            }
+
+            .form-grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-modal-overlay {
+                padding: 10px;
+            }
+
+            .profile-modal-header,
+            .profile-modal-body,
+            .profile-modal-footer {
+                padding: 16px;
+            }
+        }
+    </style>
+    <!-- Header and sidebar shared by all Instructor pages (load last) -->
+    <link rel="stylesheet" href="CSS/shell.css">
+    <!-- Class cards shared with the Learner portal -->
+    <link rel="stylesheet" href="../shared/class-cards.css">
+    <!-- Profile pop-up (same as the learner portal) -->
+    <link rel="stylesheet" href="CSS/profile-modal.css">
+</head>
+
+<body>
+
+<!-- HEADER -->
+    <header class="header">
+        <div class="header-left">
+
+            <button
+                class="menu-btn"
+                id="menuToggle"
+                type="button"
+                title="Open menu"
+                aria-label="Open menu"
+                aria-expanded="false">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+            </button>
+
+            <div class="logo-box">
+                <img src="../images/logo.png" alt="MPSU Logo">
+            </div>
+
+            <div>
+                <div class="main-title">MPSU ETEEAP LMS</div>
+                <div class="sub-title">Mountain Province State University</div>
+            </div>
+
+        </div>
+
+        <div class="header-right">
+
+            <button
+                class="icon-btn"
+                type="button"
+                title="Notifications"
+                aria-label="Notifications"
+                id="notificationsBtn">
+                <i class="fa-solid fa-bell" aria-hidden="true"></i>
+            </button>
+
+            <button
+                class="user-profile"
+                id="userProfileBtn"
+                type="button"
+                aria-label="Open instructor profile">
+
+                <div class="avatar-ring">
+                    <img
+                        id="headerAvatar"
+                        src="../images/logo.png"
+                        alt="Instructor profile">
+                </div>
+
+                <div class="user-info">
+                    <span class="user-name" id="headerInstructorName">Instructor</span>
+                    <span class="user-role">Instructor</span>
+                </div>
+
+            </button>
+        </div>
+    </header>
+
+
+<!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="view-header">
+            <span class="view-label">Instructor Menu</span>
+
+            <button
+                class="view-toggle-btn"
+                id="sidebarToggle"
+                type="button"
+                title="Collapse sidebar"
+                aria-label="Collapse sidebar"
+                aria-expanded="true">
+                <i class="fa-solid fa-angles-left" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="./" class="nav-item">
+                <i class="fa-solid fa-house" aria-hidden="true"></i>
+                <span>Learner Progress</span>
+            </a>
+
+            <a href="class.html" class="nav-item active" aria-current="page">
+                <i class="fa-solid fa-book" aria-hidden="true"></i>
+                <span>Classes</span>
+            </a>
+
+            <a href="submissions.html" class="nav-item">
+                <i class="fa-regular fa-folder" aria-hidden="true"></i>
+                <span>Submissions</span>
+            </a>
+
+            <a href="notification.html" class="nav-item">
+                <i class="fa-solid fa-bell" aria-hidden="true"></i>
+                <span>Notifications</span>
+            </a>
+
+            <a href="../index.html" class="nav-item logout-bottom" id="logoutNav">
+                <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+                <span>Logout</span>
+            </a>
+        </nav>
+    </aside>
+
+<!-- MAIN CONTENT -->
+<main class="main-content" id="mainContent">
+    <div class="page-container">
+        <!-- Title on the left; search on the right, just under the
+             name and photo in the header. -->
+        <div class="page-top">
+        <div class="page-heading-text">
+            <h1 class="page-title">My Classes</h1>
+            <p class="page-description">View and manage the classes assigned to you.</p>
+        </div>
+
+        <div class="controls-row">
+            <div class="search-wrapper">
+                <div class="search-icon-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+
+                <div class="dropdown-input-wrapper">
+                    <span class="dropdown-label">Search</span>
+                    <div class="input-with-arrow">
+                        <input type="search" id="classSearch"
+                               placeholder="Search class..."
+                               aria-label="Search classes">
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <section class="classes-card-container" aria-label="Assigned classes">
+            <div class="classes-grid sk-class-grid" id="classesGrid" aria-live="polite">
+                <div class="empty-state">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    <h3>Loading classes...</h3>
+                    <p>Please wait while your classes are loaded.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+<!-- PROFILE MODAL -->
+<div class="profile-modal-overlay" id="profileModalOverlay" aria-hidden="true">
+    <section class="profile-modal-card" role="dialog" aria-modal="true"
+             aria-labelledby="profileModalTitle">
+
+        <div class="profile-modal-header">
+            <h3 class="profile-modal-title" id="profileModalTitle">
+                Instructor Profile Settings
+            </h3>
+
+            <button class="profile-modal-close" id="closeProfileModal"
+                    type="button" aria-label="Close profile">&times;</button>
+        </div>
+
+        <form id="profileSettingsForm">
+            <div class="profile-modal-body">
+                <div class="avatar-upload-section">
+                    <div class="avatar-upload-preview">
+                        <img id="avatarPreview" src="../images/mpsu-logo.png"
+                             alt="Profile photo preview">
+
+                        <label for="avatarInput" class="avatar-edit-badge"
+                               title="Change profile photo">
+                            <i class="fa-solid fa-camera"></i>
+                        </label>
+
+                        <input type="file" id="avatarInput" accept="image/*"
+                               class="avatar-file-input">
+                    </div>
+
+                    <div class="avatar-upload-text">
+                        <h4>Profile Photo</h4>
+                        <p>Choose an image to preview your new profile photo.</p>
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="profile-form-group">
+                        <label for="instructorId">Instructor ID</label>
+                        <input type="text" id="instructorId" disabled
+                               class="input-disabled">
+                    </div>
+
+                    <div class="profile-form-group">
+                        <label for="instructorName">Full Name</label>
+                        <input type="text" id="instructorName" required>
+                    </div>
+                </div>
+
+                <div class="profile-form-group">
+                    <label for="instructorEmail">Email Address</label>
+                    <input type="email" id="instructorEmail" required>
+                </div>
+
+                <div class="profile-form-group">
+                    <label for="instructorPhone">Mobile Number</label>
+                    <input type="tel" id="instructorPhone"
+                           placeholder="+63 9XX XXX XXXX">
+                </div>
+
+                <div class="password-section" id="passwordSection">
+                    <button class="password-toggle-header" id="passwordToggleBtn"
+                            type="button" aria-expanded="false">
+                        <h4>
+                            <i class="fa-solid fa-lock"></i>
+                            Change Password (Optional)
+                        </h4>
+                        <i class="fa-solid fa-chevron-down chevron-icon"></i>
+                    </button>
+
+                    <div class="password-fields">
+                        <div class="profile-form-group">
+                            <label for="currentPassword">Current Password</label>
+                            <input type="password" id="currentPassword"
+                                   autocomplete="current-password">
+                        </div>
+
+                        <div class="profile-form-group">
+                            <label for="newPassword">New Password</label>
+                            <input type="password" id="newPassword"
+                                   placeholder="Minimum 8 characters"
+                                   autocomplete="new-password">
+                        </div>
+
+                        <div class="profile-form-group">
+                            <label for="confirmPassword">Confirm New Password</label>
+                            <input type="password" id="confirmPassword"
+                                   autocomplete="new-password">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-modal-footer">
+                <button type="button" class="btn-cancel"
+                        id="cancelProfileModal">Cancel</button>
+
+                <button type="submit" class="btn-save" id="saveProfileBtn">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </section>
+</div>
+
+<script src="../api-config.js"></script>
+<script src="../shared/class-cards.js"></script>
+<script>
+"use strict";
+
+/* =========================================
+   API CONFIGURATION
+   ========================================= */
+
+function getApiBaseUrl() {
+    // The shared api-config.js is the single place to set the backend address.
+    if (window.SIKNAYAN_API_ROOT) {
+        return window.SIKNAYAN_API_ROOT;
+    }
+
+    const host = window.location.hostname;
+
+    // Codespaces frontend port 8080 -> backend port 8000.
+    if (host.includes("app.github.dev") && host.includes("-8080.")) {
+        return window.location.protocol + "//" +
+            host.replace("-8080.", "-8000.") + "/api";
+    }
+
+    // Local development.
+    return window.location.protocol + "//" + host + ":8000/api";
+}
+
+const API_BASE_URL = getApiBaseUrl();
+
+function getAuthToken() {
+    return sessionStorage.getItem("token") ||
+           sessionStorage.getItem("authToken") ||
+           "";
+}
+
+const sidebar = document.getElementById("sidebar");
+const mainContent = document.getElementById("mainContent");
+const sidebarToggle = document.getElementById("sidebarToggle");
+const classesGrid = document.getElementById("classesGrid");
+const classSearch = document.getElementById("classSearch");
+const logoutNav = document.getElementById("logoutNav");
+const headerAvatar = document.getElementById("headerAvatar");
+const headerInstructorName = document.getElementById("headerInstructorName");
+
+const userProfileBtn = document.getElementById("userProfileBtn");
+const profileModalOverlay = document.getElementById("profileModalOverlay");
+const closeProfileModalBtn = document.getElementById("closeProfileModal");
+const cancelProfileModalBtn = document.getElementById("cancelProfileModal");
+const profileSettingsForm = document.getElementById("profileSettingsForm");
+const passwordSection = document.getElementById("passwordSection");
+const passwordToggleBtn = document.getElementById("passwordToggleBtn");
+const avatarInput = document.getElementById("avatarInput");
+const avatarPreview = document.getElementById("avatarPreview");
+const saveProfileBtn = document.getElementById("saveProfileBtn");
+
+let allClasses = [];
+let currentProfile = {};
+let selectedAvatarFile = null;
+let avatarPreviewUrl = null;
+
+/* =========================================
+   API HELPERS
+   ========================================= */
+
+function getHeaders() {
+    const headers = {
+        Accept: "application/json"
+    };
+
+    const token = getAuthToken();
+
+    if (token) {
+        headers.Authorization = `Bearer ${token}`;
+    }
+
+    return headers;
+}
+
+async function apiRequest(url, options = {}) {
+    let response;
+
+    try {
+        response = await fetch(url, {
+            ...options,
+            headers: {
+                ...getHeaders(),
+                ...(options.headers || {})
+            }
+        });
+    } catch (error) {
+        throw new Error(
+            "Cannot connect to the backend. Check the API URL, port forwarding, and server status."
+        );
+    }
+
+    const contentType = response.headers.get("content-type") || "";
+    let data = {};
+
+    if (contentType.includes("application/json")) {
+        data = await response.json().catch(() => ({}));
+    } else {
+        const text = await response.text().catch(() => "");
+        data = { message: text };
+    }
+
+    if (response.status === 401) {
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("authToken");
+        throw new Error("Your session has expired. Please log in again.");
+    }
+
+    if (!response.ok) {
+        throw new Error(
+            data.message ||
+            data.detail ||
+            data.error ||
+            `Request failed (${response.status}).`
+        );
+    }
+
+    return data;
+}
+
+/* =========================================
+   TOAST MESSAGES
+   ========================================= */
+
+function showToast(message, type = "success") {
+    const container = document.getElementById("toastContainer");
+    if (!container) return;
+
+    const toast = document.createElement("div");
+    toast.className = `toast ${type === "success" ? "toast-success" : "toast-error"}`;
+
+    const icon = document.createElement("i");
+    icon.className = type === "success"
+        ? "fa-solid fa-circle-check"
+        : "fa-solid fa-circle-exclamation";
+
+    const text = document.createElement("span");
+    text.textContent = message;
+
+    toast.append(icon, text);
+    container.appendChild(toast);
+
+    requestAnimationFrame(() => toast.classList.add("show"));
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 300);
+    }, 3500);
+}
+
+/* =========================================
+   PROFILE
+   ========================================= */
+
+function normalizeProfile(data) {
+    return data.user || data.instructor || data.profile || data.data || data;
+}
+
+function getProfileAvatar(user) {
+    return user.profile_picture || user.avatar || user.photo_url || "";
+}
+
+function updateHeaderProfile(user) {
+    const name = user.name || user.full_name || "Instructor";
+    headerInstructorName.textContent = name;
+
+    const avatar = getProfileAvatar(user);
+
+    if (avatar) {
+        headerAvatar.src = avatar;
+        avatarPreview.src = avatar;
+    }
+}
+
+async function loadProfile() {
+    try {
+        const data = await apiRequest(`${API_BASE_URL}/instructor/profile`);
+        currentProfile = normalizeProfile(data);
+        updateHeaderProfile(currentProfile);
+    } catch (error) {
+        console.error("Profile loading error:", error);
+    }
+}
+
+async function fillProfileForm() {
+    try {
+        const data = await apiRequest(`${API_BASE_URL}/instructor/profile`);
+        const user = normalizeProfile(data);
+
+        currentProfile = user;
+
+        document.getElementById("instructorId").value =
+            user.instructor_id || user.id || "";
+
+        document.getElementById("instructorName").value =
+            user.name || user.full_name || "";
+
+        document.getElementById("instructorEmail").value =
+            user.email || "";
+
+        document.getElementById("instructorPhone").value =
+            user.phone || user.mobile_number || "";
+
+        updateHeaderProfile(user);
+
+        avatarPreview.src =
+            getProfileAvatar(user) || "../images/mpsu-logo.png";
+
+    } catch (error) {
+        console.error("Could not load profile form:", error);
+        showToast(error.message || "Could not load profile details.", "error");
+    }
+}
+
+/* =========================================
+   PROFILE MODAL
+   ========================================= */
+
+userProfileBtn.addEventListener("click", openProfileModal);
+closeProfileModalBtn.addEventListener("click", closeProfileModal);
+cancelProfileModalBtn.addEventListener("click", closeProfileModal);
+
+profileModalOverlay.addEventListener("click", function (event) {
+    if (event.target === profileModalOverlay) {
+        closeProfileModal();
+    }
+});
+
+document.addEventListener("keydown", function (event) {
+    if (
+        event.key === "Escape" &&
+        profileModalOverlay.classList.contains("show")
+    ) {
+        closeProfileModal();
+    }
+});
+
+async function openProfileModal() {
+    profileModalOverlay.classList.add("show");
+    profileModalOverlay.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+
+    await fillProfileForm();
+
+    closeProfileModalBtn.focus();
+}
+
+function closeProfileModal() {
+    profileModalOverlay.classList.remove("show");
+    profileModalOverlay.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-open");
+
+    profileSettingsForm.reset();
+    passwordSection.classList.remove("open");
+    passwordToggleBtn.setAttribute("aria-expanded", "false");
+
+    selectedAvatarFile = null;
+    avatarInput.value = "";
+
+    if (avatarPreviewUrl) {
+        URL.revokeObjectURL(avatarPreviewUrl);
+        avatarPreviewUrl = null;
+    }
+
+    avatarPreview.src =
+        getProfileAvatar(currentProfile) || "../images/mpsu-logo.png";
+
+    headerAvatar.src =
+        getProfileAvatar(currentProfile) || "../images/mpsu-logo.png";
+}
+
+avatarInput.addEventListener("change", function () {
+    const file = this.files[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+        showToast("Please select an image file.", "error");
+        this.value = "";
+        return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+        showToast("Image must be 5 MB or smaller.", "error");
+        this.value = "";
+        return;
+    }
+
+    selectedAvatarFile = file;
+
+    if (avatarPreviewUrl) {
+        URL.revokeObjectURL(avatarPreviewUrl);
+    }
+
+    avatarPreviewUrl = URL.createObjectURL(file);
+    avatarPreview.src = avatarPreviewUrl;
+});
+
+passwordToggleBtn.addEventListener("click", function () {
+    const isOpen = passwordSection.classList.toggle("open");
+    passwordToggleBtn.setAttribute("aria-expanded", String(isOpen));
+});
+
+/* =========================================
+   SAVE PROFILE
+   ========================================= */
+
+profileSettingsForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const name = document.getElementById("instructorName").value.trim();
+    const email = document.getElementById("instructorEmail").value.trim();
+    const phone = document.getElementById("instructorPhone").value.trim();
+
+    const currentPassword = document.getElementById("currentPassword").value;
+    const newPassword = document.getElementById("newPassword").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    if (!name || !email) {
+        showToast("Full name and email are required.", "error");
+        return;
+    }
+
+    if (newPassword || confirmPassword || currentPassword) {
+        if (!currentPassword) {
+            showToast("Enter your current password.", "error");
+            return;
+        }
+
+        if (newPassword.length < 8) {
+            showToast("New password must be at least 8 characters.", "error");
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            showToast("The new passwords do not match.", "error");
+            return;
+        }
+    }
+
+    saveProfileBtn.disabled = true;
+    saveProfileBtn.textContent = "Saving...";
+
+    try {
+        const payload = { name, email, phone };
+
+        if (currentPassword && newPassword) {
+            payload.current_password = currentPassword;
+            payload.new_password = newPassword;
+        }
+
+        const response = await apiRequest(
+            `${API_BASE_URL}/instructor/profile`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            }
+        );
+
+        currentProfile = {
+            ...currentProfile,
+            name,
+            full_name: name,
+            email,
+            phone
+        };
+
+        updateHeaderProfile(currentProfile);
+
+        if (selectedAvatarFile) {
+            showToast(
+                "Profile details saved. The selected photo is only previewed; it has not been uploaded.",
+                "success"
+            );
+        } else {
+            showToast(response.message || "Profile updated successfully.", "success");
+        }
+
+        closeProfileModal();
+
+    } catch (error) {
+        console.error("Profile update error:", error);
+        showToast(error.message || "Failed to update profile.", "error");
+
+    } finally {
+        saveProfileBtn.disabled = false;
+        saveProfileBtn.textContent = "Save Changes";
+    }
+});
+
+/* =========================================
+   LOAD CLASSES
+   ========================================= */
+
+async function loadClasses() {
+    classesGrid.innerHTML = `
+        <div class="empty-state">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <h3>Loading classes...</h3>
+            <p>Please wait while your classes are loaded.</p>
+        </div>
+    `;
+
+    try {
+        const data = await apiRequest(`${API_BASE_URL}/instructor/classes`);
+
+        allClasses = Array.isArray(data)
+            ? data
+            : Array.isArray(data.classes)
+                ? data.classes
+                : Array.isArray(data.data)
+                    ? data.data
+                    : [];
+
+        renderClasses(allClasses);
+
+    } catch (error) {
+        console.error("Class loading error:", error);
+
+        classesGrid.innerHTML = "";
+
+        const state = document.createElement("div");
+        state.className = "empty-state";
+
+        const icon = document.createElement("i");
+        icon.className = "fa-solid fa-triangle-exclamation";
+
+        const title = document.createElement("h3");
+        title.textContent = "Unable to load classes";
+
+        const message = document.createElement("p");
+        message.textContent = error.message;
+
+        const retryButton = document.createElement("button");
+        retryButton.type = "button";
+        retryButton.className = "retry-btn";
+        retryButton.textContent = "Try Again";
+        retryButton.addEventListener("click", loadClasses);
+
+        state.append(icon, title, message, retryButton);
+        classesGrid.appendChild(state);
+    }
+}
+
+/* =========================================
+   RENDER CLASSES
+   ========================================= */
+
+function renderClasses(classes) {
+    classesGrid.innerHTML = "";
+
+    if (!classes.length) {
+        classesGrid.innerHTML = `
+            <div class="empty-state">
+                <i class="fa-solid fa-book-open"></i>
+                <h3>No classes found</h3>
+                <p>No classes match your search, or you have no assigned classes.</p>
+            </div>
+        `;
+        return;
+    }
+
+    classes.forEach(function (course) {
+        const courseId = course.id ?? course.class_id ?? null;
+        const hasId = courseId !== null && courseId !== "";
+
+        const learners = Number(
+            course.learner_count ??
+            course.student_count ??
+            course.students_count ??
+            0
+        );
+
+        const modules = Number(
+            course.module_count ??
+            course.modules_count ??
+            0
+        );
+
+        // Same card design as the Learner portal (shared/class-cards.js);
+        // a class always gets the same banner on both portals.
+        const card = window.SiknayanClassCards.create({
+            id: courseId,
+            href: hasId
+                ? `class-content.html?course_id=${encodeURIComponent(courseId)}`
+                : "#",
+            code: course.code || course.course_code || "No Code",
+            name: course.name || course.class_name || course.course_name || "Unnamed Class",
+            program: course.program || "",
+            compact: true,
+            meta: [
+                { icon: "fa-regular fa-file-lines", text: course.description || "" }
+            ],
+            footer: {
+                chips: [
+                    { icon: "fa-solid fa-users", text: `${learners} learner${learners === 1 ? "" : "s"}` },
+                    { icon: "fa-solid fa-layer-group", text: `${modules} module${modules === 1 ? "" : "s"}` }
+                ]
+            }
+        });
+
+        if (!hasId) {
+            card.addEventListener("click", function (event) {
+                event.preventDefault();
+                showToast("This class does not have a valid ID.", "error");
+            });
+        }
+
+        classesGrid.appendChild(card);
+    });
+}
+
+/* =========================================
+   SEARCH CLASSES
+   ========================================= */
+
+classSearch.addEventListener("input", function () {
+    const search = this.value.trim().toLowerCase();
+
+    const filtered = allClasses.filter(function (course) {
+        const values = [
+            course.name,
+            course.class_name,
+            course.course_name,
+            course.code,
+            course.course_code,
+            course.program,
+            course.description
+        ];
+
+        return values.some(function (value) {
+            return String(value || "").toLowerCase().includes(search);
+        });
+    });
+
+    renderClasses(filtered);
+});
+
+/* =========================================
+   SIDEBAR
+   ========================================= */
+
+sidebarToggle.addEventListener("click", function () {
+    if (window.innerWidth <= 900) {
+        const isOpen = sidebar.classList.toggle("mobile-open");
+        sidebarToggle.setAttribute("aria-expanded", String(isOpen));
+        return;
+    }
+
+    const isCollapsed = sidebar.classList.toggle("collapsed");
+    mainContent.classList.toggle("expanded", isCollapsed);
+
+    sidebarToggle.setAttribute("aria-expanded", String(!isCollapsed));
+
+    const icon = sidebarToggle.querySelector("i");
+    icon.className = isCollapsed
+        ? "fa-solid fa-angles-right"
+        : "fa-solid fa-angles-left";
+});
+
+document.addEventListener("click", function (event) {
+    if (
+        window.innerWidth <= 900 &&
+        sidebar.classList.contains("mobile-open") &&
+        !sidebar.contains(event.target) &&
+        !event.target.closest(".header")
+    ) {
+        sidebar.classList.remove("mobile-open");
+        sidebarToggle.setAttribute("aria-expanded", "false");
+    }
+});
+
+window.addEventListener("resize", function () {
+    if (window.innerWidth > 900) {
+        sidebar.classList.remove("mobile-open");
+    } else {
+        sidebar.classList.remove("collapsed");
+        mainContent.classList.remove("expanded");
+    }
+});
+
+/* =========================================
+   NOTIFICATIONS AND LOGOUT
+   ========================================= */
+
+// The bell is handled by js/header.js.
+
+logoutNav.addEventListener("click", function (event) {
+    event.preventDefault();
+
+    if (!confirm("Are you sure you want to log out?")) {
+        return;
+    }
+
+    if (window.siknayanLogout) {
+        window.siknayanLogout("../index.html");
+        return;
+    }
+
+    [
+        "token",
+        "authToken",
+        "user",
+        "role",
+        "userRole",
+        "firstLogin"
+    ].forEach(function (key) {
+        sessionStorage.removeItem(key);
+    });
+
+    window.location.href = "../index.html";
+});
+
+/* =========================================
+   START PAGE
+   ========================================= */
+
+if (!getAuthToken()) {
+    window.location.href = "../index.html";
+} else {
+    loadProfile();
+    loadClasses();
+}
+</script>
+
+    <!-- Header like the Academic Admin portal; bell opens Notifications, red dot for unread -->
+    <script src="js/header.js"></script>
+    <!-- Sidebar toggle like the Academic Admin portal (remembers the choice) -->
+    <script src="js/sidebar.js"></script>
+    <!-- Logout confirmation, same as the other portals -->
+    <script src="js/logout.js"></script>
+    <script src="js/profile-modal.js"></script>
+</body>
+</html>

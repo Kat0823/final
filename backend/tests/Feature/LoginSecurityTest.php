@@ -149,6 +149,30 @@ class LoginSecurityTest extends TestCase
             ->assertUnauthorized();
     }
 
+    public function test_token_last_used_time_is_saved_at_most_once_a_minute(): void
+    {
+        $this->account();
+        $token = $this->attempt('LS-00001', 'correct-password')->json('token');
+        $tokenId = (int) explode('|', $token)[0];
+        $lastUsed = fn () => \Illuminate\Support\Facades\DB::table('personal_access_tokens')->where('id', $tokenId)->value('last_used_at');
+
+        $this->withToken($token)->getJson('/api/system-admin/session')->assertOk();
+        $first = $lastUsed();
+        $this->assertNotNull($first);
+
+        // Within a minute: no new write.
+        $this->travel(30)->seconds();
+        $this->app['auth']->forgetGuards();
+        $this->withToken($token)->getJson('/api/system-admin/session')->assertOk();
+        $this->assertSame($first, $lastUsed());
+
+        // After a minute: saved again.
+        $this->travel(40)->seconds();
+        $this->app['auth']->forgetGuards();
+        $this->withToken($token)->getJson('/api/system-admin/session')->assertOk();
+        $this->assertNotSame($first, $lastUsed());
+    }
+
     public function test_older_slower_password_hash_is_resaved_on_sign_in(): void
     {
         $user = $this->account();

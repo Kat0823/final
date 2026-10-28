@@ -1,0 +1,5070 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Submissions - MPSU ETEEAP LMS</title>
+
+    <!-- Google Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+
+<style>
+
+/* =========================================================
+   RESET AND BASE STYLES
+========================================================= */
+
+:root {
+    --mpsu-green: #0a522d;
+    --mpsu-green-dark: #06381e;
+    --mpsu-green-light: #eaf5ed;
+    --mpsu-card-bg: #f2f9f4;
+
+    --mpsu-maroon: #5b0000;
+    --mpsu-sidebar: #500b13;
+    --mpsu-gold: #ca8a04;
+    --mpsu-gold-light: #eab308;
+
+    --border-color: #d1d5db;
+    --border-light: #e5e7eb;
+
+    --text-primary: #1e293b;
+    --text-dark: #111827;
+    --text-muted: #64748b;
+
+    --white: #ffffff;
+    --light-gray: #f8fafc;
+    --disabled-bg: #f1f5f9;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+
+html,
+body {
+    min-height: 100%;
+    background-color: var(--mpsu-green-light);
+    color: var(--text-primary);
+}
+
+
+body {
+    overflow-x: hidden;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+/* HEADER */
+        .header {
+            height: 85px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 0 28px;
+            color: var(--white);
+            background: var(--green);
+            box-shadow: 0 2px 6px #0002;
+        }
+
+        .header-left,
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-box {
+            width: 55px;
+            height: 55px;
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 2px solid var(--white);
+            border-radius: 50%;
+            background: var(--white);
+        }
+
+        .logo-box img,
+        .avatar-ring img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+
+        .main-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .sub-title {
+            margin-top: 3px;
+            color: #ffffffd9;
+            font-size: 12px;
+        }
+
+        .header-right {
+            gap: 18px;
+        }
+
+        .icon-btn,
+        .menu-btn {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border: none;
+            border-radius: 50%;
+            color: var(--white);
+            background: transparent;
+            font-size: 18px;
+        }
+
+        .icon-btn:hover,
+        .menu-btn:hover {
+            background: #ffffff26;
+        }
+
+        .menu-btn {
+            display: none;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+            color: var(--white);
+            background: transparent;
+            text-align: left;
+        }
+
+        .avatar-ring {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 2px solid var(--white);
+            border-radius: 50%;
+            background: var(--white);
+        }
+
+        .user-name,
+        .user-role {
+            display: block;
+            white-space: nowrap;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .user-role {
+            margin-top: 2px;
+            color: #ffffffcc;
+            font-size: 11px;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 85px;
+            left: 0;
+            z-index: 900;
+            width: 250px;
+            height: calc(100vh - 85px);
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            overflow-y: auto;
+            color: var(--white);
+            background: var(--maroon);
+            transition: width 0.25s ease, transform 0.25s ease;
+        }
+
+        .view-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 0 8px;
+        }
+
+        .view-label {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .view-toggle-btn {
+            width: 34px;
+            height: 34px;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 6px;
+            color: var(--white);
+            background: transparent;
+            font-size: 17px;
+        }
+
+        .view-toggle-btn:hover {
+            background: #ffffff20;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-item {
+            width: 100%;
+            min-height: 46px;
+            padding: 11px 14px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid transparent;
+            border-radius: 7px;
+            color: var(--white);
+            background: transparent;
+            font-size: 13px;
+            line-height: 1.4;
+            text-align: left;
+            white-space: nowrap;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .nav-item > i {
+            width: 22px;
+            min-width: 22px;
+            height: 22px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            font-size: 17px;
+            line-height: 1;
+            text-align: center;
+        }
+
+        .nav-item > span {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .nav-item:hover {
+            background: #ffffff20;
+        }
+
+        .nav-item.active {
+            color: #1a0306;
+            background: var(--gold);
+            border-color: #eab308;
+            font-weight: 600;
+        }
+
+        .nav-item.active:hover {
+            color: #1a0306;
+            background: #ffdc68;
+        }
+
+        .logout-bottom {
+            margin-top: auto;
+        }
+
+        /* COLLAPSED SIDEBAR */
+        .sidebar.collapsed {
+            width: 80px;
+        }
+
+        .sidebar.collapsed .view-label,
+        .sidebar.collapsed .nav-item > span {
+            display: none;
+        }
+
+        .sidebar.collapsed .view-header {
+            justify-content: center;
+        }
+
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+            gap: 0;
+            padding: 11px 10px;
+        }
+
+        .sidebar.collapsed .nav-item > i {
+            width: 24px;
+            min-width: 24px;
+        }
+
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.main-content {
+    margin-left: 250px;
+
+    margin-top: 10px;
+
+    width: calc(100% - 250px);
+
+    min-height: calc(100vh - 95px);
+
+    padding: 30px 40px;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    transition:
+        margin-left 0.25s ease,
+        width 0.25s ease;
+}
+
+
+.main-content.expanded {
+    margin-left: 80px;
+
+    width: calc(100% - 80px);
+}
+
+
+.page-title {
+    font-size: 32px;
+
+    font-weight: 700;
+
+    color: #000000;
+
+    margin-bottom: 5px;
+}
+
+
+.page-subtitle {
+    font-size: 13px;
+
+    color: var(--text-muted);
+
+    margin-bottom: 15px;
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.submissions-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.submissions-header .search-container {
+    margin: 0 0 0 auto;
+    padding: 0;
+}
+
+@media (max-width: 700px) {
+    .submissions-header .search-container {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+.search-container {
+    display: flex;
+
+    align-items: center;
+
+    padding: 10px 0;
+
+    margin-bottom: 10px;
+}
+
+
+.search-wrapper {
+    display: flex;
+
+    align-items: center;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 6px;
+
+    background-color: var(--white);
+
+    overflow: hidden;
+
+    box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.05);
+
+    width: 350px;
+}
+
+
+.search-icon-box {
+    padding: 10px 14px;
+
+    color: #6b7280;
+
+    font-size: 16px;
+
+    border-right: 1px solid var(--border-light);
+}
+
+
+.dropdown-input-wrapper {
+    display: flex;
+
+    flex-direction: column;
+
+    padding: 4px 12px;
+
+    width: 100%;
+}
+
+
+.dropdown-label {
+    font-size: 9px;
+
+    color: #9ca3af;
+
+    text-transform: lowercase;
+
+    line-height: 1;
+}
+
+
+.input-with-arrow {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+
+.input-with-arrow input {
+    border: none;
+
+    outline: none;
+
+    width: 100%;
+
+    font-size: 13px;
+
+    color: #374151;
+
+    background: transparent;
+}
+
+
+.arrow-icon {
+    font-size: 10px;
+
+    color: #9ca3af;
+
+    margin-left: 6px;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.table-card {
+    background-color: var(--white);
+
+    border: 1px solid #9ca3af;
+
+    border-radius: 12px;
+
+    overflow-x: auto;
+
+    overflow-y: hidden;
+
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.05);
+
+    min-height: 480px;
+}
+
+
+.submissions-table {
+    width: 100%;
+
+    min-width: 900px;
+
+    border-collapse: collapse;
+
+    text-align: left;
+}
+
+
+.submissions-table th {
+    padding: 16px 20px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    color: var(--text-dark);
+
+    border-bottom: 1px solid #111827;
+
+    white-space: nowrap;
+}
+
+
+.submissions-table td {
+    padding: 16px 20px;
+
+    font-size: 12px;
+
+    color: #374151;
+
+    border-bottom: 1px solid var(--border-light);
+
+    vertical-align: middle;
+}
+
+
+.submissions-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+
+.font-medium {
+    font-weight: 500;
+
+    color: var(--text-dark);
+}
+
+
+/* =========================================================
+   EMPTY / LOADING TABLE
+========================================================= */
+
+.empty-row {
+    text-align: center;
+
+    padding: 60px 20px !important;
+
+    color: var(--text-muted) !important;
+}
+
+
+.empty-row i {
+    display: block;
+
+    font-size: 35px;
+
+    margin-bottom: 12px;
+
+    color: #94a3b8;
+}
+
+
+/* =========================================================
+   STATUS BADGES
+========================================================= */
+
+.status-badge {
+    display: inline-block;
+
+    padding: 4px 12px;
+
+    border-radius: 9999px;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    text-align: center;
+
+    white-space: nowrap;
+}
+
+
+.status-pending {
+    background-color: #fef08a;
+
+    color: #854d0e;
+}
+
+
+.status-graded {
+    background-color: #dcfce7;
+
+    color: #166534;
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+========================================================= */
+
+.action-btn {
+    border: none;
+
+    padding: 6px 16px;
+
+    border-radius: 6px;
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+
+.grade-btn {
+    background-color: var(--mpsu-green);
+
+    color: var(--white);
+}
+
+
+.grade-btn:hover {
+    background-color: var(--mpsu-green-dark);
+}
+
+
+.view-btn {
+    background-color: #e5e7eb;
+
+    color: #374151;
+}
+
+
+.view-btn:hover {
+    background-color: #d1d5db;
+}
+
+
+/* =========================================================
+   PROFILE / GRADING MODAL OVERLAY
+========================================================= */
+
+.profile-modal-overlay,
+.grading-modal-overlay {
+    position: fixed;
+
+    top: 0;
+
+    left: 0;
+
+    width: 100vw;
+
+    height: 100vh;
+
+    background-color: rgba(10, 25, 15, 0.45);
+
+    backdrop-filter: blur(8px);
+
+    -webkit-backdrop-filter: blur(8px);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    z-index: 2000;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition: opacity 0.25s ease;
+}
+
+
+.profile-modal-overlay.active,
+.grading-modal-overlay.active {
+    opacity: 1;
+
+    pointer-events: auto;
+}
+
+
+/* =========================================================
+   MODAL CARD
+========================================================= */
+
+.profile-modal-card,
+.grading-modal-card {
+    background-color: var(--white);
+
+    width: 92%;
+
+    max-width: 520px;
+
+    max-height: 90vh;
+
+    border-radius: 14px;
+
+    border: 1px solid #e2e8f0;
+
+    box-shadow:
+        0 20px 25px -5px rgba(0, 0, 0, 0.15),
+        0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+    display: flex;
+
+    flex-direction: column;
+
+    overflow: hidden;
+
+    animation: modalSlideUp 0.25s ease-out;
+}
+
+
+.grading-modal-card {
+    max-width: 560px;
+}
+
+
+@keyframes modalSlideUp {
+
+    from {
+        transform: translateY(14px);
+
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+
+        opacity: 1;
+    }
+
+}
+
+
+/* =========================================================
+   MODAL HEADER
+========================================================= */
+
+.profile-modal-header,
+.grading-modal-header {
+    padding: 1.25rem 1.5rem;
+
+    border-bottom: 1px solid #e2e8f0;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    background-color: #fafafa;
+
+    flex-shrink: 0;
+}
+
+
+.profile-modal-title,
+.grading-modal-header h3 {
+    font-size: 1.1rem;
+
+    font-weight: 600;
+
+    color: var(--text-primary);
+}
+
+
+.profile-modal-subtitle {
+    font-size: 0.8rem;
+
+    color: var(--text-muted);
+
+    margin-top: 0.15rem;
+}
+
+
+.profile-modal-close,
+.grading-modal-close {
+    background: none;
+
+    border: none;
+
+    font-size: 1.35rem;
+
+    color: #94a3b8;
+
+    cursor: pointer;
+
+    line-height: 1;
+
+    padding: 0.2rem;
+}
+
+
+.profile-modal-close:hover,
+.grading-modal-close:hover {
+    color: var(--text-primary);
+}
+
+
+/* =========================================================
+   MODAL BODY
+========================================================= */
+
+.profile-modal-body,
+.grading-modal-body {
+    padding: 1.5rem;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 1.15rem;
+
+    overflow-y: auto;
+}
+
+
+/* =========================================================
+   PROFILE PHOTO
+========================================================= */
+
+.avatar-upload-section {
+    display: flex;
+
+    align-items: center;
+
+    gap: 1.25rem;
+
+    background-color: var(--light-gray);
+
+    padding: 1rem;
+
+    border-radius: 10px;
+
+    border: 1px solid #e2e8f0;
+}
+
+
+.avatar-upload-preview {
+    position: relative;
+
+    width: 76px;
+
+    height: 76px;
+
+    flex-shrink: 0;
+}
+
+
+.avatar-upload-preview img {
+    width: 100%;
+
+    height: 100%;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    border: 3px solid #0c4827;
+}
+
+
+.avatar-edit-badge {
+    position: absolute;
+
+    bottom: -2px;
+
+    right: -2px;
+
+    width: 28px;
+
+    height: 28px;
+
+    background-color: #0c4827;
+
+    color: var(--white);
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 0.75rem;
+
+    cursor: pointer;
+
+    border: 2px solid var(--white);
+
+    transition: background-color 0.2s ease;
+}
+
+
+.avatar-edit-badge:hover {
+    background-color: #08331b;
+}
+
+
+.avatar-file-input {
+    display: none;
+}
+
+
+.avatar-upload-text h4 {
+    font-size: 0.9rem;
+
+    color: var(--text-primary);
+
+    margin-bottom: 0.2rem;
+}
+
+
+.avatar-upload-text p {
+    font-size: 0.78rem;
+
+    color: var(--text-muted);
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.form-grid-2 {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 0.85rem;
+}
+
+
+.profile-form-group,
+.grading-form-group {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 0.35rem;
+}
+
+
+.profile-form-group label,
+.grading-form-group label {
+    font-size: 0.8rem;
+
+    font-weight: 600;
+
+    color: var(--text-primary);
+}
+
+
+.profile-form-group input,
+.grading-form-group input,
+.grading-form-group textarea {
+    padding: 0.55rem 0.75rem;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 6px;
+
+    font-size: 0.85rem;
+
+    font-family: inherit;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.profile-form-group input:focus,
+.grading-form-group input:focus,
+.grading-form-group textarea:focus {
+    outline: none;
+
+    border-color: #0c4827;
+
+    box-shadow:
+        0 0 0 3px rgba(12, 72, 39, 0.1);
+}
+
+
+.profile-form-group input:disabled {
+    background-color: var(--disabled-bg);
+
+    color: var(--text-muted);
+
+    cursor: not-allowed;
+}
+
+
+.input-disabled {
+    background-color: var(--disabled-bg) !important;
+
+    color: var(--text-muted) !important;
+
+    cursor: not-allowed;
+
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   PASSWORD ACCORDION
+========================================================= */
+
+.password-section {
+    border: 1px solid #e2e8f0;
+
+    border-radius: 8px;
+
+    background-color: var(--white);
+
+    overflow: hidden;
+
+    transition: border-color 0.2s ease;
+}
+
+
+.password-section.open {
+    border-color: #0c4827;
+}
+
+
+.password-toggle-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 0.85rem 1rem;
+
+    background-color: var(--light-gray);
+
+    cursor: pointer;
+
+    user-select: none;
+
+    transition: background-color 0.2s ease;
+}
+
+
+.password-toggle-header:hover {
+    background-color: #f1f5f9;
+}
+
+
+.password-toggle-header h4 {
+    font-size: 0.85rem;
+
+    font-weight: 600;
+
+    color: var(--text-primary);
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 0.5rem;
+}
+
+
+.password-toggle-header h4 i {
+    color: #0c4827;
+}
+
+
+.chevron-icon {
+    font-size: 0.8rem;
+
+    color: var(--text-muted);
+
+    transition: transform 0.25s ease;
+}
+
+
+.password-section.open .chevron-icon {
+    transform: rotate(180deg);
+}
+
+
+.password-fields {
+    display: none;
+
+    padding: 1rem;
+
+    flex-direction: column;
+
+    gap: 0.85rem;
+}
+
+
+.password-section.open .password-fields {
+    display: flex;
+}
+
+
+/* =========================================================
+   GRADING INFORMATION
+========================================================= */
+
+/* Plain lines (no cards) for Learner, Class, Module and File */
+.grading-info-group {
+    font-size: 0.88rem;
+
+    color: #475569;
+
+    padding: 0.15rem 0;
+
+    background: none;
+
+    border: none;
+
+    border-radius: 0;
+}
+
+
+.grading-info-group strong {
+    color: var(--text-primary);
+
+    margin-right: 4px;
+}
+
+
+.grading-file-link {
+    color: var(--mpsu-green);
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    word-break: break-word;
+}
+
+
+.grading-file-link:hover {
+    text-decoration: underline;
+}
+
+
+.grading-form-row {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 1rem;
+}
+
+
+.grading-form-group textarea {
+    resize: vertical;
+
+    min-height: 100px;
+}
+
+
+/* =========================================================
+   MODAL FOOTERS
+========================================================= */
+
+.profile-modal-footer,
+.grading-modal-footer {
+    padding: 1rem 1.5rem;
+
+    border-top: 1px solid #e2e8f0;
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 0.75rem;
+
+    background-color: #fafafa;
+
+    flex-shrink: 0;
+}
+
+
+.btn-cancel,
+.btn-save {
+    padding: 0.5rem 1rem;
+
+    border-radius: 6px;
+
+    font-weight: 600;
+
+    font-size: 0.85rem;
+
+    cursor: pointer;
+}
+
+
+.btn-cancel {
+    background-color: var(--white);
+
+    border: 1px solid #cbd5e1;
+
+    color: #475569;
+}
+
+
+.btn-cancel:hover {
+    background-color: #f1f5f9;
+}
+
+
+.btn-save {
+    background-color: #0c4827;
+
+    color: var(--white);
+
+    border: none;
+
+    transition: background-color 0.2s ease;
+}
+
+
+.btn-save:hover {
+    background-color: #08331b;
+}
+
+
+.btn-save:disabled {
+    opacity: 0.6;
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.toast-container {
+    position: fixed;
+
+    top: 100px;
+
+    right: 25px;
+
+    z-index: 3000;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+
+.toast {
+    min-width: 280px;
+
+    max-width: 400px;
+
+    padding: 12px 16px;
+
+    border-radius: 8px;
+
+    color: var(--white);
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.2);
+
+    transform: translateX(120%);
+
+    opacity: 0;
+
+    transition:
+        transform 0.3s ease,
+        opacity 0.3s ease;
+
+    font-size: 13px;
+}
+
+
+.toast.show {
+    transform: translateX(0);
+
+    opacity: 1;
+}
+
+
+.toast-success {
+    background-color: #166534;
+}
+
+
+.toast-error {
+    background-color: #b42318;
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .header {
+        padding: 0 1rem;
+    }
+
+
+    .user-info {
+        display: none;
+    }
+
+
+    .sidebar {
+        width: 80px;
+    }
+
+
+    .sidebar .view-label,
+    .sidebar .nav-item span {
+        display: none;
+    }
+
+
+    .sidebar .view-header {
+        justify-content: center;
+    }
+
+
+    .sidebar .nav-item {
+        justify-content: center;
+
+        padding-left: 10px;
+
+        padding-right: 10px;
+
+        gap: 0;
+    }
+
+
+    .main-content {
+        margin-left: 80px;
+
+        width: calc(100% - 80px);
+
+        padding: 25px 15px;
+    }
+
+
+    .main-content.expanded {
+        margin-left: 80px;
+
+        width: calc(100% - 80px);
+    }
+
+
+    .search-wrapper {
+        width: 100%;
+    }
+
+
+    .form-grid-2,
+    .grading-form-row {
+        grid-template-columns: 1fr;
+    }
+
+
+    .page-title {
+        font-size: 26px;
+    }
+
+
+    .toast-container {
+        left: 15px;
+
+        right: 15px;
+
+        top: 95px;
+    }
+
+
+    .toast {
+        min-width: auto;
+
+        width: 100%;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .header {
+        height: 75px;
+    }
+
+
+    .logo-box {
+        width: 48px;
+
+        height: 48px;
+    }
+
+
+    .main-title {
+        font-size: 0.8rem;
+    }
+
+
+    .sub-title {
+        font-size: 0.65rem;
+    }
+
+
+    .sidebar {
+        top: 85px;
+
+        height: calc(100vh - 95px);
+    }
+
+
+    .main-content {
+        margin-top: 5px;
+
+        padding: 20px 10px;
+    }
+
+
+    .page-title {
+        font-size: 24px;
+    }
+
+
+    .search-container {
+        padding: 10px 0;
+    }
+
+
+    .search-wrapper {
+        width: 100%;
+    }
+
+
+    .profile-modal-card,
+    .grading-modal-card {
+        width: 95%;
+
+        max-height: 92vh;
+    }
+
+
+    .form-grid-2,
+    .grading-form-row {
+        grid-template-columns: 1fr;
+    }
+
+
+    .profile-modal-footer,
+    .grading-modal-footer {
+        flex-direction: column;
+    }
+
+
+    .btn-cancel,
+    .btn-save {
+        width: 100%;
+    }
+
+
+    .avatar-upload-section {
+        flex-direction: column;
+
+        text-align: center;
+    }
+
+}
+
+
+/* =====================================================
+   SCORING CARD (grading window)
+   One row per activity: title, score / over.
+===================================================== */
+
+.score-card {
+    margin: 18px 0 16px;
+    padding: 16px;
+    border: 1px solid #dfe7e2;
+    border-radius: 10px;
+    background: #fafdfb;
+}
+
+.score-card-head h4 {
+    margin: 0;
+    color: #1f2a24;
+    font-size: 15px;
+}
+
+.score-card-head p {
+    margin: 4px 0 12px;
+    color: #66736c;
+    font-size: 12px;
+}
+
+.score-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 84px 12px 84px 34px;
+    align-items: center;
+    gap: 8px;
+}
+
+.score-row + .score-row {
+    margin-top: 8px;
+}
+
+.score-row-labels {
+    margin-bottom: 6px;
+    color: #66736c;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.score-row input {
+    width: 100%;
+    min-width: 0;
+    height: 38px;
+    padding: 0 10px;
+    border: 1px solid #cfd8d2;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #1f2a24;
+    font: inherit;
+    font-size: 14px;
+}
+
+.score-row input[type="number"] {
+    text-align: center;
+}
+
+.score-row input:focus {
+    outline: none;
+    border-color: #086b3c;
+    box-shadow: 0 0 0 3px rgba(8, 107, 60, 0.12);
+}
+
+.score-row input:disabled {
+    background: #f3f5f4;
+    color: #1f2a24;
+}
+
+.score-over {
+    color: #66736c;
+    text-align: center;
+}
+
+/* Saved rows of a graded submission are locked. */
+.score-row.locked input {
+    background: #f5f6f4;
+    color: #4b5563;
+}
+
+.score-row.locked .score-remove {
+    visibility: hidden;
+}
+
+.score-lock-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0 8px;
+    padding: 8px 12px;
+    border-left: 3px solid #e2ac2f;
+    border-radius: 0 6px 6px 0;
+    background: #fff8e6;
+    color: #6b4e00;
+    font-size: 12px;
+}
+
+.score-lock-note[hidden] {
+    display: none;
+}
+
+.score-lock-note.unlocked {
+    border-left-color: #086b3c;
+    background: #ecf7f0;
+    color: #0b5a34;
+}
+
+.score-unlock {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    margin-left: auto;
+    padding: 6px 12px;
+    border: 1px solid #c99223;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #6b4e00;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.score-unlock:hover,
+.score-unlock:focus-visible {
+    background: #fbefd2;
+    outline: none;
+}
+
+.score-unlock[hidden] {
+    display: none;
+}
+
+/* Password confirmation before changing saved scores */
+.confirm-edit-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.confirm-edit-overlay.active {
+    display: flex;
+}
+
+.confirm-edit-box {
+    width: min(440px, 100%);
+    padding: 26px;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.confirm-edit-icon {
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 12px;
+    border-radius: 50%;
+    background: #fbefd2;
+    color: #9a6a0a;
+    font-size: 20px;
+}
+
+.confirm-edit-box h3 {
+    margin: 0 0 8px;
+    color: #1f2a24;
+    font-size: 19px;
+}
+
+.confirm-edit-box p {
+    margin: 0 0 14px;
+    color: #4b5563;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.confirm-edit-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    margin-bottom: 14px;
+    color: #1f2a24;
+    font-size: 14px;
+    line-height: 1.4;
+    cursor: pointer;
+}
+
+.confirm-edit-check input {
+    width: 18px;
+    height: 18px;
+    margin: 1px 0 0;
+    flex-shrink: 0;
+    accent-color: #086b3c;
+}
+
+.confirm-edit-box label[for="confirmEditPassword"] {
+    display: block;
+    margin-bottom: 6px;
+    color: #1f2a24;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.confirm-edit-password {
+    position: relative;
+}
+
+.confirm-edit-password input {
+    width: 100%;
+    height: 42px;
+    padding: 0 42px 0 12px;
+    border: 1px solid #cfd8d2;
+    border-radius: 6px;
+    font: inherit;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.confirm-edit-password input:focus {
+    outline: none;
+    border-color: #086b3c;
+    box-shadow: 0 0 0 3px rgba(8, 107, 60, 0.12);
+}
+
+.confirm-edit-password button {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    background: transparent;
+    color: #66736c;
+    cursor: pointer;
+    transform: translateY(-50%);
+}
+
+.confirm-edit-error {
+    margin: 10px 0 0;
+    padding: 9px 12px;
+    border-radius: 6px;
+    background: #fdecec;
+    color: #9b1c22;
+    font-size: 13px;
+}
+
+.confirm-edit-error[hidden] {
+    display: none;
+}
+
+.confirm-edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.score-remove {
+    width: 34px;
+    height: 34px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: transparent;
+    color: #8a948f;
+    cursor: pointer;
+}
+
+.score-remove:hover:not(:disabled) {
+    border-color: #f0c9c4;
+    background: #fdecea;
+    color: #b42318;
+}
+
+.score-remove:disabled {
+    visibility: hidden;
+}
+
+.score-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 10px;
+    padding: 8px 12px;
+    border: 1px dashed #086b3c;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #086b3c;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.score-add:hover {
+    background: #e8f5ed;
+}
+
+.score-add[hidden] {
+    display: none;
+}
+
+.score-add:focus-visible,
+.score-remove:focus-visible {
+    outline: 2px solid #086b3c;
+    outline-offset: 2px;
+}
+
+.score-total {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid #dfe7e2;
+    color: #66736c;
+    font-size: 13px;
+}
+
+.score-total strong {
+    color: #086b3c;
+    font-size: 20px;
+}
+
+.score-percent {
+    min-width: 48px;
+    color: #1f2a24;
+    font-weight: 700;
+}
+
+.score-error {
+    margin: 10px 0 0;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: #fdecea;
+    color: #b42318;
+    font-size: 13px;
+}
+
+.score-error[hidden] {
+    display: none;
+}
+
+/* A row with a mistake (e.g. score higher than its total) */
+.score-row.invalid .score-value,
+.score-row.invalid .score-max {
+    border-color: #d92d20;
+    background: #fff5f4;
+    box-shadow: 0 0 0 3px rgba(217, 45, 32, 0.12);
+}
+
+@media (max-width: 560px) {
+    .score-row {
+        grid-template-columns: minmax(0, 1fr) 64px 10px 64px 30px;
+        gap: 5px;
+    }
+
+    .score-row input {
+        padding: 0 6px;
+    }
+}
+
+
+/* Grading window: details in two columns so the scoring card and the
+   feedback box fit with less scrolling. */
+.grading-modal-card {
+    max-width: 660px;
+}
+
+.grading-modal-body {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.grading-modal-body > .score-card,
+.grading-modal-body > .grading-form-group {
+    grid-column: 1 / -1;
+}
+
+.grading-modal-body > .score-card {
+    margin: 6px 0 0;
+}
+
+/* Learner, Class, Module and File are plain lines, so keep them close */
+.grading-modal-body {
+    row-gap: 0.35rem;
+}
+
+.grading-modal-body > .score-card,
+.grading-modal-body > .grading-form-group {
+    margin-top: 0.6rem;
+}
+
+@media (max-width: 560px) {
+    .grading-modal-body {
+        grid-template-columns: 1fr;
+    }
+}
+
+</style>
+
+    <!-- Header and sidebar shared by all Instructor pages (load last) -->
+    <link rel="stylesheet" href="CSS/shell.css">
+    <!-- Profile pop-up (same as the learner portal) -->
+    <link rel="stylesheet" href="CSS/profile-modal.css">
+</head>
+
+
+<body>
+
+
+<!-- HEADER -->
+    <header class="header">
+        <div class="header-left">
+
+            <button
+                class="menu-btn"
+                id="menuToggle"
+                type="button"
+                title="Open menu"
+                aria-label="Open menu"
+                aria-expanded="false">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+            </button>
+
+            <div class="logo-box">
+                <img src="../images/logo.png" alt="MPSU Logo">
+            </div>
+
+            <div>
+                <div class="main-title">MPSU ETEEAP LMS</div>
+                <div class="sub-title">Mountain Province State University</div>
+            </div>
+
+        </div>
+
+        <div class="header-right">
+
+            <button
+                class="icon-btn"
+                type="button"
+                title="Notifications"
+                aria-label="Notifications"
+                id="notificationsBtn">
+                <i class="fa-solid fa-bell" aria-hidden="true"></i>
+            </button>
+
+            <button
+                class="user-profile"
+                id="userProfileBtn"
+                type="button"
+                aria-label="Open instructor profile">
+
+                <div class="avatar-ring">
+                    <img
+                        id="headerAvatar"
+                        src="../images/logo.png"
+                        alt="Instructor profile">
+                </div>
+
+                <div class="user-info">
+                    <span class="user-name" id="headerInstructorName">Instructor</span>
+                    <span class="user-role">Instructor</span>
+                </div>
+
+            </button>
+        </div>
+    </header>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="view-header">
+            <span class="view-label">Instructor Menu</span>
+
+            <button
+                class="view-toggle-btn"
+                id="sidebarToggle"
+                type="button"
+                title="Collapse sidebar"
+                aria-label="Collapse sidebar"
+                aria-expanded="true">
+                <i class="fa-solid fa-angles-left" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="./" class="nav-item">
+                <i class="fa-solid fa-house" aria-hidden="true"></i>
+                <span>Learner Progress</span>
+            </a>
+
+            <a href="class.html" class="nav-item">
+                <i class="fa-solid fa-book" aria-hidden="true"></i>
+                <span>Classes</span>
+            </a>
+
+            <a href="submissions.html" class="nav-item active" aria-current="page">
+                <i class="fa-regular fa-folder" aria-hidden="true"></i>
+                <span>Submissions</span>
+            </a>
+
+            <a href="notification.html" class="nav-item">
+                <i class="fa-solid fa-bell" aria-hidden="true"></i>
+                <span>Notifications</span>
+            </a>
+
+            <a href="../index.html" class="nav-item logout-bottom" id="logoutNav">
+                <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+                <span>Logout</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- =================================================
+         MAIN CONTENT
+    ================================================== -->
+
+    <main
+        class="main-content"
+        id="mainContent">
+
+
+        <!-- Title on the left, search on the right at the same level -->
+        <div class="submissions-header">
+        <div>
+        <h1 class="page-title">
+            Submissions
+        </h1>
+
+
+        <p class="page-subtitle">
+            Review learner activities and manage submitted work.
+        </p>
+        </div>
+
+
+        <!-- Search -->
+
+        <div class="search-container">
+
+            <div class="search-wrapper">
+
+                <div class="search-icon-box">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                </div>
+
+
+                <div class="dropdown-input-wrapper">
+
+                    <span class="dropdown-label">
+                        search
+                    </span>
+
+
+                    <div class="input-with-arrow">
+
+                        <input
+                            type="text"
+                            id="searchInput"
+                            placeholder="Search submissions..."
+                            autocomplete="off">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        </div>
+
+
+        <!-- =================================================
+             SUBMISSIONS TABLE
+        ================================================== -->
+
+        <div class="table-card">
+
+            <table class="submissions-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Learner ID
+                        </th>
+
+                        <th>
+                            Learner Name
+                        </th>
+
+                        <th>
+                            Class
+                        </th>
+
+                        <th>
+                            Module
+                        </th>
+
+                        <th>
+                            Submitted
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <!-- Rows appear when the submissions arrive (no loading message). -->
+                <tbody id="submissionsTableBody"></tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- =====================================================
+     PROFILE MODAL
+====================================================== -->
+
+<div
+    class="profile-modal-overlay"
+    id="profileModal">
+
+
+    <div class="profile-modal-card">
+
+
+        <div class="profile-modal-header">
+
+            <div>
+
+                <div class="profile-modal-title">
+                    Profile Settings
+                </div>
+
+                <div class="profile-modal-subtitle">
+                    Manage your instructor account.
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="profile-modal-close"
+                onclick="closeProfileModal()">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+
+        <div class="profile-modal-body">
+
+
+            <!-- Avatar -->
+
+            <div class="avatar-upload-section">
+
+
+                <div class="avatar-upload-preview">
+
+                    <img
+                        id="profileAvatar"
+                        src="../images/logo.png"
+                        alt="Profile Photo">
+
+
+                    <label
+                        class="avatar-edit-badge"
+                        for="avatarFile">
+
+                        <i class="fa-solid fa-camera"></i>
+
+                    </label>
+
+
+                    <input
+                        type="file"
+                        id="avatarFile"
+                        class="avatar-file-input"
+                        accept="image/*">
+
+                </div>
+
+
+                <div class="avatar-upload-text">
+
+                    <h4>
+                        Profile Photo
+                    </h4>
+
+                    <p>
+                        Photo preview only.
+                    </p>
+
+                    <p>
+                        Profile photo storage is not connected to the database yet.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Profile Form -->
+
+            <form
+                id="profileForm"
+                onsubmit="saveProfile(event)">
+
+
+                <div class="form-grid-2">
+
+
+                    <div class="profile-form-group">
+
+                        <label for="profileName">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="profileName"
+                            disabled
+                            class="input-disabled">
+
+                    </div>
+
+
+                    <div class="profile-form-group">
+
+                        <label for="profileSchoolId">
+                            Instructor ID
+                        </label>
+
+                        <input
+                            type="text"
+                            id="profileSchoolId"
+                            disabled
+                            class="input-disabled">
+
+                    </div>
+
+
+                    <div class="profile-form-group">
+
+                        <label for="profileEmail">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            id="profileEmail"
+                            required>
+
+                    </div>
+
+
+                    <div class="profile-form-group">
+
+                        <label for="profileContact">
+                            Contact
+                        </label>
+
+                        <input
+                            type="text"
+                            id="profileContact">
+
+                    </div>
+
+
+                    <div class="profile-form-group">
+
+                        <label for="profileProgram">
+                            Program
+                        </label>
+
+                        <input
+                            type="text"
+                            id="profileProgram"
+                            disabled
+                            class="input-disabled">
+
+                    </div>
+
+
+                    <div class="profile-form-group">
+
+                        <label for="profileRole">
+                            Role
+                        </label>
+
+                        <input
+                            type="text"
+                            id="profileRole"
+                            value="Instructor"
+                            disabled
+                            class="input-disabled">
+
+                    </div>
+
+                </div>
+
+
+                <!-- Password -->
+
+                <div
+                    class="password-section"
+                    id="passwordSection">
+
+
+                    <div
+                        class="password-toggle-header"
+                        onclick="togglePasswordSection()">
+
+
+                        <h4>
+
+                            <i class="fa-solid fa-lock"></i>
+
+                            Change Password
+
+                        </h4>
+
+
+                        <i
+                            class="fa-solid fa-chevron-down chevron-icon">
+                        </i>
+
+                    </div>
+
+
+                    <div class="password-fields">
+
+
+                        <div class="profile-form-group">
+
+                            <label for="currentPassword">
+                                Current Password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="currentPassword"
+                                autocomplete="current-password">
+
+                        </div>
+
+
+                        <div class="profile-form-group">
+
+                            <label for="newPassword">
+                                New Password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="newPassword"
+                                minlength="8"
+                                autocomplete="new-password">
+
+                        </div>
+
+
+                        <div class="profile-form-group">
+
+                            <label for="confirmPassword">
+                                Confirm New Password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                minlength="8"
+                                autocomplete="new-password">
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="btn-save"
+                            onclick="changePassword()">
+
+                            Change Password
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-modal-footer">
+
+
+                    <button
+                        type="button"
+                        class="btn-cancel"
+                        onclick="closeProfileModal()">
+
+                        Cancel
+
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="btn-save"
+                        id="saveProfileButton">
+
+                        Save Changes
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     GRADING MODAL
+====================================================== -->
+
+<div
+    class="grading-modal-overlay"
+    id="gradingModal">
+
+
+    <div class="grading-modal-card">
+
+
+        <div class="grading-modal-header">
+
+            <h3 id="gradingModalTitle">
+                Grade Submission
+            </h3>
+
+
+            <button
+                type="button"
+                class="grading-modal-close"
+                onclick="closeGradingModal()">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+
+        <div class="grading-modal-body">
+
+
+            <div class="grading-info-group">
+
+                <strong>
+                    Learner:
+                </strong>
+
+                <span id="gradingLearner">
+                    —
+                </span>
+
+            </div>
+
+
+            <div class="grading-info-group">
+
+                <strong>
+                    Class:
+                </strong>
+
+                <span id="gradingCourse">
+                    —
+                </span>
+
+            </div>
+
+
+            <div class="grading-info-group">
+
+                <strong>
+                    Module:
+                </strong>
+
+                <span id="gradingModule">
+                    —
+                </span>
+
+            </div>
+
+
+            <div class="grading-info-group">
+
+                <strong>
+                    File:
+                </strong>
+
+                <a
+                    href="#"
+                    id="gradingFile"
+                    class="grading-file-link"
+                    onclick="openCurrentSubmissionFile(event)">
+
+                    —
+
+                </a>
+
+            </div>
+
+
+            <!-- SCORING CARD: one row per activity in the compiled file -->
+            <section class="score-card" aria-labelledby="scoreCardTitle">
+
+                <div class="score-card-head">
+                    <div>
+                        <h4 id="scoreCardTitle">Scoring Card</h4>
+                        <p>Score each activity in the submitted file.</p>
+                    </div>
+                </div>
+
+                <div class="score-row score-row-labels" aria-hidden="true">
+                    <span>Activity title</span>
+                    <span>Score</span>
+                    <span></span>
+                    <span>Over</span>
+                    <span></span>
+                </div>
+
+                <div id="scoreRows" class="score-rows"></div>
+
+                <div class="score-lock-note" id="scoreLockNote" hidden>
+                    <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                    <span id="scoreLockText">These scores are locked because the learner has already received them. This protects grades from accidental or unauthorized changes. To edit a score, click “Change saved scores” and enter your password.</span>
+                    <button type="button" class="score-unlock" id="unlockScoresButton">
+                        <i class="fa-solid fa-key" aria-hidden="true"></i>
+                        Change saved scores
+                    </button>
+                </div>
+
+                <button type="button" class="score-add" id="addScoreRow">
+                    <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                    Add activity
+                </button>
+
+                <p class="score-error" id="scoreError" role="alert" hidden></p>
+
+            </section>
+
+
+            <div class="grading-form-group">
+
+                <label for="modalFeedback">
+                    Feedback
+                </label>
+
+                <textarea
+                    id="modalFeedback"
+                    placeholder="Enter feedback for the learner..."></textarea>
+
+            </div>
+
+        </div>
+
+
+        <div class="grading-modal-footer">
+
+
+            <button
+                type="button"
+                class="btn-cancel"
+                onclick="closeGradingModal()">
+
+                Close
+
+            </button>
+
+
+            <button
+                type="button"
+                class="btn-save"
+                id="editGradeButton"
+                onclick="enableGradeEditing()"
+                style="display: none">
+
+                <i class="fa-solid fa-pen-to-square"></i>
+                Edit Grade
+
+            </button>
+
+
+            <button
+                type="button"
+                class="btn-save"
+                id="saveGradeButton"
+                onclick="saveGrade()">
+
+                Save Grade
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     CONFIRM BEFORE CHANGING SAVED SCORES
+     The instructor ticks the confirmation and enters their
+     password; only then are the saved scores unlocked.
+====================================================== -->
+
+<div class="confirm-edit-overlay" id="confirmEditModal" aria-hidden="true">
+
+    <form class="confirm-edit-box" id="confirmEditForm" role="dialog" aria-modal="true"
+        aria-labelledby="confirmEditTitle" aria-describedby="confirmEditText" novalidate>
+
+        <div class="confirm-edit-icon" aria-hidden="true">
+            <i class="fa-solid fa-user-shield"></i>
+        </div>
+
+        <h3 id="confirmEditTitle">Change a Score Already Given?</h3>
+
+        <p id="confirmEditText">
+            This learner already received these scores. If you change them, the learner
+            will be notified and the change is recorded in the audit log.
+        </p>
+
+        <label class="confirm-edit-check">
+            <input type="checkbox" id="confirmEditCheck">
+            <span>I confirm that I want to edit this learner's saved score.</span>
+        </label>
+
+        <label for="confirmEditPassword">Enter your password to continue</label>
+        <div class="confirm-edit-password">
+            <input type="password" id="confirmEditPassword" autocomplete="current-password" maxlength="255">
+            <button type="button" id="confirmEditShow" aria-label="Show password" title="Show password">
+                <i class="fa-solid fa-eye" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <p class="confirm-edit-error" id="confirmEditError" role="alert" hidden></p>
+
+        <div class="confirm-edit-actions">
+            <button type="button" class="btn-cancel" id="confirmEditCancel">Cancel</button>
+            <button type="submit" class="btn-save" id="confirmEditSubmit">
+                <i class="fa-solid fa-unlock" aria-hidden="true"></i>
+                Confirm and Edit
+            </button>
+        </div>
+
+    </form>
+
+</div>
+
+
+<!-- =====================================================
+     TOAST
+====================================================== -->
+
+<div
+    class="toast-container"
+    id="toastContainer">
+</div>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+====================================================== -->
+
+<script src="../api-config.js"></script>
+<script>
+
+/* =========================================================
+   API CONFIGURATION
+========================================================= */
+
+const API_BASE_URL = window.SIKNAYAN_API_ROOT;
+
+
+const authToken =
+    sessionStorage.getItem("token") ||
+    sessionStorage.getItem("authToken");
+
+
+/* =========================================================
+   GLOBAL VARIABLES
+========================================================= */
+
+let allSubmissions = [];
+
+let currentSubmission = null;
+
+
+/* =========================================================
+   DOM ELEMENTS
+========================================================= */
+
+const sidebar =
+    document.getElementById("sidebar");
+
+const mainContent =
+    document.getElementById("mainContent");
+
+const sidebarToggleIcon =
+    document.getElementById("sidebarToggleIcon");
+
+const submissionsTableBody =
+    document.getElementById("submissionsTableBody");
+
+const searchInput =
+    document.getElementById("searchInput");
+
+const profileModal =
+    document.getElementById("profileModal");
+
+const gradingModal =
+    document.getElementById("gradingModal");
+
+const passwordSection =
+    document.getElementById("passwordSection");
+
+
+/* =========================================================
+   AUTH CHECK
+========================================================= */
+
+function checkAuthentication() {
+
+    if (!authToken) {
+
+        showToast(
+            "You are not logged in. Please log in again.",
+            "error"
+        );
+
+        setTimeout(() => {
+
+            window.location.href =
+                "../index.html";
+
+        }, 1500);
+
+        return false;
+    }
+
+    return true;
+}
+
+
+/* =========================================================
+   SAFE JSON RESPONSE
+========================================================= */
+
+async function parseJsonResponse(response) {
+
+    const text = await response.text();
+
+    if (!text) {
+
+        return {
+            success: false,
+            message: `Server returned an empty response (${response.status}).`
+        };
+
+    }
+
+
+    try {
+
+        return JSON.parse(text);
+
+    } catch (error) {
+
+        console.error(
+            "Invalid JSON response:",
+            text
+        );
+
+        return {
+            success: false,
+            message:
+                `Server returned an invalid response (${response.status}).`
+        };
+
+    }
+
+}
+
+
+/* =========================================================
+   AUTH HEADERS
+========================================================= */
+
+function getAuthHeaders() {
+
+    return {
+        "Authorization":
+            `Bearer ${authToken}`,
+
+        "Accept":
+            "application/json"
+    };
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+        return "";
+    }
+
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+function showToast(
+    message,
+    type = "success"
+) {
+
+    const container =
+        document.getElementById(
+            "toastContainer"
+        );
+
+
+    const toast =
+        document.createElement("div");
+
+
+    toast.className =
+        `toast toast-${type}`;
+
+
+    const icon =
+        type === "success"
+            ? "fa-circle-check"
+            : "fa-circle-exclamation";
+
+
+    toast.innerHTML = `
+
+        <i class="fa-solid ${icon}"></i>
+
+        <span>
+            ${escapeHtml(message)}
+        </span>
+
+    `;
+
+
+    container.appendChild(toast);
+
+
+    setTimeout(() => {
+
+        toast.classList.add("show");
+
+    }, 10);
+
+
+    setTimeout(() => {
+
+        toast.classList.remove("show");
+
+
+        setTimeout(() => {
+
+            toast.remove();
+
+        }, 300);
+
+    }, 3500);
+
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+function toggleSidebar() {
+
+    const collapsed = sidebar.classList.toggle("collapsed");
+
+    mainContent.classList.toggle("expanded", collapsed);
+
+    const toggleButton = document.getElementById("sidebarToggle");
+    const toggleIcon = toggleButton?.querySelector("i");
+
+    if (toggleButton) {
+        toggleButton.setAttribute("aria-expanded", String(!collapsed));
+        toggleButton.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
+        toggleButton.title = collapsed ? "Expand sidebar" : "Collapse sidebar";
+    }
+
+    if (toggleIcon) {
+        toggleIcon.className = collapsed
+            ? "fa-solid fa-angles-right"
+            : "fa-solid fa-angles-left";
+    }
+
+}
+
+// The collapse button was never connected to toggleSidebar().
+document
+    .getElementById("sidebarToggle")
+    ?.addEventListener("click", toggleSidebar);
+
+
+/* =========================================================
+   NOTIFICATIONS
+========================================================= */
+
+function goToNotifications() {
+
+    window.location.href =
+        "notification.html";
+
+}
+
+
+/* =========================================================
+   LOAD SUBMISSIONS
+========================================================= */
+
+async function loadSubmissions() {
+
+    if (!checkAuthentication()) {
+        return;
+    }
+
+
+    // No loading message: the table keeps what it shows until the
+    // new submissions arrive.
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/instructor/submissions`,
+                {
+                    method: "GET",
+
+                    headers:
+                        getAuthHeaders()
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            handleUnauthorized();
+
+            return;
+        }
+
+
+        const data =
+            await parseJsonResponse(
+                response
+            );
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Failed to load submissions."
+            );
+
+        }
+
+
+        allSubmissions =
+            Array.isArray(
+                data.submissions
+            )
+                ? data.submissions
+                : [];
+
+
+        renderSubmissions(
+            allSubmissions
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Load submissions error:",
+            error
+        );
+
+
+        submissionsTableBody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="empty-row">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                    ${escapeHtml(
+                        error.message ||
+                        "Unable to load submissions."
+                    )}
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDER SUBMISSIONS
+========================================================= */
+
+function renderSubmissions(
+    submissions
+) {
+
+    if (
+        !submissions ||
+        submissions.length === 0
+    ) {
+
+        submissionsTableBody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="empty-row">
+
+                    <i class="fa-solid fa-folder-open"></i>
+
+                    No submissions found.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+    }
+
+
+    submissionsTableBody.innerHTML =
+        submissions.map(
+            (item) => {
+
+                const learner =
+                    item.learner || {};
+
+
+                const course =
+                    item.course || {};
+
+
+                const module =
+                    item.module || {};
+
+
+                const grade =
+                    item.grade || null;
+
+
+                /*
+                 * The users table uses school_id.
+                 * There is no student_id field.
+                 */
+
+                const learnerId =
+                    learner.school_id || "—";
+
+
+                const learnerName =
+                    learner.name || "Unknown Learner";
+
+
+                const courseName =
+                    course.name ||
+                    course.code ||
+                    "—";
+
+
+                const moduleName =
+                    module.name ||
+                    module.title ||
+                    "—";
+
+
+                const submittedAt =
+                    formatDate(
+                        item.submitted_at
+                    );
+
+
+                const isGraded =
+                    !!grade ||
+                    item.status === "graded";
+
+
+                const statusHtml =
+                    isGraded
+
+                        ? `
+                            <span class="status-badge status-graded">
+                                Graded
+                            </span>
+                          `
+
+                        : `
+                            <span class="status-badge status-pending">
+                                Needs Grading
+                            </span>
+                          `;
+
+
+                const actionHtml =
+                    isGraded
+
+                        ? `
+                            <button
+                                type="button"
+                                class="action-btn view-btn"
+                                onclick="openGradingModal(${Number(item.id)}, true)">
+
+                                <i class="fa-solid fa-eye"></i>
+                                View
+
+                            </button>
+                          `
+
+                        : `
+                            <button
+                                type="button"
+                                class="action-btn grade-btn"
+                                onclick="openGradingModal(${Number(item.id)}, false)">
+
+                                <i class="fa-solid fa-pen-to-square"></i>
+                                Grade
+
+                            </button>
+                          `;
+
+
+                return `
+
+                    <tr>
+
+                        <td>
+                            ${escapeHtml(
+                                learnerId
+                            )}
+                        </td>
+
+                        <td class="font-medium">
+                            ${escapeHtml(
+                                learnerName
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                courseName
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                moduleName
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                submittedAt
+                            )}
+                        </td>
+
+                        <td>
+                            ${statusHtml}
+                        </td>
+
+                        <td>
+                            ${actionHtml}
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+/* =========================================================
+   DATE FORMAT
+========================================================= */
+
+function formatDate(
+    dateValue
+) {
+
+    if (!dateValue) {
+        return "—";
+    }
+
+
+    const date =
+        new Date(dateValue);
+
+
+    if (Number.isNaN(
+        date.getTime()
+    )) {
+
+        return String(dateValue);
+
+    }
+
+
+    return date.toLocaleString(
+        "en-US",
+        {
+            year: "numeric",
+
+            month: "short",
+
+            day: "numeric",
+
+            hour: "numeric",
+
+            minute: "2-digit"
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+function filterSubmissions() {
+
+    const keyword =
+        searchInput.value
+            .trim()
+            .toLowerCase();
+
+
+    if (!keyword) {
+
+        renderSubmissions(
+            allSubmissions
+        );
+
+        return;
+    }
+
+
+    const filtered =
+        allSubmissions.filter(
+            (item) => {
+
+                const learner =
+                    item.learner || {};
+
+
+                const course =
+                    item.course || {};
+
+
+                const module =
+                    item.module || {};
+
+
+                const searchableText = [
+
+                    learner.school_id,
+
+                    learner.name,
+
+                    learner.email,
+
+                    course.name,
+
+                    course.code,
+
+                    module.name,
+
+                    module.title,
+
+                    item.file_name,
+
+                    item.status
+
+                ]
+                    .filter(Boolean)
+                    .join(" ")
+                    .toLowerCase();
+
+
+                return searchableText
+                    .includes(keyword);
+
+            }
+        );
+
+
+    renderSubmissions(
+        filtered
+    );
+
+}
+
+
+searchInput.addEventListener(
+    "input",
+    filterSubmissions
+);
+
+
+/* =========================================================
+   FIND SUBMISSION
+========================================================= */
+
+function findSubmissionById(
+    submissionId
+) {
+
+    return allSubmissions.find(
+        (item) =>
+            Number(item.id) ===
+            Number(submissionId)
+    );
+
+}
+
+
+/* =========================================================
+   OPEN GRADING MODAL
+========================================================= */
+
+function openGradingModal(
+    submissionId,
+    viewOnly = false
+) {
+
+    const submission =
+        findSubmissionById(
+            submissionId
+        );
+
+
+    if (!submission) {
+
+        showToast(
+            "Submission could not be found.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    currentSubmission =
+        submission;
+
+
+    const learner =
+        submission.learner || {};
+
+
+    const course =
+        submission.course || {};
+
+
+    const module =
+        submission.module || {};
+
+
+    const grade =
+        submission.grade || null;
+
+
+    document.getElementById(
+        "gradingModalTitle"
+    ).textContent =
+        viewOnly
+            ? "View Grade"
+            : "Grade Submission";
+
+
+    document.getElementById(
+        "gradingLearner"
+    ).textContent =
+        learner.name || "Unknown Learner";
+
+
+    document.getElementById(
+        "gradingCourse"
+    ).textContent =
+        course.name ||
+        course.code ||
+        "—";
+
+
+    document.getElementById(
+        "gradingModule"
+    ).textContent =
+        module.name ||
+        module.title ||
+        "—";
+
+
+    const fileLink =
+        document.getElementById(
+            "gradingFile"
+        );
+
+
+    fileLink.textContent =
+        submission.file_name ||
+        "View submitted file";
+
+
+    fileLink.href = "#";
+
+
+    // Scoring card rows: saved rows, else the single score as one row,
+    // else one empty row.
+    const savedItems =
+        grade && Array.isArray(grade.items) && grade.items.length
+            ? grade.items
+            : grade
+                ? [{ title: module.name || module.title || "Activity", score: grade.score, max_score: grade.max_score }]
+                : [{ title: "Activity 1", score: "", max_score: "" }];
+
+    setScoreRows(savedItems, grade ? savedItems.length : 0);
+
+
+    document.getElementById(
+        "modalFeedback"
+    ).value =
+        grade && grade.feedback
+            ? grade.feedback
+            : "";
+
+
+    setGradeEditable(!viewOnly);
+
+
+    gradingModal.classList.add(
+        "active"
+    );
+
+}
+
+
+/* =========================================================
+   CLOSE GRADING MODAL
+========================================================= */
+
+function closeGradingModal() {
+
+    const wasOpen =
+        gradingModal.classList.contains("active");
+
+    gradingModal.classList.remove(
+        "active"
+    );
+
+
+    currentSubmission =
+        null;
+
+    // The password confirmation ends with the grading window.
+    gradeEditPass =
+        null;
+
+
+    // Opened from a learner on the class page: go back there.
+    if (wasOpen && GRADING_RETURN_URL) {
+        window.location.href = GRADING_RETURN_URL;
+    }
+
+}
+
+
+/* =========================================================
+   OPENED FROM THE CLASS PAGE
+   submissions.html?submission=ID&return=class-content.html?...
+   opens that submission's scoring card; closing or saving it
+   returns to the class. Only a class-content.html address is
+   accepted as the return page.
+========================================================= */
+
+const GRADING_PARAMS =
+    new URLSearchParams(window.location.search);
+
+const GRADING_RETURN_URL = (() => {
+    const value = GRADING_PARAMS.get("return") || "";
+
+    return /^class-content\.html\?course_id=\d+(&learner=\d+)?$/.test(value)
+        ? value
+        : "";
+})();
+
+function openGradingFromLink() {
+    const submissionId =
+        GRADING_PARAMS.get("submission");
+
+    if (!submissionId || !/^\d+$/.test(submissionId)) {
+        return;
+    }
+
+    if (findSubmissionById(submissionId)) {
+        openGradingModal(submissionId);
+    } else {
+        showToast(
+            "That activity could not be found. It may have been unsubmitted.",
+            "error"
+        );
+    }
+}
+
+
+/* =========================================================
+   OPEN SUBMISSION FILE
+========================================================= */
+
+async function openCurrentSubmissionFile(
+    event
+) {
+
+    event.preventDefault();
+
+
+    if (!currentSubmission) {
+
+        showToast(
+            "No submission selected.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    await openSubmissionFile(
+        currentSubmission.id
+    );
+
+}
+
+
+/* =========================================================
+   OPEN SUBMISSION FILE
+========================================================= */
+
+async function openSubmissionFile(
+    submissionId
+) {
+
+    if (!authToken) {
+
+        showToast(
+            "Authentication token is missing.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    /*
+     * Open a blank tab immediately.
+     * This reduces the chance that the browser
+     * blocks the new window after the async request.
+     */
+
+    const newWindow =
+        window.open(
+            "",
+            "_blank"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/instructor/submissions/${submissionId}/file`,
+                {
+                    method: "GET",
+
+                    headers:
+                        getAuthHeaders()
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            if (newWindow) {
+                newWindow.close();
+            }
+
+            handleUnauthorized();
+
+            return;
+        }
+
+
+        if (!response.ok) {
+
+            if (newWindow) {
+                newWindow.close();
+            }
+
+            const data =
+                await parseJsonResponse(
+                    response
+                );
+
+
+            throw new Error(
+                data.message ||
+                "Unable to open submitted file."
+            );
+
+        }
+
+
+        const blob =
+            await response.blob();
+
+
+        // View shows the file (PDF, image or Word .docx) instead of
+        // downloading it; see js/file-viewer.js.
+        const fileName =
+            findSubmissionById(submissionId)?.file_name ||
+            "submission";
+
+        await window.SiknayanFileViewer.show(
+            blob,
+            fileName,
+            newWindow
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "File opening error:",
+            error
+        );
+
+
+        if (newWindow) {
+            newWindow.close();
+        }
+
+
+        showToast(
+            error.message ||
+            "Unable to open the file.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SAVE GRADE
+========================================================= */
+
+/* =========================================================
+   SCORING CARD
+   One row per activity in the learner's compiled file:
+   title, score and "over". The total is the grade.
+========================================================= */
+
+const MAX_SCORE_ROWS = 30;
+
+function scoreRowHtml(item, index, locked = false) {
+    const value = v => (v === null || v === undefined || v === "" ? "" : escapeHtml(String(Number(v))));
+    return `
+        <div class="score-row${locked ? " locked" : ""}" data-score-row${locked ? " data-locked" : ""}>
+            <input type="text" class="score-title" maxlength="150"
+                aria-label="Activity ${index + 1} title"
+                placeholder="e.g. Activity ${index + 1}"
+                value="${escapeHtml(item.title || "")}">
+            <input type="number" class="score-value" min="0" step="0.01"
+                aria-label="Activity ${index + 1} score" placeholder="0"
+                value="${value(item.score)}">
+            <span class="score-over" aria-hidden="true">/</span>
+            <input type="number" class="score-max" min="0.01" step="0.01"
+                aria-label="Activity ${index + 1} is scored over" placeholder="100"
+                value="${value(item.max_score)}">
+            <button type="button" class="score-remove" data-remove-score-row
+                title="Remove activity" aria-label="Remove activity ${index + 1}">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+        </div>`;
+}
+
+// One-time pass from the password confirmation; while set, the saved
+// scores of the open submission can be changed.
+let gradeEditPass = null;
+
+// The first "lockedCount" rows are scores already given: they stay
+// read-only until the instructor confirms with their password (the
+// server refuses changes to them too).
+function setScoreRows(items, lockedCount = 0) {
+    gradeEditPass = null;
+    document.getElementById("scoreRows").innerHTML =
+        items.map((item, index) => scoreRowHtml(item, index, index < lockedCount)).join("");
+    updateScoreTotal();
+}
+
+function addScoreRow() {
+    const rows = document.getElementById("scoreRows");
+    const count = rows.querySelectorAll("[data-score-row]").length;
+
+    if (count >= MAX_SCORE_ROWS) {
+        showScoreError(`A scoring card can have up to ${MAX_SCORE_ROWS} activities.`);
+        return;
+    }
+
+    rows.insertAdjacentHTML("beforeend", scoreRowHtml({ title: `Activity ${count + 1}` }, count));
+    updateScoreTotal();
+    const title = rows.lastElementChild.querySelector(".score-title");
+    title.focus();
+    title.select();
+}
+
+function readScoreRows() {
+    const rows = [...document.querySelectorAll("#scoreRows [data-score-row]")];
+    const items = [];
+
+    if (rows.length === 0) {
+        return { error: "Add at least one activity to the scoring card." };
+    }
+
+    for (const [index, row] of rows.entries()) {
+        const title = row.querySelector(".score-title").value.trim();
+        const scoreText = row.querySelector(".score-value").value.trim();
+        const maxText = row.querySelector(".score-max").value.trim();
+        const score = Number(scoreText);
+        const max = Number(maxText);
+        const name = title || `Activity ${index + 1}`;
+
+        if (!title) return { error: `Please enter a title for activity ${index + 1}.` };
+        if (scoreText === "" || Number.isNaN(score) || score < 0) return { error: `Please enter a valid score for "${name}".` };
+        if (maxText === "" || Number.isNaN(max) || max <= 0) return { error: `Please enter what "${name}" is scored over (more than 0).` };
+        if (score > max) return { error: `"${name}": the score (${score}) is higher than its total (${max}). A score cannot be more than the total it is scored over. Please check for a typo.` };
+
+        items.push({ title, score, max_score: max });
+    }
+
+    return { items };
+}
+
+function updateScoreTotal() {
+    let score = 0;
+    let max = 0;
+
+    document.querySelectorAll("#scoreRows [data-score-row]").forEach(row => {
+        const value = Number(row.querySelector(".score-value").value);
+        const over = Number(row.querySelector(".score-max").value);
+        if (!Number.isNaN(value)) score += value;
+        if (!Number.isNaN(over)) max += over;
+    });
+
+    // No overall total or percentage is shown on the card.
+    const round = n => Math.round(n * 100) / 100;
+    const totalBox = document.getElementById("scoreTotal");
+    if (totalBox) totalBox.textContent = `${round(score)} / ${round(max)}`;
+
+    // The last remaining row stays (a card needs at least one).
+    const container = document.getElementById("scoreRows");
+    const rows = container.querySelectorAll("[data-score-row]");
+    rows.forEach(row => {
+        row.querySelector("[data-remove-score-row]").disabled =
+            rows.length === 1 ||
+            container.dataset.readonly === "true" ||
+            row.hasAttribute("data-locked");
+    });
+}
+
+function showScoreError(message) {
+    const box = document.getElementById("scoreError");
+    box.textContent = message;
+    box.hidden = !message;
+}
+
+function setGradeEditable(editable) {
+    const rows = document.getElementById("scoreRows");
+    rows.dataset.readonly = String(!editable);
+    rows.querySelectorAll("input").forEach(input => {
+        input.disabled = !editable || Boolean(input.closest("[data-locked]"));
+    });
+    const note = document.getElementById("scoreLockNote");
+    note.hidden = !editable || !(rows.querySelector("[data-locked]") || gradeEditPass);
+    note.classList.toggle("unlocked", Boolean(gradeEditPass));
+    note.querySelector("i").className = gradeEditPass ? "fa-solid fa-lock-open" : "fa-solid fa-lock";
+    document.getElementById("scoreLockText").textContent = gradeEditPass
+        ? "Saved scores are unlocked. Your changes will be recorded and the learner will be notified."
+        : "These scores are locked because the learner has already received them. This protects grades from accidental or unauthorized changes. To edit a score, click “Change saved scores” and enter your password.";
+    document.getElementById("unlockScoresButton").hidden = Boolean(gradeEditPass);
+    document.getElementById("addScoreRow").hidden = !editable;
+    document.getElementById("modalFeedback").disabled = !editable;
+    document.getElementById("saveGradeButton").style.display = editable ? "inline-block" : "none";
+    document.getElementById("editGradeButton").style.display = editable ? "none" : "inline-block";
+    document.getElementById("gradingModalTitle").textContent =
+        editable ? (currentSubmission && currentSubmission.grade ? "Edit Grade" : "Grade Submission") : "View Grade";
+    showScoreError("");
+    document.getElementById("saveGradeButton").disabled = false;
+    if (editable) checkScoreRowsLive();
+    updateScoreTotal();
+}
+
+// Graded work opens read-only; this switches it to editing.
+function enableGradeEditing() {
+    setGradeEditable(true);
+    const first = document.querySelector("#scoreRows [data-score-row]:not([data-locked]) .score-value");
+    if (first) first.focus();
+    else document.getElementById("addScoreRow").focus();
+}
+
+/* ---------------------------------------------------------
+   CONFIRM BEFORE CHANGING SAVED SCORES
+   Tick "I confirm" + enter the password -> the server checks it
+   and returns a one-time pass -> the saved rows are unlocked.
+--------------------------------------------------------- */
+
+const confirmEditModal = document.getElementById("confirmEditModal");
+const confirmEditForm = document.getElementById("confirmEditForm");
+const confirmEditCheck = document.getElementById("confirmEditCheck");
+const confirmEditPassword = document.getElementById("confirmEditPassword");
+const confirmEditError = document.getElementById("confirmEditError");
+const confirmEditSubmit = document.getElementById("confirmEditSubmit");
+
+function showConfirmEditError(message) {
+    confirmEditError.textContent = message || "";
+    confirmEditError.hidden = !message;
+}
+
+function openConfirmEdit(message) {
+    if (!currentSubmission) return;
+
+    confirmEditCheck.checked = false;
+    confirmEditPassword.value = "";
+    confirmEditPassword.type = "password";
+    showConfirmEditError(message || "");
+    confirmEditModal.classList.add("active");
+    confirmEditModal.setAttribute("aria-hidden", "false");
+    setTimeout(() => confirmEditCheck.focus(), 50);
+}
+
+function closeConfirmEdit() {
+    confirmEditModal.classList.remove("active");
+    confirmEditModal.setAttribute("aria-hidden", "true");
+    confirmEditPassword.value = "";
+    document.getElementById("unlockScoresButton").focus();
+}
+
+function unlockSavedScores() {
+    document.querySelectorAll("#scoreRows [data-locked]").forEach(row => {
+        row.removeAttribute("data-locked");
+        row.classList.remove("locked");
+    });
+    setGradeEditable(true);
+    const first = document.querySelector("#scoreRows .score-value");
+    if (first) first.focus();
+}
+
+document.getElementById("unlockScoresButton").addEventListener("click", () => openConfirmEdit());
+document.getElementById("confirmEditCancel").addEventListener("click", closeConfirmEdit);
+
+confirmEditModal.addEventListener("click", event => {
+    if (event.target === confirmEditModal) closeConfirmEdit();
+});
+
+document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && confirmEditModal.classList.contains("active")) {
+        // Close only this window, not the grading window behind it.
+        event.stopImmediatePropagation();
+        closeConfirmEdit();
+    }
+});
+
+document.getElementById("confirmEditShow").addEventListener("click", event => {
+    const show = confirmEditPassword.type === "password";
+    confirmEditPassword.type = show ? "text" : "password";
+    const button = event.currentTarget;
+    button.querySelector("i").className = show ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
+    button.setAttribute("aria-label", show ? "Hide password" : "Show password");
+    button.title = show ? "Hide password" : "Show password";
+});
+
+confirmEditForm.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    if (!confirmEditCheck.checked) {
+        showConfirmEditError("Please tick the box to confirm that you want to edit the saved score.");
+        confirmEditCheck.focus();
+        return;
+    }
+
+    if (!confirmEditPassword.value) {
+        showConfirmEditError("Please enter your password.");
+        confirmEditPassword.focus();
+        return;
+    }
+
+    if (!currentSubmission) return;
+
+    showConfirmEditError("");
+    confirmEditSubmit.disabled = true;
+
+    try {
+        const response = await fetch(
+            `${API_BASE_URL}/instructor/submissions/${currentSubmission.id}/grade/confirm-edit`,
+            {
+                method: "POST",
+                headers: { ...getAuthHeaders(), "Content-Type": "application/json" },
+                body: JSON.stringify({ password: confirmEditPassword.value })
+            }
+        );
+
+        if (response.status === 401) {
+            handleUnauthorized();
+            return;
+        }
+
+        const data = await parseJsonResponse(response);
+
+        if (!response.ok || !data.success || !data.edit_pass) {
+            throw new Error(data.message || "Unable to confirm your password.");
+        }
+
+        gradeEditPass = data.edit_pass;
+        confirmEditModal.classList.remove("active");
+        confirmEditModal.setAttribute("aria-hidden", "true");
+        confirmEditPassword.value = "";
+        unlockSavedScores();
+        showToast("Password confirmed. You can now change the saved scores.", "success");
+    } catch (error) {
+        showConfirmEditError(error.message || "Unable to confirm your password.");
+        confirmEditPassword.select();
+    } finally {
+        confirmEditSubmit.disabled = false;
+    }
+});
+
+document.getElementById("addScoreRow").addEventListener("click", addScoreRow);
+
+/* Checks the scores while the instructor types, so a typo such as a
+   score higher than its "Over" total is pointed out right away. The
+   row is marked in red and Save Grade stays off until it is fixed. */
+function checkScoreRowsLive() {
+    const problems = [];
+
+    document.querySelectorAll("#scoreRows [data-score-row]").forEach((row, index) => {
+        const name = row.querySelector(".score-title").value.trim() || `Activity ${index + 1}`;
+        const scoreText = row.querySelector(".score-value").value.trim();
+        const maxText = row.querySelector(".score-max").value.trim();
+        const score = Number(scoreText);
+        const max = Number(maxText);
+
+        let problem = "";
+
+        if (scoreText !== "" && (Number.isNaN(score) || score < 0)) {
+            problem = `"${name}": the score cannot be negative. Please check the score you typed.`;
+        } else if (maxText !== "" && (Number.isNaN(max) || max <= 0)) {
+            problem = `"${name}": the "Over" total must be more than 0. Please check the total you typed.`;
+        } else if (scoreText !== "" && maxText !== "" && score > max) {
+            problem = `"${name}": the score (${score}) is higher than its total (${max}). ` +
+                `A score cannot be more than the total it is scored over. Please check for a typo.`;
+        }
+
+        row.classList.toggle("invalid", Boolean(problem));
+        if (problem) problems.push(problem);
+    });
+
+    showScoreError(problems.join(" "));
+    document.getElementById("saveGradeButton").disabled = problems.length > 0;
+    return problems.length === 0;
+}
+
+document.getElementById("scoreRows").addEventListener("input", () => {
+    checkScoreRowsLive();
+    updateScoreTotal();
+});
+
+document.getElementById("scoreRows").addEventListener("click", event => {
+    const button = event.target.closest("[data-remove-score-row]");
+    if (!button || button.disabled || button.closest("[data-locked]")) return;
+    button.closest("[data-score-row]").remove();
+    checkScoreRowsLive();
+    updateScoreTotal();
+});
+
+
+async function saveGrade() {
+
+    if (!currentSubmission) {
+
+        showToast(
+            "No submission selected.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const feedback =
+        document.getElementById(
+            "modalFeedback"
+        ).value.trim();
+
+
+    const card = readScoreRows();
+
+    if (card.error) {
+        showScoreError(card.error);
+        return;
+    }
+
+    showScoreError("");
+
+
+    const saveButton =
+        document.getElementById(
+            "saveGradeButton"
+        );
+
+
+    saveButton.disabled =
+        true;
+
+
+    saveButton.innerHTML = `
+
+        <i class="fa-solid fa-spinner fa-spin"></i>
+
+        Saving...
+
+    `;
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/instructor/submissions/${currentSubmission.id}/grade`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        ...getAuthHeaders(),
+
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        items: card.items,
+
+                        feedback:
+                            feedback || null,
+
+                        // Only after the password confirmation.
+                        ...(gradeEditPass ? { edit_pass: gradeEditPass } : {})
+                    })
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            handleUnauthorized();
+
+            return;
+        }
+
+
+        const data =
+            await parseJsonResponse(
+                response
+            );
+
+
+        // Saved scores were changed without a (still valid) confirmation,
+        // e.g. the 10 minutes ran out: ask for the password again.
+        if (!response.ok && data.password_required) {
+            gradeEditPass = null;
+            openConfirmEdit(
+                "Please confirm with your password again to save changes to scores already given."
+            );
+            return;
+        }
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Unable to save grade."
+            );
+
+        }
+
+
+        gradeEditPass = null;
+
+        showToast(
+            data.message ||
+            "Grade saved successfully.",
+            "success"
+        );
+
+
+        closeGradingModal();
+
+
+        await loadSubmissions();
+
+
+    } catch (error) {
+
+        console.error(
+            "Save grade error:",
+            error
+        );
+
+
+        showScoreError(
+            error.message ||
+            "Unable to save grade."
+        );
+
+        showToast(
+            error.message ||
+            "Unable to save grade.",
+            "error"
+        );
+
+    } finally {
+
+        saveButton.disabled =
+            false;
+
+        saveButton.innerHTML =
+            "Save Grade";
+
+    }
+
+}
+
+
+/* =========================================================
+   PROFILE MODAL
+========================================================= */
+
+async function openProfileModal() {
+
+    profileModal.classList.add(
+        "active"
+    );
+
+
+    await loadProfile();
+
+}
+
+
+/* =========================================================
+   CLOSE PROFILE MODAL
+========================================================= */
+
+function closeProfileModal() {
+
+    profileModal.classList.remove(
+        "active"
+    );
+
+}
+
+
+/* =========================================================
+   LOAD PROFILE
+========================================================= */
+
+async function loadProfile() {
+
+    if (!authToken) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/instructor/profile`,
+                {
+                    method: "GET",
+
+                    headers:
+                        getAuthHeaders()
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            handleUnauthorized();
+
+            return;
+        }
+
+
+        const data =
+            await parseJsonResponse(
+                response
+            );
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Unable to load profile."
+            );
+
+        }
+
+
+        const user =
+            data.user || {};
+
+
+        updateProfileUI(
+            user
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Profile loading error:",
+            error
+        );
+
+
+        showToast(
+            error.message ||
+            "Unable to load profile.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   UPDATE PROFILE UI
+========================================================= */
+
+function updateProfileUI(
+    user
+) {
+
+    const name =
+        user.name ||
+        "Instructor";
+
+
+    const email =
+        user.email ||
+        "";
+
+
+    const schoolId =
+        user.school_id ||
+        "";
+
+
+    const program =
+        user.program ||
+        "";
+
+
+    const contact =
+        user.contact ||
+        "";
+
+
+    const role =
+        user.role ||
+        "instructor";
+
+
+    document.getElementById(
+        "profileName"
+    ).value =
+        name;
+
+
+    document.getElementById(
+        "profileSchoolId"
+    ).value =
+        schoolId;
+
+
+    document.getElementById(
+        "profileEmail"
+    ).value =
+        email;
+
+
+    document.getElementById(
+        "profileContact"
+    ).value =
+        contact;
+
+
+    document.getElementById(
+        "profileProgram"
+    ).value =
+        program;
+
+
+    document.getElementById(
+        "profileRole"
+    ).value =
+        capitalizeFirstLetter(
+            role
+        );
+
+
+    /*
+     * Use textContent instead of innerHTML
+     * for the instructor name.
+     */
+
+    document.getElementById(
+        "headerInstructorName"
+    ).textContent =
+        name;
+
+}
+
+
+/* =========================================================
+   CAPITALIZE
+========================================================= */
+
+function capitalizeFirstLetter(
+    value
+) {
+
+    if (!value) {
+        return "";
+    }
+
+
+    return value.charAt(0).toUpperCase() +
+        value.slice(1);
+
+}
+
+
+/* =========================================================
+   SAVE PROFILE
+========================================================= */
+
+async function saveProfile(
+    event
+) {
+
+    event.preventDefault();
+
+
+    const email =
+        document.getElementById(
+            "profileEmail"
+        ).value.trim();
+
+
+    const contact =
+        document.getElementById(
+            "profileContact"
+        ).value.trim();
+
+
+    if (!email) {
+
+        showToast(
+            "Email is required.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const saveButton =
+        document.getElementById(
+            "saveProfileButton"
+        );
+
+
+    saveButton.disabled =
+        true;
+
+
+    saveButton.innerHTML = `
+
+        <i class="fa-solid fa-spinner fa-spin"></i>
+
+        Saving...
+
+    `;
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/instructor/profile`,
+                {
+                    method: "PUT",
+
+                    headers: {
+                        ...getAuthHeaders(),
+
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        /*
+                         * The current UI intentionally keeps
+                         * the instructor name read-only.
+                         */
+
+                        name:
+                            document.getElementById(
+                                "profileName"
+                            ).value.trim(),
+
+                        email:
+                            email,
+
+                        contact:
+                            contact || null
+
+                    })
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            handleUnauthorized();
+
+            return;
+        }
+
+
+        const data =
+            await parseJsonResponse(
+                response
+            );
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Unable to save profile."
+            );
+
+        }
+
+
+        if (data.user) {
+
+            updateProfileUI(
+                data.user
+            );
+
+        }
+
+
+        showToast(
+            data.message ||
+            "Profile updated successfully.",
+            "success"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Save profile error:",
+            error
+        );
+
+
+        showToast(
+            error.message ||
+            "Unable to save profile.",
+            "error"
+        );
+
+    } finally {
+
+        saveButton.disabled =
+            false;
+
+        saveButton.innerHTML =
+            "Save Changes";
+
+    }
+
+}
+
+
+/* =========================================================
+   PASSWORD SECTION
+========================================================= */
+
+function togglePasswordSection() {
+
+    passwordSection.classList.toggle(
+        "open"
+    );
+
+}
+
+
+/* =========================================================
+   CHANGE PASSWORD
+========================================================= */
+
+async function changePassword() {
+
+    const currentPassword =
+        document.getElementById(
+            "currentPassword"
+        ).value;
+
+
+    const newPassword =
+        document.getElementById(
+            "newPassword"
+        ).value;
+
+
+    const confirmPassword =
+        document.getElementById(
+            "confirmPassword"
+        ).value;
+
+
+    if (!currentPassword) {
+
+        showToast(
+            "Please enter your current password.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if (newPassword.length < 8) {
+
+        showToast(
+            "New password must contain at least 8 characters.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if (
+        newPassword !==
+        confirmPassword
+    ) {
+
+        showToast(
+            "New passwords do not match.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/instructor/profile/password`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        ...getAuthHeaders(),
+
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        current_password:
+                            currentPassword,
+
+                        new_password:
+                            newPassword,
+
+                        new_password_confirmation:
+                            confirmPassword
+
+                    })
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            handleUnauthorized();
+
+            return;
+        }
+
+
+        const data =
+            await parseJsonResponse(
+                response
+            );
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Unable to change password."
+            );
+
+        }
+
+
+        document.getElementById(
+            "currentPassword"
+        ).value = "";
+
+
+        document.getElementById(
+            "newPassword"
+        ).value = "";
+
+
+        document.getElementById(
+            "confirmPassword"
+        ).value = "";
+
+
+        passwordSection.classList.remove(
+            "open"
+        );
+
+
+        showToast(
+            data.message ||
+            "Password changed successfully.",
+            "success"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Change password error:",
+            error
+        );
+
+
+        showToast(
+            error.message ||
+            "Unable to change password.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   AVATAR PREVIEW
+========================================================= */
+
+document
+    .getElementById("avatarFile")
+    .addEventListener(
+        "change",
+        function () {
+
+            const file =
+                this.files[0];
+
+
+            if (!file) {
+                return;
+            }
+
+
+            if (
+                !file.type.startsWith(
+                    "image/"
+                )
+            ) {
+
+                showToast(
+                    "Please select an image file.",
+                    "error"
+                );
+
+                this.value = "";
+
+                return;
+            }
+
+
+            const imageUrl =
+                URL.createObjectURL(
+                    file
+                );
+
+
+            document.getElementById(
+                "profileAvatar"
+            ).src =
+                imageUrl;
+
+
+            document.getElementById(
+                "headerAvatar"
+            ).src =
+                imageUrl;
+
+        }
+    );
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+function handleLogout(
+    event
+) {
+
+    /*
+     * Clear the authentication token
+     * before going to the logout page.
+     */
+
+    sessionStorage.removeItem(
+        "token"
+    );
+
+    sessionStorage.removeItem(
+        "authToken"
+    );
+
+}
+
+
+/* =========================================================
+   UNAUTHORIZED
+========================================================= */
+
+function handleUnauthorized() {
+
+    sessionStorage.removeItem(
+        "token"
+    );
+
+    sessionStorage.removeItem(
+        "authToken"
+    );
+
+
+    showToast(
+        "Your session has expired. Please log in again.",
+        "error"
+    );
+
+
+    setTimeout(() => {
+
+        window.location.href =
+            "../index.html";
+
+    }, 1200);
+
+}
+
+
+/* =========================================================
+   CLOSE MODALS WHEN CLICKING OUTSIDE
+========================================================= */
+
+profileModal.addEventListener(
+    "click",
+    function (event) {
+
+        if (
+            event.target ===
+            profileModal
+        ) {
+
+            closeProfileModal();
+
+        }
+
+    }
+);
+
+
+gradingModal.addEventListener(
+    "click",
+    function (event) {
+
+        if (
+            event.target ===
+            gradingModal
+        ) {
+
+            closeGradingModal();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   ESC KEY
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function (event) {
+
+        if (
+            event.key ===
+            "Escape"
+        ) {
+
+            closeProfileModal();
+
+            closeGradingModal();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   INITIALIZE PAGE
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    async function () {
+
+        if (!checkAuthentication()) {
+            return;
+        }
+
+
+        /*
+         * Load instructor information.
+         */
+
+        await loadProfile();
+
+
+        /*
+         * Load submissions.
+         */
+
+        await loadSubmissions();
+
+
+        /*
+         * Opened from a learner on the class page.
+         */
+
+        openGradingFromLink();
+
+    }
+);
+
+</script>
+
+    <!-- Header like the Academic Admin portal; bell opens Notifications, red dot for unread -->
+    <script src="js/header.js"></script>
+    <!-- Sidebar toggle like the Academic Admin portal (remembers the choice) -->
+    <script src="js/sidebar.js"></script>
+    <!-- Logout confirmation, same as the other portals -->
+    <script src="js/logout.js"></script>
+    <!-- View opens files in the browser (PDF, images, Word .docx) -->
+    <script src="js/file-viewer.js"></script>
+    <script src="js/profile-modal.js"></script>
+</body>
+
+</html>

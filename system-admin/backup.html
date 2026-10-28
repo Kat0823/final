@@ -292,6 +292,151 @@
                 padding: 20px 18px;
             }
         }
+        /* Saved backups header: text on the left, Upload on the right */
+        .backup-panel-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .backup-panel-head > div:first-child {
+            flex: 1 1 360px;
+        }
+
+        #savedMessage {
+            margin: 10px 0 0;
+        }
+
+        .restore-button {
+            min-height: 36px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0 12px;
+            border: 1px solid #c99223;
+            border-radius: 8px;
+            background: #fff8e6;
+            color: #6b4e00;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .restore-button:hover,
+        .restore-button:focus-visible {
+            background: #fbefd2;
+            outline: none;
+        }
+
+        .restore-button svg {
+            width: 15px;
+            height: 15px;
+        }
+
+        .backup-uploaded {
+            display: inline-block;
+            margin-left: 6px;
+            padding: 1px 7px;
+            border-radius: 999px;
+            background: #eef4fb;
+            color: #1e4d7a;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* Restore confirmation */
+        .restore-dialog {
+            width: min(100% - 32px, 500px);
+            max-height: calc(100vh - 32px);
+            margin: auto;
+            overflow: auto;
+            padding: 0;
+            border: 0;
+            border-radius: 14px;
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.3);
+        }
+
+        .restore-dialog::backdrop {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .restore-dialog form {
+            padding: 24px;
+        }
+
+        .restore-dialog h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 6px;
+            color: #8c1a1f;
+            font-size: 19px;
+        }
+
+        .restore-dialog h3 svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .restore-dialog .restore-which {
+            margin: 0 0 12px;
+            color: #1f2a24;
+            font-size: 14px;
+        }
+
+        .restore-dialog ul {
+            margin: 0 0 14px;
+            padding-left: 20px;
+            color: #4b5563;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .restore-field {
+            margin-bottom: 12px;
+        }
+
+        .restore-field label {
+            display: block;
+            margin-bottom: 5px;
+            color: #1f2a24;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .restore-field input {
+            width: 100%;
+            height: 40px;
+            box-sizing: border-box;
+            padding: 0 12px;
+            border: 1px solid #cfd8d2;
+            border-radius: 7px;
+            font: inherit;
+            font-size: 14px;
+        }
+
+        .restore-field input:focus {
+            outline: none;
+            border-color: #8c1a1f;
+            box-shadow: 0 0 0 3px rgba(140, 26, 31, 0.12);
+        }
+
+        .restore-field small {
+            display: block;
+            margin-top: 4px;
+            color: #66736c;
+            font-size: 12px;
+        }
+
+        .restore-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 16px;
+        }
     </style>
     <!-- Header and sidebar: same as the Academic Admin portal -->
     <link rel="stylesheet" href="css/shell.css">
@@ -444,7 +589,7 @@
                 <!-- Dashboard -->
 
                 <a
-                    href="dashboard.html"
+                    href="./"
                     class="nav-item"
                 >
 
@@ -641,7 +786,16 @@
                         <h3 id="savedBackupsTitle">Saved backups</h3>
                         <p>Kept on the server in <code>backend/storage/app/backups</code>. Download each one and keep it somewhere else (a USB drive, another computer or cloud storage): a backup that stays only on the server is lost if the server is lost.</p>
                     </div>
+                    <div>
+                        <input type="file" id="backupUploadInput" accept=".zip,application/zip" hidden>
+                        <button type="button" class="secondary-button" id="backupUploadButton">
+                            <i data-lucide="upload"></i>
+                            <span>Upload a backup file</span>
+                        </button>
+                    </div>
                 </div>
+
+                <p class="backup-message" id="savedMessage" role="status" aria-live="polite"></p>
 
                 <div class="backup-table-wrap">
                     <table class="backup-table">
@@ -666,11 +820,27 @@
             <section class="panel backup-panel backup-guide" aria-labelledby="restoreTitle">
                 <h3 id="restoreTitle">Restore a backup</h3>
                 <p>
-                    Restoring replaces the current data, so it is done by hand by the person who manages
-                    the server. <strong>XAMPP is not required.</strong> The same steps are in
-                    <strong>RESTORE.txt</strong> inside each backup. Try one restore before you rely on your backups.
+                    Click <strong>Restore</strong> next to a saved backup. To restore a backup you downloaded
+                    earlier, use <strong>Upload a backup file</strong> first. When you restore, the system:
                 </p>
 
+                <ol>
+                    <li>asks for your password and for you to type <strong>RESTORE</strong>;</li>
+                    <li>makes a <strong>safety backup</strong> of the current data (it appears in the list above);</li>
+                    <li>replaces the database and the uploaded files with the ones in the backup;</li>
+                    <li>if anything goes wrong, puts the previous data back automatically;</li>
+                    <li>signs everyone out, including you. Everyone logs in again with the accounts in the backup.</li>
+                </ol>
+
+                <p class="backup-note warning">
+                    Everything added or changed after the backup was made (accounts, grades, submissions,
+                    audit log entries) is replaced. To undo a restore, restore the safety backup.
+                    Try one restore before you rely on your backups.
+                </p>
+
+                <details class="backup-manual">
+                    <summary>Restore by hand instead (if the system will not start)</summary>
+                    <p>XAMPP is not required. The same steps are in <strong>RESTORE.txt</strong> inside each backup.</p>
                 <ol>
                     <li>Make a fresh backup of the current system first, if it still runs.</li>
                     <li>Download the backup and unzip it (use 7-Zip or WinRAR if it has a password).</li>
@@ -687,6 +857,7 @@
                     Importing into a database that already has data replaces it.
                     Make a fresh backup first if you are not sure.
                 </p>
+                </details>
 
                 <details class="backup-manual">
                     <summary>Import commands (hosted server, Docker, this computer)</summary>
@@ -731,9 +902,49 @@
          JAVASCRIPT
     ====================================================== -->
 
+    <!-- Restore confirmation (replaces all data) -->
+    <dialog class="restore-dialog" id="restoreDialog" aria-labelledby="restoreDialogTitle">
+        <form id="restoreForm" novalidate>
+            <h3 id="restoreDialogTitle"><i data-lucide="triangle-alert"></i> Restore this backup?</h3>
+            <p class="restore-which" id="restoreWhich"></p>
+            <ul>
+                <li>All current data and uploaded files are <strong>replaced</strong> with the backup's.</li>
+                <li>A safety backup of the current data is made first, so this can be undone.</li>
+                <li>Everyone is signed out, including you.</li>
+            </ul>
+
+            <div class="restore-field" id="restoreZipField" hidden>
+                <label for="restoreZipPassword">Backup password</label>
+                <input type="password" id="restoreZipPassword" maxlength="100" autocomplete="off">
+                <small>The password typed when this backup was made.</small>
+            </div>
+
+            <div class="restore-field">
+                <label for="restorePassword">Your password</label>
+                <input type="password" id="restorePassword" maxlength="255" autocomplete="current-password">
+            </div>
+
+            <div class="restore-field">
+                <label for="restoreConfirm">Type RESTORE to confirm</label>
+                <input type="text" id="restoreConfirm" maxlength="20" autocomplete="off" spellcheck="false">
+            </div>
+
+            <p class="backup-message" id="restoreMessage" role="alert" aria-live="assertive"></p>
+
+            <div class="restore-actions">
+                <button type="button" class="secondary-button" id="restoreCancel">Cancel</button>
+                <button type="submit" class="danger-button" id="restoreSubmit">
+                    <i data-lucide="rotate-ccw"></i>
+                    <span>Restore backup</span>
+                </button>
+            </div>
+        </form>
+    </dialog>
+
+
     <script src="../api-config.js"></script>
     <script src="js/shared.js"></script>
-    <!-- Data Backup: make, list, download and delete backups -->
+    <!-- Data Backup: make, list, download, delete, upload and restore backups -->
     <script src="js/backup.js"></script>
     <!-- My Profile pop-up, same as the other portals -->
     <script src="js/profile-modal.js"></script>
